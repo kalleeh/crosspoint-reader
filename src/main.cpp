@@ -24,6 +24,12 @@
 #include "activities/reader/ReaderActivity.h"
 #include "activities/settings/SettingsActivity.h"
 #include "activities/util/FullScreenMessageActivity.h"
+#include "activities/games/GamesMenuActivity.h"
+#include "activities/games/TicTacToeActivity.h"
+#include "activities/games/SnakeActivity.h"
+#include "activities/games/Game2048Activity.h"
+#include "activities/games/MemoryMatchActivity.h"
+#include "activities/games/ChessActivity.h"
 #include "fontIds.h"
 
 HalDisplay display;
@@ -236,10 +242,59 @@ void onGoToBrowser() {
   enterNewActivity(new OpdsBookBrowserActivity(renderer, mappedInputManager, onGoHome));
 }
 
+// Forward declarations for games
+void onGoToGames();
+void onGoToTicTacToe();
+void onGoToSnake();
+void onGoTo2048();
+void onGoToMemoryMatch();
+void onGoToChess();
+
+void onGoToGames() {
+  exitActivity();
+  auto* gamesMenu = new GamesMenuActivity(renderer, mappedInputManager, onGoHome);
+
+  // Register all games
+  gamesMenu->registerGame("tictactoe", "Tic Tac Toe", onGoToTicTacToe);
+  gamesMenu->registerGame("snake", "Snake", onGoToSnake);
+  gamesMenu->registerGame("2048", "2048", onGoTo2048);
+  gamesMenu->registerGame("memory", "Memory Match", onGoToMemoryMatch);
+  gamesMenu->registerGame("chess", "Chess", onGoToChess);
+
+  enterNewActivity(gamesMenu);
+  gamesMenu->onEnter();  // Trigger render
+  gamesMenu->loop();     // Initial render
+}
+
+void onGoToTicTacToe() {
+  exitActivity();
+  enterNewActivity(new TicTacToeActivity(renderer, mappedInputManager, onGoToGames));
+}
+
+void onGoToSnake() {
+  exitActivity();
+  enterNewActivity(new SnakeActivity(renderer, mappedInputManager, onGoToGames));
+}
+
+void onGoTo2048() {
+  exitActivity();
+  enterNewActivity(new Game2048Activity(renderer, mappedInputManager, onGoToGames));
+}
+
+void onGoToMemoryMatch() {
+  exitActivity();
+  enterNewActivity(new MemoryMatchActivity(renderer, mappedInputManager, onGoToGames));
+}
+
+void onGoToChess() {
+  exitActivity();
+  enterNewActivity(new ChessActivity(renderer, mappedInputManager, onGoToGames));
+}
+
 void onGoHome() {
   exitActivity();
   enterNewActivity(new HomeActivity(renderer, mappedInputManager, onContinueReading, onGoToMyLibrary, onGoToSettings,
-                                    onGoToFileTransfer, onGoToBrowser));
+                                    onGoToFileTransfer, onGoToBrowser, onGoToGames));
 }
 
 void setupDisplayAndFonts() {
