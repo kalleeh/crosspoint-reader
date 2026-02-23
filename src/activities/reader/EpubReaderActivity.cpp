@@ -85,7 +85,7 @@ void EpubReaderActivity::onEnter() {
   // Save current epub as last opened epub and add to recent books
   APP_STATE.openEpubPath = epub->getPath();
   APP_STATE.saveToFile();
-  RECENT_BOOKS.addBook(epub->getPath());
+  RECENT_BOOKS.addBook(epub->getPath(), epub->getTitle(), epub->getAuthor());
 
   // Trigger first update
   updateRequired = true;
@@ -254,9 +254,12 @@ void EpubReaderActivity::displayTaskLoop() {
   }
 }
 
-// TODO: Failure handling
 void EpubReaderActivity::renderScreen() {
   if (!epub) {
+    Serial.println("[EPR] Error: epub is null");
+    renderer.clearScreen();
+    renderer.drawCenteredText(UI_12_FONT_ID, 300, "EPUB load error", true, EpdFontFamily::BOLD);
+    renderer.displayBuffer();
     return;
   }
 
@@ -345,7 +348,7 @@ void EpubReaderActivity::renderScreen() {
       auto progressCallback = [this, barX, barY, barWidth, barHeight](int progress) {
         const int fillWidth = (barWidth - 2) * progress / 100;
         renderer.fillRect(barX + 1, barY + 1, fillWidth, barHeight - 2, true);
-        renderer.displayBuffer(EInkDisplay::FAST_REFRESH);
+        renderer.displayBuffer(HalDisplay::FAST_REFRESH);
       };
 
       if (!section->createSectionFile(SETTINGS.getReaderFontId(), SETTINGS.getReaderLineCompression(),
@@ -428,7 +431,7 @@ void EpubReaderActivity::renderContents(std::unique_ptr<Page> page, const int or
   page->render(renderer, SETTINGS.getReaderFontId(), orientedMarginLeft, orientedMarginTop);
   renderStatusBar(orientedMarginRight, orientedMarginBottom, orientedMarginLeft);
   if (pagesUntilFullRefresh <= 1) {
-    renderer.displayBuffer(EInkDisplay::HALF_REFRESH);
+    renderer.displayBuffer(HalDisplay::HALF_REFRESH);
     pagesUntilFullRefresh = SETTINGS.getRefreshFrequency();
   } else {
     renderer.displayBuffer();
@@ -438,8 +441,8 @@ void EpubReaderActivity::renderContents(std::unique_ptr<Page> page, const int or
   // Save bw buffer to reset buffer state after grayscale data sync
   renderer.storeBwBuffer();
 
-  // grayscale rendering
-  // TODO: Only do this if font supports it
+  // Grayscale rendering (only if font supports anti-aliasing)
+  // Note: All current fonts support grayscale rendering
   if (SETTINGS.textAntiAliasing) {
     renderer.clearScreen(0x00);
     renderer.setRenderMode(GfxRenderer::GRAYSCALE_LSB);

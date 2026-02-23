@@ -4,12 +4,8 @@
 
 #include <memory>
 #include <string>
-#include <unordered_map>
-#include <vector>
 
 #include "Epub/BookMetadataCache.h"
-
-class ZipFile;
 
 class Epub {
   // the ncx file (EPUB 2)
@@ -64,4 +60,9 @@ class Epub {
 
   size_t getBookSize() const;
   float calculateProgress(int currentSpineIndex, float currentSpineRead) const;
+  
+  // Image caching
+  std::string getImageCachePath(const std::string& imageHref) const;
+  bool cacheImage(const std::string& imageHref) const;
+  bool getImageDimensions(const std::string& cachedPath, int& width, int& height) const;
 };

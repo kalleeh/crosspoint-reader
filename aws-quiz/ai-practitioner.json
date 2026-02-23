@@ -1,0 +1,1826 @@
+{
+  "version": "1.0",
+  "certification": "ai-practitioner",
+  "exam": "AIF-C01",
+  "total_questions": 100,
+  "exam_info": {
+    "duration_minutes": 120,
+    "passing_score": 700,
+    "scored_questions": 65,
+    "unscored_questions": 15,
+    "domains": {
+      "fundamentals_of_ai_ml": "20%",
+      "fundamentals_of_generative_ai": "24%",
+      "applications_of_foundation_models": "28%",
+      "guidelines_for_responsible_ai": "14%",
+      "security_compliance_governance": "14%"
+    }
+  },
+  "questions": [
+    {
+      "question": "A company wants to build a chatbot that can answer customer questions using information from their product documentation. The solution must provide accurate responses grounded in the company's data without retraining the foundation model. Which approach is MOST appropriate?",
+      "options": [
+        "Implement continued pre-training on the product documentation",
+        "Fine-tune a foundation model with the product documentation as training data",
+        "Use prompt engineering with the entire documentation in the system prompt",
+        "Use Retrieval Augmented Generation (RAG) with Amazon Bedrock Knowledge Bases"
+      ],
+      "correct": 3,
+      "explanation": "RAG with Amazon Bedrock Knowledge Bases is the most appropriate solution. It retrieves relevant information from the product documentation and augments the prompt with this context, allowing the model to generate accurate, grounded responses without retraining. Fine-tuning and continued pre-training require model weight updates and are more resource-intensive. Including entire documentation in the system prompt exceeds context window limits and is inefficient.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Bedrock Knowledge Bases documentation",
+        "RAG architecture patterns"
+      ]
+    },
+    {
+      "question": "A healthcare organization needs to use Amazon Comprehend Medical to extract medical entities from clinical notes. The notes contain patient names, medical record numbers, and other personally identifiable information (PII). What is the MOST secure approach to protect patient privacy?",
+      "options": [
+        "Use VPC endpoints to keep traffic within the AWS network",
+        "Store the clinical notes in a private S3 bucket with versioning enabled",
+        "Mask PII before sending data to Amazon Comprehend Medical using Amazon Comprehend PII detection",
+        "Encrypt the clinical notes using AWS KMS before processing"
+      ],
+      "correct": 2,
+      "explanation": "Masking PII before sending data to Amazon Comprehend Medical is the most secure approach. Amazon Comprehend can detect and mask PII entities, ensuring sensitive information is removed before medical entity extraction. While encryption, private S3 buckets, and VPC endpoints provide security layers, they don't prevent PII from being processed by the service. The shared responsibility model requires customers to protect sensitive data before it reaches AWS services.",
+      "domain": "Security, Compliance, and Governance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Comprehend Medical documentation",
+        "AWS shared responsibility model",
+        "HIPAA compliance best practices"
+      ]
+    },
+    {
+      "question": "A data scientist is using Amazon SageMaker Autopilot to build a binary classification model on a 50 MB tabular dataset. Which training mode will Autopilot automatically select, and what is the primary benefit of this mode for this dataset size?",
+      "options": [
+        "Ensembling mode; it combines multiple base models using AutoGluon for better performance",
+        "HPO mode; it uses Bayesian optimization to find optimal hyperparameters",
+        "Auto mode; it automatically switches between HPO and ensembling based on performance",
+        "Deep learning mode; it uses neural networks for complex pattern recognition"
+      ],
+      "correct": 0,
+      "explanation": "For datasets smaller than 100 MB, SageMaker Autopilot automatically selects Ensembling mode. This mode uses the AutoGluon library to train multiple base models (LightGBM, CatBoost, XGBoost, Random Forest, etc.) and combines them using stacking ensemble methods. Ensembling mode typically provides better performance for smaller datasets. HPO mode is selected for datasets larger than 100 MB. Auto mode is the selection mechanism, not a training mode itself.",
+      "domain": "Fundamentals of AI and ML",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "SageMaker Autopilot training modes documentation",
+        "AutoML algorithm support"
+      ]
+    },
+    {
+      "question": "A company is implementing Amazon Bedrock Guardrails to filter harmful content in their customer-facing chatbot. They need to block content related to violence and hate speech while allowing discussions about their security products. What combination of guardrail policies should they configure?",
+      "options": [
+        "Content filters set to HIGH for Violence and Hate categories only",
+        "Word filters with a list of violent and hateful terms",
+        "Sensitive information filters to detect and block harmful patterns",
+        "Content filters for Violence and Hate, plus denied topics for security discussions"
+      ],
+      "correct": 0,
+      "explanation": "Content filters set to HIGH for Violence and Hate categories provide the most appropriate solution. Amazon Bedrock Guardrails content filters detect harmful content across predefined categories (Hate, Insults, Sexual, Violence, Misconduct, Prompt Attack) with configurable strength levels (NONE, LOW, MEDIUM, HIGH). Setting HIGH strength for Violence and Hate will block harmful content while allowing legitimate security product discussions. Denied topics would incorrectly block security discussions. Word filters require manual term lists and are less effective than ML-based content filters. Sensitive information filters are for PII, not harmful content.",
+      "domain": "Guidelines for Responsible AI",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Bedrock Guardrails documentation",
+        "Content filter categories and strength levels"
+      ]
+    },
+    {
+      "question": "A machine learning engineer needs to customize an Amazon Nova Lite model for a specialized legal document analysis task. The base model performs reasonably well, but the company has a dataset of 5,000 labeled legal documents. Which customization method provides the MOST cost-effective approach while maintaining model quality?",
+      "options": [
+        "Continued pre-training with unlabeled legal documents",
+        "Model distillation from a larger teacher model",
+        "Low-rank adapter (LoRA) parameter-efficient fine-tuning",
+        "Full-rank fine-tuning to update all model parameters"
+      ],
+      "correct": 2,
+      "explanation": "LoRA parameter-efficient fine-tuning (PEFT) is the most cost-effective approach. LoRA introduces low-rank trainable weight matrices into specific model layers, reducing trainable parameters while maintaining quality. It's ideal when the base model already performs reasonably well and you have labeled data. Full-rank fine-tuning updates all parameters, requiring more compute resources. Continued pre-training uses unlabeled data and doesn't leverage the labeled dataset. Model distillation transfers knowledge from a larger model but doesn't directly use the labeled legal documents.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Nova fine-tuning methods",
+        "LoRA PEFT documentation",
+        "SageMaker training jobs"
+      ]
+    },
+    {
+      "question": "A retail company wants to analyze customer sentiment from product reviews in multiple languages. They need to identify whether reviews are positive, negative, or neutral, and extract key phrases. Which AWS AI service is MOST suitable for this task?",
+      "options": [
+        "Amazon Transcribe",
+        "Amazon Rekognition",
+        "Amazon Textract",
+        "Amazon Comprehend"
+      ],
+      "correct": 3,
+      "explanation": "Amazon Comprehend is the most suitable service for sentiment analysis and key phrase extraction from text. It provides natural language processing (NLP) capabilities including sentiment analysis (positive, negative, neutral, mixed), key phrase extraction, entity recognition, and language detection. It supports multiple languages. Amazon Rekognition is for image and video analysis. Amazon Textract extracts text from documents. Amazon Transcribe converts speech to text.",
+      "domain": "Fundamentals of AI and ML",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Comprehend capabilities",
+        "AWS AI Services overview"
+      ]
+    },
+    {
+      "question": "A developer is building a generative AI application using Amazon Bedrock. They want to ensure the model's responses are factually grounded in source documents and relevant to user queries. Which Amazon Bedrock Guardrails feature should they implement?",
+      "options": [
+        "Content filters to detect harmful content",
+        "Contextual grounding checks to detect hallucinations",
+        "Sensitive information filters to mask PII",
+        "Denied topics to block specific subjects"
+      ],
+      "correct": 1,
+      "explanation": "Contextual grounding checks in Amazon Bedrock Guardrails detect hallucinations by verifying that model responses are grounded in source information and relevant to user queries. This feature evaluates whether responses add new information not present in the source (grounding) or are irrelevant to the query (relevance). Content filters detect harmful content categories. Sensitive information filters handle PII. Denied topics block specific subject areas.",
+      "domain": "Guidelines for Responsible AI",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Bedrock Guardrails contextual grounding",
+        "Hallucination detection"
+      ]
+    },
+    {
+      "question": "A company is designing a prompt for a text generation task using Amazon Nova Pro. They want the model to provide step-by-step reasoning before arriving at the final answer. Which prompting technique should they use?",
+      "options": [
+        "Chain-of-thought prompting to show reasoning steps",
+        "Zero-shot prompting with clear instructions",
+        "Tree-of-thoughts prompting for parallel reasoning paths",
+        "Few-shot prompting with multiple examples"
+      ],
+      "correct": 0,
+      "explanation": "Chain-of-thought (CoT) prompting is the appropriate technique for eliciting step-by-step reasoning. CoT prompting encourages the model to break down complex problems into smaller steps, making the reasoning process transparent and improving performance on tasks requiring logical deductions or multistep reasoning. Zero-shot provides instructions without examples. Few-shot provides examples but doesn't necessarily show reasoning. Tree-of-thoughts is for exploring multiple reasoning branches simultaneously.",
+      "domain": "Fundamentals of Generative AI",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Prompt engineering best practices",
+        "Chain-of-thought prompting documentation"
+      ]
+    },
+    {
+      "question": "An AI practitioner needs to extract text, forms, and tables from scanned invoices and receipts for automated processing. Which AWS service provides this capability?",
+      "options": [
+        "Amazon Transcribe",
+        "Amazon Comprehend",
+        "Amazon Textract",
+        "Amazon Rekognition"
+      ],
+      "correct": 2,
+      "explanation": "Amazon Textract is designed specifically for extracting text, forms, and tables from scanned documents. It uses OCR (Optical Character Recognition) and machine learning to identify and extract structured data including form fields and table data. Amazon Rekognition is for image and video analysis (objects, faces, scenes). Amazon Comprehend analyzes text for sentiment and entities. Amazon Transcribe converts speech to text.",
+      "domain": "Fundamentals of AI and ML",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Textract capabilities",
+        "Document processing services"
+      ]
+    },
+    {
+      "question": "A financial services company is implementing a generative AI chatbot that must comply with regulatory requirements. They need to ensure the model doesn't generate responses about illegal investment advice. Which Amazon Bedrock Guardrails feature is MOST appropriate?",
+      "options": [
+        "Denied topics configured to block illegal investment advice discussions",
+        "Word filters with a list of investment-related terms",
+        "Automated Reasoning checks with compliance rules",
+        "Content filters set to HIGH for Misconduct category"
+      ],
+      "correct": 0,
+      "explanation": "Denied topics in Amazon Bedrock Guardrails allow you to define specific topics to avoid in your application. For this use case, configuring denied topics to block illegal investment advice ensures the model won't generate responses on this specific subject. Content filters detect harmful content categories but aren't topic-specific. Word filters require extensive manual lists and may block legitimate discussions. Automated Reasoning checks validate logical rules but denied topics are more direct for blocking specific subjects.",
+      "domain": "Guidelines for Responsible AI",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Bedrock Guardrails denied topics",
+        "Responsible AI for financial services"
+      ]
+    },
+    {
+      "question": "A company wants to convert text articles into natural-sounding audio for their podcast platform. The solution must support multiple voices and languages. Which AWS service should they use?",
+      "options": [
+        "Amazon Transcribe",
+        "Amazon Comprehend",
+        "Amazon Lex",
+        "Amazon Polly"
+      ],
+      "correct": 3,
+      "explanation": "Amazon Polly is a text-to-speech service that converts text into lifelike speech using advanced deep learning technologies. It supports multiple voices, languages, and speech styles, making it ideal for creating audio content from text. Amazon Transcribe does the opposite (speech-to-text). Amazon Lex builds conversational interfaces. Amazon Comprehend analyzes text for insights.",
+      "domain": "Fundamentals of AI and ML",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Polly capabilities",
+        "Text-to-speech services"
+      ]
+    },
+    {
+      "question": "An ML engineer is optimizing inference costs for a generative AI application using Amazon Bedrock. The application sends long prompts with repetitive context. Which technique will MOST effectively reduce costs?",
+      "options": [
+        "Optimize prompt token length by removing unnecessary context",
+        "Use a smaller foundation model with lower per-token costs",
+        "Implement caching to store previous responses",
+        "Switch to Provisioned Throughput pricing"
+      ],
+      "correct": 0,
+      "explanation": "Optimizing prompt token length directly reduces costs for token-based pricing models. Removing unnecessary words, redundant context, and verbose instructions decreases the number of input tokens processed. Amazon Bedrock charges based on tokens processed, so shorter prompts result in lower per-inference costs. While using a smaller model may reduce costs, it could impact quality. Caching helps with repeated queries but doesn't address long prompts. Provisioned Throughput is for consistent high-volume workloads, not cost optimization of individual prompts.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Prompt optimization best practices",
+        "Amazon Bedrock pricing",
+        "Cost optimization for generative AI"
+      ]
+    },
+    {
+      "question": "A data scientist needs to detect bias in a machine learning model's predictions across different demographic groups. Which Amazon SageMaker feature should they use?",
+      "options": [
+        "SageMaker Clarify for bias detection and explainability",
+        "SageMaker Debugger for training optimization",
+        "SageMaker Model Monitor for drift detection",
+        "SageMaker Autopilot for automated model building"
+      ],
+      "correct": 0,
+      "explanation": "Amazon SageMaker Clarify is specifically designed for detecting bias in ML models and providing explainability. It can compute bias metrics across different groups, generate feature attribution explanations using SHAP values, and monitor models in production for bias drift. SageMaker Autopilot automates model building. Model Monitor detects data and model quality drift. Debugger optimizes training jobs.",
+      "domain": "Guidelines for Responsible AI",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "SageMaker Clarify documentation",
+        "Bias detection and fairness"
+      ]
+    },
+    {
+      "question": "A company is building an image classification application to identify products in retail stores. They need to detect objects, scenes, and text within images. Which AWS service provides these capabilities?",
+      "options": [
+        "Amazon SageMaker",
+        "Amazon Comprehend",
+        "Amazon Textract",
+        "Amazon Rekognition"
+      ],
+      "correct": 3,
+      "explanation": "Amazon Rekognition provides image and video analysis capabilities including object detection, scene detection, facial analysis, text detection in images, and activity recognition. It's specifically designed for computer vision tasks. Amazon Textract extracts text from documents (not general images). Amazon Comprehend analyzes text. Amazon SageMaker is a platform for building custom ML models but Rekognition provides pre-built computer vision capabilities.",
+      "domain": "Fundamentals of AI and ML",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Rekognition capabilities",
+        "Computer vision services"
+      ]
+    },
+    {
+      "question": "An AI team is implementing a RAG system using Amazon Bedrock Knowledge Bases. They need to convert documents into embeddings for semantic search. What is the role of embeddings in this architecture?",
+      "options": [
+        "Embeddings convert text into numerical vectors for semantic similarity comparison",
+        "Embeddings encrypt sensitive information in documents",
+        "Embeddings translate documents into multiple languages",
+        "Embeddings compress documents to reduce storage costs"
+      ],
+      "correct": 0,
+      "explanation": "Embeddings convert text into numerical vector representations that capture semantic meaning. In RAG systems, both documents and user queries are converted into embeddings, allowing the system to find semantically similar content by comparing vectors. This enables semantic search that understands meaning rather than just keyword matching. Embeddings don't compress for storage, encrypt data, or translate languages.",
+      "domain": "Fundamentals of Generative AI",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Bedrock Knowledge Bases",
+        "Embeddings and vector search",
+        "RAG architecture"
+      ]
+    },
+    {
+      "question": "A healthcare provider needs to transcribe doctor-patient conversations for medical records. The transcriptions must identify different speakers and include medical terminology. Which AWS service and feature combination is MOST appropriate?",
+      "options": [
+        "Amazon Comprehend Medical with entity extraction",
+        "Amazon Lex with medical intent recognition",
+        "Amazon Polly with medical voices",
+        "Amazon Transcribe with speaker identification and custom vocabulary"
+      ],
+      "correct": 3,
+      "explanation": "Amazon Transcribe is the speech-to-text service that converts audio to text. It supports speaker identification (diarization) to distinguish between different speakers and custom vocabulary to improve accuracy for domain-specific terms like medical terminology. Amazon Polly is text-to-speech (opposite direction). Amazon Comprehend Medical analyzes text but doesn't transcribe audio. Amazon Lex builds conversational interfaces.",
+      "domain": "Fundamentals of AI and ML",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Transcribe capabilities",
+        "Medical transcription features"
+      ]
+    },
+    {
+      "question": "A company is using Amazon Bedrock to generate marketing content. They want to ensure the model doesn't include competitor names in the generated text. Which guardrail policy should they configure?",
+      "options": [
+        "Sensitive information filters to mask competitor names",
+        "Content filters to block competitor mentions",
+        "Denied topics for competitor discussions",
+        "Word filters with exact match for competitor names"
+      ],
+      "correct": 3,
+      "explanation": "Word filters in Amazon Bedrock Guardrails allow you to define custom words or phrases to detect and block using exact match. This is ideal for blocking specific competitor names. Content filters detect harmful content categories, not specific words. Denied topics work for broader subject areas but word filters are more precise for specific terms. Sensitive information filters are for PII detection, not custom business terms.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Bedrock Guardrails word filters",
+        "Custom content filtering"
+      ]
+    },
+    {
+      "question": "An AI practitioner is evaluating foundation models for a text summarization task. They need to process documents up to 50,000 words. What model characteristic is MOST critical for this use case?",
+      "options": [
+        "Context window length",
+        "Inference latency",
+        "Model size (number of parameters)",
+        "Fine-tuning capability"
+      ],
+      "correct": 0,
+      "explanation": "Context window length is the most critical characteristic for processing long documents. The context window determines how much text a model can consider at once. For 50,000-word documents, you need a model with a large context window (measured in tokens). Model size affects capability but not input length. Inference latency affects speed. Fine-tuning capability is for customization, not input length handling.",
+      "domain": "Fundamentals of Generative AI",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Foundation model characteristics",
+        "Context window documentation"
+      ]
+    },
+    {
+      "question": "A financial institution must ensure their AI models make decisions that can be explained to regulators. Which dimension of responsible AI is MOST relevant to this requirement?",
+      "options": [
+        "Controllability",
+        "Privacy and Security",
+        "Explainability",
+        "Fairness"
+      ],
+      "correct": 2,
+      "explanation": "Explainability is the dimension of responsible AI that focuses on understanding and communicating how AI makes decisions. It's critical for regulatory compliance, allowing organizations to explain model predictions and decision-making processes. Fairness ensures non-discrimination. Privacy and Security protect data. Controllability ensures human oversight. While all are important, explainability directly addresses the requirement to explain decisions to regulators.",
+      "domain": "Guidelines for Responsible AI",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Responsible AI dimensions",
+        "AWS Well-Architected Framework for AI"
+      ]
+    },
+    {
+      "question": "A developer is building a conversational AI application using Amazon Lex. The bot needs to understand user intents, extract slot values, and integrate with backend systems. What is the primary function of intents in Amazon Lex?",
+      "options": [
+        "Intents represent the actions users want to perform",
+        "Intents store conversation history for context",
+        "Intents configure the natural language understanding model",
+        "Intents define the backend Lambda functions to invoke"
+      ],
+      "correct": 0,
+      "explanation": "In Amazon Lex, intents represent the actions or goals that users want to accomplish. Each intent corresponds to a specific task (e.g., BookHotel, CheckWeather). Intents contain sample utterances, slots for required information, and fulfillment logic. Lambda functions are configured as fulfillment for intents but aren't the intent itself. Conversation history is managed separately. The NLU model is trained based on intents and utterances.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Lex concepts",
+        "Conversational AI architecture"
+      ]
+    },
+    {
+      "question": "A company wants to implement a generative AI solution but is concerned about the model generating false or fabricated information. What is this phenomenon called, and which technique helps mitigate it?",
+      "options": [
+        "Overfitting; use regularization techniques",
+        "Hallucination; use RAG to ground responses in factual data",
+        "Bias; use fairness metrics and diverse training data",
+        "Model drift; use continuous monitoring"
+      ],
+      "correct": 1,
+      "explanation": "Hallucination is when generative AI models produce false or fabricated information that sounds plausible but isn't grounded in facts. RAG (Retrieval Augmented Generation) mitigates hallucinations by retrieving relevant factual information from a knowledge base and including it in the prompt, grounding the model's responses in verified data. Model drift is performance degradation over time. Bias is unfair treatment of groups. Overfitting is when models memorize training data.",
+      "domain": "Fundamentals of Generative AI",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Hallucination in LLMs",
+        "RAG for factual grounding"
+      ]
+    },
+    {
+      "question": "An organization is deploying an AI model that processes customer data. According to the AWS shared responsibility model, who is responsible for ensuring the AI model doesn't produce biased outcomes?",
+      "options": [
+        "AWS is responsible for model fairness as part of the managed service",
+        "The customer is responsible for model fairness and bias detection",
+        "Responsibility is shared equally between AWS and the customer",
+        "The foundation model provider is responsible for bias mitigation"
+      ],
+      "correct": 1,
+      "explanation": "Under the AWS shared responsibility model, customers are responsible for ensuring their AI models don't produce biased outcomes. This includes selecting appropriate training data, implementing bias detection (e.g., using SageMaker Clarify), monitoring model performance across different groups, and taking corrective actions. AWS provides tools and infrastructure security, but customers own the responsibility for their model's behavior, fairness, and ethical use.",
+      "domain": "Security, Compliance, and Governance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS shared responsibility model",
+        "Responsible AI practices"
+      ]
+    },
+    {
+      "question": "A data scientist needs to provide examples in a prompt to help a foundation model understand the desired output format. Which prompting technique are they using?",
+      "options": [
+        "Chain-of-thought prompting",
+        "System prompting",
+        "Few-shot prompting",
+        "Zero-shot prompting"
+      ],
+      "correct": 2,
+      "explanation": "Few-shot prompting involves providing a few examples in the prompt to demonstrate the desired input-output pattern. This helps the model understand the task format and expected response style without fine-tuning. Zero-shot provides no examples. Chain-of-thought shows reasoning steps. System prompting sets behavioral parameters but doesn't necessarily include examples.",
+      "domain": "Fundamentals of Generative AI",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Prompt engineering techniques",
+        "Few-shot learning"
+      ]
+    },
+    {
+      "question": "A company is using Amazon Bedrock and wants to prevent their foundation model from generating responses containing credit card numbers or social security numbers. Which guardrail feature should they configure?",
+      "options": [
+        "Word filters with regex patterns for numbers",
+        "Sensitive information filters with PII entity types",
+        "Denied topics for financial information",
+        "Content filters for sensitive data categories"
+      ],
+      "correct": 1,
+      "explanation": "Sensitive information filters in Amazon Bedrock Guardrails detect and block or mask PII (Personally Identifiable Information) including credit card numbers, social security numbers, and other sensitive data types. These filters use probabilistic ML-based detection for standard PII formats. Content filters are for harmful content. Word filters require exact matches. Denied topics block subject areas, not specific data patterns.",
+      "domain": "Security, Compliance, and Governance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Bedrock Guardrails sensitive information filters",
+        "PII detection"
+      ]
+    },
+    {
+      "question": "An AI practitioner is comparing supervised learning and unsupervised learning approaches. Which statement BEST describes the key difference?",
+      "options": [
+        "Supervised learning requires labeled data; unsupervised learning finds patterns in unlabeled data",
+        "Supervised learning uses neural networks; unsupervised learning uses traditional algorithms",
+        "Supervised learning is faster to train; unsupervised learning requires more compute",
+        "Supervised learning works with images; unsupervised learning works with text"
+      ],
+      "correct": 0,
+      "explanation": "The key difference is that supervised learning requires labeled training data (input-output pairs) to learn the mapping between inputs and desired outputs, while unsupervised learning finds patterns, clusters, or structures in unlabeled data without predefined outputs. Training speed depends on many factors. Both can work with various data types. Both can use neural networks or traditional algorithms.",
+      "domain": "Fundamentals of AI and ML",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Machine learning fundamentals",
+        "Supervised vs unsupervised learning"
+      ]
+    },
+    {
+      "question": "A company is building an AI-powered customer service system that must handle inquiries in real-time. They need to balance response quality with inference latency. Which factor has the MOST direct impact on inference latency?",
+      "options": [
+        "Training dataset size",
+        "Fine-tuning method used",
+        "Embedding dimension",
+        "Model size (number of parameters)"
+      ],
+      "correct": 3,
+      "explanation": "Model size (number of parameters) has the most direct impact on inference latency. Larger models with more parameters require more computation to generate responses, resulting in higher latency. For real-time applications, smaller models (like Amazon Nova Micro or Lite) provide faster inference. Training dataset size affects training time, not inference. Fine-tuning method affects customization. Embedding dimension affects vector operations but model size is the primary latency factor.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Model performance characteristics",
+        "Inference optimization"
+      ]
+    },
+    {
+      "question": "An organization wants to ensure their AI system operates within defined use case boundaries and doesn't perform unintended actions. Which dimension of responsible AI addresses this requirement?",
+      "options": [
+        "Veracity and Robustness",
+        "Transparency",
+        "Governance",
+        "Controllability"
+      ],
+      "correct": 3,
+      "explanation": "Controllability is the responsible AI dimension that ensures AI systems behave as designed and maintain human control. It involves monitoring system behavior, implementing override mechanisms, and ensuring the system operates within defined boundaries. Veracity and Robustness ensure accurate outputs. Transparency provides clear communication about capabilities. Governance establishes frameworks for AI implementation.",
+      "domain": "Guidelines for Responsible AI",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Responsible AI dimensions",
+        "AWS Well-Architected Framework"
+      ]
+    },
+    {
+      "question": "A developer is using Amazon Q Developer in their IDE. What is the primary capability that Amazon Q Developer provides?",
+      "options": [
+        "Real-time code performance monitoring and optimization",
+        "AI-powered code suggestions and conversational assistance for software development",
+        "Automated security vulnerability patching",
+        "Automated code deployment to production environments"
+      ],
+      "correct": 1,
+      "explanation": "Amazon Q Developer is an AI-powered conversational assistant that provides code suggestions, inline code completions, generates new code, scans for security vulnerabilities, and assists with code upgrades. It helps developers understand, build, and extend applications through natural language conversations and intelligent code recommendations. It doesn't deploy code, monitor performance in real-time, or automatically patch vulnerabilities.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Q Developer capabilities",
+        "AI coding assistants"
+      ]
+    },
+    {
+      "question": "A machine learning team is preparing training data for fine-tuning a foundation model. They discover the dataset contains significantly more examples from one demographic group than others. What type of bias does this represent?",
+      "options": [
+        "Algorithmic bias",
+        "Measurement bias",
+        "Selection bias",
+        "Confirmation bias"
+      ],
+      "correct": 2,
+      "explanation": "Selection bias (also called sampling bias) occurs when the training data doesn't represent the population the model will serve. Having significantly more examples from one demographic group creates selection bias, which can lead to models that perform poorly for underrepresented groups. Confirmation bias is human tendency to favor confirming information. Measurement bias is systematic error in data collection. Algorithmic bias results from the algorithm itself, not the data distribution.",
+      "domain": "Guidelines for Responsible AI",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Bias types in ML",
+        "Fairness and bias detection"
+      ]
+    },
+    {
+      "question": "A company wants to translate customer support tickets from multiple languages into English for centralized processing. Which AWS service should they use?",
+      "options": [
+        "Amazon Translate",
+        "Amazon Polly",
+        "Amazon Transcribe",
+        "Amazon Comprehend"
+      ],
+      "correct": 0,
+      "explanation": "Amazon Translate is a neural machine translation service that translates text between languages. It supports real-time and batch translation for multiple language pairs. Amazon Comprehend analyzes text for insights but doesn't translate. Amazon Transcribe converts speech to text. Amazon Polly converts text to speech.",
+      "domain": "Fundamentals of AI and ML",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Translate capabilities",
+        "Translation services"
+      ]
+    },
+    {
+      "question": "An AI team is implementing a RAG system and needs to store document embeddings for semantic search. Which AWS service is specifically designed as a vector database for this purpose?",
+      "options": [
+        "Amazon S3",
+        "Amazon DynamoDB",
+        "Amazon OpenSearch Serverless with vector engine",
+        "Amazon RDS"
+      ],
+      "correct": 2,
+      "explanation": "Amazon OpenSearch Serverless with vector engine is specifically designed for vector storage and similarity search, making it ideal for RAG systems. It supports efficient vector indexing and k-NN (k-nearest neighbors) search for finding semantically similar embeddings. Amazon Bedrock Knowledge Bases also supports OpenSearch Serverless, Aurora PostgreSQL with pgvector, and other vector stores. DynamoDB and RDS are traditional databases. S3 is object storage.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Vector databases for RAG",
+        "Amazon OpenSearch vector capabilities"
+      ]
+    },
+    {
+      "question": "A company is using Amazon Bedrock and wants to test different foundation models to find the best one for their use case. What is this process called in Amazon Bedrock?",
+      "options": [
+        "Model evaluation",
+        "Model fine-tuning",
+        "Model customization",
+        "Model deployment"
+      ],
+      "correct": 0,
+      "explanation": "Model evaluation in Amazon Bedrock is the process of testing and comparing different foundation models to determine which performs best for your specific use case. You can evaluate models using sample prompts, compare outputs, and assess quality metrics. Fine-tuning adjusts model weights. Customization includes various adaptation methods. Deployment makes models available for production use.",
+      "domain": "Fundamentals of Generative AI",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Bedrock model evaluation",
+        "Foundation model selection"
+      ]
+    },
+    {
+      "question": "A financial institution must maintain audit logs of all AI model predictions for regulatory compliance. Which AWS service provides centralized logging for API calls to AWS AI services?",
+      "options": [
+        "AWS CloudTrail",
+        "AWS Config",
+        "Amazon S3 access logs",
+        "Amazon CloudWatch Logs"
+      ],
+      "correct": 0,
+      "explanation": "AWS CloudTrail provides centralized logging of all API calls made to AWS services, including AI services like Amazon Bedrock, SageMaker, Comprehend, etc. It captures who made the call, when, from where, and what parameters were used, providing a complete audit trail for compliance. CloudWatch Logs stores application logs. S3 access logs track bucket access. AWS Config tracks resource configuration changes.",
+      "domain": "Security, Compliance, and Governance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS CloudTrail",
+        "Audit logging for AI services"
+      ]
+    },
+    {
+      "question": "A developer is creating a prompt for a code generation task. They want to specify the programming language, coding style, and documentation requirements. Which component of the prompt structure should contain these instructions?",
+      "options": [
+        "Assistant prompt",
+        "User prompt",
+        "Context window",
+        "System prompt"
+      ],
+      "correct": 3,
+      "explanation": "The system prompt (or system message) sets overall behavioral parameters, guidelines, and instructions that apply to the entire conversation. It's ideal for specifying requirements like programming language, coding style, tone, and documentation standards. The user prompt contains the specific task or question. The assistant prompt guides the model's response format. Context window is the total input capacity, not a prompt component.",
+      "domain": "Fundamentals of Generative AI",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Prompt structure and roles",
+        "System prompt best practices"
+      ]
+    },
+    {
+      "question": "A company wants to use Amazon SageMaker to build a custom machine learning model but has limited ML expertise. Which SageMaker feature provides a no-code interface for building, training, and deploying models?",
+      "options": [
+        "SageMaker Studio",
+        "SageMaker Notebooks",
+        "SageMaker Pipelines",
+        "SageMaker Canvas"
+      ],
+      "correct": 3,
+      "explanation": "Amazon SageMaker Canvas is a no-code visual interface that allows business analysts and non-technical users to build, train, and deploy ML models without writing code. It provides AutoML capabilities, data preparation, and model deployment through a point-and-click interface. SageMaker Studio is an IDE for ML developers. SageMaker Notebooks require coding. SageMaker Pipelines is for ML workflow automation.",
+      "domain": "Fundamentals of AI and ML",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "SageMaker Canvas capabilities",
+        "No-code ML solutions"
+      ]
+    },
+    {
+      "question": "An organization is concerned about prompt injection attacks where malicious users try to manipulate the AI system's behavior through crafted inputs. Which Amazon Bedrock Guardrails feature helps detect these attacks?",
+      "options": [
+        "Content filters with Prompt Attack category",
+        "Word filters for injection patterns",
+        "Denied topics for malicious content",
+        "Contextual grounding checks"
+      ],
+      "correct": 0,
+      "explanation": "Amazon Bedrock Guardrails content filters include a Prompt Attack category (available in Standard tier) that detects prompt injection, jailbreaks, and prompt leakage attempts. This filter identifies prompts designed to bypass content moderation or manipulate system behavior. Denied topics block subject areas. Word filters match specific terms. Contextual grounding checks detect hallucinations, not attacks.",
+      "domain": "Security, Compliance, and Governance",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Bedrock Guardrails prompt attack detection",
+        "Prompt injection mitigation"
+      ]
+    },
+    {
+      "question": "A data scientist is training a model and notices it performs excellently on training data but poorly on new data. What problem does this indicate?",
+      "options": [
+        "Variance",
+        "Overfitting",
+        "Underfitting",
+        "Bias"
+      ],
+      "correct": 1,
+      "explanation": "Overfitting occurs when a model learns the training data too well, including noise and specific patterns that don't generalize to new data. The model essentially memorizes the training set rather than learning underlying patterns. Underfitting is when the model is too simple to capture patterns. Bias and variance are related concepts but overfitting specifically describes this training vs. test performance gap.",
+      "domain": "Fundamentals of AI and ML",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Overfitting and underfitting",
+        "Model generalization"
+      ]
+    },
+    {
+      "question": "A company wants to generate images from text descriptions for their marketing campaigns using Amazon Bedrock. Which foundation model type should they use?",
+      "options": [
+        "Amazon Nova Lite for text generation",
+        "Anthropic Claude for visual content",
+        "Amazon Nova Canvas for image generation",
+        "Amazon Titan Text for multimodal output"
+      ],
+      "correct": 2,
+      "explanation": "Amazon Nova Canvas is specifically designed for image generation from text and image inputs. It creates professional-grade images suitable for advertising, marketing, and creative content. Nova Lite is for text understanding. Titan Text is for text generation. Claude is primarily for text tasks. For image generation on Amazon Bedrock, Nova Canvas or Stability AI models are appropriate choices.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Nova Canvas capabilities",
+        "Image generation models"
+      ]
+    },
+    {
+      "question": "An AI practitioner needs to ensure their generative AI system provides consistent, reliable outputs and doesn't generate false information. Which dimension of responsible AI is MOST relevant?",
+      "options": [
+        "Veracity and Robustness",
+        "Explainability",
+        "Fairness",
+        "Privacy and Security"
+      ],
+      "correct": 0,
+      "explanation": "Veracity and Robustness is the responsible AI dimension focused on ensuring accurate, reliable, and consistent system outputs. Veracity addresses truthfulness and factual accuracy (preventing hallucinations), while robustness ensures consistent performance across different conditions. Fairness addresses non-discrimination. Explainability addresses interpretability. Privacy and Security protect data.",
+      "domain": "Guidelines for Responsible AI",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Responsible AI dimensions",
+        "Veracity and robustness"
+      ]
+    },
+    {
+      "question": "A company is implementing Amazon Bedrock Knowledge Bases for a RAG application. They need to ingest documents from multiple sources including S3, SharePoint, and Confluence. What is the first step in the knowledge base setup process?",
+      "options": [
+        "Connect data sources and sync documents",
+        "Select the foundation model for generating responses",
+        "Configure the vector database for storing embeddings",
+        "Create guardrails for content filtering"
+      ],
+      "correct": 2,
+      "explanation": "The first step is configuring the vector database (vector store) where embeddings will be stored. Amazon Bedrock Knowledge Bases supports OpenSearch Serverless, Aurora PostgreSQL with pgvector, Pinecone, and other vector databases. After the vector store is configured, you connect data sources, which are then processed into embeddings and stored. The foundation model is selected for inference, and guardrails are optional additional safeguards.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Bedrock Knowledge Bases setup",
+        "RAG implementation steps"
+      ]
+    },
+    {
+      "question": "A developer is optimizing a prompt and wants to control the randomness of the model's output. Which inference parameter should they adjust?",
+      "options": [
+        "top_p for nucleus sampling",
+        "stop_sequences to end generation",
+        "temperature to control randomness",
+        "max_tokens to limit output length"
+      ],
+      "correct": 2,
+      "explanation": "Temperature is the primary parameter for controlling output randomness. Lower temperature (e.g., 0.1-0.5) produces more deterministic, focused outputs. Higher temperature (e.g., 0.7-1.0) produces more creative, diverse outputs. max_tokens limits length. top_p is an alternative sampling method. stop_sequences define when to stop generation. Temperature directly controls the randomness/creativity trade-off.",
+      "domain": "Fundamentals of Generative AI",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Inference parameters",
+        "Temperature and sampling"
+      ]
+    },
+    {
+      "question": "A healthcare organization must ensure their AI system complies with HIPAA regulations. Which AWS service feature helps identify and protect Protected Health Information (PHI) in text?",
+      "options": [
+        "Amazon Comprehend Medical entity recognition",
+        "Amazon Transcribe Medical vocabulary",
+        "Amazon Textract medical form extraction",
+        "Amazon Rekognition medical image analysis"
+      ],
+      "correct": 0,
+      "explanation": "Amazon Comprehend Medical provides entity recognition that can identify Protected Health Information (PHI) including patient names, dates, medical record numbers, and other sensitive medical information in clinical text. This helps organizations detect and protect PHI for HIPAA compliance. Textract extracts text from documents. Transcribe Medical transcribes audio. Rekognition analyzes images, not text for PHI.",
+      "domain": "Security, Compliance, and Governance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Comprehend Medical",
+        "HIPAA compliance",
+        "PHI detection"
+      ]
+    },
+    {
+      "question": "A company wants to fine-tune a foundation model but their dataset exceeds Amazon Bedrock's customization data limits. Which alternative approach should they use?",
+      "options": [
+        "Use prompt engineering instead of fine-tuning",
+        "Split the dataset and fine-tune multiple models",
+        "Reduce the dataset size by removing examples",
+        "Use Amazon SageMaker for fine-tuning with larger datasets"
+      ],
+      "correct": 3,
+      "explanation": "Amazon SageMaker supports fine-tuning foundation models with larger datasets that exceed Amazon Bedrock's limits. SageMaker provides more control over the training process, supports various fine-tuning methods (full-rank, LoRA, etc.), and can handle large-scale training jobs. Splitting into multiple models creates management complexity. Removing data loses valuable training information. Prompt engineering doesn't leverage the large labeled dataset.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "SageMaker fine-tuning capabilities",
+        "Bedrock vs SageMaker for customization"
+      ]
+    },
+    {
+      "question": "An AI team is implementing fairness measures for their model. They need to ensure the model performs equally well across different demographic groups. What metric should they monitor?",
+      "options": [
+        "Overall model accuracy",
+        "Inference latency",
+        "Per-group performance metrics (e.g., accuracy, precision, recall by group)",
+        "Training loss convergence"
+      ],
+      "correct": 2,
+      "explanation": "Per-group performance metrics measure how well the model performs for each demographic group separately. Monitoring metrics like accuracy, precision, recall, and F1 score across different groups reveals performance disparities that indicate unfairness. Overall accuracy can mask poor performance for minority groups. Training loss measures learning progress. Inference latency measures speed, not fairness.",
+      "domain": "Guidelines for Responsible AI",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Fairness metrics",
+        "SageMaker Clarify bias detection"
+      ]
+    },
+    {
+      "question": "A company is building a video analysis application that needs to detect activities, objects, and inappropriate content in user-uploaded videos. Which AWS service provides these capabilities?",
+      "options": [
+        "Amazon Rekognition Video",
+        "Amazon Comprehend",
+        "Amazon Textract",
+        "Amazon Transcribe"
+      ],
+      "correct": 0,
+      "explanation": "Amazon Rekognition Video provides video analysis capabilities including activity detection, object and scene detection, face detection and recognition, celebrity recognition, and content moderation (detecting inappropriate content). It processes video files or streams. Amazon Transcribe is for speech-to-text. Amazon Comprehend analyzes text. Amazon Textract extracts text from documents.",
+      "domain": "Fundamentals of AI and ML",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Rekognition Video capabilities",
+        "Video analysis services"
+      ]
+    },
+    {
+      "question": "A developer is implementing a RAG system and needs to chunk large documents before creating embeddings. What is the primary reason for chunking documents?",
+      "options": [
+        "To comply with data privacy regulations",
+        "To reduce storage costs in the vector database",
+        "To speed up the embedding generation process",
+        "To fit within the embedding model's token limits and improve retrieval precision"
+      ],
+      "correct": 3,
+      "explanation": "Chunking documents serves two primary purposes: (1) fitting within the embedding model's maximum token limit, and (2) improving retrieval precision by creating focused, semantically coherent segments. Smaller chunks allow more precise matching between queries and relevant content. While chunking may affect storage and processing, these aren't the primary reasons. Chunking doesn't directly address privacy regulations.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "RAG document chunking strategies",
+        "Embedding best practices"
+      ]
+    },
+    {
+      "question": "An organization wants to ensure transparency in their AI system by clearly communicating its capabilities and limitations to users. Which dimension of responsible AI does this represent?",
+      "options": [
+        "Governance",
+        "Controllability",
+        "Explainability",
+        "Transparency"
+      ],
+      "correct": 3,
+      "explanation": "Transparency is the responsible AI dimension focused on clearly communicating AI system capabilities, limitations, and how it works to build trust with users and stakeholders. It involves providing accessible information about what the system can and cannot do. Explainability focuses on understanding how decisions are made. Governance establishes frameworks. Controllability ensures human oversight.",
+      "domain": "Guidelines for Responsible AI",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Responsible AI dimensions",
+        "Transparency principles"
+      ]
+    },
+    {
+      "question": "A company is using Amazon Bedrock and wants to purchase dedicated throughput for consistent high-volume workloads. What pricing model should they use?",
+      "options": [
+        "Provisioned Throughput",
+        "Reserved Instances",
+        "On-demand pricing per token",
+        "Spot pricing"
+      ],
+      "correct": 0,
+      "explanation": "Provisioned Throughput in Amazon Bedrock allows you to purchase dedicated model capacity for consistent, high-volume workloads. You commit to a specific throughput level (measured in model units) for a time period, providing predictable performance and potentially lower costs for sustained usage. On-demand pricing is pay-per-token. Reserved Instances and Spot pricing are EC2 concepts, not applicable to Bedrock's managed service model.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Bedrock Provisioned Throughput",
+        "Bedrock pricing models"
+      ]
+    },
+    {
+      "question": "A data scientist is preparing a dataset for training a classification model. They notice one class has 1,000 examples while another has only 50 examples. What problem does this create?",
+      "options": [
+        "Overfitting",
+        "Data leakage",
+        "Class imbalance",
+        "Feature correlation"
+      ],
+      "correct": 2,
+      "explanation": "Class imbalance occurs when classes in a classification dataset have significantly different numbers of examples. This can cause models to be biased toward the majority class and perform poorly on minority classes. Techniques like oversampling, undersampling, or weighted loss functions can address this. Overfitting is memorizing training data. Data leakage is when test information leaks into training. Feature correlation is when features are related.",
+      "domain": "Fundamentals of AI and ML",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Class imbalance in ML",
+        "Data preparation best practices"
+      ]
+    },
+    {
+      "question": "A company wants to implement human review for AI-generated content before it's published. Which AWS service provides human-in-the-loop workflows for ML models?",
+      "options": [
+        "AWS Step Functions",
+        "Amazon SageMaker Ground Truth",
+        "Amazon Augmented AI (A2I)",
+        "Amazon Mechanical Turk"
+      ],
+      "correct": 2,
+      "explanation": "Amazon Augmented AI (A2I) provides human review workflows for machine learning predictions. It allows you to build human review into your ML applications, route predictions to human reviewers based on confidence thresholds, and collect human feedback. SageMaker Ground Truth is for data labeling. Mechanical Turk is a crowdsourcing platform. Step Functions orchestrates workflows but doesn't provide human review interfaces.",
+      "domain": "Guidelines for Responsible AI",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Augmented AI",
+        "Human-in-the-loop ML"
+      ]
+    },
+    {
+      "question": "A developer is using Amazon Bedrock Agents to build an AI assistant that can query databases, call APIs, and perform multi-step tasks. What is the primary function of an agent in Amazon Bedrock?",
+      "options": [
+        "To orchestrate foundation models with enterprise data and applications to carry out tasks",
+        "To monitor model performance and detect drift",
+        "To generate embeddings for semantic search",
+        "To fine-tune foundation models with custom data"
+      ],
+      "correct": 0,
+      "explanation": "Amazon Bedrock Agents orchestrate foundation models with enterprise data, APIs, and applications to carry out complex, multi-step tasks autonomously. Agents can reason about tasks, break them into steps, invoke tools and APIs, query knowledge bases, and maintain conversation context. They don't fine-tune models, monitor performance, or generate embeddings directly - those are separate capabilities.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Bedrock Agents",
+        "Agentic AI architecture"
+      ]
+    },
+    {
+      "question": "An AI practitioner needs to understand which features in their dataset have the most impact on model predictions. Which technique provides this insight?",
+      "options": [
+        "Feature attribution (e.g., SHAP values)",
+        "Feature scaling",
+        "Feature selection",
+        "Feature engineering"
+      ],
+      "correct": 0,
+      "explanation": "Feature attribution techniques like SHAP (Shapley Additive Explanations) values quantify how much each feature contributes to individual predictions. Amazon SageMaker Clarify provides SHAP-based explanations showing feature importance. Feature engineering creates new features. Feature scaling normalizes values. Feature selection chooses relevant features. Attribution specifically explains prediction contributions.",
+      "domain": "Guidelines for Responsible AI",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "SHAP values",
+        "SageMaker Clarify explainability"
+      ]
+    },
+    {
+      "question": "A company is building a generative AI application and wants to ensure consistent behavior across all interactions. Which prompt component should contain the behavioral guidelines and constraints?",
+      "options": [
+        "System message",
+        "Assistant message",
+        "User message",
+        "Few-shot examples"
+      ],
+      "correct": 0,
+      "explanation": "The system message (system prompt) establishes consistent behavioral parameters, guidelines, tone, and constraints that apply across all interactions. It sets the AI's role, personality, and operational boundaries. User messages contain specific queries. Assistant messages are model responses. Few-shot examples demonstrate patterns but don't set overarching behavior.",
+      "domain": "Fundamentals of Generative AI",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Prompt structure",
+        "System message best practices"
+      ]
+    },
+    {
+      "question": "A healthcare provider needs to ensure their AI model's training data is encrypted at rest and in transit. Which AWS service provides encryption key management for this purpose?",
+      "options": [
+        "AWS Certificate Manager",
+        "AWS Secrets Manager",
+        "AWS Systems Manager Parameter Store",
+        "AWS Key Management Service (KMS)"
+      ],
+      "correct": 3,
+      "explanation": "AWS Key Management Service (KMS) provides centralized encryption key management for encrypting data at rest and in transit. KMS integrates with AWS AI services like SageMaker, Bedrock, and S3 to encrypt training data, models, and artifacts. Secrets Manager stores secrets like passwords. Certificate Manager manages SSL/TLS certificates. Parameter Store stores configuration data.",
+      "domain": "Security, Compliance, and Governance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS KMS",
+        "Encryption for AI workloads"
+      ]
+    },
+    {
+      "question": "A company wants to use a foundation model for text generation but needs to adapt it to their specific domain without changing model weights. Which approach is MOST appropriate?",
+      "options": [
+        "Fine-tuning with domain-specific data",
+        "Model distillation from a larger model",
+        "Continued pre-training on domain corpus",
+        "Prompt engineering with domain context"
+      ],
+      "correct": 3,
+      "explanation": "Prompt engineering with domain context is the appropriate approach when you want to adapt a model without changing weights. You provide domain-specific context, terminology, and examples in the prompt to guide the model's responses. Fine-tuning, continued pre-training, and distillation all modify model weights. Prompt engineering is the recommended first approach before considering weight updates.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Model customization approaches",
+        "Prompt engineering vs fine-tuning"
+      ]
+    },
+    {
+      "question": "An AI team is implementing reinforcement fine-tuning for a foundation model. They need to define what constitutes a good response. What component do they need to create?",
+      "options": [
+        "Validation dataset for model evaluation",
+        "Embedding model for semantic similarity",
+        "Training dataset with input-output pairs",
+        "Reward function or reward prompt to evaluate response quality"
+      ],
+      "correct": 3,
+      "explanation": "Reinforcement fine-tuning (like RLVR and RLAIF in Amazon Bedrock) uses reward functions or reward prompts to evaluate response quality. Instead of labeled input-output pairs, you define criteria for what makes a good response, and the model learns iteratively based on reward signals. Training datasets with pairs are for supervised fine-tuning. Validation datasets test performance. Embeddings are for semantic search.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "Reinforcement fine-tuning",
+        "RLVR and RLAIF in Bedrock"
+      ]
+    },
+    {
+      "question": "A company is deploying an AI model that makes decisions affecting individuals. They need to provide explanations for each decision. Which responsible AI principle is MOST important for this requirement?",
+      "options": [
+        "Safety",
+        "Explainability",
+        "Fairness",
+        "Privacy"
+      ],
+      "correct": 1,
+      "explanation": "Explainability is the principle that enables providing explanations for individual decisions. It involves understanding how the model arrived at specific predictions and communicating this in human-understandable terms. This is critical for decisions affecting individuals, regulatory compliance, and building trust. Fairness ensures non-discrimination. Privacy protects data. Safety prevents harm.",
+      "domain": "Guidelines for Responsible AI",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Explainability in AI",
+        "Responsible AI principles"
+      ]
+    },
+    {
+      "question": "A developer is building a chatbot using Amazon Lex and needs to extract specific information from user utterances (e.g., date, location, product name). What are these information pieces called in Amazon Lex?",
+      "options": [
+        "Utterances",
+        "Fulfillments",
+        "Intents",
+        "Slots"
+      ],
+      "correct": 3,
+      "explanation": "Slots in Amazon Lex are the specific pieces of information that need to be collected from users to fulfill an intent. For example, a BookHotel intent might have slots for check-in date, check-out date, and location. Intents are the actions users want to perform. Utterances are example phrases users might say. Fulfillments are the actions taken after collecting slot values.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Lex concepts",
+        "Slots and intents"
+      ]
+    },
+    {
+      "question": "A machine learning team notices their model's performance has degraded over time in production. What is this phenomenon called?",
+      "options": [
+        "Model drift",
+        "Bias",
+        "Overfitting",
+        "Hallucination"
+      ],
+      "correct": 0,
+      "explanation": "Model drift (or concept drift) occurs when a model's performance degrades over time because the statistical properties of the input data or the relationship between inputs and outputs changes. Amazon SageMaker Model Monitor can detect drift by comparing production data against baseline data. Overfitting is training-time memorization. Bias is unfair treatment. Hallucination is generating false information.",
+      "domain": "Fundamentals of AI and ML",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Model drift",
+        "SageMaker Model Monitor"
+      ]
+    },
+    {
+      "question": "A company wants to implement access controls for their Amazon Bedrock foundation models, ensuring only authorized users can invoke specific models. Which AWS service provides this capability?",
+      "options": [
+        "AWS IAM (Identity and Access Management)",
+        "AWS Security Hub",
+        "AWS Organizations",
+        "Amazon Cognito"
+      ],
+      "correct": 0,
+      "explanation": "AWS IAM provides fine-grained access control for AWS services including Amazon Bedrock. You can create IAM policies that specify which users or roles can invoke specific foundation models, access knowledge bases, or use other Bedrock features. Organizations manages multiple accounts. Cognito handles user authentication for applications. Security Hub aggregates security findings.",
+      "domain": "Security, Compliance, and Governance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "IAM for Amazon Bedrock",
+        "Access control best practices"
+      ]
+    },
+    {
+      "question": "A company is implementing a generative AI solution and wants to test multiple prompt variations to find the most effective one. What is this process called?",
+      "options": [
+        "Prompt optimization",
+        "Prompt chaining",
+        "Prompt injection",
+        "Prompt leaking"
+      ],
+      "correct": 0,
+      "explanation": "Prompt optimization is the iterative process of testing and refining prompts to improve model outputs. It involves experimenting with different phrasings, structures, examples, and parameters to find the most effective prompt for your use case. Prompt injection is a security attack. Prompt chaining links multiple prompts. Prompt leaking is exposing system prompts.",
+      "domain": "Fundamentals of Generative AI",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Prompt engineering best practices",
+        "Prompt optimization techniques"
+      ]
+    },
+    {
+      "question": "An organization needs to ensure their AI system doesn't generate content that violates their corporate policies or legal requirements. Which dimension of responsible AI addresses this?",
+      "options": [
+        "Explainability",
+        "Fairness",
+        "Governance",
+        "Transparency"
+      ],
+      "correct": 2,
+      "explanation": "Governance is the responsible AI dimension that establishes frameworks, policies, and processes to ensure AI systems align with organizational policies, legal requirements, and regulatory compliance. It includes policy enforcement, compliance monitoring, and risk management. Transparency communicates capabilities. Explainability provides decision insights. Fairness prevents discrimination.",
+      "domain": "Guidelines for Responsible AI",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Responsible AI governance",
+        "AI policy frameworks"
+      ]
+    },
+    {
+      "question": "A data scientist is using Amazon SageMaker JumpStart to quickly deploy a pre-trained model. What is the primary benefit of using JumpStart?",
+      "options": [
+        "It provides custom model training from scratch",
+        "It offers pre-trained models and solution templates for rapid deployment",
+        "It provides real-time model monitoring and alerting",
+        "It automatically collects and labels training data"
+      ],
+      "correct": 1,
+      "explanation": "Amazon SageMaker JumpStart provides pre-trained, open-source foundation models and solution templates that can be quickly deployed with minimal setup. It accelerates ML development by offering ready-to-use models for various tasks, example notebooks, and one-click deployment. It doesn't train custom models from scratch, collect data, or provide monitoring (those are separate SageMaker features).",
+      "domain": "Fundamentals of AI and ML",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "SageMaker JumpStart capabilities",
+        "Pre-trained model deployment"
+      ]
+    },
+    {
+      "question": "A company is building a RAG application and wants to improve retrieval accuracy by re-ranking the initially retrieved documents. Which technique should they implement?",
+      "options": [
+        "Reduce the chunk size of documents",
+        "Increase the number of retrieved documents",
+        "Use multiple embedding models",
+        "Use a reranking model to reorder results by relevance"
+      ],
+      "correct": 3,
+      "explanation": "Reranking models take the initially retrieved documents and reorder them based on relevance to the query, improving the quality of context provided to the foundation model. Amazon Bedrock Knowledge Bases supports reranking models. Simply retrieving more documents doesn't improve relevance. Chunk size affects granularity. Multiple embedding models add complexity without addressing ranking quality.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "RAG reranking",
+        "Amazon Bedrock Knowledge Bases reranking"
+      ]
+    },
+    {
+      "question": "An AI practitioner needs to convert speech from customer service calls into text for analysis. Which AWS service should they use?",
+      "options": [
+        "Amazon Comprehend",
+        "Amazon Polly",
+        "Amazon Transcribe",
+        "Amazon Lex"
+      ],
+      "correct": 2,
+      "explanation": "Amazon Transcribe is the automatic speech recognition (ASR) service that converts speech to text. It supports various audio sources, speaker identification, custom vocabulary, and specialized versions like Transcribe Medical and Call Analytics. Amazon Polly does the opposite (text-to-speech). Amazon Comprehend analyzes text. Amazon Lex builds conversational interfaces.",
+      "domain": "Fundamentals of AI and ML",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Transcribe capabilities",
+        "Speech-to-text services"
+      ]
+    },
+    {
+      "question": "A company wants to ensure their generative AI application doesn't expose sensitive information like API keys or passwords in generated responses. Which Amazon Bedrock Guardrails action should they configure for sensitive information?",
+      "options": [
+        "Mask to anonymize sensitive information with identifier tags",
+        "Block to prevent the response entirely",
+        "Detect to log but not modify the response",
+        "Encrypt to protect the sensitive data"
+      ],
+      "correct": 0,
+      "explanation": "The Mask action in Amazon Bedrock Guardrails sensitive information filters anonymizes detected PII by replacing it with identifier tags (e.g., [NAME], [CREDIT_CARD]). This allows the response to be generated while protecting sensitive information. Block prevents the entire response. Detect logs without action. Encrypt is not a guardrail action - masking is the appropriate approach for this use case.",
+      "domain": "Security, Compliance, and Governance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Bedrock Guardrails actions",
+        "Sensitive information handling"
+      ]
+    },
+    {
+      "question": "A machine learning engineer is training a model and wants to understand how different hyperparameters affect performance. Which SageMaker feature automates this process?",
+      "options": [
+        "SageMaker Hyperparameter Tuning",
+        "SageMaker Experiments",
+        "SageMaker Autopilot",
+        "SageMaker Debugger"
+      ],
+      "correct": 0,
+      "explanation": "SageMaker Hyperparameter Tuning (also called Automatic Model Tuning) automates the process of finding optimal hyperparameter values by running multiple training jobs with different combinations and using Bayesian optimization or other strategies. Autopilot is full AutoML. Debugger monitors training. Experiments tracks and compares runs but doesn't automate tuning.",
+      "domain": "Fundamentals of AI and ML",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "SageMaker Hyperparameter Tuning",
+        "Automatic model tuning"
+      ]
+    },
+    {
+      "question": "A developer is implementing a multi-step AI workflow where the output of one foundation model becomes the input to another. What is this technique called?",
+      "options": [
+        "Prompt chaining",
+        "Model distillation",
+        "Transfer learning",
+        "Model ensembling"
+      ],
+      "correct": 0,
+      "explanation": "Prompt chaining is the technique of passing the output of one model invocation as input to another in a sequence, allowing complex tasks to be broken down into subtasks. Each step can use different prompts or models. Model ensembling combines multiple model predictions. Transfer learning reuses learned features. Model distillation transfers knowledge from large to small models.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Prompt chaining",
+        "Advanced prompt engineering"
+      ]
+    },
+    {
+      "question": "An organization wants to monitor their AI model's predictions in production to ensure they remain fair across different demographic groups over time. Which SageMaker feature provides this capability?",
+      "options": [
+        "SageMaker Clarify Model Monitor",
+        "SageMaker Autopilot",
+        "SageMaker Experiments",
+        "SageMaker Debugger"
+      ],
+      "correct": 0,
+      "explanation": "SageMaker Clarify Model Monitor continuously monitors deployed models for bias drift and feature attribution drift in production. It compares current predictions against baseline metrics to detect when fairness characteristics change over time. Autopilot is for AutoML. Debugger monitors training. Experiments tracks development runs.",
+      "domain": "Guidelines for Responsible AI",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "SageMaker Clarify Model Monitor",
+        "Bias monitoring in production"
+      ]
+    },
+    {
+      "question": "A company is using Amazon Bedrock and wants to generate short videos from text descriptions for their marketing campaigns. Which foundation model should they use?",
+      "options": [
+        "Amazon Nova Reel",
+        "Stability AI Stable Diffusion",
+        "Amazon Nova Canvas",
+        "Amazon Titan Image Generator"
+      ],
+      "correct": 0,
+      "explanation": "Amazon Nova Reel is specifically designed for video generation from text and image inputs. It can create short videos with camera motion controls using natural language descriptions. Nova Canvas generates images. Titan Image Generator creates images. Stable Diffusion generates images. For video generation on Amazon Bedrock, Nova Reel is the appropriate choice.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Nova Reel capabilities",
+        "Video generation models"
+      ]
+    },
+    {
+      "question": "A data scientist is evaluating whether to use supervised or unsupervised learning for customer segmentation. They have customer data but no predefined segments. Which approach is MOST appropriate?",
+      "options": [
+        "Supervised learning with labeled segments",
+        "Unsupervised learning with clustering algorithms",
+        "Reinforcement learning with reward functions",
+        "Semi-supervised learning with partial labels"
+      ],
+      "correct": 1,
+      "explanation": "Unsupervised learning with clustering algorithms (like K-means) is appropriate for customer segmentation when you don't have predefined segments. The algorithm discovers natural groupings in the data based on customer characteristics. Supervised learning requires labeled data. Reinforcement learning is for sequential decision-making. Semi-supervised uses some labels, but the scenario has none.",
+      "domain": "Fundamentals of AI and ML",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Unsupervised learning applications",
+        "Clustering for segmentation"
+      ]
+    },
+    {
+      "question": "A company is implementing Amazon Bedrock Flows to build a complex generative AI workflow. What is the primary benefit of using Flows?",
+      "options": [
+        "It reduces the cost of foundation model usage",
+        "It automatically fine-tunes models for better performance",
+        "It provides lower latency for model inference",
+        "It offers a visual builder for creating multi-step AI workflows"
+      ],
+      "correct": 3,
+      "explanation": "Amazon Bedrock Flows provides a visual builder for creating complex generative AI workflows that can include multiple foundation models, knowledge bases, prompts, and integrations with AWS services like Lambda. It simplifies building multi-step applications without extensive coding. It doesn't directly affect latency, fine-tune models, or reduce costs - those depend on other factors.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Bedrock Flows",
+        "Workflow orchestration"
+      ]
+    },
+    {
+      "question": "An AI practitioner needs to ensure their model's training process is reproducible. Which practice is MOST important for reproducibility?",
+      "options": [
+        "Using the most recent training data",
+        "Using the largest available model",
+        "Training for the maximum number of epochs",
+        "Setting random seeds and documenting hyperparameters"
+      ],
+      "correct": 3,
+      "explanation": "Setting random seeds and documenting all hyperparameters, data versions, and training configurations ensures reproducibility. Random seeds control randomness in initialization and data shuffling. Documentation allows others to recreate the exact training conditions. Model size, training duration, and data recency don't ensure reproducibility.",
+      "domain": "Fundamentals of AI and ML",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "ML reproducibility best practices",
+        "Experiment tracking"
+      ]
+    },
+    {
+      "question": "A company wants to implement automated reasoning checks in Amazon Bedrock Guardrails to validate that model responses comply with business rules. What do they need to define?",
+      "options": [
+        "Training data with correct and incorrect examples",
+        "Regular expressions for pattern matching",
+        "Logical rules and policies in natural language",
+        "Confidence thresholds for predictions"
+      ],
+      "correct": 2,
+      "explanation": "Automated Reasoning checks in Amazon Bedrock Guardrails allow you to define logical rules and policies in natural language that specify reasoning requirements. The system validates whether model outputs comply with these logical constraints. You don't need training data, regex patterns, or confidence thresholds - you define the logical rules the responses must follow.",
+      "domain": "Guidelines for Responsible AI",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Bedrock Guardrails Automated Reasoning",
+        "Policy validation"
+      ]
+    },
+    {
+      "question": "A developer is building an application that needs to identify and extract entities like names, dates, and locations from text. Which Amazon Comprehend feature should they use?",
+      "options": [
+        "Key phrase extraction",
+        "Sentiment analysis",
+        "Entity recognition",
+        "Topic modeling"
+      ],
+      "correct": 2,
+      "explanation": "Entity recognition in Amazon Comprehend identifies and extracts entities from text including people, organizations, locations, dates, quantities, and other types. It's specifically designed for extracting structured information from unstructured text. Sentiment analysis determines emotional tone. Key phrase extraction finds important phrases. Topic modeling discovers themes.",
+      "domain": "Fundamentals of AI and ML",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Comprehend entity recognition",
+        "NLP entity extraction"
+      ]
+    },
+    {
+      "question": "A company is concerned about their AI model making decisions that could harm users. Which dimension of responsible AI focuses on preventing harmful outcomes?",
+      "options": [
+        "Transparency",
+        "Controllability",
+        "Safety",
+        "Fairness"
+      ],
+      "correct": 2,
+      "explanation": "Safety is the responsible AI dimension focused on ensuring AI systems operate within defined use case scope and don't cause harm to users. It involves proactive risk assessment, implementing guardrails, fail-safe mechanisms, and comprehensive testing. Fairness prevents discrimination. Transparency communicates capabilities. Controllability ensures human oversight.",
+      "domain": "Guidelines for Responsible AI",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Responsible AI safety dimension",
+        "AI risk management"
+      ]
+    },
+    {
+      "question": "A developer is using Amazon Bedrock and wants to reduce costs by caching frequently used prompts. Which feature helps achieve this?",
+      "options": [
+        "Model distillation to create smaller models",
+        "Provisioned Throughput for dedicated capacity",
+        "Batch inference for processing multiple requests",
+        "Prompt caching to reuse processed context"
+      ],
+      "correct": 3,
+      "explanation": "Prompt caching in Amazon Bedrock allows you to cache and reuse processed prompt context, reducing the number of input tokens processed for repeated context. This is particularly useful for RAG applications where the same knowledge base context is used repeatedly. Provisioned Throughput is for consistent workloads. Distillation creates smaller models. Batch inference processes multiple requests but doesn't cache prompts.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Bedrock prompt caching",
+        "Cost optimization techniques"
+      ]
+    },
+    {
+      "question": "An AI team is implementing a solution that requires understanding the semantic meaning of text rather than just keyword matching. Which technique should they use?",
+      "options": [
+        "Tokenization for word splitting",
+        "Embeddings for semantic similarity",
+        "Stemming for word normalization",
+        "Regular expressions for pattern matching"
+      ],
+      "correct": 1,
+      "explanation": "Embeddings convert text into numerical vectors that capture semantic meaning, allowing comparison of conceptual similarity rather than just keyword matching. This enables semantic search where 'car' and 'automobile' are understood as similar despite different words. Regular expressions match patterns. Tokenization splits text. Stemming reduces words to roots. Only embeddings capture semantic meaning.",
+      "domain": "Fundamentals of Generative AI",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Embeddings and semantic search",
+        "Vector representations"
+      ]
+    },
+    {
+      "question": "A company needs to ensure their AI system's decisions can be audited and traced back to specific inputs and model versions. Which practice supports this requirement?",
+      "options": [
+        "Hyperparameter tuning for optimization",
+        "Model compression to reduce size",
+        "Data augmentation for more training examples",
+        "ML lineage tracking and versioning"
+      ],
+      "correct": 3,
+      "explanation": "ML lineage tracking and versioning (available in SageMaker) captures relationships between training data, model versions, hyperparameters, and predictions, enabling full auditability. You can trace any prediction back to the specific model version, training data, and inputs used. Model compression reduces size. Hyperparameter tuning optimizes performance. Data augmentation increases training data.",
+      "domain": "Security, Compliance, and Governance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "SageMaker ML Lineage Tracking",
+        "Model governance"
+      ]
+    },
+    {
+      "question": "A developer wants to use a foundation model that balances performance and cost for a text summarization task. Which Amazon Nova model is MOST appropriate?",
+      "options": [
+        "Amazon Nova Lite for balanced performance and cost",
+        "Amazon Nova Pro for highest capability",
+        "Amazon Nova Premier for enterprise workloads",
+        "Amazon Nova Micro for lowest cost"
+      ],
+      "correct": 0,
+      "explanation": "Amazon Nova Lite provides a balance between performance and cost, making it suitable for text summarization and other common tasks. Nova Micro is the smallest/cheapest but may lack capability for quality summarization. Nova Pro offers higher capability at higher cost. Nova Premier is for the most demanding enterprise workloads. Lite offers the best balance for this use case.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Nova model family",
+        "Model selection criteria"
+      ]
+    },
+    {
+      "question": "A machine learning team is preparing data for training and needs to split it into training, validation, and test sets. What is the primary purpose of the test set?",
+      "options": [
+        "To augment the training data with additional examples",
+        "To provide final, unbiased evaluation of model performance",
+        "To train the model on diverse examples",
+        "To tune hyperparameters during development"
+      ],
+      "correct": 1,
+      "explanation": "The test set provides final, unbiased evaluation of the model's performance on completely unseen data after all development is complete. It should never be used during training or hyperparameter tuning to avoid data leakage. The training set trains the model. The validation set tunes hyperparameters. The test set gives the final performance assessment.",
+      "domain": "Fundamentals of AI and ML",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Train-validation-test split",
+        "Model evaluation best practices"
+      ]
+    },
+    {
+      "question": "A company wants to implement privacy-preserving AI by ensuring their model doesn't memorize and reproduce sensitive training data. Which dimension of responsible AI is MOST relevant?",
+      "options": [
+        "Privacy and Security",
+        "Fairness",
+        "Transparency",
+        "Explainability"
+      ],
+      "correct": 0,
+      "explanation": "Privacy and Security is the responsible AI dimension focused on protecting sensitive information, including preventing models from memorizing and reproducing training data. This involves techniques like differential privacy, data minimization, and secure data handling. Transparency communicates capabilities. Explainability provides decision insights. Fairness prevents discrimination.",
+      "domain": "Guidelines for Responsible AI",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Privacy and security in AI",
+        "Data protection practices"
+      ]
+    },
+    {
+      "question": "A developer is building a generative AI application and wants to limit the length of generated responses. Which inference parameter should they configure?",
+      "options": [
+        "frequency_penalty",
+        "top_p",
+        "temperature",
+        "max_tokens"
+      ],
+      "correct": 3,
+      "explanation": "max_tokens (or max_new_tokens) limits the maximum number of tokens the model can generate in its response, directly controlling output length. Temperature controls randomness. top_p controls nucleus sampling. frequency_penalty reduces repetition. max_tokens is the parameter specifically for limiting response length.",
+      "domain": "Fundamentals of Generative AI",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Inference parameters",
+        "Token limits"
+      ]
+    },
+    {
+      "question": "An organization is deploying an AI model and needs to ensure it complies with GDPR requirements for data processing. Which AWS service helps manage compliance documentation and assessments?",
+      "options": [
+        "AWS Security Hub",
+        "AWS CloudTrail",
+        "AWS Config",
+        "AWS Artifact"
+      ],
+      "correct": 3,
+      "explanation": "AWS Artifact provides on-demand access to AWS compliance reports, certifications, and agreements including GDPR-related documentation. It helps organizations understand AWS compliance posture and obtain necessary documentation for their own compliance efforts. Config tracks resource configurations. CloudTrail logs API calls. Security Hub aggregates security findings.",
+      "domain": "Security, Compliance, and Governance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Artifact",
+        "GDPR compliance on AWS"
+      ]
+    },
+    {
+      "question": "A company is using Amazon Bedrock Knowledge Bases and wants to improve retrieval accuracy by using metadata filtering. What is the benefit of metadata filtering?",
+      "options": [
+        "It narrows search results to specific document attributes (e.g., date, category, author)",
+        "It reduces storage costs by removing unnecessary data",
+        "It encrypts sensitive metadata for security",
+        "It automatically generates metadata from document content"
+      ],
+      "correct": 0,
+      "explanation": "Metadata filtering in Amazon Bedrock Knowledge Bases allows you to narrow search results based on document attributes like date ranges, categories, authors, or custom metadata fields. This improves retrieval precision by limiting results to relevant document subsets. It doesn't reduce storage costs, encrypt data, or generate metadata - it filters based on existing metadata.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Bedrock Knowledge Bases metadata filtering",
+        "RAG optimization"
+      ]
+    },
+    {
+      "question": "A data scientist notices their classification model predicts the majority class for almost all examples. What is the likely cause?",
+      "options": [
+        "The learning rate is too high",
+        "The dataset has severe class imbalance",
+        "The model architecture is too complex",
+        "The model is overfitting to training data"
+      ],
+      "correct": 1,
+      "explanation": "When a model predicts the majority class for most examples, it's typically due to severe class imbalance where one class dominates the training data. The model learns that always predicting the majority class achieves high accuracy on the imbalanced dataset. Solutions include resampling, weighted loss functions, or collecting more minority class examples. Overfitting would show good training but poor test performance. Learning rate and architecture affect learning dynamics differently.",
+      "domain": "Fundamentals of AI and ML",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Class imbalance problems",
+        "Model bias toward majority class"
+      ]
+    },
+    {
+      "question": "A company wants to use Amazon Bedrock to generate product descriptions but needs to ensure the model uses their specific brand voice and terminology. Which customization approach requires the LEAST effort?",
+      "options": [
+        "Fine-tune the model with thousands of product descriptions",
+        "Implement continued pre-training on brand documents",
+        "Use prompt engineering with brand guidelines and examples in the system prompt",
+        "Create a custom model from scratch"
+      ],
+      "correct": 2,
+      "explanation": "Prompt engineering with brand guidelines and examples in the system prompt requires the least effort and no model training. You provide brand voice guidelines, terminology, and few-shot examples directly in the prompt. Fine-tuning requires labeled data and training time. Continued pre-training requires large unlabeled datasets. Creating custom models requires extensive resources. Prompt engineering is the recommended first approach.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Prompt engineering vs fine-tuning",
+        "Model customization approaches"
+      ]
+    },
+    {
+      "question": "An AI practitioner is implementing a system that must explain why certain loan applications are denied. Which technique provides the MOST interpretable explanations?",
+      "options": [
+        "Linear models with feature coefficients",
+        "Black-box models with high accuracy",
+        "Ensemble methods with hundreds of trees",
+        "Deep neural networks with many layers"
+      ],
+      "correct": 0,
+      "explanation": "Linear models provide the most interpretable explanations because feature coefficients directly show how each feature contributes to predictions. For loan decisions requiring clear explanations, simpler interpretable models are often preferred over complex black-box models. Deep neural networks, large ensembles, and black-box models achieve high accuracy but are harder to explain. Regulatory requirements often favor interpretability.",
+      "domain": "Guidelines for Responsible AI",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Model interpretability",
+        "Explainable AI techniques"
+      ]
+    },
+    {
+      "question": "A developer is using Amazon Bedrock and wants to test their guardrail configuration before deploying to production. Which guardrail feature allows testing without blocking content?",
+      "options": [
+        "Disable guardrails temporarily",
+        "Use word filters instead of content filters",
+        "Use Detect mode to evaluate without taking action",
+        "Set all filters to LOW strength"
+      ],
+      "correct": 2,
+      "explanation": "Detect mode in Amazon Bedrock Guardrails evaluates content and returns what would be detected in the trace response without actually blocking or masking anything. This allows you to test guardrail configurations, analyze false positives/negatives, and tune settings before enabling blocking actions. LOW strength still blocks some content. Disabling guardrails doesn't test them. Word filters don't provide comprehensive testing.",
+      "domain": "Security, Compliance, and Governance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Bedrock Guardrails detect mode",
+        "Guardrail testing"
+      ]
+    },
+    {
+      "question": "A company is building a recommendation system that learns from user interactions over time. Which type of machine learning is MOST appropriate?",
+      "options": [
+        "Supervised learning with labeled preferences",
+        "Unsupervised learning with clustering",
+        "Semi-supervised learning with partial labels",
+        "Reinforcement learning with reward signals from user engagement"
+      ],
+      "correct": 3,
+      "explanation": "Reinforcement learning is most appropriate for recommendation systems that learn from user interactions over time. The system receives reward signals (clicks, purchases, time spent) based on recommendations and learns to maximize these rewards. While supervised learning can work with explicit ratings, reinforcement learning naturally handles implicit feedback and sequential decision-making. Unsupervised learning finds patterns but doesn't optimize for engagement.",
+      "domain": "Fundamentals of AI and ML",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "Reinforcement learning applications",
+        "Recommendation systems"
+      ]
+    },
+    {
+      "question": "A company wants to use Amazon SageMaker to deploy a model that automatically scales based on traffic. Which deployment option provides this capability?",
+      "options": [
+        "SageMaker Training Jobs for model development",
+        "SageMaker Processing Jobs for data preparation",
+        "SageMaker Batch Transform for offline processing",
+        "SageMaker Real-time Endpoints with Auto Scaling"
+      ],
+      "correct": 3,
+      "explanation": "SageMaker Real-time Endpoints with Auto Scaling automatically adjust the number of instances based on traffic patterns, providing elastic capacity for variable workloads. You can configure target tracking policies based on metrics like invocations per instance. Batch Transform is for offline batch processing. Processing Jobs prepare data. Training Jobs build models. Only Real-time Endpoints with Auto Scaling provide automatic traffic-based scaling.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "SageMaker endpoint auto scaling",
+        "Model deployment options"
+      ]
+    },
+    {
+      "question": "An AI team is concerned about their model generating biased outputs. At which stage of the ML lifecycle should they FIRST address bias?",
+      "options": [
+        "During model monitoring and maintenance",
+        "During model deployment to production",
+        "After detecting bias in production",
+        "During data collection and preparation"
+      ],
+      "correct": 3,
+      "explanation": "Bias should first be addressed during data collection and preparation, as biased training data leads to biased models. Ensuring representative, diverse, and balanced data is the foundation of fairness. While bias should be monitored at all stages (training, deployment, production), preventing it starts with data quality. Addressing bias only after deployment is reactive and costly.",
+      "domain": "Guidelines for Responsible AI",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Bias prevention in ML lifecycle",
+        "Responsible AI practices"
+      ]
+    },
+    {
+      "question": "A developer is implementing a chatbot using Amazon Lex and needs to handle situations where the bot doesn't understand user input. What is this called in Amazon Lex?",
+      "options": [
+        "Clarification prompt",
+        "Fallback intent",
+        "Error handler",
+        "Default response"
+      ],
+      "correct": 1,
+      "explanation": "Fallback intent in Amazon Lex handles situations where the bot doesn't understand user input or can't match the input to any configured intent. It provides a graceful way to handle unexpected inputs and guide users back to supported functionality. Error handlers are for technical errors. Default responses are generic replies. Clarification prompts ask for more information.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Lex fallback intent",
+        "Conversational AI error handling"
+      ]
+    },
+    {
+      "question": "A company is using foundation models and wants to understand the total cost of ownership. Which factors should they consider?",
+      "options": [
+        "Inference costs, fine-tuning costs, storage costs, and data transfer costs",
+        "Only the compute instance costs",
+        "Only the per-token inference costs",
+        "Only the model licensing fees"
+      ],
+      "correct": 0,
+      "explanation": "Total cost of ownership for foundation models includes multiple factors: inference costs (per-token or provisioned throughput), fine-tuning/training costs if customizing, storage costs for models and data, data transfer costs between services, and potentially knowledge base storage. Considering only one factor provides an incomplete picture. Comprehensive cost analysis includes all components.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AI cost optimization",
+        "Total cost of ownership for ML"
+      ]
+    },
+    {
+      "question": "An organization wants to ensure their AI system's behavior aligns with their values and ethical principles throughout its lifecycle. Which responsible AI dimension provides the framework for this?",
+      "options": [
+        "Explainability",
+        "Transparency",
+        "Governance",
+        "Fairness"
+      ],
+      "correct": 2,
+      "explanation": "Governance is the responsible AI dimension that establishes frameworks, policies, and processes to ensure AI systems align with organizational values, ethical principles, and regulatory requirements throughout the entire lifecycle. It includes policy development, compliance monitoring, risk management, and accountability structures. Explainability provides decision insights. Transparency communicates capabilities. Fairness prevents discrimination.",
+      "domain": "Guidelines for Responsible AI",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Responsible AI governance",
+        "AI ethics frameworks"
+      ]
+    },
+    {
+      "question": "A data scientist is evaluating a binary classification model. The model has 95% accuracy, but they're concerned it might not be performing well. What additional metric should they examine?",
+      "options": [
+        "Number of parameters",
+        "Training loss",
+        "Learning rate",
+        "Precision and recall for each class"
+      ],
+      "correct": 3,
+      "explanation": "Precision and recall for each class reveal performance beyond overall accuracy, especially important for imbalanced datasets. A model can have 95% accuracy by always predicting the majority class in a 95:5 imbalanced dataset. Precision (true positives / predicted positives) and recall (true positives / actual positives) show per-class performance. Training loss measures learning progress. Learning rate is a hyperparameter. Parameter count is model size.",
+      "domain": "Fundamentals of AI and ML",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "Classification metrics",
+        "Precision and recall"
+      ]
+    },
+    {
+      "question": "A company wants to use Amazon Bedrock Knowledge Bases with documents stored in multiple locations including S3, SharePoint, and Confluence. What is the term for these document sources?",
+      "options": [
+        "Data sources",
+        "Vector stores",
+        "Embedding models",
+        "Foundation models"
+      ],
+      "correct": 0,
+      "explanation": "Data sources in Amazon Bedrock Knowledge Bases are the locations where your documents are stored (S3, SharePoint, Confluence, Salesforce, Web Crawler). The knowledge base connects to these data sources, ingests documents, creates embeddings, and stores them in a vector store. Vector stores hold embeddings. Embedding models create vectors. Foundation models generate responses.",
+      "domain": "Applications of Foundation Models",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Bedrock Knowledge Bases data sources",
+        "RAG architecture components"
+      ]
+    },
+    {
+      "question": "An AI practitioner is implementing a solution that requires processing both text and images together. What type of model should they use?",
+      "options": [
+        "Multimodal model",
+        "Audio processing model",
+        "Text-only language model",
+        "Computer vision model"
+      ],
+      "correct": 0,
+      "explanation": "Multimodal models can process and understand multiple types of input (text, images, video, audio) together. Models like Amazon Nova Pro support multimodal inputs, allowing you to provide both text and images in the same request. Text-only models handle only text. Computer vision models handle only images. Audio models handle only audio. Multimodal models integrate multiple modalities.",
+      "domain": "Fundamentals of Generative AI",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Multimodal models",
+        "Amazon Nova multimodal capabilities"
+      ]
+    },
+    {
+      "question": "A company is implementing Amazon Bedrock Guardrails and wants to prevent the model from discussing competitor products. Which guardrail policy is MOST appropriate?",
+      "options": [
+        "Content filters for harmful content",
+        "Sensitive information filters for company names",
+        "Contextual grounding checks for factual accuracy",
+        "Denied topics for competitor discussions"
+      ],
+      "correct": 3,
+      "explanation": "Denied topics in Amazon Bedrock Guardrails allow you to define specific subject areas to avoid, making it ideal for blocking competitor product discussions. You define the topic (e.g., 'competitor products') and the guardrail blocks content related to that topic. Content filters detect harmful categories. Sensitive information filters handle PII. Contextual grounding checks detect hallucinations.",
+      "domain": "Security, Compliance, and Governance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Bedrock Guardrails denied topics",
+        "Content policy enforcement"
+      ]
+    },
+    {
+      "question": "A machine learning team is deploying a model to production and wants to detect when the input data distribution changes significantly from training data. What is this monitoring practice called?",
+      "options": [
+        "Bias detection",
+        "Model versioning",
+        "Data drift detection",
+        "Hyperparameter tuning"
+      ],
+      "correct": 2,
+      "explanation": "Data drift detection monitors when the statistical properties of input data change significantly from the training data distribution. Amazon SageMaker Model Monitor can detect data drift by comparing production data against baseline training data. This is important because models perform poorly when input data differs from training data. Bias detection monitors fairness. Versioning tracks model versions. Hyperparameter tuning optimizes training.",
+      "domain": "Fundamentals of AI and ML",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Data drift detection",
+        "SageMaker Model Monitor"
+      ]
+    }
+  ]
+}

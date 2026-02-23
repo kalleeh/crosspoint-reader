@@ -108,6 +108,16 @@
     .folder-action-btn:hover {
       background-color: #d68910;
     }
+    .delete-selected-btn {
+      background-color: #e74c3c;
+    }
+    .delete-selected-btn:hover {
+      background-color: #c0392b;
+    }
+    .delete-selected-btn:disabled {
+      background-color: #95a5a6;
+      cursor: not-allowed;
+    }
     /* Upload modal */
     .modal-overlay {
       display: none;
@@ -586,6 +596,8 @@
   <div class="action-buttons">
     <button class="action-btn upload-action-btn" onclick="openUploadModal()">📤 Upload</button>
     <button class="action-btn folder-action-btn" onclick="openFolderModal()">📁 New Folder</button>
+    <button class="action-btn delete-selected-btn" id="deleteSelectedBtn" onclick="deleteSelected()" disabled>🗑️ Delete Selected</button>
+    <button class="action-btn" id="toggleHiddenBtn" onclick="toggleHiddenFiles()" style="background-color: #95a5a6;">👁️ Show Hidden</button>
   </div>
 </div>
 
@@ -668,6 +680,8 @@
 <script>
   // get current path from query parameter
   const currentPath = decodeURIComponent(new URLSearchParams(window.location.search).get('path') || '/');
+  let showHiddenFiles = localStorage.getItem('showHiddenFiles') === 'true';
+  let allFiles = [];
 
   function escapeHtml(unsafe) {
     return unsafe
@@ -684,6 +698,78 @@
     const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)).toLocaleString() + ' ' + sizes[i];
+  }
+
+  function toggleHiddenFiles() {
+    showHiddenFiles = !showHiddenFiles;
+    localStorage.setItem('showHiddenFiles', showHiddenFiles);
+    const btn = document.getElementById('toggleHiddenBtn');
+    btn.textContent = showHiddenFiles ? '👁️ Hide Hidden' : '👁️ Show Hidden';
+    btn.style.backgroundColor = showHiddenFiles ? '#e74c3c' : '#95a5a6';
+    renderFiles();
+  }
+
+  function renderFiles() {
+    const fileTable = document.getElementById('file-table');
+    const filteredFiles = showHiddenFiles ? allFiles : allFiles.filter(f => !f.name.startsWith('.'));
+
+    let folderCount = 0;
+    let totalSize = 0;
+    filteredFiles.forEach(file => {
+      if (file.isDirectory) folderCount++;
+      totalSize += file.size;
+    });
+
+    document.getElementById('folder-summary').innerHTML = `${folderCount} folders, ${filteredFiles.length - folderCount} files, ${formatFileSize(totalSize)}`;
+
+    if (filteredFiles.length === 0) {
+      fileTable.innerHTML = '<div class="no-files">This folder is empty</div>';
+      return;
+    }
+
+    let fileTableContent = '<table class="file-table">';
+    fileTableContent += '<tr><th><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"></th><th>Name</th><th>Type</th><th>Size</th><th class="actions-col">Actions</th></tr>';
+
+    const sortedFiles = filteredFiles.sort((a, b) => {
+      if (a.isDirectory && !b.isDirectory) return -1;
+      if (!a.isDirectory && b.isDirectory) return 1;
+      if (a.isEpub && !b.isEpub) return -1;
+      if (!a.isEpub && b.isEpub) return 1;
+      return a.name.localeCompare(b.name);
+    });
+
+    sortedFiles.forEach(file => {
+      if (file.isDirectory) {
+        let folderPath = currentPath;
+        if (!folderPath.endsWith("/")) folderPath += "/";
+        folderPath += file.name;
+
+        fileTableContent += '<tr class="folder-row">';
+        fileTableContent += `<td><input type="checkbox" class="file-checkbox" data-path="${folderPath.replaceAll('"', '&quot;')}" data-type="folder"></td>`;
+        fileTableContent += `<td><span class="file-icon">📁</span><a href="/files?path=${encodeURIComponent(folderPath)}" class="folder-link">${escapeHtml(file.name)}</a><span class="folder-badge">FOLDER</span></td>`;
+        fileTableContent += '<td>Folder</td>';
+        fileTableContent += '<td>-</td>';
+        fileTableContent += `<td class="actions-col"><button class="delete-btn" onclick="openDeleteModal('${file.name.replaceAll("'", "\\'")}', '${folderPath.replaceAll("'", "\\'")}', true)" title="Delete folder">🗑️</button></td>`;
+        fileTableContent += '</tr>';
+      } else {
+        let filePath = currentPath;
+        if (!filePath.endsWith("/")) filePath += "/";
+        filePath += file.name;
+
+        fileTableContent += `<tr class="${file.isEpub ? 'epub-file' : ''}">`;
+        fileTableContent += `<td><input type="checkbox" class="file-checkbox" data-path="${filePath.replaceAll('"', '&quot;')}" data-type="file"></td>`;
+        fileTableContent += `<td><span class="file-icon">${file.isEpub ? '📗' : '📄'}</span>${escapeHtml(file.name)}`;
+        if (file.isEpub) fileTableContent += '<span class="epub-badge">EPUB</span>';
+        fileTableContent += '</td>';
+        fileTableContent += `<td>${file.name.split('.').pop().toUpperCase()}</td>`;
+        fileTableContent += `<td>${formatFileSize(file.size)}</td>`;
+        fileTableContent += `<td class="actions-col"><button class="delete-btn" onclick="openDeleteModal('${file.name.replaceAll("'", "\\'")}', '${filePath.replaceAll("'", "\\'")}', false)" title="Delete file">🗑️</button></td>`;
+        fileTableContent += '</tr>';
+      }
+    });
+
+    fileTableContent += '</table>';
+    fileTable.innerHTML = fileTableContent;
   }
 
   async function hydrate() {
@@ -713,74 +799,24 @@
     }
     breadcrumbs.innerHTML = breadcrumbContent;
 
-    let files = [];
+    // Update toggle button state
+    const btn = document.getElementById('toggleHiddenBtn');
+    btn.textContent = showHiddenFiles ? '👁️ Hide Hidden' : '👁️ Show Hidden';
+    btn.style.backgroundColor = showHiddenFiles ? '#e74c3c' : '#95a5a6';
+
     try {
       const response = await fetch('/api/files?path=' + encodeURIComponent(currentPath));
       if (!response.ok) {
         throw new Error('Failed to load files: ' + response.status + ' ' + response.statusText);
       }
-      files = await response.json();
+      allFiles = await response.json();
     } catch (e) {
       console.error(e);
       fileTable.innerHTML = '<div class="no-files">An error occurred while loading the files</div>';
       return;
     }
 
-    let folderCount = 0;
-    let totalSize = 0;
-    files.forEach(file => {
-      if (file.isDirectory) folderCount++;
-      totalSize += file.size;
-    });
-
-    document.getElementById('folder-summary').innerHTML = `${folderCount} folders, ${files.length - folderCount} files, ${formatFileSize(totalSize)}`;
-
-    if (files.length === 0) {
-      fileTable.innerHTML = '<div class="no-files">This folder is empty</div>';
-    } else {
-      let fileTableContent = '<table class="file-table">';
-      fileTableContent += '<tr><th>Name</th><th>Type</th><th>Size</th><th class="actions-col">Actions</th></tr>';
-
-      const sortedFiles = files.sort((a, b) => {
-        // Directories first, then epub files, then other files, alphabetically within each group
-        if (a.isDirectory && !b.isDirectory) return -1;
-        if (!a.isDirectory && b.isDirectory) return 1;
-        if (a.isEpub && !b.isEpub) return -1;
-        if (!a.isEpub && b.isEpub) return 1;
-        return a.name.localeCompare(b.name);
-      });
-
-      sortedFiles.forEach(file => {
-        if (file.isDirectory) {
-          let folderPath = currentPath;
-          if (!folderPath.endsWith("/")) folderPath += "/";
-          folderPath += file.name;
-
-          fileTableContent += '<tr class="folder-row">';
-          fileTableContent += `<td><span class="file-icon">📁</span><a href="/files?path=${encodeURIComponent(folderPath)}" class="folder-link">${escapeHtml(file.name)}</a><span class="folder-badge">FOLDER</span></td>`;
-          fileTableContent += '<td>Folder</td>';
-          fileTableContent += '<td>-</td>';
-          fileTableContent += `<td class="actions-col"><button class="delete-btn" onclick="openDeleteModal('${file.name.replaceAll("'", "\\'")}', '${folderPath.replaceAll("'", "\\'")}', true)" title="Delete folder">🗑️</button></td>`;
-          fileTableContent += '</tr>';
-        } else {
-          let filePath = currentPath;
-          if (!filePath.endsWith("/")) filePath += "/";
-          filePath += file.name;
-
-          fileTableContent += `<tr class="${file.isEpub ? 'epub-file' : ''}">`;
-          fileTableContent += `<td><span class="file-icon">${file.isEpub ? '📗' : '📄'}</span>${escapeHtml(file.name)}`;
-          if (file.isEpub) fileTableContent += '<span class="epub-badge">EPUB</span>';
-          fileTableContent += '</td>';
-          fileTableContent += `<td>${file.name.split('.').pop().toUpperCase()}</td>`;
-          fileTableContent += `<td>${formatFileSize(file.size)}</td>`;
-          fileTableContent += `<td class="actions-col"><button class="delete-btn" onclick="openDeleteModal('${file.name.replaceAll("'", "\\'")}', '${filePath.replaceAll("'", "\\'")}', false)" title="Delete file">🗑️</button></td>`;
-          fileTableContent += '</tr>';
-        }
-      });
-
-      fileTableContent += '</table>';
-      fileTable.innerHTML = fileTableContent;
-    }
+    renderFiles();
   }
 
   // Modal functions
@@ -1214,6 +1250,56 @@ function retryAllFailedUploads() {
 
     xhr.send(formData);
   }
+
+  // Multi-select functions
+  function toggleSelectAll(checkbox) {
+    const checkboxes = document.querySelectorAll('.file-checkbox');
+    checkboxes.forEach(cb => cb.checked = checkbox.checked);
+    updateDeleteButton();
+  }
+
+  function updateDeleteButton() {
+    const checkboxes = document.querySelectorAll('.file-checkbox:checked');
+    const deleteBtn = document.getElementById('deleteSelectedBtn');
+    deleteBtn.disabled = checkboxes.length === 0;
+  }
+
+  function deleteSelected() {
+    const checkboxes = document.querySelectorAll('.file-checkbox:checked');
+    if (checkboxes.length === 0) return;
+
+    const items = Array.from(checkboxes).map(cb => ({
+      path: cb.dataset.path,
+      type: cb.dataset.type
+    }));
+
+    if (!confirm(`Delete ${items.length} item(s)?`)) return;
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/delete', true);
+    xhr.setRequestHeader('Content-Type', 'application/json');
+
+    xhr.onload = function() {
+      if (xhr.status === 200) {
+        window.location.reload();
+      } else {
+        alert('Failed to delete: ' + xhr.responseText);
+      }
+    };
+
+    xhr.onerror = function() {
+      alert('Failed to delete - network error');
+    };
+
+    xhr.send(JSON.stringify({ items: items }));
+  }
+
+  // Add checkbox change listener
+  document.addEventListener('change', function(e) {
+    if (e.target.classList.contains('file-checkbox')) {
+      updateDeleteButton();
+    }
+  });
 
   hydrate();
 </script>

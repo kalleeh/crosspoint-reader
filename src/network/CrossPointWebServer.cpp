@@ -300,16 +300,14 @@ void CrossPointWebServer::scanFiles(const char* path, const std::function<void(F
     file.getName(name, sizeof(name));
     auto fileName = String(name);
 
-    // Skip hidden items (starting with ".")
-    bool shouldHide = fileName.startsWith(".");
+    // Don't filter hidden files - let client decide with toggle
+    bool shouldHide = false;
 
-    // Check against explicitly hidden items list
-    if (!shouldHide) {
-      for (size_t i = 0; i < HIDDEN_ITEMS_COUNT; i++) {
-        if (fileName.equals(HIDDEN_ITEMS[i])) {
-          shouldHide = true;
-          break;
-        }
+    // Check against explicitly hidden items list only
+    for (size_t i = 0; i < HIDDEN_ITEMS_COUNT; i++) {
+      if (fileName.equals(HIDDEN_ITEMS[i])) {
+        shouldHide = true;
+        break;
       }
     }
 
@@ -706,7 +704,60 @@ void CrossPointWebServer::handleCreateFolder() const {
 }
 
 void CrossPointWebServer::handleDelete() const {
-  // Get path from form data
+  // Check if we have JSON body (multi-delete)
+  if (server->hasArg("plain")) {
+    String body = server->arg("plain");
+    JsonDocument doc;
+    DeserializationError error = deserializeJson(doc, body);
+    
+    if (!error && doc["items"].is<JsonArray>()) {
+      // Multi-delete: array of {path, type} objects
+      JsonArray items = doc["items"];
+      int successCount = 0;
+      int failCount = 0;
+      
+      for (JsonObject item : items) {
+        const char* itemPath = item["path"];
+        const char* itemType = item["type"];
+        
+        if (!itemPath || !itemType) continue;
+        
+        // Security checks
+        String path = String(itemPath);
+        if (path.isEmpty() || path == "/") continue;
+        if (!path.startsWith("/")) path = "/" + path;
+        
+        String name = path.substring(path.lastIndexOf('/') + 1);
+        if (name.startsWith(".")) continue;
+        
+        bool isProtected = false;
+        for (size_t i = 0; i < HIDDEN_ITEMS_COUNT; i++) {
+          if (name.equals(HIDDEN_ITEMS[i])) {
+            isProtected = true;
+            break;
+          }
+        }
+        if (isProtected) continue;
+        
+        // Delete item
+        bool success = false;
+        if (strcmp(itemType, "folder") == 0) {
+          success = SdMan.rmdir(path.c_str());
+        } else {
+          success = SdMan.remove(path.c_str());
+        }
+        
+        if (success) successCount++;
+        else failCount++;
+      }
+      
+      Serial.printf("[%lu] [WEB] Batch delete: %d succeeded, %d failed\n", millis(), successCount, failCount);
+      server->send(200, "text/plain", String("Deleted ") + successCount + " items");
+      return;
+    }
+  }
+  
+  // Fallback to single delete (form data)
   if (!server->hasArg("path")) {
     server->send(400, "text/plain", "Missing path");
     return;

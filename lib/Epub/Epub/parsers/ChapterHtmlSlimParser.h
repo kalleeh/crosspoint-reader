@@ -11,12 +11,15 @@
 
 class Page;
 class GfxRenderer;
+class Epub;
 
 #define MAX_WORD_SIZE 200
 
 class ChapterHtmlSlimParser {
   const std::string& filepath;
   GfxRenderer& renderer;
+  std::shared_ptr<Epub> epub;  // For image caching
+  std::string htmlFileDir;  // Directory of the HTML file being parsed
   std::function<void(std::unique_ptr<Page>)> completePageFn;
   std::function<void(int)> progressFn;  // Progress callback (0-100)
   int depth = 0;
@@ -47,7 +50,9 @@ class ChapterHtmlSlimParser {
   static void XMLCALL endElement(void* userData, const XML_Char* name);
 
  public:
-  explicit ChapterHtmlSlimParser(const std::string& filepath, GfxRenderer& renderer, const int fontId,
+  explicit ChapterHtmlSlimParser(const std::string& filepath, GfxRenderer& renderer, 
+                                 const std::shared_ptr<Epub>& epub, const std::string& spineItemHref,
+                                 const int fontId,
                                  const float lineCompression, const bool extraParagraphSpacing,
                                  const uint8_t paragraphAlignment, const uint16_t viewportWidth,
                                  const uint16_t viewportHeight, const bool hyphenationEnabled,
@@ -55,6 +60,7 @@ class ChapterHtmlSlimParser {
                                  const std::function<void(int)>& progressFn = nullptr)
       : filepath(filepath),
         renderer(renderer),
+        epub(epub),
         fontId(fontId),
         lineCompression(lineCompression),
         extraParagraphSpacing(extraParagraphSpacing),
@@ -63,7 +69,13 @@ class ChapterHtmlSlimParser {
         viewportHeight(viewportHeight),
         hyphenationEnabled(hyphenationEnabled),
         completePageFn(completePageFn),
-        progressFn(progressFn) {}
+        progressFn(progressFn) {
+    // Extract directory from spine item href for resolving relative image paths
+    const size_t lastSlash = spineItemHref.find_last_of('/');
+    if (lastSlash != std::string::npos) {
+      htmlFileDir = spineItemHref.substr(0, lastSlash);
+    }
+  }
   ~ChapterHtmlSlimParser() = default;
   bool parseAndBuildPages();
   void addLineToPage(std::shared_ptr<TextBlock> line);

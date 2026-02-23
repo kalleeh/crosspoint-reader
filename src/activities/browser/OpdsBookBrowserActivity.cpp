@@ -111,8 +111,13 @@ void OpdsBookBrowserActivity::loop() {
     return;
   }
 
-  // Handle downloading state - no input allowed
+  // Handle downloading state - no input allowed except Back
   if (state == BrowserState::DOWNLOADING) {
+    if (mappedInput.wasReleased(MappedInputManager::Button::Back)) {
+      // Cancel download (not implemented, just return to browsing)
+      state = BrowserState::BROWSING;
+      updateRequired = true;
+    }
     return;
   }
 
@@ -338,6 +343,7 @@ void OpdsBookBrowserActivity::downloadBook(const OpdsEntry& book) {
   downloadProgress = 0;
   downloadTotal = 0;
   updateRequired = true;
+  render(); // Show initial downloading state
 
   // Build full download URL
   std::string downloadUrl = UrlUtils::buildUrl(SETTINGS.opdsServerUrl, book.href);
@@ -356,6 +362,7 @@ void OpdsBookBrowserActivity::downloadBook(const OpdsEntry& book) {
         downloadProgress = downloaded;
         downloadTotal = total;
         updateRequired = true;
+        render(); // Update progress during download
       });
 
   if (result == HttpDownloader::OK) {
@@ -366,12 +373,18 @@ void OpdsBookBrowserActivity::downloadBook(const OpdsEntry& book) {
     epub.clearCache();
     Serial.printf("[%lu] [OPDS] Cleared cache for: %s\n", millis(), filename.c_str());
 
+    // Show success message
     state = BrowserState::BROWSING;
+    statusMessage = "Download complete!";
     updateRequired = true;
+    render();
+    delay(1500); // Show success message briefly
   } else {
+    Serial.printf("[%lu] [OPDS] Download failed with error: %d\n", millis(), result);
     state = BrowserState::ERROR;
-    errorMessage = "Download failed";
+    errorMessage = "Download failed - check connection";
     updateRequired = true;
+    render();
   }
 }
 

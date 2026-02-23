@@ -1,8 +1,10 @@
 #include "Epub.h"
 
+#include <Bitmap.h>
 #include <FsHelpers.h>
 #include <HardwareSerial.h>
 #include <JpegToBmpConverter.h>
+#include <PngToBmpConverter.h>
 #include <SDCardManager.h>
 #include <ZipFile.h>
 
@@ -175,17 +177,20 @@ bool Epub::parseTocNavFile() const {
 
   if (!navParser.setup()) {
     Serial.printf("[%lu] [EBP] Could not setup toc nav parser\n", millis());
+    tempNavFile.close();
     return false;
   }
 
   const auto navBuffer = static_cast<uint8_t*>(malloc(1024));
   if (!navBuffer) {
     Serial.printf("[%lu] [EBP] Could not allocate memory for toc nav parser\n", millis());
+    tempNavFile.close();
     return false;
   }
 
   while (tempNavFile.available()) {
     const auto readSize = tempNavFile.read(navBuffer, 1024);
+    if (readSize == 0) break;
     const auto processedSize = navParser.write(navBuffer, readSize);
 
     if (processedSize != readSize) {
@@ -315,16 +320,16 @@ bool Epub::load(const bool buildIfMissing) {
 
 bool Epub::clearCache() const {
   if (!SdMan.exists(cachePath.c_str())) {
-    Serial.printf("[%lu] [EPB] Cache does not exist, no action needed\n", millis());
+    Serial.printf("[%lu] [EBP] Cache does not exist, no action needed\n", millis());
     return true;
   }
 
   if (!SdMan.removeDir(cachePath.c_str())) {
-    Serial.printf("[%lu] [EPB] Failed to clear cache\n", millis());
+    Serial.printf("[%lu] [EBP] Failed to clear cache\n", millis());
     return false;
   }
 
-  Serial.printf("[%lu] [EPB] Cache cleared successfully\n", millis());
+  Serial.printf("[%lu] [EBP] Cache cleared successfully\n", millis());
   return true;
 }
 
@@ -389,8 +394,8 @@ bool Epub::generateCoverBmp(bool cropped) const {
     return false;
   }
 
-  if (coverImageHref.substr(coverImageHref.length() - 4) == ".jpg" ||
-      coverImageHref.substr(coverImageHref.length() - 5) == ".jpeg") {
+  if ((coverImageHref.length() >= 4 && coverImageHref.substr(coverImageHref.length() - 4) == ".jpg") ||
+      (coverImageHref.length() >= 5 && coverImageHref.substr(coverImageHref.length() - 5) == ".jpeg")) {
     Serial.printf("[%lu] [EBP] Generating BMP from JPG cover image (%s mode)\n", millis(), cropped ? "cropped" : "fit");
     const auto coverJpgTempPath = getCachePath() + "/.cover.jpg";
 
@@ -447,8 +452,8 @@ bool Epub::generateThumbBmp() const {
     return false;
   }
 
-  if (coverImageHref.substr(coverImageHref.length() - 4) == ".jpg" ||
-      coverImageHref.substr(coverImageHref.length() - 5) == ".jpeg") {
+  if ((coverImageHref.length() >= 4 && coverImageHref.substr(coverImageHref.length() - 4) == ".jpg") ||
+      (coverImageHref.length() >= 5 && coverImageHref.substr(coverImageHref.length() - 5) == ".jpeg")) {
     Serial.printf("[%lu] [EBP] Generating thumb BMP from JPG cover image\n", millis());
     const auto coverJpgTempPath = getCachePath() + "/.cover.jpg";
 
@@ -639,4 +644,116 @@ float Epub::calculateProgress(const int currentSpineIndex, const float currentSp
   const float sectionProgSize = currentSpineRead * static_cast<float>(curChapterSize);
   const float totalProgress = static_cast<float>(prevChapterSize) + sectionProgSize;
   return totalProgress / static_cast<float>(bookSize);
+}
+
+
+std::string Epub::getImageCachePath(const std::string& imageHref) const {
+  // Create hash of image href for filename
+  const size_t hash = std::hash<std::string>{}(imageHref);
+  return cachePath + "/images/img_" + std::to_string(hash) + ".bmp";
+}
+
+bool Epub::cacheImage(const std::string& imageHref) const {
+  const std::string cachedPath = getImageCachePath(imageHref);
+  
+  // Check if already cached
+  FsFile testFile;
+  if (SdMan.openFileForRead("IMG", cachedPath, testFile)) {
+    testFile.close();
+    Serial.printf("[%lu] [IMG] Image already cached: %s\n", millis(), imageHref.c_str());
+    return true;
+  }
+  
+  // Create images directory
+  const std::string imagesDir = cachePath + "/images";
+  SdMan.mkdir(imagesDir.c_str());
+  
+  // Resolve image path relative to content base
+  std::string fullImagePath = imageHref;
+  // imageHref is already resolved by the parser, use as-is
+  
+  Serial.printf("[%lu] [IMG] Extracting image: %s -> %s\n", millis(), fullImagePath.c_str(), cachedPath.c_str());
+  
+  // Detect image format
+  const std::string lowerPath = fullImagePath;
+  const bool isJpeg = (lowerPath.find(".jpg") != std::string::npos || 
+                       lowerPath.find(".jpeg") != std::string::npos);
+  const bool isPng = (lowerPath.find(".png") != std::string::npos);
+  
+  if (!isJpeg && !isPng) {
+    Serial.printf("[%lu] [IMG] Unsupported image format: %s\n", millis(), fullImagePath.c_str());
+    return false;
+  }
+  
+  // PNG not supported due to memory constraints
+  if (isPng) {
+    Serial.printf("[%lu] [IMG] PNG images not supported (memory constraints)\n", millis());
+    return false;
+  }
+  
+  // Extract image from EPUB to temporary file
+  const std::string tempExt = ".jpg";
+  const std::string tempPath = cachePath + "/temp" + tempExt;
+  FsFile tempFile;
+  if (!SdMan.openFileForWrite("IMG", tempPath, tempFile)) {
+    Serial.printf("[%lu] [IMG] Failed to create temp file\n", millis());
+    return false;
+  }
+  
+  if (!readItemContentsToStream(fullImagePath, tempFile, 4096)) {
+    Serial.printf("[%lu] [IMG] Failed to extract image from EPUB\n", millis());
+    tempFile.close();
+    SdMan.remove(tempPath.c_str());
+    return false;
+  }
+  tempFile.close();
+  
+  // Open temp file for reading
+  if (!SdMan.openFileForRead("IMG", tempPath, tempFile)) {
+    Serial.printf("[%lu] [IMG] Failed to reopen temp file\n", millis());
+    return false;
+  }
+  
+  // Convert JPEG to BMP
+  FsFile bmpFile;
+  if (!SdMan.openFileForWrite("IMG", cachedPath, bmpFile)) {
+    Serial.printf("[%lu] [IMG] Failed to create BMP file\n", millis());
+    tempFile.close();
+    SdMan.remove(tempPath.c_str());
+    return false;
+  }
+  
+  // Convert to BMP
+  bool success = JpegToBmpConverter::jpegFileTo1BitBmpStreamWithSize(tempFile, bmpFile, 480, 800);
+  
+  tempFile.close();
+  bmpFile.close();
+  SdMan.remove(tempPath.c_str());
+  
+  if (success) {
+    Serial.printf("[%lu] [IMG] Successfully cached image: %s\n", millis(), cachedPath.c_str());
+  } else {
+    Serial.printf("[%lu] [IMG] Failed to convert JPEG to BMP\n", millis());
+    SdMan.remove(cachedPath.c_str());
+  }
+  
+  return success;
+}
+
+bool Epub::getImageDimensions(const std::string& cachedPath, int& width, int& height) const {
+  FsFile bmpFile;
+  if (!SdMan.openFileForRead("IMG", cachedPath, bmpFile)) {
+    return false;
+  }
+  
+  Bitmap bitmap(bmpFile);
+  if (bitmap.parseHeaders() != BmpReaderError::Ok) {
+    bmpFile.close();
+    return false;
+  }
+  
+  width = bitmap.getWidth();
+  height = bitmap.getHeight();
+  bmpFile.close();
+  return true;
 }

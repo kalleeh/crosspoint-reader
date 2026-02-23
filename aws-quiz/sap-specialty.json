@@ -1,0 +1,2814 @@
+{
+  "version": "1.0",
+  "certification": "sap-on-aws-specialty",
+  "exam": "PAS-C01",
+  "total_questions": 200,
+  "validation_sources": [
+    "https://docs.aws.amazon.com/sap/latest/sap-hana/planning-the-deployment.html",
+    "https://docs.aws.amazon.com/sap/latest/sap-hana/hana-ops-storage-config.html",
+    "https://docs.aws.amazon.com/sap/latest/general/ec2-instance-types-sap.html",
+    "https://docs.aws.amazon.com/sap/latest/sap-hana/migrating-hana-tools.html"
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "A company is planning to deploy SAP S/4HANA on AWS with a database size of 8TB. The system requires high memory and compute performance for production workloads. Which EC2 instance type would be most appropriate?",
+      "options": [
+        "A) r5.24xlarge with 768 GiB memory",
+        "B) x1e.32xlarge with 3,904 GiB memory", 
+        "C) u-6tb1.112xlarge with 6,144 GiB memory",
+        "D) m5.24xlarge with 384 GiB memory"
+      ],
+      "correct_answer": "C",
+      "explanation": "For SAP HANA production workloads with 8TB database size, High Memory instances (U-series) are SAP-certified and provide the required memory capacity. The u-6tb1.112xlarge offers 6TB+ memory which meets the requirements for large SAP HANA deployments."
+    },
+    {
+      "id": 2,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service simplifies the deployment of SAP applications by providing guided deployment wizards?",
+      "options": [
+        "A) AWS CloudFormation",
+        "B) AWS Launch Wizard for SAP",
+        "C) AWS Systems Manager",
+        "D) AWS Migration Hub"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Launch Wizard for SAP provides guided deployment for SAP applications on AWS, automatically identifying appropriate resources and reducing deployment time with pre-configured templates."
+    },
+    {
+      "id": 3,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "An enterprise is designing a multi-tier SAP landscape with high availability requirements. The SAP HANA database must achieve RPO of 15 minutes and RTO of 30 minutes. Which combination of AWS services and SAP technologies should be implemented?",
+      "options": [
+        "A) SAP HANA System Replication with Pacemaker cluster across multiple AZs",
+        "B) Amazon EBS snapshots with cross-region replication",
+        "C) AWS Backup with point-in-time recovery",
+        "D) Amazon RDS Multi-AZ deployment"
+      ],
+      "correct_answer": "A",
+      "explanation": "SAP HANA System Replication (HSR) with Pacemaker cluster provides automated failover capabilities and can achieve the required RPO/RTO targets when deployed across multiple Availability Zones."
+    },
+    {
+      "id": 4,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "medium",
+      "question": "A company wants to migrate their SAP ECC system to SAP S/4HANA on AWS in a single step. Which migration approach should they use?",
+      "options": [
+        "A) Classical migration with system copy",
+        "B) DMO (Database Migration Option) with system move",
+        "C) Backup and restore method",
+        "D) SAP HANA System Replication"
+      ],
+      "correct_answer": "B",
+      "explanation": "DMO with system move allows migration to AWS and conversion to S/4HANA in a single step, eliminating the need for separate migration and conversion phases."
+    },
+    {
+      "id": 5,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service provides SAP-certified backup and restore capabilities for SAP HANA databases?",
+      "options": [
+        "A) AWS Backup",
+        "B) Amazon EBS Snapshots",
+        "C) AWS Backint Agent for SAP HANA",
+        "D) Amazon S3 Transfer Acceleration"
+      ],
+      "correct_answer": "C",
+      "explanation": "AWS Backint Agent for SAP HANA is an SAP-certified backup and restore application specifically designed for SAP HANA workloads on Amazon EC2 instances."
+    },
+    {
+      "id": 6,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP HANA data volumes, which EBS volume type provides the best balance of performance and cost for most production workloads?",
+      "options": [
+        "A) gp2 (General Purpose SSD)",
+        "B) gp3 (General Purpose SSD)",
+        "C) io1 (Provisioned IOPS SSD)",
+        "D) st1 (Throughput Optimized HDD)"
+      ],
+      "correct_answer": "B",
+      "explanation": "gp3 volumes provide predictable performance and cost-effectiveness for SAP HANA data volumes, offering better price-performance ratio compared to gp2 and more flexibility than io1."
+    },
+    {
+      "id": 7,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company is implementing SAP HANA scale-out architecture with 4 worker nodes. What is the minimum shared storage requirement for the /hana/shared volume?",
+      "options": [
+        "A) Equal to one worker node's memory",
+        "B) Equal to the sum of all worker nodes' memory",
+        "C) Equal to one worker node's memory for every four worker nodes",
+        "D) 1TB regardless of memory configuration"
+      ],
+      "correct_answer": "A",
+      "explanation": "For SAP HANA scale-out deployments, the shared volume requires storage equal to one worker node's memory for every four worker nodes. With 4 nodes, this equals one worker node's memory."
+    },
+    {
+      "id": 8,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "easy",
+      "question": "Which tool is recommended for transferring large SAP database files to AWS when network bandwidth is limited?",
+      "options": [
+        "A) AWS Direct Connect",
+        "B) AWS Snowball Edge",
+        "C) Amazon S3 Transfer Acceleration",
+        "D) AWS VPN"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Snowball Edge is designed for transferring large amounts of data to AWS when network transfer is not feasible due to bandwidth limitations or cost considerations."
+    },
+    {
+      "id": 9,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which combination of AWS services provides comprehensive monitoring for SAP HANA performance and infrastructure metrics?",
+      "options": [
+        "A) CloudWatch + CloudTrail",
+        "B) CloudWatch + Systems Manager + AWS Config",
+        "C) CloudWatch + X-Ray + GuardDuty",
+        "D) CloudWatch + Systems Manager for SAP + CloudTrail"
+      ],
+      "correct_answer": "D",
+      "explanation": "CloudWatch provides infrastructure monitoring, Systems Manager for SAP offers SAP-specific monitoring and management capabilities, and CloudTrail provides audit logging for comprehensive SAP monitoring."
+    },
+    {
+      "id": 10,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "An organization needs to design network connectivity for SAP HANA with latency requirements under 1ms between application and database tiers. Which AWS networking approach should be implemented?",
+      "options": [
+        "A) Deploy in the same Availability Zone with Enhanced Networking",
+        "B) Use AWS Direct Connect with dedicated connection",
+        "C) Deploy across multiple AZs with placement groups",
+        "D) Use VPC peering between regions"
+      ],
+      "correct_answer": "A",
+      "explanation": "For ultra-low latency requirements under 1ms, deploying SAP application and database tiers in the same AZ with Enhanced Networking (SR-IOV) provides the lowest possible network latency."
+    },
+    {
+      "id": 11,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which operating system provides the best integration with SAP applications and includes High Availability Extensions for clustering?",
+      "options": [
+        "A) Amazon Linux 2",
+        "B) SUSE Linux Enterprise Server for SAP",
+        "C) Ubuntu Server",
+        "D) Windows Server"
+      ],
+      "correct_answer": "B",
+      "explanation": "SUSE Linux Enterprise Server for SAP provides SAP-specific optimizations, High Availability Extensions (HAE), and Extended Service Pack Overlap Support (ESPOS) for SAP workloads."
+    },
+    {
+      "id": 12,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "hard",
+      "question": "A company is migrating SAP HANA from on-premises to AWS using System Replication. The source database is 12TB and they need to minimize downtime. Which initialization method should be used?",
+      "options": [
+        "A) Full data shipping over network",
+        "B) Backup and restore initialization",
+        "C) Delta shipping only",
+        "D) Storage replication"
+      ],
+      "correct_answer": "B",
+      "explanation": "For large databases (12TB), backup and restore initialization is more efficient than full data shipping over network, especially when network bandwidth is limited, reducing overall migration time."
+    },
+    {
+      "id": 13,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service helps validate SAP HANA configurations against AWS best practices?",
+      "options": [
+        "A) AWS Config",
+        "B) AWS Systems Manager for SAP Configuration Management",
+        "C) AWS Trusted Advisor",
+        "D) AWS Well-Architected Tool"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Systems Manager for SAP Configuration Management provides automated validation of SAP HANA configurations against AWS best practices and the SAP Lens of the Well-Architected Framework."
+    },
+    {
+      "id": 14,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP HANA log volumes, what is the recommended IOPS target regardless of memory size?",
+      "options": [
+        "A) 1,000 IOPS",
+        "B) 2,000 IOPS", 
+        "C) 5,000 IOPS",
+        "D) 10,000 IOPS"
+      ],
+      "correct_answer": "C",
+      "explanation": "SAP HANA log volumes require a fixed IOPS target of 5,000 IOPS regardless of the memory configuration, as specified in AWS storage configuration guidelines for SAP HANA."
+    },
+    {
+      "id": 15,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company is implementing SAP HANA with 16TB memory requirement. Which storage configuration approach should be used for data volumes?",
+      "options": [
+        "A) Single gp3 volume with maximum size",
+        "B) Multiple EBS volumes in striped configuration",
+        "C) Amazon EFS with high throughput",
+        "D) Instance store volumes only"
+      ],
+      "correct_answer": "B",
+      "explanation": "For large SAP HANA systems (16TB memory), multiple EBS volumes in striped configuration are required to meet I/O demands and overcome individual volume size limitations."
+    },
+    {
+      "id": 16,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service automates SAP HANA migration workflows and provides pre-built templates?",
+      "options": [
+        "A) AWS Application Migration Service",
+        "B) AWS Migration Hub Orchestrator",
+        "C) AWS Database Migration Service",
+        "D) AWS Server Migration Service"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Migration Hub Orchestrator provides automated migration workflows with pre-built templates specifically designed for SAP HANA migrations to AWS."
+    },
+    {
+      "id": 17,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For cost optimization of SAP workloads, which AWS pricing model provides the highest discount for predictable usage patterns?",
+      "options": [
+        "A) On-Demand Instances",
+        "B) Spot Instances",
+        "C) Reserved Instances",
+        "D) Savings Plans"
+      ],
+      "correct_answer": "C",
+      "explanation": "Reserved Instances provide the highest discounts (up to 75%) for SAP workloads with predictable usage patterns, especially for memory-optimized instances used by SAP HANA."
+    },
+    {
+      "id": 18,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS storage service is recommended for SAP HANA backup volumes in single-node deployments?",
+      "options": [
+        "A) Amazon EFS",
+        "B) Amazon EBS st1 (Throughput Optimized HDD)",
+        "C) Amazon S3",
+        "D) Amazon EBS gp3"
+      ],
+      "correct_answer": "B",
+      "explanation": "Amazon EBS st1 (Throughput Optimized HDD) volumes are recommended for SAP HANA backup volumes in single-node deployments due to their cost-effectiveness for sequential workloads."
+    },
+    {
+      "id": 19,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company is configuring Pacemaker cluster for SAP HANA System Replication. Which resource agent configuration is required for ENSA2 architecture?",
+      "options": [
+        "A) SAPHana and SAPHanaTopology only",
+        "B) SAPInstance with ASCS and ERS primitives",
+        "C) SAPHana, SAPHanaTopology, and SAPInstance",
+        "D) Custom resource agents for ENSA2"
+      ],
+      "correct_answer": "A",
+      "explanation": "For SAP HANA System Replication with Pacemaker, only SAPHana and SAPHanaTopology resource agents are required. ENSA2 architecture eliminates the need for ERS failover constraints."
+    },
+    {
+      "id": 20,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "easy",
+      "question": "What is the primary advantage of using heterogeneous migration over homogeneous migration for SAP systems?",
+      "options": [
+        "A) Faster migration speed",
+        "B) Lower migration cost",
+        "C) Ability to change database platform",
+        "D) No downtime required"
+      ],
+      "correct_answer": "C",
+      "explanation": "Heterogeneous migration allows changing the database platform (e.g., from Oracle to SAP HANA) during migration, while homogeneous migration keeps the same database platform."
+    },
+    {
+      "id": 21,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which CloudWatch metric is most critical for monitoring SAP HANA memory utilization?",
+      "options": [
+        "A) CPUUtilization",
+        "B) MemoryUtilization",
+        "C) DiskReadOps",
+        "D) NetworkIn"
+      ],
+      "correct_answer": "B",
+      "explanation": "MemoryUtilization is the most critical metric for SAP HANA as it's an in-memory database where memory consumption directly impacts performance and availability."
+    },
+    {
+      "id": 22,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "An organization requires SAP HANA deployment with 24TB memory for their S/4HANA system. Which instance configuration should be recommended?",
+      "options": [
+        "A) Single u-24tb1.112xlarge instance",
+        "B) Multiple u-6tb1.112xlarge instances in scale-out",
+        "C) Cluster of x2iezn.metal instances",
+        "D) Multiple r6i.32xlarge instances"
+      ],
+      "correct_answer": "B",
+      "explanation": "For 24TB memory requirement, multiple u-6tb1.112xlarge instances in SAP HANA scale-out configuration provide the required memory capacity with high availability benefits."
+    },
+    {
+      "id": 23,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which file system is recommended for SAP HANA shared volumes in multi-node deployments?",
+      "options": [
+        "A) Amazon EBS",
+        "B) Amazon EFS",
+        "C) Amazon S3",
+        "D) Instance store"
+      ],
+      "correct_answer": "B",
+      "explanation": "Amazon EFS is recommended for SAP HANA shared volumes in multi-node deployments as it provides shared access across multiple instances with NFS protocol support."
+    },
+    {
+      "id": 24,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "medium",
+      "question": "During SAP migration planning, which factor most significantly impacts the choice between lift-and-shift vs. re-platforming?",
+      "options": [
+        "A) Current database size",
+        "B) Network bandwidth availability",
+        "C) Business requirements for modernization",
+        "D) Number of application servers"
+      ],
+      "correct_answer": "C",
+      "explanation": "Business requirements for modernization determine whether to perform a simple lift-and-shift migration or re-platform to take advantage of cloud-native services and SAP S/4HANA capabilities."
+    },
+    {
+      "id": 25,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company needs to implement automated patching for their SAP HANA instances while ensuring zero downtime. Which approach should be used?",
+      "options": [
+        "A) AWS Systems Manager Patch Manager with maintenance windows",
+        "B) Rolling updates with SAP HANA System Replication",
+        "C) Blue-green deployment with AWS Launch Wizard",
+        "D) In-place patching during business hours"
+      ],
+      "correct_answer": "B",
+      "explanation": "Rolling updates with SAP HANA System Replication allow zero-downtime patching by updating the secondary system first, then performing a takeover, and finally updating the former primary."
+    },
+    {
+      "id": 26,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP NetWeaver application servers, which EC2 instance family provides the best price-performance ratio?",
+      "options": [
+        "A) Memory-optimized (r5, r6i)",
+        "B) Compute-optimized (c5, c6i)",
+        "C) General purpose (m5, m6i)",
+        "D) Storage-optimized (i3, i4i)"
+      ],
+      "correct_answer": "C",
+      "explanation": "General purpose instances (m5, m6i) provide balanced compute, memory, and networking resources that are well-suited for SAP NetWeaver application servers at optimal cost."
+    },
+    {
+      "id": 27,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service provides centralized management of SAP systems across multiple AWS accounts?",
+      "options": [
+        "A) AWS Organizations",
+        "B) AWS Systems Manager for SAP",
+        "C) AWS Control Tower",
+        "D) AWS Config"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Systems Manager for SAP provides centralized management, monitoring, and operations for SAP systems across multiple AWS accounts and regions."
+    },
+    {
+      "id": 28,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "hard",
+      "question": "A company is migrating a 50TB SAP BW system to AWS. The migration window is limited to 48 hours. Which combination of services and techniques should be used?",
+      "options": [
+        "A) AWS Snowball Edge + SAP HANA System Replication",
+        "B) Direct Connect + parallel data transfer + DMO",
+        "C) AWS DataSync + backup/restore method",
+        "D) AWS Storage Gateway + classical migration"
+      ],
+      "correct_answer": "A",
+      "explanation": "For large databases (50TB) with limited migration windows, AWS Snowball Edge for initial data transfer combined with SAP HANA System Replication for delta synchronization provides the fastest migration approach."
+    },
+    {
+      "id": 29,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service should be used to automate SAP HANA database backups to S3 with compression and encryption?",
+      "options": [
+        "A) AWS Backup",
+        "B) AWS Backint Agent for SAP HANA",
+        "C) Amazon EBS Snapshots",
+        "D) AWS Lambda with S3 APIs"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Backint Agent for SAP HANA is SAP-certified and provides native integration with SAP HANA backup commands, automatically handling compression and encryption when storing backups in S3."
+    },
+    {
+      "id": 30,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "What is the minimum root volume size recommended for SAP HANA installations?",
+      "options": [
+        "A) 20 GiB",
+        "B) 50 GiB",
+        "C) 100 GiB",
+        "D) 200 GiB"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS recommends a minimum of 50 GiB for root and SAP binary volumes to accommodate the operating system, SAP HANA software, and system files."
+    },
+    {
+      "id": 31,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company is implementing SAP Landscape Management (LaMa) on AWS. Which AWS service integration is required for automated instance provisioning?",
+      "options": [
+        "A) AWS CloudFormation",
+        "B) AWS Systems Manager",
+        "C) AWS Connector for SAP LaMa",
+        "D) AWS Launch Wizard"
+      ],
+      "correct_answer": "C",
+      "explanation": "AWS Connector for SAP LaMa provides the integration between SAP Landscape Management and AWS services, enabling automated provisioning and management of SAP systems."
+    },
+    {
+      "id": 32,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "medium",
+      "question": "Which migration approach allows simultaneous migration and upgrade from SAP ECC to S/4HANA?",
+      "options": [
+        "A) Classical system copy",
+        "B) Backup and restore",
+        "C) DMO (Database Migration Option)",
+        "D) System replication"
+      ],
+      "correct_answer": "C",
+      "explanation": "DMO (Database Migration Option) allows simultaneous migration to AWS and upgrade from SAP ECC to S/4HANA in a single step, reducing overall project timeline."
+    },
+    {
+      "id": 33,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service provides automated discovery and inventory of SAP systems?",
+      "options": [
+        "A) AWS Config",
+        "B) AWS Systems Manager for SAP",
+        "C) AWS CloudTrail",
+        "D) Amazon Inspector"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Systems Manager for SAP automatically discovers and maintains an inventory of SAP systems running on AWS, providing centralized visibility and management."
+    },
+    {
+      "id": 34,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP HANA disaster recovery, what is the maximum supported distance for synchronous system replication?",
+      "options": [
+        "A) 100 km",
+        "B) 200 km",
+        "C) 500 km",
+        "D) No distance limit"
+      ],
+      "correct_answer": "A",
+      "explanation": "SAP HANA synchronous system replication is typically limited to approximately 100 km due to network latency requirements to maintain performance and data consistency."
+    },
+    {
+      "id": 35,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company needs to implement SAP HANA with encryption at rest and in transit. Which combination provides comprehensive encryption?",
+      "options": [
+        "A) EBS encryption + TLS for application connections",
+        "B) EBS encryption + SAP HANA internal encryption + TLS",
+        "C) KMS encryption + VPN connections",
+        "D) S3 encryption + Direct Connect"
+      ],
+      "correct_answer": "B",
+      "explanation": "Comprehensive encryption requires EBS encryption for storage, SAP HANA internal encryption for database-level security, and TLS for encrypted communication between tiers."
+    },
+    {
+      "id": 36,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service helps assess the readiness of SAP workloads for cloud migration?",
+      "options": [
+        "A) AWS Migration Hub",
+        "B) AWS Application Discovery Service",
+        "C) AWS Migration Evaluator",
+        "D) All of the above"
+      ],
+      "correct_answer": "D",
+      "explanation": "All three services contribute to SAP migration assessment: Migration Hub for orchestration, Application Discovery Service for inventory, and Migration Evaluator for business case analysis."
+    },
+    {
+      "id": 37,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which metric should trigger an alert for potential SAP HANA memory issues?",
+      "options": [
+        "A) Memory utilization > 70%",
+        "B) Memory utilization > 80%",
+        "C) Memory utilization > 90%",
+        "D) Memory utilization > 95%"
+      ],
+      "correct_answer": "B",
+      "explanation": "SAP HANA memory utilization above 80% should trigger alerts as it indicates potential memory pressure that could impact performance and require intervention."
+    },
+    {
+      "id": 38,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "An organization needs to design SAP HANA networking with microsecond-level latency requirements. Which AWS feature should be prioritized?",
+      "options": [
+        "A) Enhanced Networking with SR-IOV",
+        "B) Placement Groups (Cluster)",
+        "C) Dedicated Hosts",
+        "D) All of the above"
+      ],
+      "correct_answer": "D",
+      "explanation": "For microsecond-level latency, all features should be used: Enhanced Networking for optimized network performance, Cluster Placement Groups for physical proximity, and Dedicated Hosts for consistent performance."
+    },
+    {
+      "id": 39,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which AWS storage service is recommended for SAP transport directory (/usr/sap/trans)?",
+      "options": [
+        "A) Amazon EBS",
+        "B) Amazon EFS",
+        "C) Amazon S3",
+        "D) Amazon FSx"
+      ],
+      "correct_answer": "B",
+      "explanation": "Amazon EFS is recommended for SAP transport directory as it provides shared NFS access across multiple SAP systems and supports the concurrent access patterns required for transport management."
+    },
+    {
+      "id": 40,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "medium",
+      "question": "During SAP HANA migration, which replication mode should be used to minimize data loss risk?",
+      "options": [
+        "A) Asynchronous replication",
+        "B) Synchronous replication",
+        "C) Synchronous in-memory replication",
+        "D) Log shipping"
+      ],
+      "correct_answer": "C",
+      "explanation": "Synchronous in-memory replication provides the highest level of data protection during migration by ensuring all transactions are replicated to the target system before being committed."
+    },
+    {
+      "id": 41,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company needs to implement automated failover for SAP HANA with custom health checks. Which combination of AWS services should be used?",
+      "options": [
+        "A) Application Load Balancer + Auto Scaling",
+        "B) Network Load Balancer + Lambda health checks + Route 53",
+        "C) Pacemaker cluster + overlay IP + Route 53 health checks",
+        "D) CloudWatch alarms + Lambda + EC2 API"
+      ],
+      "correct_answer": "C",
+      "explanation": "Pacemaker cluster with overlay IP provides SAP HANA-aware failover capabilities, while Route 53 health checks enable DNS-based traffic routing for automated failover at the application level."
+    },
+    {
+      "id": 42,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS region consideration is most important for SAP workload deployment?",
+      "options": [
+        "A) Number of Availability Zones",
+        "B) Proximity to users and data residency requirements",
+        "C) Cost of compute instances",
+        "D) Available instance types"
+      ],
+      "correct_answer": "B",
+      "explanation": "Proximity to users for performance and data residency requirements for compliance are the most critical factors when selecting AWS regions for SAP workloads."
+    },
+    {
+      "id": 43,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP HANA scale-out deployments, which network configuration ensures optimal inter-node communication?",
+      "options": [
+        "A) Default VPC with public subnets",
+        "B) Custom VPC with private subnets and Enhanced Networking",
+        "C) Multiple VPCs with VPC peering",
+        "D) Single subnet across multiple AZs"
+      ],
+      "correct_answer": "B",
+      "explanation": "Custom VPC with private subnets provides security isolation, while Enhanced Networking (SR-IOV) ensures optimal network performance for inter-node communication in SAP HANA scale-out."
+    },
+    {
+      "id": 44,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "hard",
+      "question": "A company is migrating SAP systems with strict compliance requirements. Which AWS service helps maintain audit trails during migration?",
+      "options": [
+        "A) AWS CloudTrail",
+        "B) AWS Config",
+        "C) AWS Security Hub",
+        "D) All of the above"
+      ],
+      "correct_answer": "D",
+      "explanation": "Comprehensive compliance requires CloudTrail for API auditing, Config for configuration tracking, and Security Hub for centralized security findings during the migration process."
+    },
+    {
+      "id": 45,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service provides automated cost optimization recommendations for SAP workloads?",
+      "options": [
+        "A) AWS Cost Explorer",
+        "B) AWS Trusted Advisor",
+        "C) AWS Compute Optimizer",
+        "D) All of the above"
+      ],
+      "correct_answer": "D",
+      "explanation": "All three services contribute to cost optimization: Cost Explorer for usage analysis, Trusted Advisor for general recommendations, and Compute Optimizer for right-sizing recommendations."
+    },
+    {
+      "id": 46,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP HANA production workloads, which EBS volume type provides the highest durability?",
+      "options": [
+        "A) gp3",
+        "B) io1",
+        "C) io2",
+        "D) io2 Block Express"
+      ],
+      "correct_answer": "C",
+      "explanation": "io2 volumes provide 99.999% durability (compared to 99.999% for io1 and 99.99% for gp3), making them the most durable option for critical SAP HANA production workloads."
+    },
+    {
+      "id": 47,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service simplifies SAP license management in the cloud?",
+      "options": [
+        "A) AWS License Manager",
+        "B) AWS Systems Manager",
+        "C) AWS Config",
+        "D) AWS Organizations"
+      ],
+      "correct_answer": "A",
+      "explanation": "AWS License Manager helps track, manage, and control software licenses including SAP licenses across AWS and on-premises environments."
+    },
+    {
+      "id": 48,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "medium",
+      "question": "Which factor most significantly impacts SAP HANA migration duration?",
+      "options": [
+        "A) Number of application servers",
+        "B) Database size and network bandwidth",
+        "C) Number of users",
+        "D) SAP version"
+      ],
+      "correct_answer": "B",
+      "explanation": "Database size and available network bandwidth are the primary factors determining SAP HANA migration duration, as data transfer is typically the longest phase of migration."
+    },
+    {
+      "id": 49,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company needs to implement cross-region disaster recovery for SAP HANA with 4-hour RTO. Which approach should be used?",
+      "options": [
+        "A) Asynchronous system replication + automated failover",
+        "B) EBS snapshots + manual recovery",
+        "C) Backup/restore with AWS Backint",
+        "D) AWS Application Migration Service"
+      ],
+      "correct_answer": "A",
+      "explanation": "Asynchronous system replication across regions with automated failover scripts can achieve 4-hour RTO, while backup/restore methods typically require longer recovery times."
+    },
+    {
+      "id": 50,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which EC2 instance feature is essential for SAP HANA workloads to ensure consistent performance?",
+      "options": [
+        "A) Burstable performance",
+        "B) EBS-optimized",
+        "C) Spot instance eligibility",
+        "D) Auto Scaling compatibility"
+      ],
+      "correct_answer": "B",
+      "explanation": "EBS-optimized instances provide dedicated bandwidth for storage operations, ensuring consistent I/O performance critical for SAP HANA database operations."
+    },
+    {
+      "id": 51,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company is implementing SAP HANA with TDE (Transparent Data Encryption). Which key management approach provides the highest security?",
+      "options": [
+        "A) SAP HANA internal key management",
+        "B) AWS KMS with customer-managed keys",
+        "C) AWS KMS with AWS-managed keys",
+        "D) Hardware Security Module (HSM)"
+      ],
+      "correct_answer": "D",
+      "explanation": "Hardware Security Module (HSM) provides the highest level of security for key management with SAP HANA TDE, offering dedicated hardware-based key protection and compliance with strict security standards."
+    },
+    {
+      "id": 52,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service provides templates for common SAP migration scenarios?",
+      "options": [
+        "A) AWS CloudFormation",
+        "B) AWS Migration Hub Orchestrator",
+        "C) AWS Service Catalog",
+        "D) AWS Systems Manager"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Migration Hub Orchestrator provides pre-built templates and workflows for common SAP migration scenarios, simplifying the migration process."
+    },
+    {
+      "id": 53,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which CloudWatch log group should be monitored for SAP HANA system replication issues?",
+      "options": [
+        "A) /var/log/messages",
+        "B) /usr/sap/<SID>/HDB<instance>/trace",
+        "C) /var/log/pacemaker.log",
+        "D) All of the above"
+      ],
+      "correct_answer": "D",
+      "explanation": "Comprehensive monitoring requires all log sources: system messages for OS issues, SAP HANA trace logs for database issues, and Pacemaker logs for cluster issues."
+    },
+    {
+      "id": 54,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP HANA multi-tenant database containers (MDC), which resource allocation strategy is recommended?",
+      "options": [
+        "A) Equal memory allocation per tenant",
+        "B) Dynamic memory allocation based on usage",
+        "C) Fixed memory allocation with resource limits",
+        "D) Unlimited memory allocation"
+      ],
+      "correct_answer": "C",
+      "explanation": "Fixed memory allocation with resource limits ensures predictable performance and prevents one tenant from consuming all available resources in an MDC environment."
+    },
+    {
+      "id": 55,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS networking feature should be enabled for SAP workloads to improve network performance?",
+      "options": [
+        "A) VPC Flow Logs",
+        "B) Enhanced Networking (SR-IOV)",
+        "C) VPC Endpoints",
+        "D) NAT Gateway"
+      ],
+      "correct_answer": "B",
+      "explanation": "Enhanced Networking with SR-IOV provides higher bandwidth, lower latency, and lower CPU utilization, which are critical for SAP workload performance."
+    },
+    {
+      "id": 56,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "hard",
+      "question": "A company is migrating SAP HANA with active/active system replication. Which AWS architecture supports this configuration?",
+      "options": [
+        "A) Single AZ with cluster placement group",
+        "B) Multi-AZ with synchronous replication",
+        "C) Multi-region with asynchronous replication",
+        "D) Active/active is not supported with SAP HANA"
+      ],
+      "correct_answer": "D",
+      "explanation": "SAP HANA System Replication operates in active/passive mode only. The secondary system cannot accept write operations, making true active/active configuration unsupported."
+    },
+    {
+      "id": 57,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service provides automated patching for the underlying infrastructure while maintaining SAP support?",
+      "options": [
+        "A) AWS Systems Manager Patch Manager",
+        "B) AWS OpsWorks",
+        "C) AWS CodeDeploy",
+        "D) Amazon Inspector"
+      ],
+      "correct_answer": "A",
+      "explanation": "AWS Systems Manager Patch Manager provides automated patching capabilities while allowing control over patch deployment to maintain SAP support requirements and minimize downtime."
+    },
+    {
+      "id": 58,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "An organization needs to design SAP HANA for 99.99% availability. Which combination of AWS features should be implemented?",
+      "options": [
+        "A) Multi-AZ deployment + EBS snapshots",
+        "B) System Replication + Pacemaker + Multi-AZ + Auto Scaling",
+        "C) Reserved Instances + CloudWatch monitoring",
+        "D) Dedicated Hosts + Enhanced Networking"
+      ],
+      "correct_answer": "B",
+      "explanation": "Achieving 99.99% availability requires SAP HANA System Replication for database-level HA, Pacemaker for automated failover, Multi-AZ for infrastructure resilience, and Auto Scaling for application tier redundancy."
+    },
+    {
+      "id": 59,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service integration allows SAP systems to directly access S3 for data archiving?",
+      "options": [
+        "A) AWS Storage Gateway",
+        "B) Amazon S3 VPC Endpoint",
+        "C) AWS DataSync",
+        "D) AWS Direct Connect"
+      ],
+      "correct_answer": "B",
+      "explanation": "Amazon S3 VPC Endpoint allows SAP systems to access S3 directly from the VPC without internet gateway, providing secure and efficient data archiving capabilities."
+    },
+    {
+      "id": 60,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service helps estimate the cost of running SAP workloads on AWS?",
+      "options": [
+        "A) AWS Pricing Calculator",
+        "B) AWS Cost Explorer",
+        "C) AWS Budgets",
+        "D) AWS Trusted Advisor"
+      ],
+      "correct_answer": "A",
+      "explanation": "AWS Pricing Calculator provides detailed cost estimates for SAP workloads including compute, storage, and networking costs before migration to AWS."
+    },
+    {
+      "id": 61,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company needs to implement SAP HANA monitoring with custom metrics for business KPIs. Which approach should be used?",
+      "options": [
+        "A) CloudWatch custom metrics + SAP HANA SQL queries",
+        "B) SAP Solution Manager integration only",
+        "C) Third-party monitoring tools",
+        "D) AWS X-Ray tracing"
+      ],
+      "correct_answer": "A",
+      "explanation": "CloudWatch custom metrics combined with SAP HANA SQL queries allows creation of business-specific KPIs and integration with AWS native monitoring and alerting capabilities."
+    },
+    {
+      "id": 62,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP HANA development systems, which cost optimization strategy provides the best savings?",
+      "options": [
+        "A) Reserved Instances",
+        "B) Spot Instances",
+        "C) Scheduled scaling with Lambda",
+        "D) Savings Plans"
+      ],
+      "correct_answer": "C",
+      "explanation": "Scheduled scaling with Lambda allows automatic start/stop of development systems during non-business hours, providing significant cost savings for non-production SAP environments."
+    },
+    {
+      "id": 63,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service provides secure parameter storage for SAP system passwords and connection strings?",
+      "options": [
+        "A) AWS Secrets Manager",
+        "B) AWS Systems Manager Parameter Store",
+        "C) AWS KMS",
+        "D) Both A and B"
+      ],
+      "correct_answer": "D",
+      "explanation": "Both AWS Secrets Manager and Systems Manager Parameter Store can securely store SAP passwords and connection strings, with Secrets Manager providing automatic rotation capabilities."
+    },
+    {
+      "id": 64,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "medium",
+      "question": "Which SAP migration approach provides the fastest time-to-value for S/4HANA transformation?",
+      "options": [
+        "A) Greenfield implementation",
+        "B) Brownfield migration with DMO",
+        "C) Selective data transition",
+        "D) Hybrid approach"
+      ],
+      "correct_answer": "B",
+      "explanation": "Brownfield migration with DMO allows leveraging existing configurations and customizations while upgrading to S/4HANA, providing faster time-to-value compared to greenfield implementations."
+    },
+    {
+      "id": 65,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service should be used to automate SAP system refresh from production to development?",
+      "options": [
+        "A) AWS Lambda + EBS snapshots",
+        "B) AWS Systems Manager Automation",
+        "C) AWS CodePipeline",
+        "D) AWS Batch"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Systems Manager Automation provides runbooks and workflows that can orchestrate complex SAP system refresh processes including database copies and system configurations."
+    },
+    {
+      "id": 66,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "An organization requires SAP HANA with sub-millisecond query response times. Which AWS configuration should be prioritized?",
+      "options": [
+        "A) Highest memory instance with NVMe storage",
+        "B) Cluster placement group with Enhanced Networking",
+        "C) In-memory columnar storage optimization",
+        "D) All of the above"
+      ],
+      "correct_answer": "D",
+      "explanation": "Sub-millisecond response times require all optimizations: highest memory instances for data caching, NVMe storage for fastest I/O, cluster placement groups for minimal latency, and Enhanced Networking for optimized communication."
+    },
+    {
+      "id": 67,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service provides automated compliance reporting for SAP workloads?",
+      "options": [
+        "A) AWS Config",
+        "B) AWS Security Hub",
+        "C) AWS Audit Manager",
+        "D) All of the above"
+      ],
+      "correct_answer": "D",
+      "explanation": "Comprehensive compliance reporting requires AWS Config for resource compliance, Security Hub for security findings aggregation, and Audit Manager for automated compliance assessments."
+    },
+    {
+      "id": 68,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service helps validate SAP workload performance after migration?",
+      "options": [
+        "A) AWS CloudWatch",
+        "B) AWS X-Ray",
+        "C) AWS Performance Insights",
+        "D) SAP HANA Hardware and Cloud Measurement Tools"
+      ],
+      "correct_answer": "D",
+      "explanation": "SAP HANA Hardware and Cloud Measurement Tools (HCMT) are specifically designed to validate SAP HANA performance and ensure it meets SAP's KPIs after migration."
+    },
+    {
+      "id": 69,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company needs to implement SAP HANA log shipping for compliance. Which AWS storage service provides the most cost-effective long-term retention?",
+      "options": [
+        "A) Amazon S3 Standard",
+        "B) Amazon S3 Glacier",
+        "C) Amazon S3 Glacier Deep Archive",
+        "D) Amazon EBS Cold HDD"
+      ],
+      "correct_answer": "C",
+      "explanation": "Amazon S3 Glacier Deep Archive provides the lowest cost for long-term retention of SAP HANA logs with retrieval times suitable for compliance requirements."
+    },
+    {
+      "id": 70,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP HANA tenant databases, which isolation level provides the best security?",
+      "options": [
+        "A) Shared instance with resource limits",
+        "B) Dedicated instance per tenant",
+        "C) Container-based isolation",
+        "D) Network-based isolation only"
+      ],
+      "correct_answer": "B",
+      "explanation": "Dedicated instance per tenant provides the highest level of isolation and security, eliminating potential cross-tenant data access and resource contention issues."
+    },
+    {
+      "id": 71,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service provides centralized logging for SAP applications across multiple instances?",
+      "options": [
+        "A) Amazon CloudWatch Logs",
+        "B) AWS CloudTrail",
+        "C) Amazon Kinesis",
+        "D) Amazon OpenSearch"
+      ],
+      "correct_answer": "A",
+      "explanation": "Amazon CloudWatch Logs provides centralized log collection, storage, and analysis for SAP applications across multiple EC2 instances with real-time monitoring capabilities."
+    },
+    {
+      "id": 72,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "hard",
+      "question": "A company is migrating SAP HANA with zero-downtime requirements. Which combination of techniques should be used?",
+      "options": [
+        "A) System Replication + DNS failover + application connection pooling",
+        "B) Backup/restore + maintenance window",
+        "C) DMO with downtime optimization",
+        "D) Blue-green deployment"
+      ],
+      "correct_answer": "A",
+      "explanation": "Zero-downtime migration requires SAP HANA System Replication for continuous data sync, DNS failover for traffic redirection, and application connection pooling to handle connection transitions seamlessly."
+    },
+    {
+      "id": 73,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service provides automated rightsizing recommendations for SAP workloads?",
+      "options": [
+        "A) AWS Cost Explorer",
+        "B) AWS Compute Optimizer",
+        "C) AWS Trusted Advisor",
+        "D) All of the above"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Compute Optimizer specifically provides ML-based rightsizing recommendations for EC2 instances running SAP workloads based on actual utilization patterns."
+    },
+    {
+      "id": 74,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS feature ensures SAP HANA instances are physically separated from other customers?",
+      "options": [
+        "A) VPC isolation",
+        "B) Dedicated Hosts",
+        "C) Security Groups",
+        "D) Private subnets"
+      ],
+      "correct_answer": "B",
+      "explanation": "Dedicated Hosts provide physical server isolation, ensuring SAP HANA instances run on hardware dedicated exclusively to a single customer account."
+    },
+    {
+      "id": 75,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company needs to implement SAP HANA with FIPS 140-2 Level 3 compliance. Which AWS service should be used for key management?",
+      "options": [
+        "A) AWS KMS",
+        "B) AWS CloudHSM",
+        "C) AWS Secrets Manager",
+        "D) AWS Certificate Manager"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS CloudHSM provides FIPS 140-2 Level 3 validated hardware security modules required for the highest level of cryptographic key protection and compliance."
+    },
+    {
+      "id": 76,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service helps orchestrate complex SAP migration workflows with dependencies?",
+      "options": [
+        "A) AWS Step Functions",
+        "B) AWS Migration Hub Orchestrator",
+        "C) AWS Systems Manager",
+        "D) AWS CodePipeline"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Migration Hub Orchestrator is specifically designed for complex migration workflows with built-in SAP migration templates and dependency management."
+    },
+    {
+      "id": 77,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which CloudWatch metric indicates potential SAP HANA disk space issues?",
+      "options": [
+        "A) CPUUtilization",
+        "B) DiskSpaceUtilization",
+        "C) NetworkIn",
+        "D) MemoryUtilization"
+      ],
+      "correct_answer": "B",
+      "explanation": "DiskSpaceUtilization metric indicates when SAP HANA storage volumes are approaching capacity limits, which can cause database operations to fail."
+    },
+    {
+      "id": 78,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP HANA disaster recovery across regions, which replication mode balances performance and data protection?",
+      "options": [
+        "A) Synchronous replication",
+        "B) Asynchronous replication",
+        "C) Synchronous in-memory replication",
+        "D) Log shipping"
+      ],
+      "correct_answer": "B",
+      "explanation": "Asynchronous replication across regions provides good data protection while maintaining acceptable performance, as synchronous replication over long distances would severely impact performance."
+    },
+    {
+      "id": 79,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company is implementing SAP HANA with data tiering to S3. Which AWS service provides the most efficient data transfer?",
+      "options": [
+        "A) AWS DataSync",
+        "B) S3 Transfer Acceleration",
+        "C) S3 VPC Endpoint with intelligent tiering",
+        "D) AWS Storage Gateway"
+      ],
+      "correct_answer": "C",
+      "explanation": "S3 VPC Endpoint provides direct, secure access from SAP HANA to S3, while intelligent tiering automatically moves data between storage classes based on access patterns, optimizing costs."
+    },
+    {
+      "id": 80,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "medium",
+      "question": "Which factor is most critical for determining SAP HANA migration success?",
+      "options": [
+        "A) Network bandwidth",
+        "B) Thorough testing and validation",
+        "C) Instance type selection",
+        "D) Storage configuration"
+      ],
+      "correct_answer": "B",
+      "explanation": "Thorough testing and validation of the migrated SAP HANA system is the most critical factor for ensuring migration success, including performance, functionality, and integration testing."
+    },
+    {
+      "id": 81,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service provides automated security patching for SAP HANA operating systems?",
+      "options": [
+        "A) AWS Systems Manager Patch Manager",
+        "B) AWS Inspector",
+        "C) AWS Security Hub",
+        "D) AWS Config"
+      ],
+      "correct_answer": "A",
+      "explanation": "AWS Systems Manager Patch Manager provides automated patching capabilities for operating systems running SAP HANA, with maintenance windows and rollback capabilities."
+    },
+    {
+      "id": 82,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "An organization needs SAP HANA with 99.999% availability. Which architecture should be implemented?",
+      "options": [
+        "A) Single AZ with local redundancy",
+        "B) Multi-AZ with synchronous replication + multi-region async replication",
+        "C) Multi-region active-active configuration",
+        "D) Clustered deployment in single region"
+      ],
+      "correct_answer": "B",
+      "explanation": "99.999% availability requires multi-AZ synchronous replication for local HA and multi-region asynchronous replication for disaster recovery, providing comprehensive protection against all failure scenarios."
+    },
+    {
+      "id": 83,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service provides automated backup scheduling for SAP HANA?",
+      "options": [
+        "A) AWS Backup",
+        "B) AWS Backint Agent for SAP HANA",
+        "C) Amazon EBS Snapshots",
+        "D) All of the above"
+      ],
+      "correct_answer": "D",
+      "explanation": "All three services can provide automated backup scheduling: AWS Backup for centralized backup management, Backint Agent for SAP HANA native backups, and EBS Snapshots for volume-level backups."
+    },
+    {
+      "id": 84,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service provides assessment reports for SAP migration readiness?",
+      "options": [
+        "A) AWS Migration Evaluator",
+        "B) AWS Application Discovery Service",
+        "C) AWS Migration Hub",
+        "D) All of the above"
+      ],
+      "correct_answer": "D",
+      "explanation": "All three services contribute to migration readiness assessment: Migration Evaluator for business case analysis, Application Discovery Service for inventory assessment, and Migration Hub for overall migration planning."
+    },
+    {
+      "id": 85,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company needs to implement SAP HANA monitoring with predictive analytics for capacity planning. Which combination of AWS services should be used?",
+      "options": [
+        "A) CloudWatch + Lambda + SNS",
+        "B) CloudWatch + Amazon Forecast + QuickSight",
+        "C) CloudWatch + SageMaker + Kinesis",
+        "D) CloudWatch + OpenSearch + Grafana"
+      ],
+      "correct_answer": "B",
+      "explanation": "CloudWatch collects metrics, Amazon Forecast provides ML-based predictive analytics for capacity planning, and QuickSight offers visualization and dashboards for SAP HANA capacity management."
+    },
+    {
+      "id": 86,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "A company is designing SAP HANA with FSx for NetApp ONTAP for scale-out architecture. Which NFS version is required for optimal performance?",
+      "options": [
+        "A) NFSv3",
+        "B) NFSv4.0",
+        "C) NFSv4.1",
+        "D) NFSv4.2"
+      ],
+      "correct_answer": "C",
+      "explanation": "NFSv4.1 is required for SAP HANA scale-out systems on AWS with FSx for NetApp ONTAP to ensure proper file locking and performance characteristics."
+    },
+    {
+      "id": 87,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "For SAP HANA System Replication with ENSA2 architecture, which Pacemaker resource agents are required?",
+      "options": [
+        "A) SAPHana, SAPHanaTopology, and SAPInstance",
+        "B) SAPHana and SAPHanaTopology only",
+        "C) SAPInstance with ASCS and ERS primitives",
+        "D) Custom ENSA2-specific resource agents"
+      ],
+      "correct_answer": "B",
+      "explanation": "With ENSA2 architecture, only SAPHana and SAPHanaTopology resource agents are required as ENSA2 eliminates the need for ERS failover management."
+    },
+    {
+      "id": 88,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service provides pre-built migration templates specifically for SAP HANA workloads?",
+      "options": [
+        "A) AWS CloudFormation",
+        "B) AWS Migration Hub Orchestrator",
+        "C) AWS Systems Manager",
+        "D) AWS Service Catalog"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Migration Hub Orchestrator provides pre-built templates and automated workflows specifically designed for SAP HANA migration scenarios."
+    },
+    {
+      "id": 89,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service provides SAP-specific monitoring capabilities and automated discovery of SAP systems?",
+      "options": [
+        "A) Amazon CloudWatch",
+        "B) AWS Systems Manager for SAP",
+        "C) AWS Config",
+        "D) AWS X-Ray"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Systems Manager for SAP provides automated discovery, monitoring, and management capabilities specifically designed for SAP workloads on AWS."
+    },
+    {
+      "id": 90,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company requires SAP HANA with 48TB memory for their analytics workload. Which instance configuration provides the most cost-effective solution?",
+      "options": [
+        "A) Single u-24tb1.112xlarge instance",
+        "B) Two u-24tb1.112xlarge instances in scale-out",
+        "C) Eight u-6tb1.112xlarge instances in scale-out",
+        "D) Custom bare metal configuration"
+      ],
+      "correct_answer": "C",
+      "explanation": "Eight u-6tb1.112xlarge instances (6TB each = 48TB total) in SAP HANA scale-out configuration provides the required memory capacity with better fault tolerance and potentially lower costs than larger single instances."
+    },
+    {
+      "id": 91,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS storage service is recommended for SAP HANA shared volumes in multi-node deployments?",
+      "options": [
+        "A) Amazon EBS gp3",
+        "B) Amazon EFS",
+        "C) Amazon S3",
+        "D) Instance store"
+      ],
+      "correct_answer": "B",
+      "explanation": "Amazon EFS provides the shared NFS storage required for SAP HANA /hana/shared volumes in multi-node scale-out deployments."
+    },
+    {
+      "id": 92,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "medium",
+      "question": "During SAP S/4HANA brownfield migration, which approach allows simultaneous migration to AWS and conversion from ECC?",
+      "options": [
+        "A) Classical system copy",
+        "B) DMO (Database Migration Option) with system move",
+        "C) Backup and restore method",
+        "D) System replication"
+      ],
+      "correct_answer": "B",
+      "explanation": "DMO with system move enables simultaneous migration to AWS and conversion from SAP ECC to S/4HANA in a single step, reducing overall project timeline."
+    },
+    {
+      "id": 93,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company needs to implement automated SAP HANA backup with cross-region replication for disaster recovery. Which combination provides the most comprehensive solution?",
+      "options": [
+        "A) AWS Backint Agent + S3 Cross-Region Replication",
+        "B) EBS snapshots + cross-region copy",
+        "C) AWS Backup + cross-region backup vault",
+        "D) All of the above"
+      ],
+      "correct_answer": "A",
+      "explanation": "AWS Backint Agent provides SAP-certified backup integration with SAP HANA native commands, and S3 Cross-Region Replication ensures automated disaster recovery capabilities."
+    },
+    {
+      "id": 94,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP HANA production workloads requiring sub-millisecond latency, which EC2 placement strategy should be used?",
+      "options": [
+        "A) Spread placement group",
+        "B) Partition placement group",
+        "C) Cluster placement group",
+        "D) No placement group needed"
+      ],
+      "correct_answer": "C",
+      "explanation": "Cluster placement groups provide the lowest network latency by placing instances in close physical proximity within a single Availability Zone."
+    },
+    {
+      "id": 95,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which Linux distribution provides SAP-specific optimizations and High Availability Extensions?",
+      "options": [
+        "A) Amazon Linux 2",
+        "B) Ubuntu Server",
+        "C) SUSE Linux Enterprise Server for SAP",
+        "D) CentOS"
+      ],
+      "correct_answer": "C",
+      "explanation": "SUSE Linux Enterprise Server for SAP includes SAP-specific optimizations, High Availability Extensions (HAE), and Extended Service Pack Overlap Support (ESPOS)."
+    },
+    {
+      "id": 96,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "hard",
+      "question": "A company is migrating a 20TB SAP HANA database with a 4-hour downtime window. Which migration approach should be used?",
+      "options": [
+        "A) Full backup and restore over network",
+        "B) SAP HANA System Replication with takeover",
+        "C) AWS Snowball Edge + delta synchronization",
+        "D) DMO with downtime optimization"
+      ],
+      "correct_answer": "B",
+      "explanation": "SAP HANA System Replication allows initial synchronization over time, then a quick takeover within the 4-hour window, minimizing actual downtime."
+    },
+    {
+      "id": 97,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which CloudWatch metric should trigger an alert for SAP HANA memory pressure?",
+      "options": [
+        "A) MemoryUtilization > 70%",
+        "B) MemoryUtilization > 80%",
+        "C) MemoryUtilization > 90%",
+        "D) MemoryUtilization > 95%"
+      ],
+      "correct_answer": "B",
+      "explanation": "SAP HANA memory utilization above 80% indicates potential memory pressure and should trigger proactive alerts for capacity planning."
+    },
+    {
+      "id": 98,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "What is the minimum shared storage requirement for SAP HANA scale-out with 4 worker nodes?",
+      "options": [
+        "A) 1TB fixed size",
+        "B) Equal to one worker node's memory",
+        "C) Equal to total memory of all nodes",
+        "D) 500GB per node"
+      ],
+      "correct_answer": "B",
+      "explanation": "For SAP HANA scale-out, the shared volume requires storage equal to one worker node's memory for every four worker nodes."
+    },
+    {
+      "id": 99,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company is implementing SAP Landscape Management (LaMa) integration with AWS. Which service enables automated instance provisioning?",
+      "options": [
+        "A) AWS CloudFormation",
+        "B) AWS Connector for SAP LaMa",
+        "C) AWS Systems Manager",
+        "D) AWS Launch Wizard"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Connector for SAP LaMa provides the integration layer between SAP Landscape Management and AWS services for automated provisioning and management."
+    },
+    {
+      "id": 100,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "medium",
+      "question": "Which factor most significantly impacts the choice between homogeneous and heterogeneous SAP migration?",
+      "options": [
+        "A) Database size",
+        "B) Network bandwidth",
+        "C) Desire to change database platform",
+        "D) Number of application servers"
+      ],
+      "correct_answer": "C",
+      "explanation": "The primary factor is whether the organization wants to change database platforms (e.g., Oracle to SAP HANA), which requires heterogeneous migration."
+    },
+    {
+      "id": 101,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service provides centralized license management for SAP workloads?",
+      "options": [
+        "A) AWS License Manager",
+        "B) AWS Systems Manager",
+        "C) AWS Config",
+        "D) AWS Organizations"
+      ],
+      "correct_answer": "A",
+      "explanation": "AWS License Manager helps track, manage, and control software licenses including SAP licenses across AWS and hybrid environments."
+    },
+    {
+      "id": 102,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP HANA disaster recovery with 1-hour RTO requirement, which replication mode should be used?",
+      "options": [
+        "A) Synchronous replication",
+        "B) Asynchronous replication",
+        "C) Synchronous in-memory replication",
+        "D) Log shipping only"
+      ],
+      "correct_answer": "B",
+      "explanation": "Asynchronous replication across regions can achieve 1-hour RTO with automated failover procedures while maintaining acceptable performance."
+    },
+    {
+      "id": 103,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company needs SAP HANA with FIPS 140-2 Level 3 compliance for encryption keys. Which AWS service should be used?",
+      "options": [
+        "A) AWS KMS",
+        "B) AWS CloudHSM",
+        "C) AWS Secrets Manager",
+        "D) AWS Certificate Manager"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS CloudHSM provides FIPS 140-2 Level 3 validated hardware security modules required for the highest level of cryptographic compliance."
+    },
+    {
+      "id": 104,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service helps assess SAP workload readiness for cloud migration?",
+      "options": [
+        "A) AWS Migration Evaluator",
+        "B) AWS Application Discovery Service",
+        "C) AWS Migration Hub",
+        "D) All of the above"
+      ],
+      "correct_answer": "D",
+      "explanation": "All three services contribute to migration readiness: Migration Evaluator for business case, Application Discovery for inventory, and Migration Hub for orchestration."
+    },
+    {
+      "id": 105,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service provides automated rightsizing recommendations specifically for SAP workloads?",
+      "options": [
+        "A) AWS Cost Explorer",
+        "B) AWS Compute Optimizer",
+        "C) AWS Trusted Advisor",
+        "D) AWS Systems Manager for SAP"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Compute Optimizer uses machine learning to provide rightsizing recommendations based on actual utilization patterns of SAP workloads."
+    },
+    {
+      "id": 106,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "An organization requires SAP HANA with 99.999% availability across multiple regions. Which architecture should be implemented?",
+      "options": [
+        "A) Multi-AZ with synchronous replication only",
+        "B) Multi-AZ synchronous + multi-region asynchronous replication",
+        "C) Single region with multiple clusters",
+        "D) Active-active configuration across regions"
+      ],
+      "correct_answer": "B",
+      "explanation": "99.999% availability requires multi-AZ synchronous replication for local HA and multi-region asynchronous replication for disaster recovery protection."
+    },
+    {
+      "id": 107,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP HANA log volumes, what is the recommended IOPS configuration regardless of memory size?",
+      "options": [
+        "A) 1,000 IOPS",
+        "B) 2,000 IOPS",
+        "C) 5,000 IOPS",
+        "D) 10,000 IOPS"
+      ],
+      "correct_answer": "C",
+      "explanation": "SAP HANA log volumes require a fixed 5,000 IOPS regardless of memory configuration to ensure proper transaction log performance."
+    },
+    {
+      "id": 108,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "medium",
+      "question": "Which SAP S/4HANA migration approach provides the fastest implementation for new functionality?",
+      "options": [
+        "A) Brownfield migration",
+        "B) Greenfield implementation",
+        "C) Selective data transition",
+        "D) Hybrid approach"
+      ],
+      "correct_answer": "B",
+      "explanation": "Greenfield implementation allows starting fresh with S/4HANA best practices and new functionality without legacy constraints, enabling faster adoption of new features."
+    },
+    {
+      "id": 109,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service provides automated patching for SAP HANA operating systems with maintenance windows?",
+      "options": [
+        "A) AWS Systems Manager Patch Manager",
+        "B) AWS OpsWorks",
+        "C) AWS CodeDeploy",
+        "D) Amazon Inspector"
+      ],
+      "correct_answer": "A",
+      "explanation": "AWS Systems Manager Patch Manager provides automated OS patching with configurable maintenance windows and rollback capabilities for SAP environments."
+    },
+    {
+      "id": 110,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP NetWeaver application servers, which EC2 instance family provides the best price-performance ratio?",
+      "options": [
+        "A) Memory-optimized (r6i)",
+        "B) Compute-optimized (c6i)",
+        "C) General purpose (m6i)",
+        "D) Storage-optimized (i4i)"
+      ],
+      "correct_answer": "C",
+      "explanation": "General purpose instances (m6i) provide balanced compute, memory, and networking resources optimal for SAP NetWeaver application servers at the best price-performance ratio."
+    },
+    {
+      "id": 111,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company is configuring SAP HANA with data tiering to Amazon S3. Which storage class provides the best cost optimization for infrequently accessed data?",
+      "options": [
+        "A) S3 Standard",
+        "B) S3 Standard-IA",
+        "C) S3 Intelligent-Tiering",
+        "D) S3 Glacier Flexible Retrieval"
+      ],
+      "correct_answer": "C",
+      "explanation": "S3 Intelligent-Tiering automatically moves data between access tiers based on usage patterns, providing optimal cost savings for SAP HANA data tiering scenarios."
+    },
+    {
+      "id": 112,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "easy",
+      "question": "Which AWS tool provides cost estimation for SAP workloads before migration?",
+      "options": [
+        "A) AWS Pricing Calculator",
+        "B) AWS Cost Explorer",
+        "C) AWS Budgets",
+        "D) AWS Trusted Advisor"
+      ],
+      "correct_answer": "A",
+      "explanation": "AWS Pricing Calculator provides detailed cost estimates for SAP workloads including compute, storage, and networking costs before migration."
+    },
+    {
+      "id": 113,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service provides automated system refresh capabilities for SAP development environments?",
+      "options": [
+        "A) AWS Lambda",
+        "B) AWS Systems Manager Automation",
+        "C) AWS CodePipeline",
+        "D) AWS Batch"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Systems Manager Automation provides runbooks and workflows to orchestrate complex SAP system refresh processes including database copies and configurations."
+    },
+    {
+      "id": 114,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "What is the minimum root volume size recommended for SAP HANA installations on AWS?",
+      "options": [
+        "A) 20 GiB",
+        "B) 50 GiB",
+        "C) 100 GiB",
+        "D) 200 GiB"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS recommends a minimum of 50 GiB for root and SAP binary volumes to accommodate the operating system, SAP HANA software, and system files."
+    },
+    {
+      "id": 115,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company needs to implement SAP HANA with overlay IP for automated failover. Which combination of services should be used?",
+      "options": [
+        "A) Application Load Balancer + Auto Scaling",
+        "B) Network Load Balancer + Lambda",
+        "C) Pacemaker cluster + Route 53 health checks",
+        "D) CloudWatch alarms + EC2 API"
+      ],
+      "correct_answer": "C",
+      "explanation": "Pacemaker cluster manages overlay IP for SAP HANA failover, while Route 53 health checks provide DNS-based traffic routing for application-level failover."
+    },
+    {
+      "id": 116,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "medium",
+      "question": "During SAP HANA migration using System Replication, which initialization method is most efficient for large databases?",
+      "options": [
+        "A) Full data shipping over network",
+        "B) Backup and restore initialization",
+        "C) Delta shipping only",
+        "D) Storage replication"
+      ],
+      "correct_answer": "B",
+      "explanation": "Backup and restore initialization is more efficient for large databases than full data shipping over network, especially when network bandwidth is limited."
+    },
+    {
+      "id": 117,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service provides centralized logging for SAP applications across multiple instances?",
+      "options": [
+        "A) Amazon CloudWatch Logs",
+        "B) AWS CloudTrail",
+        "C) Amazon Kinesis",
+        "D) Amazon OpenSearch"
+      ],
+      "correct_answer": "A",
+      "explanation": "Amazon CloudWatch Logs provides centralized log collection, storage, and analysis for SAP applications with real-time monitoring capabilities."
+    },
+    {
+      "id": 118,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP HANA multi-tenant database containers (MDC), which resource allocation strategy ensures predictable performance?",
+      "options": [
+        "A) Equal memory allocation per tenant",
+        "B) Dynamic memory allocation",
+        "C) Fixed memory allocation with resource limits",
+        "D) Unlimited memory allocation"
+      ],
+      "correct_answer": "C",
+      "explanation": "Fixed memory allocation with resource limits ensures predictable performance and prevents resource contention between tenants in MDC environments."
+    },
+    {
+      "id": 119,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which AWS networking feature should be enabled for optimal SAP workload performance?",
+      "options": [
+        "A) VPC Flow Logs",
+        "B) Enhanced Networking (SR-IOV)",
+        "C) VPC Endpoints",
+        "D) NAT Gateway"
+      ],
+      "correct_answer": "B",
+      "explanation": "Enhanced Networking with SR-IOV provides higher bandwidth, lower latency, and lower CPU utilization critical for SAP workload performance."
+    },
+    {
+      "id": 120,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "hard",
+      "question": "A company is migrating SAP with zero-downtime requirements. Which combination provides the best approach?",
+      "options": [
+        "A) System Replication + DNS failover + connection pooling",
+        "B) Backup/restore + maintenance window",
+        "C) DMO with downtime optimization",
+        "D) Blue-green deployment"
+      ],
+      "correct_answer": "A",
+      "explanation": "Zero-downtime migration requires SAP HANA System Replication for data sync, DNS failover for traffic redirection, and connection pooling for seamless transitions."
+    },
+    {
+      "id": 121,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which CloudWatch metric indicates potential SAP HANA disk space issues?",
+      "options": [
+        "A) CPUUtilization",
+        "B) DiskSpaceUtilization",
+        "C) NetworkIn",
+        "D) MemoryUtilization"
+      ],
+      "correct_answer": "B",
+      "explanation": "DiskSpaceUtilization metric indicates when SAP HANA storage volumes approach capacity limits, which can cause database operations to fail."
+    },
+    {
+      "id": 122,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS feature ensures SAP HANA instances are physically isolated from other customers?",
+      "options": [
+        "A) VPC isolation",
+        "B) Dedicated Hosts",
+        "C) Security Groups",
+        "D) Private subnets"
+      ],
+      "correct_answer": "B",
+      "explanation": "Dedicated Hosts provide physical server isolation, ensuring SAP HANA instances run on hardware dedicated exclusively to a single customer."
+    },
+    {
+      "id": 123,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company needs SAP HANA with comprehensive encryption. Which combination provides end-to-end protection?",
+      "options": [
+        "A) EBS encryption + TLS connections",
+        "B) EBS encryption + SAP HANA internal encryption + TLS",
+        "C) KMS encryption + VPN connections",
+        "D) S3 encryption + Direct Connect"
+      ],
+      "correct_answer": "B",
+      "explanation": "Comprehensive encryption requires EBS encryption for storage, SAP HANA internal encryption for database-level security, and TLS for communication encryption."
+    },
+    {
+      "id": 124,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service orchestrates complex SAP migration workflows with dependencies?",
+      "options": [
+        "A) AWS Step Functions",
+        "B) AWS Migration Hub Orchestrator",
+        "C) AWS Systems Manager",
+        "D) AWS CodePipeline"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Migration Hub Orchestrator is specifically designed for complex migration workflows with built-in SAP migration templates and dependency management."
+    },
+    {
+      "id": 125,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service provides secure parameter storage for SAP system credentials?",
+      "options": [
+        "A) AWS Secrets Manager",
+        "B) AWS Systems Manager Parameter Store",
+        "C) AWS KMS",
+        "D) Both A and B"
+      ],
+      "correct_answer": "D",
+      "explanation": "Both AWS Secrets Manager and Systems Manager Parameter Store can securely store SAP credentials, with Secrets Manager providing automatic rotation."
+    },
+    {
+      "id": 126,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP HANA disaster recovery across regions, which replication mode balances performance and data protection?",
+      "options": [
+        "A) Synchronous replication",
+        "B) Asynchronous replication",
+        "C) Synchronous in-memory replication",
+        "D) Log shipping"
+      ],
+      "correct_answer": "B",
+      "explanation": "Asynchronous replication across regions provides good data protection while maintaining acceptable performance over long distances."
+    },
+    {
+      "id": 127,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service integration allows SAP systems to directly access S3 for data archiving?",
+      "options": [
+        "A) AWS Storage Gateway",
+        "B) Amazon S3 VPC Endpoint",
+        "C) AWS DataSync",
+        "D) AWS Direct Connect"
+      ],
+      "correct_answer": "B",
+      "explanation": "Amazon S3 VPC Endpoint allows SAP systems to access S3 directly from the VPC without internet gateway, providing secure data archiving."
+    },
+    {
+      "id": 128,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "easy",
+      "question": "Which factor is most critical for SAP HANA migration success?",
+      "options": [
+        "A) Network bandwidth",
+        "B) Thorough testing and validation",
+        "C) Instance type selection",
+        "D) Storage configuration"
+      ],
+      "correct_answer": "B",
+      "explanation": "Thorough testing and validation of the migrated SAP HANA system is critical for ensuring migration success, including performance and functionality testing."
+    },
+    {
+      "id": 129,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company needs SAP HANA monitoring with custom business KPIs. Which approach should be used?",
+      "options": [
+        "A) CloudWatch custom metrics + SAP HANA SQL queries",
+        "B) SAP Solution Manager only",
+        "C) Third-party monitoring tools",
+        "D) AWS X-Ray tracing"
+      ],
+      "correct_answer": "A",
+      "explanation": "CloudWatch custom metrics combined with SAP HANA SQL queries enables creation of business-specific KPIs with AWS native monitoring integration."
+    },
+    {
+      "id": 130,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS region consideration is most important for SAP workload deployment?",
+      "options": [
+        "A) Number of Availability Zones",
+        "B) Proximity to users and data residency requirements",
+        "C) Cost of compute instances",
+        "D) Available instance types"
+      ],
+      "correct_answer": "B",
+      "explanation": "Proximity to users for performance and data residency requirements for compliance are the most critical factors for SAP workload region selection."
+    },
+    {
+      "id": 131,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP HANA scale-out deployments, which network configuration ensures optimal inter-node communication?",
+      "options": [
+        "A) Default VPC with public subnets",
+        "B) Custom VPC with private subnets and Enhanced Networking",
+        "C) Multiple VPCs with peering",
+        "D) Single subnet across multiple AZs"
+      ],
+      "correct_answer": "B",
+      "explanation": "Custom VPC with private subnets provides security, while Enhanced Networking ensures optimal performance for SAP HANA scale-out inter-node communication."
+    },
+    {
+      "id": 132,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "hard",
+      "question": "A company is migrating SAP with strict compliance requirements. Which services maintain audit trails during migration?",
+      "options": [
+        "A) AWS CloudTrail",
+        "B) AWS Config",
+        "C) AWS Security Hub",
+        "D) All of the above"
+      ],
+      "correct_answer": "D",
+      "explanation": "Comprehensive compliance requires CloudTrail for API auditing, Config for configuration tracking, and Security Hub for centralized security findings."
+    },
+    {
+      "id": 133,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service provides automated cost optimization recommendations for SAP workloads?",
+      "options": [
+        "A) AWS Cost Explorer",
+        "B) AWS Trusted Advisor",
+        "C) AWS Compute Optimizer",
+        "D) All of the above"
+      ],
+      "correct_answer": "D",
+      "explanation": "All three services contribute: Cost Explorer for usage analysis, Trusted Advisor for general recommendations, and Compute Optimizer for rightsizing."
+    },
+    {
+      "id": 134,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "An organization needs SAP HANA with microsecond-level latency. Which configuration should be prioritized?",
+      "options": [
+        "A) Highest memory instance with NVMe storage",
+        "B) Cluster placement group with Enhanced Networking",
+        "C) Dedicated Hosts for consistent performance",
+        "D) All of the above"
+      ],
+      "correct_answer": "D",
+      "explanation": "Microsecond-level latency requires all optimizations: highest memory instances, NVMe storage, cluster placement groups, and Dedicated Hosts."
+    },
+    {
+      "id": 135,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service provides automated compliance reporting for SAP workloads?",
+      "options": [
+        "A) AWS Config",
+        "B) AWS Security Hub",
+        "C) AWS Audit Manager",
+        "D) All of the above"
+      ],
+      "correct_answer": "D",
+      "explanation": "Comprehensive compliance reporting requires Config for resource compliance, Security Hub for security findings, and Audit Manager for automated assessments."
+    },
+    {
+      "id": 136,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service helps validate SAP workload performance after migration?",
+      "options": [
+        "A) AWS CloudWatch",
+        "B) AWS X-Ray",
+        "C) SAP HANA Hardware and Cloud Measurement Tools",
+        "D) AWS Performance Insights"
+      ],
+      "correct_answer": "C",
+      "explanation": "SAP HANA Hardware and Cloud Measurement Tools (HCMT) are specifically designed to validate SAP HANA performance against SAP's KPIs after migration."
+    },
+    {
+      "id": 137,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company needs SAP HANA log shipping for compliance with long-term retention. Which storage service is most cost-effective?",
+      "options": [
+        "A) Amazon S3 Standard",
+        "B) Amazon S3 Glacier",
+        "C) Amazon S3 Glacier Deep Archive",
+        "D) Amazon EBS Cold HDD"
+      ],
+      "correct_answer": "C",
+      "explanation": "Amazon S3 Glacier Deep Archive provides the lowest cost for long-term retention of SAP HANA logs with retrieval times suitable for compliance."
+    },
+    {
+      "id": 138,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP HANA tenant databases, which isolation approach provides the highest security?",
+      "options": [
+        "A) Shared instance with resource limits",
+        "B) Dedicated instance per tenant",
+        "C) Container-based isolation",
+        "D) Network-based isolation only"
+      ],
+      "correct_answer": "B",
+      "explanation": "Dedicated instance per tenant provides the highest security level, eliminating cross-tenant data access risks and resource contention."
+    },
+    {
+      "id": 139,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service provides automated backup scheduling for SAP HANA with native integration?",
+      "options": [
+        "A) AWS Backup",
+        "B) AWS Backint Agent for SAP HANA",
+        "C) Amazon EBS Snapshots",
+        "D) All of the above"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Backint Agent for SAP HANA provides native integration with SAP HANA backup commands and automated scheduling capabilities."
+    },
+    {
+      "id": 140,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service provides assessment reports for SAP migration readiness?",
+      "options": [
+        "A) AWS Migration Evaluator",
+        "B) AWS Application Discovery Service",
+        "C) AWS Migration Hub",
+        "D) All of the above"
+      ],
+      "correct_answer": "D",
+      "explanation": "All services contribute: Migration Evaluator for business case, Application Discovery for inventory, and Migration Hub for planning."
+    },
+    {
+      "id": 141,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company needs SAP HANA monitoring with predictive analytics for capacity planning. Which combination should be used?",
+      "options": [
+        "A) CloudWatch + Lambda + SNS",
+        "B) CloudWatch + Amazon Forecast + QuickSight",
+        "C) CloudWatch + SageMaker + Kinesis",
+        "D) CloudWatch + OpenSearch + Grafana"
+      ],
+      "correct_answer": "B",
+      "explanation": "CloudWatch collects metrics, Amazon Forecast provides ML-based predictive analytics, and QuickSight offers visualization for capacity planning."
+    },
+    {
+      "id": 142,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP HANA production workloads, which EBS volume type provides the highest durability?",
+      "options": [
+        "A) gp3",
+        "B) io1",
+        "C) io2",
+        "D) io2 Block Express"
+      ],
+      "correct_answer": "C",
+      "explanation": "io2 volumes provide 99.999% durability compared to 99.99% for gp3, making them most suitable for critical SAP HANA production workloads."
+    },
+    {
+      "id": 143,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service provides SAP-specific configuration validation against best practices?",
+      "options": [
+        "A) AWS Config",
+        "B) AWS Systems Manager for SAP Configuration Management",
+        "C) AWS Trusted Advisor",
+        "D) AWS Well-Architected Tool"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Systems Manager for SAP Configuration Management provides automated validation of SAP configurations against AWS and SAP best practices."
+    },
+    {
+      "id": 144,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "hard",
+      "question": "A company is migrating SAP HANA with active/active system replication requirements. Which statement is correct?",
+      "options": [
+        "A) Active/active is supported with multi-AZ deployment",
+        "B) Active/active requires custom configuration",
+        "C) Active/active is supported with multi-region deployment",
+        "D) Active/active is not supported with SAP HANA System Replication"
+      ],
+      "correct_answer": "D",
+      "explanation": "SAP HANA System Replication operates in active/passive mode only. The secondary system cannot accept write operations."
+    },
+    {
+      "id": 145,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service provides automated security patching while maintaining SAP support requirements?",
+      "options": [
+        "A) AWS Systems Manager Patch Manager",
+        "B) AWS OpsWorks",
+        "C) AWS CodeDeploy",
+        "D) Amazon Inspector"
+      ],
+      "correct_answer": "A",
+      "explanation": "AWS Systems Manager Patch Manager provides automated patching with maintenance windows and rollback capabilities suitable for SAP environments."
+    },
+    {
+      "id": 146,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "An organization needs SAP HANA with 99.99% availability. Which combination should be implemented?",
+      "options": [
+        "A) Multi-AZ deployment + EBS snapshots",
+        "B) System Replication + Pacemaker + Multi-AZ + Auto Scaling",
+        "C) Reserved Instances + CloudWatch monitoring",
+        "D) Dedicated Hosts + Enhanced Networking"
+      ],
+      "correct_answer": "B",
+      "explanation": "99.99% availability requires SAP HANA System Replication, Pacemaker for automated failover, Multi-AZ for infrastructure resilience, and Auto Scaling for application tier."
+    },
+    {
+      "id": 147,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which file system is recommended for SAP transport directory (/usr/sap/trans)?",
+      "options": [
+        "A) Amazon EBS",
+        "B) Amazon EFS",
+        "C) Amazon S3",
+        "D) Amazon FSx"
+      ],
+      "correct_answer": "B",
+      "explanation": "Amazon EFS provides shared NFS access required for SAP transport directory across multiple SAP systems with concurrent access support."
+    },
+    {
+      "id": 148,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "medium",
+      "question": "During SAP HANA migration, which replication mode minimizes data loss risk?",
+      "options": [
+        "A) Asynchronous replication",
+        "B) Synchronous replication",
+        "C) Synchronous in-memory replication",
+        "D) Log shipping"
+      ],
+      "correct_answer": "C",
+      "explanation": "Synchronous in-memory replication provides the highest data protection by ensuring all transactions are replicated before being committed."
+    },
+    {
+      "id": 149,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company needs automated failover for SAP HANA with custom health checks. Which combination should be used?",
+      "options": [
+        "A) Application Load Balancer + Auto Scaling",
+        "B) Network Load Balancer + Lambda health checks",
+        "C) Pacemaker cluster + overlay IP + Route 53 health checks",
+        "D) CloudWatch alarms + Lambda + EC2 API"
+      ],
+      "correct_answer": "C",
+      "explanation": "Pacemaker cluster with overlay IP provides SAP HANA-aware failover, while Route 53 health checks enable DNS-based traffic routing."
+    },
+    {
+      "id": 150,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP HANA development systems, which cost optimization strategy provides the best savings?",
+      "options": [
+        "A) Reserved Instances",
+        "B) Spot Instances",
+        "C) Scheduled scaling with Lambda",
+        "D) Savings Plans"
+      ],
+      "correct_answer": "C",
+      "explanation": "Scheduled scaling with Lambda allows automatic start/stop of development systems during non-business hours, providing significant cost savings."
+    },
+    {
+      "id": 151,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company is implementing SAP HANA with TDE (Transparent Data Encryption). Which key management provides highest security?",
+      "options": [
+        "A) SAP HANA internal key management",
+        "B) AWS KMS with customer-managed keys",
+        "C) AWS KMS with AWS-managed keys",
+        "D) Hardware Security Module (HSM)"
+      ],
+      "correct_answer": "D",
+      "explanation": "Hardware Security Module (HSM) provides the highest security for TDE key management with dedicated hardware-based key protection."
+    },
+    {
+      "id": 152,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service provides templates for common SAP migration scenarios?",
+      "options": [
+        "A) AWS CloudFormation",
+        "B) AWS Migration Hub Orchestrator",
+        "C) AWS Service Catalog",
+        "D) AWS Systems Manager"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Migration Hub Orchestrator provides pre-built templates and workflows for common SAP migration scenarios."
+    },
+    {
+      "id": 153,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which CloudWatch log groups should be monitored for SAP HANA system replication issues?",
+      "options": [
+        "A) /var/log/messages",
+        "B) /usr/sap/<SID>/HDB<instance>/trace",
+        "C) /var/log/pacemaker.log",
+        "D) All of the above"
+      ],
+      "correct_answer": "D",
+      "explanation": "Comprehensive monitoring requires system messages for OS issues, SAP HANA trace logs for database issues, and Pacemaker logs for cluster issues."
+    },
+    {
+      "id": 154,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which EC2 instance feature is essential for SAP HANA to ensure consistent I/O performance?",
+      "options": [
+        "A) Burstable performance",
+        "B) EBS-optimized",
+        "C) Spot instance eligibility",
+        "D) Auto Scaling compatibility"
+      ],
+      "correct_answer": "B",
+      "explanation": "EBS-optimized instances provide dedicated bandwidth for storage operations, ensuring consistent I/O performance critical for SAP HANA."
+    },
+    {
+      "id": 155,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP HANA with 16TB memory requirement, which storage configuration should be used for data volumes?",
+      "options": [
+        "A) Single gp3 volume with maximum size",
+        "B) Multiple EBS volumes in striped configuration",
+        "C) Amazon EFS with high throughput",
+        "D) Instance store volumes only"
+      ],
+      "correct_answer": "B",
+      "explanation": "Large SAP HANA systems require multiple EBS volumes in striped configuration to meet I/O demands and overcome individual volume limitations."
+    },
+    {
+      "id": 156,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service automates SAP HANA migration workflows with pre-built templates?",
+      "options": [
+        "A) AWS Application Migration Service",
+        "B) AWS Migration Hub Orchestrator",
+        "C) AWS Database Migration Service",
+        "D) AWS Server Migration Service"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Migration Hub Orchestrator provides automated migration workflows with pre-built templates specifically for SAP HANA migrations."
+    },
+    {
+      "id": 157,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "For cost optimization of SAP workloads, which pricing model provides the highest discount for predictable usage?",
+      "options": [
+        "A) On-Demand Instances",
+        "B) Spot Instances",
+        "C) Reserved Instances",
+        "D) Savings Plans"
+      ],
+      "correct_answer": "C",
+      "explanation": "Reserved Instances provide the highest discounts (up to 75%) for SAP workloads with predictable usage patterns."
+    },
+    {
+      "id": 158,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "An organization requires SAP HANA deployment with 24TB memory. Which instance configuration should be recommended?",
+      "options": [
+        "A) Single u-24tb1.112xlarge instance",
+        "B) Multiple u-6tb1.112xlarge instances in scale-out",
+        "C) Cluster of x2iezn.metal instances",
+        "D) Multiple r6i.32xlarge instances"
+      ],
+      "correct_answer": "B",
+      "explanation": "Multiple u-6tb1.112xlarge instances in SAP HANA scale-out configuration provide 24TB memory capacity with high availability benefits."
+    },
+    {
+      "id": 159,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which AWS storage service is recommended for SAP HANA backup volumes in single-node deployments?",
+      "options": [
+        "A) Amazon EFS",
+        "B) Amazon EBS st1 (Throughput Optimized HDD)",
+        "C) Amazon S3",
+        "D) Amazon EBS gp3"
+      ],
+      "correct_answer": "B",
+      "explanation": "Amazon EBS st1 volumes are recommended for SAP HANA backup volumes due to cost-effectiveness for sequential backup workloads."
+    },
+    {
+      "id": 160,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "hard",
+      "question": "A company is migrating a 50TB SAP BW system with a 48-hour migration window. Which combination should be used?",
+      "options": [
+        "A) AWS Snowball Edge + SAP HANA System Replication",
+        "B) Direct Connect + parallel transfer + DMO",
+        "C) AWS DataSync + backup/restore",
+        "D) AWS Storage Gateway + classical migration"
+      ],
+      "correct_answer": "A",
+      "explanation": "For large databases (50TB) with limited windows, AWS Snowball Edge for initial transfer combined with System Replication for delta sync provides the fastest approach."
+    },
+    {
+      "id": 161,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service automates SAP HANA database backups to S3 with compression and encryption?",
+      "options": [
+        "A) AWS Backup",
+        "B) AWS Backint Agent for SAP HANA",
+        "C) Amazon EBS Snapshots",
+        "D) AWS Lambda with S3 APIs"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Backint Agent for SAP HANA provides SAP-certified integration with native backup commands, automatically handling compression and encryption."
+    },
+    {
+      "id": 162,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "For SAP HANA data volumes, which EBS volume type provides the best balance of performance and cost?",
+      "options": [
+        "A) gp2 (General Purpose SSD)",
+        "B) gp3 (General Purpose SSD)",
+        "C) io1 (Provisioned IOPS SSD)",
+        "D) st1 (Throughput Optimized HDD)"
+      ],
+      "correct_answer": "B",
+      "explanation": "gp3 volumes provide predictable performance and cost-effectiveness for SAP HANA data volumes with better price-performance than gp2."
+    },
+    {
+      "id": 163,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company is implementing SAP HANA scale-out with 4 worker nodes. What is the minimum shared storage requirement?",
+      "options": [
+        "A) Equal to one worker node's memory",
+        "B) Equal to sum of all worker nodes' memory",
+        "C) Equal to one worker node's memory for every four nodes",
+        "D) 1TB regardless of memory configuration"
+      ],
+      "correct_answer": "A",
+      "explanation": "For SAP HANA scale-out, shared volume requires storage equal to one worker node's memory for every four worker nodes. With 4 nodes, this equals one node's memory."
+    },
+    {
+      "id": 164,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "easy",
+      "question": "Which tool is recommended for transferring large SAP database files when network bandwidth is limited?",
+      "options": [
+        "A) AWS Direct Connect",
+        "B) AWS Snowball Edge",
+        "C) Amazon S3 Transfer Acceleration",
+        "D) AWS VPN"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Snowball Edge is designed for transferring large amounts of data when network transfer is not feasible due to bandwidth limitations."
+    },
+    {
+      "id": 165,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which combination provides comprehensive monitoring for SAP HANA performance and infrastructure?",
+      "options": [
+        "A) CloudWatch + CloudTrail",
+        "B) CloudWatch + Systems Manager + AWS Config",
+        "C) CloudWatch + X-Ray + GuardDuty",
+        "D) CloudWatch + Systems Manager for SAP + CloudTrail"
+      ],
+      "correct_answer": "D",
+      "explanation": "CloudWatch provides infrastructure monitoring, Systems Manager for SAP offers SAP-specific capabilities, and CloudTrail provides audit logging."
+    },
+    {
+      "id": 166,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "An organization needs SAP HANA with latency under 1ms between application and database tiers. Which approach should be used?",
+      "options": [
+        "A) Deploy in same AZ with Enhanced Networking",
+        "B) Use AWS Direct Connect with dedicated connection",
+        "C) Deploy across multiple AZs with placement groups",
+        "D) Use VPC peering between regions"
+      ],
+      "correct_answer": "A",
+      "explanation": "For sub-1ms latency, deploying in the same AZ with Enhanced Networking (SR-IOV) provides the lowest possible network latency."
+    },
+    {
+      "id": 167,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which operating system provides best integration with SAP applications and HA Extensions?",
+      "options": [
+        "A) Amazon Linux 2",
+        "B) SUSE Linux Enterprise Server for SAP",
+        "C) Ubuntu Server",
+        "D) Windows Server"
+      ],
+      "correct_answer": "B",
+      "explanation": "SUSE Linux Enterprise Server for SAP provides SAP-specific optimizations, High Availability Extensions (HAE), and Extended Service Pack Overlap Support."
+    },
+    {
+      "id": 168,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "hard",
+      "question": "A company is migrating SAP HANA using System Replication. For a 12TB database, which initialization method minimizes downtime?",
+      "options": [
+        "A) Full data shipping over network",
+        "B) Backup and restore initialization",
+        "C) Delta shipping only",
+        "D) Storage replication"
+      ],
+      "correct_answer": "B",
+      "explanation": "For large databases, backup and restore initialization is more efficient than full data shipping, especially with limited network bandwidth."
+    },
+    {
+      "id": 169,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service validates SAP HANA configurations against best practices?",
+      "options": [
+        "A) AWS Config",
+        "B) AWS Systems Manager for SAP Configuration Management",
+        "C) AWS Trusted Advisor",
+        "D) AWS Well-Architected Tool"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Systems Manager for SAP Configuration Management provides automated validation against AWS best practices and SAP Lens recommendations."
+    },
+    {
+      "id": 170,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP HANA log volumes, what is the recommended IOPS target regardless of memory size?",
+      "options": [
+        "A) 1,000 IOPS",
+        "B) 2,000 IOPS",
+        "C) 5,000 IOPS",
+        "D) 10,000 IOPS"
+      ],
+      "correct_answer": "C",
+      "explanation": "SAP HANA log volumes require a fixed IOPS target of 5,000 IOPS regardless of memory configuration per AWS guidelines."
+    },
+    {
+      "id": 171,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company needs automated patching for SAP HANA with zero downtime. Which approach should be used?",
+      "options": [
+        "A) AWS Systems Manager Patch Manager with maintenance windows",
+        "B) Rolling updates with SAP HANA System Replication",
+        "C) Blue-green deployment with AWS Launch Wizard",
+        "D) In-place patching during business hours"
+      ],
+      "correct_answer": "B",
+      "explanation": "Rolling updates with System Replication allow zero-downtime patching by updating secondary system first, then performing takeover."
+    },
+    {
+      "id": 172,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "medium",
+      "question": "Which migration approach allows simultaneous migration and upgrade from ECC to S/4HANA?",
+      "options": [
+        "A) Classical system copy",
+        "B) Backup and restore",
+        "C) DMO (Database Migration Option)",
+        "D) System replication"
+      ],
+      "correct_answer": "C",
+      "explanation": "DMO allows simultaneous migration to AWS and upgrade from SAP ECC to S/4HANA in a single step, reducing project timeline."
+    },
+    {
+      "id": 173,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service provides automated discovery and inventory of SAP systems?",
+      "options": [
+        "A) AWS Config",
+        "B) AWS Systems Manager for SAP",
+        "C) AWS CloudTrail",
+        "D) Amazon Inspector"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Systems Manager for SAP automatically discovers and maintains inventory of SAP systems with centralized visibility."
+    },
+    {
+      "id": 174,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP HANA disaster recovery, what is the maximum supported distance for synchronous replication?",
+      "options": [
+        "A) 100 km",
+        "B) 200 km",
+        "C) 500 km",
+        "D) No distance limit"
+      ],
+      "correct_answer": "A",
+      "explanation": "SAP HANA synchronous replication is typically limited to ~100 km due to network latency requirements for performance and consistency."
+    },
+    {
+      "id": 175,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company needs comprehensive encryption for SAP HANA. Which combination provides end-to-end protection?",
+      "options": [
+        "A) EBS encryption + TLS for application connections",
+        "B) EBS encryption + SAP HANA internal encryption + TLS",
+        "C) KMS encryption + VPN connections",
+        "D) S3 encryption + Direct Connect"
+      ],
+      "correct_answer": "B",
+      "explanation": "Comprehensive encryption requires EBS encryption for storage, SAP HANA internal encryption for database security, and TLS for communication."
+    },
+    {
+      "id": 176,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "easy",
+      "question": "What is the primary advantage of heterogeneous over homogeneous migration for SAP systems?",
+      "options": [
+        "A) Faster migration speed",
+        "B) Lower migration cost",
+        "C) Ability to change database platform",
+        "D) No downtime required"
+      ],
+      "correct_answer": "C",
+      "explanation": "Heterogeneous migration allows changing database platforms (e.g., Oracle to SAP HANA) while homogeneous keeps the same platform."
+    },
+    {
+      "id": 177,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which CloudWatch metric is most critical for monitoring SAP HANA memory utilization?",
+      "options": [
+        "A) CPUUtilization",
+        "B) MemoryUtilization",
+        "C) DiskReadOps",
+        "D) NetworkIn"
+      ],
+      "correct_answer": "B",
+      "explanation": "MemoryUtilization is most critical for SAP HANA as it's an in-memory database where memory consumption directly impacts performance."
+    },
+    {
+      "id": 178,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "An organization needs SAP HANA with microsecond-level latency requirements. Which AWS features should be prioritized?",
+      "options": [
+        "A) Enhanced Networking with SR-IOV",
+        "B) Placement Groups (Cluster)",
+        "C) Dedicated Hosts",
+        "D) All of the above"
+      ],
+      "correct_answer": "D",
+      "explanation": "Microsecond-level latency requires all features: Enhanced Networking for performance, Cluster Placement Groups for proximity, and Dedicated Hosts for consistency."
+    },
+    {
+      "id": 179,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which AWS storage service is recommended for SAP transport directory (/usr/sap/trans)?",
+      "options": [
+        "A) Amazon EBS",
+        "B) Amazon EFS",
+        "C) Amazon S3",
+        "D) Amazon FSx"
+      ],
+      "correct_answer": "B",
+      "explanation": "Amazon EFS provides shared NFS access across multiple SAP systems supporting concurrent access patterns for transport management."
+    },
+    {
+      "id": 180,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "medium",
+      "question": "During migration planning, which factor most impacts the choice between lift-and-shift vs. re-platforming?",
+      "options": [
+        "A) Current database size",
+        "B) Network bandwidth availability",
+        "C) Business requirements for modernization",
+        "D) Number of application servers"
+      ],
+      "correct_answer": "C",
+      "explanation": "Business requirements for modernization determine whether to perform simple lift-and-shift or re-platform for cloud-native benefits."
+    },
+    {
+      "id": 181,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company needs cross-region disaster recovery for SAP HANA with 4-hour RTO. Which approach should be used?",
+      "options": [
+        "A) Asynchronous system replication + automated failover",
+        "B) EBS snapshots + manual recovery",
+        "C) Backup/restore with AWS Backint",
+        "D) AWS Application Migration Service"
+      ],
+      "correct_answer": "A",
+      "explanation": "Asynchronous system replication across regions with automated failover can achieve 4-hour RTO, while backup/restore requires longer times."
+    },
+    {
+      "id": 182,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS region consideration is most important for SAP workload deployment?",
+      "options": [
+        "A) Number of Availability Zones",
+        "B) Proximity to users and data residency requirements",
+        "C) Cost of compute instances",
+        "D) Available instance types"
+      ],
+      "correct_answer": "B",
+      "explanation": "Proximity to users for performance and data residency for compliance are the most critical factors for SAP region selection."
+    },
+    {
+      "id": 183,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP HANA scale-out, which network configuration ensures optimal inter-node communication?",
+      "options": [
+        "A) Default VPC with public subnets",
+        "B) Custom VPC with private subnets and Enhanced Networking",
+        "C) Multiple VPCs with VPC peering",
+        "D) Single subnet across multiple AZs"
+      ],
+      "correct_answer": "B",
+      "explanation": "Custom VPC with private subnets provides security isolation, while Enhanced Networking ensures optimal performance for inter-node communication."
+    },
+    {
+      "id": 184,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "hard",
+      "question": "A company is migrating SAP with strict compliance requirements. Which AWS services maintain audit trails?",
+      "options": [
+        "A) AWS CloudTrail",
+        "B) AWS Config",
+        "C) AWS Security Hub",
+        "D) All of the above"
+      ],
+      "correct_answer": "D",
+      "explanation": "Comprehensive compliance requires CloudTrail for API auditing, Config for configuration tracking, and Security Hub for security findings."
+    },
+    {
+      "id": 185,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service provides automated cost optimization recommendations for SAP workloads?",
+      "options": [
+        "A) AWS Cost Explorer",
+        "B) AWS Trusted Advisor",
+        "C) AWS Compute Optimizer",
+        "D) All of the above"
+      ],
+      "correct_answer": "D",
+      "explanation": "All services contribute: Cost Explorer for usage analysis, Trusted Advisor for general recommendations, Compute Optimizer for rightsizing."
+    },
+    {
+      "id": 186,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "A company is designing SAP HANA with FSx for NetApp ONTAP. Which domain setting is required for all Linux servers?",
+      "options": [
+        "A) Different domains for each server",
+        "B) Same domain value on all Linux servers and SVMs",
+        "C) No domain configuration needed",
+        "D) Domain configuration only on master node"
+      ],
+      "correct_answer": "B",
+      "explanation": "For SAP HANA scale-out with FSx for NetApp ONTAP, the domain setting must be identical on all Linux servers and Storage Virtual Machines (SVMs)."
+    },
+    {
+      "id": 187,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company is configuring Pacemaker cluster for SAP HANA. For scale-out clusters, what is required in the third AZ?",
+      "options": [
+        "A) Full SAP HANA database instance",
+        "B) Application server only",
+        "C) Majority maker node for quorum",
+        "D) No additional resources needed"
+      ],
+      "correct_answer": "C",
+      "explanation": "SAP HANA scale-out clusters require a majority maker node in a third AZ for quorum management, ensuring cluster operation if one AZ fails."
+    },
+    {
+      "id": 188,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "easy",
+      "question": "Which SAP S/4HANA migration approach allows leveraging existing configurations and customizations?",
+      "options": [
+        "A) Greenfield implementation",
+        "B) Brownfield migration",
+        "C) Selective data transition",
+        "D) Hybrid approach"
+      ],
+      "correct_answer": "B",
+      "explanation": "Brownfield migration preserves existing configurations and customizations while upgrading to S/4HANA, providing faster time-to-value."
+    },
+    {
+      "id": 189,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service provides SAP-specific monitoring and automated operations across multiple accounts?",
+      "options": [
+        "A) AWS Organizations",
+        "B) AWS Systems Manager for SAP",
+        "C) AWS Control Tower",
+        "D) AWS Config"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Systems Manager for SAP provides centralized management, monitoring, and operations for SAP systems across multiple AWS accounts and regions."
+    },
+    {
+      "id": 190,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "An organization requires SAP HANA with sub-millisecond query response times. Which configuration provides optimal performance?",
+      "options": [
+        "A) Highest memory instance with NVMe storage",
+        "B) Cluster placement group with Enhanced Networking",
+        "C) In-memory columnar storage optimization",
+        "D) All of the above"
+      ],
+      "correct_answer": "D",
+      "explanation": "Sub-millisecond response times require all optimizations: highest memory for caching, NVMe for fastest I/O, cluster placement for minimal latency, and Enhanced Networking."
+    },
+    {
+      "id": 191,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service provides automated compliance reporting for SAP workloads?",
+      "options": [
+        "A) AWS Config",
+        "B) AWS Security Hub",
+        "C) AWS Audit Manager",
+        "D) All of the above"
+      ],
+      "correct_answer": "D",
+      "explanation": "Comprehensive compliance requires Config for resource compliance, Security Hub for security findings aggregation, and Audit Manager for automated assessments."
+    },
+    {
+      "id": 192,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service helps validate SAP workload performance after migration to ensure SAP KPIs are met?",
+      "options": [
+        "A) AWS CloudWatch",
+        "B) AWS X-Ray",
+        "C) SAP HANA Hardware and Cloud Measurement Tools",
+        "D) AWS Performance Insights"
+      ],
+      "correct_answer": "C",
+      "explanation": "SAP HANA Hardware and Cloud Measurement Tools (HCMT) are specifically designed to validate performance against SAP's KPIs after migration."
+    },
+    {
+      "id": 193,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company needs SAP HANA log shipping for compliance with long-term retention requirements. Which storage provides lowest cost?",
+      "options": [
+        "A) Amazon S3 Standard",
+        "B) Amazon S3 Glacier",
+        "C) Amazon S3 Glacier Deep Archive",
+        "D) Amazon EBS Cold HDD"
+      ],
+      "correct_answer": "C",
+      "explanation": "Amazon S3 Glacier Deep Archive provides the lowest cost for long-term retention of SAP HANA logs with retrieval times suitable for compliance."
+    },
+    {
+      "id": 194,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "For SAP HANA tenant databases requiring highest security, which isolation approach should be used?",
+      "options": [
+        "A) Shared instance with resource limits",
+        "B) Dedicated instance per tenant",
+        "C) Container-based isolation",
+        "D) Network-based isolation only"
+      ],
+      "correct_answer": "B",
+      "explanation": "Dedicated instance per tenant provides highest security by eliminating potential cross-tenant data access and resource contention issues."
+    },
+    {
+      "id": 195,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS service provides centralized logging for SAP applications with real-time monitoring?",
+      "options": [
+        "A) Amazon CloudWatch Logs",
+        "B) AWS CloudTrail",
+        "C) Amazon Kinesis",
+        "D) Amazon OpenSearch"
+      ],
+      "correct_answer": "A",
+      "explanation": "Amazon CloudWatch Logs provides centralized log collection, storage, and analysis for SAP applications with real-time monitoring capabilities."
+    },
+    {
+      "id": 196,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "hard",
+      "question": "A company needs zero-downtime SAP HANA migration. Which combination of techniques provides the best approach?",
+      "options": [
+        "A) System Replication + DNS failover + application connection pooling",
+        "B) Backup/restore + maintenance window",
+        "C) DMO with downtime optimization",
+        "D) Blue-green deployment"
+      ],
+      "correct_answer": "A",
+      "explanation": "Zero-downtime requires SAP HANA System Replication for continuous sync, DNS failover for traffic redirection, and connection pooling for seamless transitions."
+    },
+    {
+      "id": 197,
+      "domain": "Operate and Maintain SAP Workloads on AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service provides automated rightsizing recommendations based on actual SAP workload utilization?",
+      "options": [
+        "A) AWS Cost Explorer",
+        "B) AWS Compute Optimizer",
+        "C) AWS Trusted Advisor",
+        "D) AWS Systems Manager for SAP"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Compute Optimizer uses machine learning to provide rightsizing recommendations based on actual utilization patterns of SAP workloads."
+    },
+    {
+      "id": 198,
+      "domain": "Design SAP Workloads on AWS",
+      "difficulty": "easy",
+      "question": "Which AWS feature ensures SAP HANA instances run on hardware dedicated to a single customer?",
+      "options": [
+        "A) VPC isolation",
+        "B) Dedicated Hosts",
+        "C) Security Groups",
+        "D) Private subnets"
+      ],
+      "correct_answer": "B",
+      "explanation": "Dedicated Hosts provide physical server isolation, ensuring SAP HANA instances run on hardware dedicated exclusively to a single customer account."
+    },
+    {
+      "id": 199,
+      "domain": "Implement SAP Workloads on AWS",
+      "difficulty": "hard",
+      "question": "A company needs SAP HANA with FIPS 140-2 Level 3 compliance for cryptographic keys. Which service should be used?",
+      "options": [
+        "A) AWS KMS",
+        "B) AWS CloudHSM",
+        "C) AWS Secrets Manager",
+        "D) AWS Certificate Manager"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS CloudHSM provides FIPS 140-2 Level 3 validated hardware security modules required for the highest level of cryptographic compliance."
+    },
+    {
+      "id": 200,
+      "domain": "Migrate SAP Workloads to AWS",
+      "difficulty": "medium",
+      "question": "Which AWS service helps orchestrate complex SAP migration workflows with built-in templates and dependency management?",
+      "options": [
+        "A) AWS Step Functions",
+        "B) AWS Migration Hub Orchestrator",
+        "C) AWS Systems Manager",
+        "D) AWS CodePipeline"
+      ],
+      "correct_answer": "B",
+      "explanation": "AWS Migration Hub Orchestrator is specifically designed for complex migration workflows with built-in SAP migration templates and dependency management capabilities."
+    }
+  ]
+}

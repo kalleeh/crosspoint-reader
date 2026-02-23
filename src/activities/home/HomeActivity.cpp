@@ -23,9 +23,8 @@ void HomeActivity::taskTrampoline(void* param) {
 }
 
 int HomeActivity::getMenuItemCount() const {
-  int count = 3;  // My Library, File transfer, Settings
+  int count = 4;  // Library, Browse, Apps, Settings
   if (hasContinueReading) count++;
-  if (hasOpdsUrl) count++;
   return count;
 }
 
@@ -36,9 +35,6 @@ void HomeActivity::onEnter() {
 
   // Check if we have a book to continue reading
   hasContinueReading = !APP_STATE.openEpubPath.empty() && SdMan.exists(APP_STATE.openEpubPath.c_str());
-
-  // Check if OPDS browser URL is configured
-  hasOpdsUrl = strlen(SETTINGS.opdsServerUrl) > 0;
 
   if (hasContinueReading) {
     // Extract filename from path for display
@@ -169,22 +165,21 @@ void HomeActivity::loop() {
   const int menuCount = getMenuItemCount();
 
   if (mappedInput.wasReleased(MappedInputManager::Button::Confirm)) {
-    // Calculate dynamic indices based on which options are available
     int idx = 0;
     const int continueIdx = hasContinueReading ? idx++ : -1;
-    const int myLibraryIdx = idx++;
-    const int opdsLibraryIdx = hasOpdsUrl ? idx++ : -1;
-    const int fileTransferIdx = idx++;
+    const int libraryIdx = idx++;
+    const int browseIdx = idx++;
+    const int appsIdx = idx++;
     const int settingsIdx = idx;
 
     if (selectorIndex == continueIdx) {
       onContinueReading();
-    } else if (selectorIndex == myLibraryIdx) {
+    } else if (selectorIndex == libraryIdx) {
       onMyLibraryOpen();
-    } else if (selectorIndex == opdsLibraryIdx) {
-      onOpdsBrowserOpen();
-    } else if (selectorIndex == fileTransferIdx) {
-      onFileTransferOpen();
+    } else if (selectorIndex == browseIdx) {
+      onBrowseOpen();
+    } else if (selectorIndex == appsIdx) {
+      onAppsOpen();
     } else if (selectorIndex == settingsIdx) {
       onSettingsOpen();
     }
@@ -502,12 +497,7 @@ void HomeActivity::render() {
   }
 
   // --- Bottom menu tiles ---
-  // Build menu items dynamically
-  std::vector<const char*> menuItems = {"My Library", "File Transfer", "Settings"};
-  if (hasOpdsUrl) {
-    // Insert OPDS Browser after My Library
-    menuItems.insert(menuItems.begin() + 1, "OPDS Browser");
-  }
+  std::vector<const char*> menuItems = {"Library", "Browse", "Apps", "Settings"};
 
   const int menuTileWidth = pageWidth - 2 * margin;
   constexpr int menuTileHeight = 45;

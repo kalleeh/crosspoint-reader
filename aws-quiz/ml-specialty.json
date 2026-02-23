@@ -1,0 +1,3515 @@
+{
+  "version": "1.0",
+  "certification": "machine-learning-specialty",
+  "exam": "MLS-C01",
+  "total_questions": 250,
+  "validation_sources": [
+    "https://docs.aws.amazon.com/sagemaker/latest/dg/multiple-algorithm-hpo-create-tuning-jobs.html",
+    "https://docs.aws.amazon.com/sagemaker/latest/dg/linear-learner-tuning.html",
+    "https://docs.aws.amazon.com/sagemaker/latest/dg/xgboost-tuning.html",
+    "https://aws.amazon.com/glue/features/",
+    "https://docs.aws.amazon.com/whitepapers/latest/big-data-analytics-options/amazon-machine-learning.html"
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A data scientist needs to process 10TB of structured data stored in Amazon S3 for machine learning training. The data requires complex transformations including joins with reference tables and aggregations. Which AWS service combination would be most cost-effective for this ETL workload?",
+      "options": [
+        "Amazon EMR with Apache Spark",
+        "AWS Glue with Apache Spark",
+        "Amazon Athena with CTAS queries",
+        "AWS Lambda with pandas"
+      ],
+      "correct_answer": 1,
+      "explanation": "AWS Glue with Apache Spark is the most cost-effective option for large-scale ETL workloads. It's serverless, automatically scales, and you only pay for the resources used during job execution. EMR requires cluster management overhead, Athena is better for ad-hoc queries, and Lambda has memory/timeout limitations for large datasets."
+    },
+    {
+      "id": 2,
+      "domain": "Modeling",
+      "difficulty": "hard",
+      "question": "A machine learning engineer is training an XGBoost model on Amazon SageMaker for a binary classification problem with highly imbalanced classes (95% negative, 5% positive). Which hyperparameter should be tuned to address the class imbalance issue?",
+      "options": [
+        "learning_rate",
+        "max_depth",
+        "scale_pos_weight",
+        "subsample"
+      ],
+      "correct_answer": 2,
+      "explanation": "scale_pos_weight is specifically designed to handle imbalanced datasets in XGBoost. It controls the balance of positive and negative weights, and should typically be set to the ratio of negative to positive instances (95/5 = 19 in this case)."
+    },
+    {
+      "id": 3,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "easy",
+      "question": "Which AWS service provides a visual, no-code interface for data preparation and exploration that can generate over 250 built-in transformations?",
+      "options": [
+        "Amazon SageMaker Data Wrangler",
+        "AWS Glue DataBrew",
+        "Amazon QuickSight",
+        "Amazon Athena"
+      ],
+      "correct_answer": 1,
+      "explanation": "AWS Glue DataBrew is specifically designed for visual data preparation with over 250 built-in transformations. It provides a no-code interface for data analysts and data scientists to clean, normalize, and prepare data."
+    },
+    {
+      "id": 4,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to deploy a SageMaker model endpoint that can automatically scale based on traffic and minimize cold start latency. Which deployment option should they choose?",
+      "options": [
+        "Real-time inference endpoint with auto-scaling",
+        "Serverless inference endpoint",
+        "Batch transform job",
+        "Multi-model endpoint"
+      ],
+      "correct_answer": 1,
+      "explanation": "Serverless inference endpoints automatically scale to zero when not in use and scale up based on demand, minimizing costs while handling variable traffic. They also have optimized cold start performance compared to real-time endpoints that need to maintain running instances."
+    },
+    {
+      "id": 5,
+      "domain": "Data Engineering",
+      "difficulty": "hard",
+      "question": "A data engineering team needs to ingest streaming data from multiple sources, perform real-time transformations, and store the results for ML training. The solution must handle late-arriving data and provide exactly-once processing semantics. Which architecture should they implement?",
+      "options": [
+        "Amazon Kinesis Data Streams → AWS Lambda → Amazon S3",
+        "Amazon Kinesis Data Firehose → AWS Glue → Amazon S3",
+        "Amazon Kinesis Data Streams → Amazon Kinesis Analytics → Amazon S3",
+        "Amazon MSK → AWS Glue Streaming → Amazon S3"
+      ],
+      "correct_answer": 3,
+      "explanation": "Amazon MSK (Managed Streaming for Apache Kafka) with AWS Glue Streaming provides exactly-once processing semantics, handles late-arriving data through watermarking, and supports complex transformations. Kafka's durability and Glue's streaming capabilities make this the most robust solution."
+    },
+    {
+      "id": 6,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "When using Amazon SageMaker's Linear Learner algorithm for a regression problem, which metric should be used as the objective metric for hyperparameter tuning?",
+      "options": [
+        "binary_classification_accuracy",
+        "mean_squared_error",
+        "f1_score",
+        "auc"
+      ],
+      "correct_answer": 1,
+      "explanation": "For regression problems, mean_squared_error (MSE) is the appropriate metric. Binary classification accuracy, f1_score, and AUC are classification metrics and not suitable for regression tasks."
+    },
+    {
+      "id": 7,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist wants to identify potential data quality issues in a large dataset before training a machine learning model. Which AWS service can automatically detect data quality issues and provide recommendations?",
+      "options": [
+        "Amazon SageMaker Clarify",
+        "AWS Glue Data Quality",
+        "Amazon Macie",
+        "AWS Config"
+      ],
+      "correct_answer": 1,
+      "explanation": "AWS Glue Data Quality automatically analyzes data and provides recommendations for data quality rules. It can detect issues like missing values, duplicates, and data format inconsistencies, making it ideal for pre-ML data validation."
+    },
+    {
+      "id": 8,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "hard",
+      "question": "A company needs to implement A/B testing for their machine learning model in production. They want to route 90% of traffic to the current model and 10% to a new model. Which SageMaker feature should they use?",
+      "options": [
+        "Multi-model endpoints",
+        "Production variants with traffic splitting",
+        "Batch transform jobs",
+        "SageMaker Pipelines"
+      ],
+      "correct_answer": 1,
+      "explanation": "Production variants with traffic splitting allow you to deploy multiple model versions behind a single endpoint and control the percentage of traffic routed to each variant. This is perfect for A/B testing scenarios."
+    },
+    {
+      "id": 9,
+      "domain": "Modeling",
+      "difficulty": "easy",
+      "question": "Which Amazon SageMaker built-in algorithm is specifically designed for time series forecasting?",
+      "options": [
+        "Linear Learner",
+        "XGBoost",
+        "DeepAR",
+        "K-Means"
+      ],
+      "correct_answer": 2,
+      "explanation": "DeepAR is Amazon SageMaker's built-in algorithm specifically designed for time series forecasting. It uses recurrent neural networks to learn complex patterns in time series data."
+    },
+    {
+      "id": 10,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A machine learning team needs to create a feature store that can serve features for both batch and real-time inference with low latency. Which AWS service should they use?",
+      "options": [
+        "Amazon DynamoDB",
+        "Amazon SageMaker Feature Store",
+        "Amazon ElastiCache",
+        "Amazon RDS"
+      ],
+      "correct_answer": 1,
+      "explanation": "Amazon SageMaker Feature Store is specifically designed for ML feature management, providing both online (low-latency) and offline (batch) feature stores with built-in versioning, lineage tracking, and integration with SageMaker training and inference."
+    },
+    {
+      "id": 11,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "hard",
+      "question": "A data scientist is analyzing customer behavior data and needs to identify anomalies in spending patterns. The dataset contains both numerical and categorical features. Which approach would be most effective?",
+      "options": [
+        "Use Amazon SageMaker Random Cut Forest algorithm",
+        "Use Amazon SageMaker IP Insights algorithm",
+        "Use statistical methods with Amazon Athena",
+        "Use Amazon Fraud Detector"
+      ],
+      "correct_answer": 0,
+      "explanation": "Amazon SageMaker Random Cut Forest (RCF) is designed for anomaly detection and can handle both numerical and categorical features effectively. It's unsupervised and can identify anomalies in high-dimensional data."
+    },
+    {
+      "id": 12,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to monitor their deployed ML model for data drift and model performance degradation. Which SageMaker feature should they implement?",
+      "options": [
+        "SageMaker Debugger",
+        "SageMaker Model Monitor",
+        "SageMaker Clarify",
+        "SageMaker Experiments"
+      ],
+      "correct_answer": 1,
+      "explanation": "SageMaker Model Monitor continuously monitors ML models in production for data drift, model quality issues, and bias drift. It can automatically detect when model performance degrades and send alerts."
+    },
+    {
+      "id": 13,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "When training a deep learning model on Amazon SageMaker with multiple GPUs, which distributed training strategy would be most efficient for a model with many parameters?",
+      "options": [
+        "Data parallelism",
+        "Model parallelism",
+        "Pipeline parallelism",
+        "Gradient accumulation"
+      ],
+      "correct_answer": 1,
+      "explanation": "Model parallelism is most efficient for models with many parameters that don't fit in a single GPU's memory. It splits the model across multiple GPUs, while data parallelism replicates the entire model on each GPU."
+    },
+    {
+      "id": 14,
+      "domain": "Data Engineering",
+      "difficulty": "easy",
+      "question": "Which file format is recommended for storing large datasets in Amazon S3 for machine learning workloads due to its columnar storage and compression benefits?",
+      "options": [
+        "CSV",
+        "JSON",
+        "Parquet",
+        "Avro"
+      ],
+      "correct_answer": 2,
+      "explanation": "Parquet is a columnar storage format that provides excellent compression and is optimized for analytics workloads. It's particularly efficient for ML training as it allows for faster data loading and reduced storage costs."
+    },
+    {
+      "id": 15,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist needs to perform statistical analysis on a 500GB dataset stored in Amazon S3 without moving the data. Which service would be most appropriate?",
+      "options": [
+        "Amazon EMR",
+        "Amazon Athena",
+        "AWS Glue",
+        "Amazon Redshift"
+      ],
+      "correct_answer": 1,
+      "explanation": "Amazon Athena is a serverless query service that can analyze data directly in S3 without requiring data movement or infrastructure setup. It's perfect for ad-hoc statistical analysis on large datasets."
+    },
+    {
+      "id": 16,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "hard",
+      "question": "A company needs to implement a CI/CD pipeline for their machine learning models that includes automated testing, model validation, and deployment. Which combination of AWS services would be most appropriate?",
+      "options": [
+        "AWS CodePipeline + SageMaker Pipelines + AWS CodeBuild",
+        "AWS CodeCommit + AWS Lambda + SageMaker Endpoints",
+        "Amazon EventBridge + AWS Step Functions + SageMaker Training",
+        "AWS CodeDeploy + Amazon ECS + SageMaker Batch Transform"
+      ],
+      "correct_answer": 0,
+      "explanation": "AWS CodePipeline provides the CI/CD orchestration, SageMaker Pipelines handles the ML workflow automation (training, validation, deployment), and AWS CodeBuild can run automated tests and model validation steps."
+    },
+    {
+      "id": 17,
+      "domain": "Modeling",
+      "difficulty": "easy",
+      "question": "Which evaluation metric is most appropriate for a highly imbalanced binary classification problem where correctly identifying the minority class is critical?",
+      "options": [
+        "Accuracy",
+        "Precision",
+        "Recall",
+        "F1-score"
+      ],
+      "correct_answer": 2,
+      "explanation": "Recall (sensitivity) is most important when correctly identifying the minority class is critical, as it measures the proportion of actual positive cases that were correctly identified. High recall ensures few false negatives."
+    },
+    {
+      "id": 18,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A data engineering team needs to process streaming IoT data and perform windowed aggregations before storing the results for ML training. Which AWS service combination would be most suitable?",
+      "options": [
+        "Amazon Kinesis Data Streams + AWS Lambda",
+        "Amazon Kinesis Data Analytics + Amazon S3",
+        "Amazon MSK + Amazon EMR",
+        "AWS IoT Core + Amazon DynamoDB"
+      ],
+      "correct_answer": 1,
+      "explanation": "Amazon Kinesis Data Analytics is specifically designed for real-time stream processing with SQL-based windowed aggregations. It can directly output results to S3 for ML training data storage."
+    },
+    {
+      "id": 19,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "easy",
+      "question": "Which AWS service can automatically generate insights and visualizations from business data without requiring SQL knowledge?",
+      "options": [
+        "Amazon Athena",
+        "Amazon QuickSight",
+        "AWS Glue",
+        "Amazon EMR"
+      ],
+      "correct_answer": 1,
+      "explanation": "Amazon QuickSight is a business intelligence service that can automatically generate insights and create visualizations from data without requiring SQL knowledge. It includes ML-powered insights and natural language queries."
+    },
+    {
+      "id": 20,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to reduce the cost of their SageMaker training jobs for non-urgent model retraining. Which feature should they use?",
+      "options": [
+        "Spot instances",
+        "Reserved instances",
+        "Managed spot training",
+        "Savings plans"
+      ],
+      "correct_answer": 2,
+      "explanation": "Managed spot training in SageMaker can reduce training costs by up to 90% by using spare EC2 capacity. SageMaker automatically handles spot interruptions by checkpointing and resuming training jobs."
+    },
+    {
+      "id": 21,
+      "domain": "Modeling",
+      "difficulty": "hard",
+      "question": "A data scientist is building a recommendation system for an e-commerce platform with millions of users and products. The system needs to handle both collaborative filtering and content-based recommendations. Which AWS service would be most appropriate?",
+      "options": [
+        "Amazon SageMaker Factorization Machines",
+        "Amazon Personalize",
+        "Amazon SageMaker XGBoost",
+        "Amazon Comprehend"
+      ],
+      "correct_answer": 1,
+      "explanation": "Amazon Personalize is a fully managed service specifically designed for recommendation systems. It automatically handles both collaborative filtering and content-based recommendations, scales to millions of users, and provides real-time recommendations."
+    },
+    {
+      "id": 22,
+      "domain": "Data Engineering",
+      "difficulty": "hard",
+      "question": "A company needs to implement a data lake architecture that supports ACID transactions, schema evolution, and time travel queries for their ML datasets. Which table format should they use with Amazon S3?",
+      "options": [
+        "Apache Parquet",
+        "Apache Avro",
+        "Apache Iceberg",
+        "Apache ORC"
+      ],
+      "correct_answer": 2,
+      "explanation": "Apache Iceberg is a table format that provides ACID transactions, schema evolution, and time travel capabilities on top of data lakes. It's supported by AWS services like Athena, EMR, and Glue for advanced data lake functionality."
+    },
+    {
+      "id": 23,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist wants to identify the most important features in their dataset before training a machine learning model. Which technique would be most effective for feature selection?",
+      "options": [
+        "Principal Component Analysis (PCA)",
+        "Correlation analysis",
+        "Mutual information",
+        "All of the above"
+      ],
+      "correct_answer": 3,
+      "explanation": "All three techniques are valuable for feature selection: PCA for dimensionality reduction, correlation analysis for linear relationships, and mutual information for non-linear dependencies. The best approach often combines multiple techniques."
+    },
+    {
+      "id": 24,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "easy",
+      "question": "Which SageMaker feature allows you to track and compare different versions of machine learning experiments?",
+      "options": [
+        "SageMaker Debugger",
+        "SageMaker Experiments",
+        "SageMaker Model Registry",
+        "SageMaker Pipelines"
+      ],
+      "correct_answer": 1,
+      "explanation": "SageMaker Experiments allows you to organize, track, and compare machine learning experiments. It captures metadata about training runs, hyperparameters, and metrics for easy comparison and reproducibility."
+    },
+    {
+      "id": 25,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "When using Amazon SageMaker's built-in XGBoost algorithm, which hyperparameter controls the learning rate and should typically be tuned between 0.01 and 0.3?",
+      "options": [
+        "alpha",
+        "eta",
+        "gamma",
+        "lambda"
+      ],
+      "correct_answer": 1,
+      "explanation": "The 'eta' parameter controls the learning rate in XGBoost. It determines the step size at each iteration and typically ranges from 0.01 to 0.3. Lower values require more boosting rounds but often lead to better performance."
+    },
+    {
+      "id": 26,
+      "domain": "Data Engineering",
+      "difficulty": "easy",
+      "question": "Which AWS service is best suited for cataloging and discovering metadata about data stored across multiple data sources?",
+      "options": [
+        "AWS Glue Data Catalog",
+        "Amazon Athena",
+        "AWS Lake Formation",
+        "Amazon S3"
+      ],
+      "correct_answer": 0,
+      "explanation": "AWS Glue Data Catalog is a centralized metadata repository that automatically discovers and catalogs metadata from various data sources, making it easy to search and discover data assets across your organization."
+    },
+    {
+      "id": 27,
+      "domain": "Modeling",
+      "difficulty": "hard",
+      "question": "A machine learning engineer needs to train a computer vision model for object detection on a large dataset. The model requires distributed training across multiple GPU instances. Which SageMaker approach would be most efficient?",
+      "options": [
+        "Use SageMaker built-in Object Detection algorithm",
+        "Use SageMaker with PyTorch distributed training",
+        "Use SageMaker with TensorFlow distributed training",
+        "All of the above are equally efficient"
+      ],
+      "correct_answer": 3,
+      "explanation": "All approaches can be efficient depending on the specific requirements. The built-in Object Detection algorithm is optimized and easy to use, while PyTorch and TensorFlow distributed training offer more flexibility for custom architectures. The choice depends on model complexity and customization needs."
+    },
+    {
+      "id": 28,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist needs to analyze text data to extract entities, sentiment, and key phrases. Which AWS service would be most appropriate for this natural language processing task?",
+      "options": [
+        "Amazon Textract",
+        "Amazon Comprehend",
+        "Amazon Translate",
+        "Amazon Transcribe"
+      ],
+      "correct_answer": 1,
+      "explanation": "Amazon Comprehend is specifically designed for natural language processing tasks including entity extraction, sentiment analysis, and key phrase extraction. It can analyze text in multiple languages without requiring ML expertise."
+    },
+    {
+      "id": 29,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to deploy multiple ML models behind a single endpoint to optimize resource utilization. Which SageMaker feature should they use?",
+      "options": [
+        "Multi-model endpoints",
+        "Production variants",
+        "Batch transform",
+        "Serverless inference"
+      ],
+      "correct_answer": 0,
+      "explanation": "Multi-model endpoints allow you to host multiple models behind a single endpoint, sharing compute resources and reducing costs. Models are loaded dynamically based on incoming requests."
+    },
+    {
+      "id": 30,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A data engineering team needs to perform complex joins and aggregations on petabyte-scale datasets for ML feature engineering. Which service would be most cost-effective?",
+      "options": [
+        "Amazon Redshift",
+        "Amazon EMR with Spark",
+        "AWS Glue with Spark",
+        "Amazon Athena"
+      ],
+      "correct_answer": 1,
+      "explanation": "Amazon EMR with Spark is most cost-effective for petabyte-scale complex transformations as it provides the flexibility to optimize cluster configuration, use spot instances, and handle very large datasets efficiently."
+    },
+    {
+      "id": 31,
+      "domain": "Modeling",
+      "difficulty": "easy",
+      "question": "Which Amazon SageMaker built-in algorithm is best suited for clustering tasks?",
+      "options": [
+        "Linear Learner",
+        "K-Means",
+        "PCA",
+        "Random Cut Forest"
+      ],
+      "correct_answer": 1,
+      "explanation": "K-Means is the built-in algorithm specifically designed for clustering tasks. It groups data points into k clusters based on feature similarity."
+    },
+    {
+      "id": 32,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "hard",
+      "question": "A data scientist is working with a dataset that has missing values, outliers, and inconsistent formatting. They need to create a reproducible data preparation workflow. Which approach would be most effective?",
+      "options": [
+        "Use AWS Glue DataBrew with saved recipes",
+        "Write custom Python scripts in SageMaker notebooks",
+        "Use Amazon Athena with SQL transformations",
+        "Use AWS Lambda functions for data cleaning"
+      ],
+      "correct_answer": 0,
+      "explanation": "AWS Glue DataBrew provides a visual interface for data preparation with the ability to save and reuse recipes, making it ideal for reproducible data preparation workflows. It handles missing values, outliers, and formatting issues with built-in transformations."
+    },
+    {
+      "id": 33,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "hard",
+      "question": "A company needs to implement model versioning and approval workflows before deploying models to production. Which combination of SageMaker features should they use?",
+      "options": [
+        "SageMaker Model Registry + SageMaker Pipelines",
+        "SageMaker Experiments + SageMaker Endpoints",
+        "SageMaker Projects + AWS CodePipeline",
+        "All of the above"
+      ],
+      "correct_answer": 3,
+      "explanation": "All combinations are valid: Model Registry for versioning and approval, Pipelines for workflow automation, Projects for MLOps templates, and integration with CodePipeline for CI/CD. The best approach often combines multiple features."
+    },
+    {
+      "id": 34,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "When training a neural network for image classification, which data augmentation techniques can help improve model generalization?",
+      "options": [
+        "Random rotation and flipping",
+        "Color jittering and brightness adjustment",
+        "Random cropping and scaling",
+        "All of the above"
+      ],
+      "correct_answer": 3,
+      "explanation": "All mentioned techniques are effective data augmentation methods for image classification. They help the model generalize better by exposing it to variations of the training data that it might encounter in real-world scenarios."
+    },
+    {
+      "id": 35,
+      "domain": "Data Engineering",
+      "difficulty": "hard",
+      "question": "A company needs to implement a real-time feature store that can serve features with sub-millisecond latency for online inference. Which architecture would be most appropriate?",
+      "options": [
+        "Amazon DynamoDB with DAX",
+        "Amazon ElastiCache for Redis",
+        "SageMaker Feature Store online store",
+        "Amazon RDS with read replicas"
+      ],
+      "correct_answer": 1,
+      "explanation": "Amazon ElastiCache for Redis provides the lowest latency for real-time feature serving with sub-millisecond response times. While SageMaker Feature Store is convenient, ElastiCache offers better performance for ultra-low latency requirements."
+    },
+    {
+      "id": 36,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "easy",
+      "question": "Which statistical measure is most robust to outliers when analyzing the central tendency of a dataset?",
+      "options": [
+        "Mean",
+        "Median",
+        "Mode",
+        "Standard deviation"
+      ],
+      "correct_answer": 1,
+      "explanation": "The median is most robust to outliers as it represents the middle value when data is sorted. Unlike the mean, it's not affected by extreme values in the dataset."
+    },
+    {
+      "id": 37,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to monitor their ML model for bias drift in production. Which SageMaker feature should they implement?",
+      "options": [
+        "SageMaker Clarify",
+        "SageMaker Model Monitor",
+        "SageMaker Debugger",
+        "Both A and B"
+      ],
+      "correct_answer": 3,
+      "explanation": "Both SageMaker Clarify and Model Monitor are needed: Clarify for bias detection and explanation, and Model Monitor for continuous monitoring of bias drift in production deployments."
+    },
+    {
+      "id": 38,
+      "domain": "Modeling",
+      "difficulty": "hard",
+      "question": "A data scientist is building a time series forecasting model for retail demand prediction. The data shows strong seasonality and trend components. Which algorithm would be most appropriate?",
+      "options": [
+        "Linear Learner",
+        "DeepAR",
+        "Prophet (via SageMaker)",
+        "Both B and C"
+      ],
+      "correct_answer": 3,
+      "explanation": "Both DeepAR and Prophet are excellent for time series with seasonality and trends. DeepAR is SageMaker's built-in algorithm for complex patterns, while Prophet (available via SageMaker) excels at handling seasonality and trends with interpretable components."
+    },
+    {
+      "id": 39,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A data team needs to implement data lineage tracking for their ML pipelines to ensure compliance and reproducibility. Which AWS service provides this capability?",
+      "options": [
+        "AWS CloudTrail",
+        "SageMaker Feature Store",
+        "AWS Glue Data Catalog",
+        "Amazon DataZone"
+      ],
+      "correct_answer": 3,
+      "explanation": "Amazon DataZone provides comprehensive data lineage tracking, governance, and cataloging capabilities specifically designed for data and ML workflows, ensuring compliance and reproducibility."
+    },
+    {
+      "id": 40,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "When analyzing a dataset for machine learning, which technique is most effective for detecting multicollinearity between features?",
+      "options": [
+        "Correlation matrix",
+        "Variance Inflation Factor (VIF)",
+        "Principal Component Analysis",
+        "Both A and B"
+      ],
+      "correct_answer": 3,
+      "explanation": "Both correlation matrix and VIF are effective for detecting multicollinearity. Correlation matrix shows pairwise relationships, while VIF quantifies how much the variance of a coefficient increases due to collinearity."
+    },
+    {
+      "id": 41,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "easy",
+      "question": "Which SageMaker feature allows you to automatically stop training jobs that are not improving to save costs?",
+      "options": [
+        "Early stopping",
+        "Automatic model tuning",
+        "Managed spot training",
+        "Checkpointing"
+      ],
+      "correct_answer": 0,
+      "explanation": "Early stopping automatically terminates training jobs when the model performance stops improving on the validation set, preventing overfitting and saving computational costs."
+    },
+    {
+      "id": 42,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "A machine learning engineer is working on a natural language processing task that requires understanding context and relationships between words. Which type of neural network architecture would be most appropriate?",
+      "options": [
+        "Convolutional Neural Network (CNN)",
+        "Recurrent Neural Network (RNN)",
+        "Transformer",
+        "Multilayer Perceptron (MLP)"
+      ],
+      "correct_answer": 2,
+      "explanation": "Transformers are the state-of-the-art architecture for NLP tasks requiring context understanding. They use attention mechanisms to capture relationships between words regardless of their position in the sequence."
+    },
+    {
+      "id": 43,
+      "domain": "Data Engineering",
+      "difficulty": "easy",
+      "question": "Which AWS service can automatically partition data in S3 based on common query patterns to improve query performance?",
+      "options": [
+        "AWS Glue",
+        "Amazon Athena",
+        "AWS Lake Formation",
+        "Amazon EMR"
+      ],
+      "correct_answer": 0,
+      "explanation": "AWS Glue can automatically partition data when writing to S3, organizing data based on common query patterns (like date, region, etc.) to improve query performance in services like Athena."
+    },
+    {
+      "id": 44,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "hard",
+      "question": "A data scientist needs to analyze customer churn patterns in a dataset with both numerical and categorical features. They want to identify the most important factors contributing to churn. Which approach would be most comprehensive?",
+      "options": [
+        "Logistic regression with feature importance",
+        "Random Forest with feature importance",
+        "SHAP (SHapley Additive exPlanations) analysis",
+        "All of the above"
+      ],
+      "correct_answer": 3,
+      "explanation": "A comprehensive analysis should include multiple approaches: logistic regression for interpretable linear relationships, Random Forest for non-linear patterns and feature importance, and SHAP for detailed feature contribution analysis."
+    },
+    {
+      "id": 45,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to implement canary deployments for their ML models, gradually shifting traffic from the old model to the new model. Which SageMaker feature enables this?",
+      "options": [
+        "Blue/Green deployment",
+        "Production variants with traffic shifting",
+        "Multi-model endpoints",
+        "Auto-scaling policies"
+      ],
+      "correct_answer": 1,
+      "explanation": "Production variants with traffic shifting allow you to gradually move traffic from one model version to another, implementing canary deployments by slowly increasing the percentage of traffic to the new model."
+    },
+    {
+      "id": 46,
+      "domain": "Modeling",
+      "difficulty": "easy",
+      "question": "Which activation function is most commonly used in the output layer of a binary classification neural network?",
+      "options": [
+        "ReLU",
+        "Sigmoid",
+        "Tanh",
+        "Softmax"
+      ],
+      "correct_answer": 1,
+      "explanation": "Sigmoid activation function is used in the output layer of binary classification networks as it outputs values between 0 and 1, which can be interpreted as probabilities for the positive class."
+    },
+    {
+      "id": 47,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A data engineering team needs to process streaming data with exactly-once semantics and handle out-of-order events. Which combination of AWS services would be most appropriate?",
+      "options": [
+        "Kinesis Data Streams + Lambda",
+        "Kinesis Data Firehose + S3",
+        "MSK + Kinesis Analytics",
+        "EventBridge + Step Functions"
+      ],
+      "correct_answer": 2,
+      "explanation": "Amazon MSK (Managed Streaming for Apache Kafka) with Kinesis Analytics provides exactly-once processing semantics and can handle out-of-order events through windowing and watermarking capabilities."
+    },
+    {
+      "id": 48,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "When preparing text data for machine learning, which preprocessing step is most important for reducing vocabulary size while preserving semantic meaning?",
+      "options": [
+        "Tokenization",
+        "Stemming/Lemmatization",
+        "Stop word removal",
+        "Lowercasing"
+      ],
+      "correct_answer": 1,
+      "explanation": "Stemming and lemmatization reduce vocabulary size by converting words to their root forms while preserving semantic meaning. This helps models generalize better and reduces the dimensionality of text features."
+    },
+    {
+      "id": 49,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "hard",
+      "question": "A company needs to implement model governance with approval workflows, version control, and audit trails for their ML models. Which AWS services should they combine?",
+      "options": [
+        "SageMaker Model Registry + AWS CloudTrail + IAM",
+        "SageMaker Pipelines + AWS Config + CloudWatch",
+        "CodeCommit + CodePipeline + SageMaker",
+        "All of the above"
+      ],
+      "correct_answer": 3,
+      "explanation": "Comprehensive model governance requires multiple services: Model Registry for versioning and approval, CloudTrail for audit trails, IAM for access control, Pipelines for automation, Config for compliance monitoring, and CodeCommit/CodePipeline for version control and CI/CD."
+    },
+    {
+      "id": 50,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "When using cross-validation for model evaluation, which type is most appropriate for time series data?",
+      "options": [
+        "K-fold cross-validation",
+        "Stratified k-fold cross-validation",
+        "Time series split (walk-forward validation)",
+        "Leave-one-out cross-validation"
+      ],
+      "correct_answer": 2,
+      "explanation": "Time series split (walk-forward validation) is most appropriate for time series data as it respects the temporal order and prevents data leakage by only using past data to predict future values."
+    },
+    {
+      "id": 51,
+      "domain": "Data Engineering",
+      "difficulty": "hard",
+      "question": "A company needs to implement a data lake with fine-grained access control, column-level security, and audit logging for their ML datasets. Which AWS service should they use?",
+      "options": [
+        "Amazon S3 with bucket policies",
+        "AWS Lake Formation",
+        "Amazon Redshift",
+        "AWS Glue with IAM policies"
+      ],
+      "correct_answer": 1,
+      "explanation": "AWS Lake Formation provides fine-grained access control, column-level security, row-level security, and comprehensive audit logging for data lakes. It's specifically designed for secure data lake governance."
+    },
+    {
+      "id": 52,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "A data scientist is building a recommendation system and needs to handle the cold start problem for new users. Which approach would be most effective?",
+      "options": [
+        "Content-based filtering only",
+        "Collaborative filtering only",
+        "Hybrid approach combining both methods",
+        "Use demographic-based recommendations"
+      ],
+      "correct_answer": 2,
+      "explanation": "A hybrid approach combining content-based and collaborative filtering is most effective for handling cold start problems. It can use content features for new users while leveraging collaborative patterns as more data becomes available."
+    },
+    {
+      "id": 53,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "easy",
+      "question": "Which visualization is most appropriate for showing the distribution of a continuous variable?",
+      "options": [
+        "Bar chart",
+        "Histogram",
+        "Pie chart",
+        "Scatter plot"
+      ],
+      "correct_answer": 1,
+      "explanation": "A histogram is the most appropriate visualization for showing the distribution of a continuous variable as it displays the frequency of values across different ranges or bins."
+    },
+    {
+      "id": 54,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to automatically retrain their ML model when new data becomes available in S3. Which AWS services should they use to implement this workflow?",
+      "options": [
+        "S3 Event Notifications + Lambda + SageMaker Training",
+        "EventBridge + Step Functions + SageMaker Pipelines",
+        "CloudWatch Events + SageMaker Processing + Training",
+        "All of the above are valid approaches"
+      ],
+      "correct_answer": 3,
+      "explanation": "All approaches are valid for implementing automated retraining workflows. The choice depends on complexity requirements: simple Lambda triggers for basic workflows, Step Functions for complex orchestration, or SageMaker Pipelines for ML-specific workflows."
+    },
+    {
+      "id": 55,
+      "domain": "Modeling",
+      "difficulty": "hard",
+      "question": "A machine learning engineer is working on a computer vision task with limited labeled data. Which technique would be most effective for improving model performance?",
+      "options": [
+        "Transfer learning with pre-trained models",
+        "Data augmentation",
+        "Semi-supervised learning",
+        "All of the above"
+      ],
+      "correct_answer": 3,
+      "explanation": "All techniques are effective for limited labeled data: transfer learning leverages pre-trained features, data augmentation increases effective dataset size, and semi-supervised learning can utilize unlabeled data. Combining all approaches often yields the best results."
+    },
+    {
+      "id": 56,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A data team needs to implement data quality checks that run automatically whenever new data is ingested into their data lake. Which AWS service combination would be most appropriate?",
+      "options": [
+        "AWS Glue Data Quality + EventBridge",
+        "Lambda + CloudWatch + S3",
+        "Step Functions + Glue + SNS",
+        "SageMaker Processing + CloudWatch"
+      ],
+      "correct_answer": 0,
+      "explanation": "AWS Glue Data Quality with EventBridge provides automated data quality monitoring with built-in rules and can trigger alerts or remediation actions when data quality issues are detected."
+    },
+    {
+      "id": 57,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "When analyzing a dataset with many categorical variables, which encoding technique is most appropriate for high-cardinality categories?",
+      "options": [
+        "One-hot encoding",
+        "Label encoding",
+        "Target encoding",
+        "Binary encoding"
+      ],
+      "correct_answer": 2,
+      "explanation": "Target encoding is most appropriate for high-cardinality categorical variables as it doesn't create excessive dimensions like one-hot encoding and captures the relationship between categories and the target variable."
+    },
+    {
+      "id": 58,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "easy",
+      "question": "Which SageMaker feature allows you to compare the performance of different model versions side by side?",
+      "options": [
+        "SageMaker Studio",
+        "SageMaker Experiments",
+        "SageMaker Model Registry",
+        "SageMaker Debugger"
+      ],
+      "correct_answer": 1,
+      "explanation": "SageMaker Experiments allows you to track, compare, and organize machine learning experiments, making it easy to compare performance metrics across different model versions and configurations."
+    },
+    {
+      "id": 59,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "A data scientist is building a fraud detection model where false negatives (missing fraud) are much more costly than false positives. Which metric should they optimize for?",
+      "options": [
+        "Precision",
+        "Recall",
+        "F1-score",
+        "Accuracy"
+      ],
+      "correct_answer": 1,
+      "explanation": "Recall should be optimized when false negatives are more costly than false positives. High recall ensures that most fraud cases are detected, even if it means some legitimate transactions are flagged as suspicious."
+    },
+    {
+      "id": 60,
+      "domain": "Data Engineering",
+      "difficulty": "easy",
+      "question": "Which AWS service is specifically designed for extracting text and data from documents like PDFs and images?",
+      "options": [
+        "Amazon Comprehend",
+        "Amazon Textract",
+        "Amazon Rekognition",
+        "Amazon Transcribe"
+      ],
+      "correct_answer": 1,
+      "explanation": "Amazon Textract is specifically designed for extracting text and structured data from documents, including PDFs, images, and forms. It can identify tables, forms, and key-value pairs."
+    },
+    {
+      "id": 61,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "hard",
+      "question": "A data scientist is analyzing customer behavior data and suspects there are distinct customer segments. Which unsupervised learning technique would be most appropriate for identifying these segments?",
+      "options": [
+        "Principal Component Analysis (PCA)",
+        "K-means clustering",
+        "Association rule mining",
+        "Anomaly detection"
+      ],
+      "correct_answer": 1,
+      "explanation": "K-means clustering is most appropriate for identifying customer segments as it groups customers with similar behaviors into distinct clusters, which can then be analyzed to understand different customer types."
+    },
+    {
+      "id": 62,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to implement shadow mode testing where a new model processes requests alongside the production model but doesn't affect user experience. How can this be implemented in SageMaker?",
+      "options": [
+        "Use production variants with 0% traffic to the new model",
+        "Deploy the new model to a separate endpoint and duplicate requests",
+        "Use SageMaker Pipelines with conditional steps",
+        "Both A and B are valid approaches"
+      ],
+      "correct_answer": 3,
+      "explanation": "Both approaches work for shadow mode testing: production variants with 0% traffic allow the new model to process requests without affecting responses, while separate endpoints with request duplication provide more isolation and detailed comparison capabilities."
+    },
+    {
+      "id": 63,
+      "domain": "Modeling",
+      "difficulty": "easy",
+      "question": "Which loss function is most appropriate for multi-class classification problems?",
+      "options": [
+        "Binary cross-entropy",
+        "Categorical cross-entropy",
+        "Mean squared error",
+        "Hinge loss"
+      ],
+      "correct_answer": 1,
+      "explanation": "Categorical cross-entropy is the standard loss function for multi-class classification problems. It measures the difference between predicted probability distributions and true class labels."
+    },
+    {
+      "id": 64,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A data engineering team needs to process both batch and streaming data using the same transformation logic. Which AWS service would be most appropriate?",
+      "options": [
+        "AWS Glue with both batch and streaming jobs",
+        "Amazon EMR with Spark Structured Streaming",
+        "Kinesis Analytics with SQL",
+        "Both A and B"
+      ],
+      "correct_answer": 3,
+      "explanation": "Both AWS Glue and Amazon EMR with Spark support unified batch and streaming processing, allowing you to use the same transformation logic for both data processing patterns. This reduces code duplication and maintenance overhead."
+    },
+    {
+      "id": 65,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "When dealing with time series data, which technique is most effective for detecting seasonal patterns?",
+      "options": [
+        "Autocorrelation function (ACF)",
+        "Fourier transform",
+        "Seasonal decomposition",
+        "All of the above"
+      ],
+      "correct_answer": 3,
+      "explanation": "All techniques are effective for detecting seasonal patterns: ACF shows periodic correlations, Fourier transform identifies frequency components, and seasonal decomposition explicitly separates trend, seasonal, and residual components."
+    },
+    {
+      "id": 66,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "hard",
+      "question": "A company needs to implement model explainability for regulatory compliance. Their models must provide explanations for individual predictions. Which approach should they use?",
+      "options": [
+        "LIME (Local Interpretable Model-agnostic Explanations)",
+        "SHAP (SHapley Additive exPlanations)",
+        "SageMaker Clarify",
+        "All of the above"
+      ],
+      "correct_answer": 3,
+      "explanation": "All approaches provide individual prediction explanations: LIME and SHAP are model-agnostic explanation methods, while SageMaker Clarify integrates these techniques and provides additional bias detection capabilities for comprehensive model explainability."
+    },
+    {
+      "id": 67,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "A data scientist is working on a natural language processing task and needs to convert text into numerical representations. Which technique would capture semantic relationships between words?",
+      "options": [
+        "Bag of words",
+        "TF-IDF",
+        "Word embeddings (Word2Vec, GloVe)",
+        "N-grams"
+      ],
+      "correct_answer": 2,
+      "explanation": "Word embeddings like Word2Vec and GloVe capture semantic relationships between words by representing them as dense vectors in a continuous space where similar words are closer together."
+    },
+    {
+      "id": 68,
+      "domain": "Data Engineering",
+      "difficulty": "easy",
+      "question": "Which AWS service can automatically compress and convert data formats to optimize storage costs and query performance?",
+      "options": [
+        "Amazon S3",
+        "AWS Glue",
+        "Amazon Athena",
+        "AWS Lambda"
+      ],
+      "correct_answer": 1,
+      "explanation": "AWS Glue can automatically compress data and convert between formats (like CSV to Parquet) during ETL processes, optimizing both storage costs and query performance for analytics workloads."
+    },
+    {
+      "id": 69,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist needs to identify the optimal number of clusters for a K-means clustering algorithm. Which method would be most appropriate?",
+      "options": [
+        "Elbow method",
+        "Silhouette analysis",
+        "Gap statistic",
+        "All of the above"
+      ],
+      "correct_answer": 3,
+      "explanation": "All methods are valuable for determining optimal cluster numbers: the elbow method looks for the point where adding clusters provides diminishing returns, silhouette analysis measures cluster cohesion and separation, and gap statistic compares clustering to random data."
+    },
+    {
+      "id": 70,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to implement automated model retraining when model performance degrades below a threshold. Which SageMaker features should they combine?",
+      "options": [
+        "Model Monitor + CloudWatch Alarms + Lambda",
+        "Model Monitor + EventBridge + SageMaker Pipelines",
+        "Clarify + Step Functions + Training Jobs",
+        "Both A and B are valid approaches"
+      ],
+      "correct_answer": 3,
+      "explanation": "Both approaches work: Model Monitor detects performance degradation, CloudWatch Alarms or EventBridge can trigger responses, and Lambda or SageMaker Pipelines can orchestrate the retraining process. The choice depends on complexity and integration requirements."
+    },
+    {
+      "id": 71,
+      "domain": "Modeling",
+      "difficulty": "hard",
+      "question": "A machine learning engineer is building a model for predicting customer lifetime value. The target variable has a long-tail distribution with many small values and few large values. Which approach would be most appropriate?",
+      "options": [
+        "Log transformation of the target variable",
+        "Use a robust regression algorithm",
+        "Apply quantile regression",
+        "All of the above could be effective"
+      ],
+      "correct_answer": 3,
+      "explanation": "All approaches can be effective for long-tail distributions: log transformation normalizes the distribution, robust regression algorithms are less sensitive to outliers, and quantile regression can model different parts of the distribution. The best approach often combines multiple techniques."
+    },
+    {
+      "id": 72,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A data team needs to implement data versioning and lineage tracking for their ML datasets. Which combination of AWS services would be most appropriate?",
+      "options": [
+        "S3 versioning + AWS Glue Data Catalog",
+        "DynamoDB + CloudTrail",
+        "SageMaker Feature Store + DataZone",
+        "Git + CodeCommit"
+      ],
+      "correct_answer": 2,
+      "explanation": "SageMaker Feature Store provides built-in versioning for ML features, while DataZone offers comprehensive data lineage tracking and governance capabilities specifically designed for data and ML workflows."
+    },
+    {
+      "id": 73,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "easy",
+      "question": "Which statistical test is most appropriate for determining if there's a significant difference between the means of two groups?",
+      "options": [
+        "Chi-square test",
+        "T-test",
+        "ANOVA",
+        "Correlation test"
+      ],
+      "correct_answer": 1,
+      "explanation": "A t-test is most appropriate for comparing the means of two groups. It determines whether the difference between group means is statistically significant."
+    },
+    {
+      "id": 74,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "easy",
+      "question": "Which SageMaker feature allows you to debug training jobs by capturing and analyzing tensors during training?",
+      "options": [
+        "SageMaker Experiments",
+        "SageMaker Debugger",
+        "SageMaker Profiler",
+        "SageMaker Clarify"
+      ],
+      "correct_answer": 1,
+      "explanation": "SageMaker Debugger captures and analyzes tensors, gradients, and other training metrics during training jobs, helping identify issues like vanishing gradients, overfitting, or poor weight initialization."
+    },
+    {
+      "id": 75,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "A data scientist is building a model for image classification and wants to reduce overfitting. Which regularization techniques would be most effective for deep neural networks?",
+      "options": [
+        "Dropout",
+        "Batch normalization",
+        "Data augmentation",
+        "All of the above"
+      ],
+      "correct_answer": 3,
+      "explanation": "All techniques help reduce overfitting in deep neural networks: dropout randomly sets neurons to zero during training, batch normalization stabilizes training and acts as regularization, and data augmentation increases the effective size of the training dataset."
+    },
+    {
+      "id": 76,
+      "domain": "Data Engineering",
+      "difficulty": "hard",
+      "question": "A company needs to implement a data mesh architecture where different teams can independently manage their data products while maintaining governance and discoverability. Which AWS services should they use?",
+      "options": [
+        "DataZone + Lake Formation + Glue",
+        "S3 + IAM + CloudTrail",
+        "Redshift + QuickSight + Athena",
+        "EMR + Glue + Kinesis"
+      ],
+      "correct_answer": 0,
+      "explanation": "DataZone provides data mesh capabilities with domain-oriented data ownership, Lake Formation offers governance and access control, and Glue enables data integration across domains while maintaining discoverability and governance."
+    },
+    {
+      "id": 77,
+      "domain": "Modeling",
+      "difficulty": "easy",
+      "question": "Which metric is most appropriate for evaluating the performance of a regression model?",
+      "options": [
+        "Accuracy",
+        "Precision",
+        "Mean Absolute Error (MAE)",
+        "F1-score"
+      ],
+      "correct_answer": 2,
+      "explanation": "Mean Absolute Error (MAE) is appropriate for regression models as it measures the average absolute difference between predicted and actual values. Accuracy, precision, and F1-score are classification metrics."
+    },
+    {
+      "id": 78,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist is analyzing customer transaction data and wants to identify unusual spending patterns that might indicate fraud. Which approach would be most effective?",
+      "options": [
+        "Statistical outlier detection using z-scores",
+        "Isolation Forest algorithm",
+        "One-class SVM",
+        "All of the above"
+      ],
+      "correct_answer": 3,
+      "explanation": "All approaches are effective for fraud detection: z-scores for statistical outliers, Isolation Forest for anomaly detection in high-dimensional data, and One-class SVM for learning normal behavior patterns. Combining multiple methods often improves detection accuracy."
+    },
+    {
+      "id": 79,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to implement blue-green deployment for their ML models to minimize downtime during updates. Which SageMaker approach should they use?",
+      "options": [
+        "Create a new endpoint and switch DNS",
+        "Use production variants with traffic shifting",
+        "Deploy to a new endpoint and update application code",
+        "Use SageMaker Pipelines with conditional deployment"
+      ],
+      "correct_answer": 1,
+      "explanation": "Production variants with traffic shifting provide the most seamless blue-green deployment by allowing instant traffic switching between model versions without DNS changes or application code updates."
+    },
+    {
+      "id": 80,
+      "domain": "Modeling",
+      "difficulty": "hard",
+      "question": "A data scientist is working on a multi-label classification problem where each instance can belong to multiple classes simultaneously. Which approach would be most appropriate?",
+      "options": [
+        "One-vs-rest (OvR) classification",
+        "Binary relevance method",
+        "Classifier chains",
+        "All of the above are valid approaches"
+      ],
+      "correct_answer": 3,
+      "explanation": "All approaches are valid for multi-label classification: OvR trains one classifier per label, binary relevance treats each label independently, and classifier chains model label dependencies. The choice depends on label correlation and performance requirements."
+    },
+    {
+      "id": 81,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A data team needs to implement incremental data loading for their ML pipeline to process only new or changed records. Which AWS service feature would be most efficient?",
+      "options": [
+        "S3 event notifications",
+        "AWS Glue bookmarks",
+        "DynamoDB Streams",
+        "All of the above depending on the data source"
+      ],
+      "correct_answer": 3,
+      "explanation": "The choice depends on the data source: S3 event notifications for file-based incremental loads, AWS Glue bookmarks for tracking processed data in ETL jobs, and DynamoDB Streams for real-time change capture from DynamoDB tables."
+    },
+    {
+      "id": 82,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "easy",
+      "question": "Which technique is most effective for handling missing values in a dataset when the missingness is not random?",
+      "options": [
+        "Delete rows with missing values",
+        "Fill with mean/median",
+        "Use predictive imputation",
+        "Fill with a constant value"
+      ],
+      "correct_answer": 2,
+      "explanation": "Predictive imputation is most effective for non-random missingness as it uses other features to predict missing values, preserving relationships in the data. Simple deletion or constant filling can introduce bias when missingness is not random."
+    },
+    {
+      "id": 83,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "hard",
+      "question": "A company needs to implement model governance with automated compliance checking, approval workflows, and deployment gates. Which combination of AWS services would provide the most comprehensive solution?",
+      "options": [
+        "SageMaker Model Registry + AWS Config + IAM",
+        "SageMaker Pipelines + Lambda + Step Functions",
+        "CodePipeline + SageMaker + CloudFormation",
+        "All of the above integrated together"
+      ],
+      "correct_answer": 3,
+      "explanation": "Comprehensive model governance requires integration of multiple services: Model Registry for versioning and approval, Config for compliance monitoring, IAM for access control, Pipelines for workflow automation, and CodePipeline for CI/CD with deployment gates."
+    },
+    {
+      "id": 84,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "A machine learning engineer is building a recommendation system for a streaming platform. They need to handle both explicit feedback (ratings) and implicit feedback (views, clicks). Which algorithm would be most appropriate?",
+      "options": [
+        "Matrix Factorization",
+        "Collaborative Filtering",
+        "Amazon Personalize",
+        "Deep Learning with embeddings"
+      ],
+      "correct_answer": 2,
+      "explanation": "Amazon Personalize is specifically designed for recommendation systems and can handle both explicit and implicit feedback automatically. It provides pre-built algorithms optimized for different recommendation scenarios and scales automatically."
+    },
+    {
+      "id": 85,
+      "domain": "Data Engineering",
+      "difficulty": "easy",
+      "question": "Which AWS service is most cost-effective for long-term archival of training datasets that are accessed infrequently?",
+      "options": [
+        "S3 Standard",
+        "S3 Intelligent-Tiering",
+        "S3 Glacier Deep Archive",
+        "EBS volumes"
+      ],
+      "correct_answer": 2,
+      "explanation": "S3 Glacier Deep Archive is the most cost-effective option for long-term archival of infrequently accessed data, offering the lowest storage costs with retrieval times of 12-48 hours."
+    },
+    {
+      "id": 86,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist is analyzing sales data and wants to identify trends and seasonal patterns. Which decomposition method would be most appropriate for multiplicative seasonality?",
+      "options": [
+        "Additive decomposition",
+        "Multiplicative decomposition",
+        "STL decomposition",
+        "X-13ARIMA-SEATS"
+      ],
+      "correct_answer": 1,
+      "explanation": "Multiplicative decomposition is most appropriate when seasonal effects change proportionally with the level of the time series, which is common in sales data where seasonal increases are larger during high-sales periods."
+    },
+    {
+      "id": 87,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to implement automated hyperparameter tuning for their SageMaker training jobs with a limited budget. Which strategy should they use?",
+      "options": [
+        "Random search",
+        "Bayesian optimization",
+        "Hyperband",
+        "Grid search"
+      ],
+      "correct_answer": 2,
+      "explanation": "Hyperband is most budget-efficient as it uses early stopping to terminate poorly performing configurations quickly, allowing more configurations to be tested within the same budget compared to other methods."
+    },
+    {
+      "id": 88,
+      "domain": "Modeling",
+      "difficulty": "easy",
+      "question": "Which regularization technique adds a penalty term proportional to the sum of absolute values of parameters?",
+      "options": [
+        "L1 regularization (Lasso)",
+        "L2 regularization (Ridge)",
+        "Elastic Net",
+        "Dropout"
+      ],
+      "correct_answer": 0,
+      "explanation": "L1 regularization (Lasso) adds a penalty proportional to the sum of absolute values of parameters, which can drive some parameters to exactly zero, effectively performing feature selection."
+    },
+    {
+      "id": 89,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A data engineering team needs to implement data quality monitoring that can detect schema drift, data freshness issues, and statistical anomalies. Which AWS service provides these capabilities?",
+      "options": [
+        "AWS Glue Data Quality",
+        "Amazon Macie",
+        "AWS Config",
+        "CloudWatch"
+      ],
+      "correct_answer": 0,
+      "explanation": "AWS Glue Data Quality provides comprehensive data quality monitoring including schema drift detection, data freshness checks, statistical anomaly detection, and custom data quality rules."
+    },
+    {
+      "id": 90,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "hard",
+      "question": "A data scientist is working with high-dimensional data and suspects that many features are redundant. Which dimensionality reduction technique would preserve the most interpretability?",
+      "options": [
+        "Principal Component Analysis (PCA)",
+        "t-SNE",
+        "Feature selection using statistical tests",
+        "Independent Component Analysis (ICA)"
+      ],
+      "correct_answer": 2,
+      "explanation": "Feature selection using statistical tests preserves interpretability by selecting a subset of original features rather than creating new transformed features like PCA, t-SNE, or ICA, which combine original features in ways that may be difficult to interpret."
+    },
+    {
+      "id": 91,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "easy",
+      "question": "Which SageMaker feature allows you to automatically scale inference endpoints based on traffic?",
+      "options": [
+        "Auto Scaling",
+        "Multi-model endpoints",
+        "Serverless inference",
+        "Both A and C"
+      ],
+      "correct_answer": 3,
+      "explanation": "Both Auto Scaling (for real-time endpoints) and Serverless inference provide automatic scaling based on traffic. Auto Scaling adjusts instance count, while Serverless inference scales to zero when not in use."
+    },
+    {
+      "id": 92,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "A data scientist is building a time series forecasting model and needs to handle multiple related time series that influence each other. Which approach would be most appropriate?",
+      "options": [
+        "Train separate models for each series",
+        "Use Vector Autoregression (VAR)",
+        "Use DeepAR with related time series",
+        "Both B and C"
+      ],
+      "correct_answer": 3,
+      "explanation": "Both VAR and DeepAR can handle multiple related time series. VAR explicitly models the relationships between series, while DeepAR can learn patterns across related time series and benefit from cross-series learning."
+    },
+    {
+      "id": 93,
+      "domain": "Data Engineering",
+      "difficulty": "hard",
+      "question": "A company needs to implement a real-time ML inference pipeline that processes streaming data, applies feature transformations, and serves predictions with sub-second latency. Which architecture would be most appropriate?",
+      "options": [
+        "Kinesis Data Streams + Lambda + SageMaker Endpoint",
+        "Kinesis Analytics + SageMaker Serverless Inference",
+        "MSK + Kinesis Analytics + ElastiCache + SageMaker",
+        "API Gateway + Lambda + SageMaker Real-time Endpoint"
+      ],
+      "correct_answer": 2,
+      "explanation": "MSK for reliable streaming, Kinesis Analytics for real-time feature transformations, ElastiCache for feature caching to reduce latency, and SageMaker for model inference provides the most robust architecture for sub-second latency requirements."
+    },
+    {
+      "id": 94,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist is analyzing customer churn data and wants to understand which features contribute most to the likelihood of churn. Which technique would provide the most actionable insights?",
+      "options": [
+        "Correlation analysis",
+        "Feature importance from Random Forest",
+        "SHAP values",
+        "Mutual information"
+      ],
+      "correct_answer": 2,
+      "explanation": "SHAP values provide the most actionable insights as they show not only which features are important but also how each feature contributes to individual predictions, enabling targeted interventions for specific customer segments."
+    },
+    {
+      "id": 95,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to implement continuous integration for their ML models, including automated testing of model performance and data quality. Which approach would be most comprehensive?",
+      "options": [
+        "Use SageMaker Pipelines with built-in model evaluation",
+        "Integrate SageMaker with CodePipeline and custom testing",
+        "Use MLflow with automated testing frameworks",
+        "Combine SageMaker Pipelines with CodePipeline and Glue Data Quality"
+      ],
+      "correct_answer": 3,
+      "explanation": "Combining SageMaker Pipelines for ML workflow automation, CodePipeline for CI/CD orchestration, and Glue Data Quality for automated data quality testing provides the most comprehensive solution for ML continuous integration."
+    },
+    {
+      "id": 96,
+      "domain": "Modeling",
+      "difficulty": "hard",
+      "question": "A machine learning engineer is working on a computer vision task with limited computational resources. They need to balance model accuracy with inference speed. Which approach would be most effective?",
+      "options": [
+        "Model pruning",
+        "Knowledge distillation",
+        "Quantization",
+        "All of the above"
+      ],
+      "correct_answer": 3,
+      "explanation": "All techniques are effective for optimizing models for limited resources: pruning removes unnecessary parameters, knowledge distillation creates smaller models that mimic larger ones, and quantization reduces precision to speed up inference. Combining these techniques often yields the best results."
+    },
+    {
+      "id": 97,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A data team needs to implement data lineage tracking that shows how data flows from source systems through transformations to ML models. Which AWS service provides this capability?",
+      "options": [
+        "AWS CloudTrail",
+        "Amazon DataZone",
+        "AWS Glue Data Catalog",
+        "SageMaker Feature Store"
+      ],
+      "correct_answer": 1,
+      "explanation": "Amazon DataZone provides comprehensive data lineage tracking, showing how data flows through various transformations and systems, including integration with ML workflows and model training processes."
+    },
+    {
+      "id": 98,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "easy",
+      "question": "Which measure of central tendency is most appropriate for a dataset with extreme outliers?",
+      "options": [
+        "Mean",
+        "Median",
+        "Mode",
+        "Trimmed mean"
+      ],
+      "correct_answer": 1,
+      "explanation": "The median is most appropriate for datasets with extreme outliers as it's not affected by extreme values and represents the middle value when data is sorted, providing a more robust measure of central tendency."
+    },
+    {
+      "id": 99,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "hard",
+      "question": "A company needs to implement model monitoring that can detect concept drift, data drift, and model performance degradation in real-time. Which combination of AWS services would be most effective?",
+      "options": [
+        "SageMaker Model Monitor + CloudWatch + Lambda",
+        "SageMaker Clarify + EventBridge + Step Functions",
+        "Custom monitoring with Kinesis Analytics + CloudWatch",
+        "All of the above integrated together"
+      ],
+      "correct_answer": 3,
+      "explanation": "Comprehensive model monitoring requires multiple approaches: Model Monitor for built-in drift detection, Clarify for bias monitoring, custom solutions for specific metrics, CloudWatch for alerting, and orchestration services for automated responses to detected issues."
+    },
+    {
+      "id": 100,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "A data scientist is building an ensemble model and wants to combine predictions from multiple algorithms. Which ensemble method would be most appropriate for reducing both bias and variance?",
+      "options": [
+        "Bagging",
+        "Boosting",
+        "Stacking",
+        "Voting"
+      ],
+      "correct_answer": 2,
+      "explanation": "Stacking (stacked generalization) is most effective for reducing both bias and variance as it uses a meta-learner to optimally combine predictions from diverse base models, potentially capturing the strengths of different algorithms."
+    },
+    {
+      "id": 101,
+      "domain": "Data Engineering",
+      "difficulty": "easy",
+      "question": "Which AWS service is most appropriate for running large-scale distributed data processing jobs using Apache Spark?",
+      "options": [
+        "AWS Glue",
+        "Amazon EMR",
+        "AWS Batch",
+        "Both A and B"
+      ],
+      "correct_answer": 3,
+      "explanation": "Both AWS Glue and Amazon EMR support Apache Spark for large-scale data processing. Glue is serverless and easier to manage, while EMR provides more control and customization options for complex Spark workloads."
+    },
+    {
+      "id": 102,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist is analyzing A/B test results and wants to determine if the difference between two groups is statistically significant. Which factors should they consider when choosing a statistical test?",
+      "options": [
+        "Sample size and data distribution",
+        "Type of outcome variable (continuous vs categorical)",
+        "Independence of observations",
+        "All of the above"
+      ],
+      "correct_answer": 3,
+      "explanation": "All factors are important when choosing a statistical test: sample size affects power, data distribution determines parametric vs non-parametric tests, outcome variable type determines the appropriate test family, and independence affects the validity of results."
+    },
+    {
+      "id": 103,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to implement automated model deployment with rollback capabilities in case of performance issues. Which approach would be most robust?",
+      "options": [
+        "Blue-green deployment with automated monitoring",
+        "Canary deployment with gradual traffic increase",
+        "Shadow deployment with performance comparison",
+        "All approaches combined in a comprehensive strategy"
+      ],
+      "correct_answer": 3,
+      "explanation": "A comprehensive deployment strategy combines multiple approaches: shadow deployment for initial validation, canary deployment for gradual rollout, blue-green for quick rollback, and automated monitoring throughout the process for maximum robustness."
+    },
+    {
+      "id": 104,
+      "domain": "Modeling",
+      "difficulty": "easy",
+      "question": "Which evaluation metric is most appropriate for a balanced binary classification problem?",
+      "options": [
+        "Accuracy",
+        "Precision",
+        "Recall",
+        "F1-score"
+      ],
+      "correct_answer": 0,
+      "explanation": "For balanced binary classification problems, accuracy is most appropriate as it provides a straightforward measure of overall correctness. F1-score is more important for imbalanced datasets."
+    },
+    {
+      "id": 105,
+      "domain": "Data Engineering",
+      "difficulty": "hard",
+      "question": "A company needs to implement a data architecture that supports both OLTP and OLAP workloads while maintaining ACID compliance and enabling real-time analytics. Which AWS approach would be most suitable?",
+      "options": [
+        "RDS + Redshift with ETL pipelines",
+        "DynamoDB + Redshift with DynamoDB Streams",
+        "Aurora + Aurora Analytics (parallel query)",
+        "DocumentDB + EMR with change streams"
+      ],
+      "correct_answer": 2,
+      "explanation": "Aurora with parallel query provides the best solution as it supports OLTP workloads with ACID compliance while enabling real-time analytics on the same data without ETL overhead, reducing complexity and latency."
+    },
+    {
+      "id": 106,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "hard",
+      "question": "A company is implementing SageMaker Pipelines for their MLOps workflow and needs to handle conditional execution based on model performance metrics. Which approach would be most effective for implementing conditional steps?",
+      "options": [
+        "Use ConditionStep with PropertyFile from model evaluation",
+        "Use Lambda functions to control pipeline execution",
+        "Use Step Functions to orchestrate conditional logic",
+        "Use EventBridge rules to trigger different pipeline branches"
+      ],
+      "correct_answer": 0,
+      "explanation": "ConditionStep with PropertyFile from model evaluation is the native SageMaker Pipelines approach for conditional execution. It allows you to define conditions based on evaluation metrics and control pipeline flow directly within the pipeline definition."
+    },
+    {
+      "id": 107,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "A data scientist is using SageMaker Autopilot for a tabular dataset with 50MB of data. Which training mode will Autopilot automatically select, and what algorithms will it use?",
+      "options": [
+        "HPO mode with Linear Learner, XGBoost, and Deep Learning",
+        "Ensembling mode with AutoGluon algorithms including LightGBM and CatBoost",
+        "Auto mode defaulting to HPO with Bayesian optimization",
+        "Custom mode requiring manual algorithm selection"
+      ],
+      "correct_answer": 1,
+      "explanation": "For datasets smaller than 100MB, Autopilot automatically selects Ensembling mode, which uses AutoGluon library with algorithms like LightGBM, CatBoost, XGBoost, Random Forest, and Neural Networks to create optimal predictive models through stacking ensemble methods."
+    },
+    {
+      "id": 108,
+      "domain": "Data Engineering",
+      "difficulty": "hard",
+      "question": "A data engineering team needs to implement real-time feature engineering for streaming data with complex window operations and late-arriving data handling. Which combination provides the most robust solution?",
+      "options": [
+        "Kinesis Data Analytics with SQL windowing functions",
+        "MSK with Kafka Streams and watermarking",
+        "Kinesis Data Firehose with Lambda transformations",
+        "EMR with Spark Structured Streaming and checkpointing"
+      ],
+      "correct_answer": 1,
+      "explanation": "MSK with Kafka Streams provides the most robust solution for complex streaming operations. Kafka Streams offers advanced windowing capabilities, watermarking for late-arriving data, exactly-once processing semantics, and fault tolerance through state stores and changelog topics."
+    },
+    {
+      "id": 109,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist is analyzing customer segmentation data and needs to determine the optimal number of clusters while considering both cluster cohesion and separation. Which combination of methods would be most comprehensive?",
+      "options": [
+        "Elbow method only",
+        "Silhouette analysis and Gap statistic",
+        "Davies-Bouldin index and Calinski-Harabasz index",
+        "All of the above combined"
+      ],
+      "correct_answer": 3,
+      "explanation": "A comprehensive approach combines multiple methods: Elbow method for variance explanation, Silhouette analysis for cluster quality, Gap statistic for comparison with random data, Davies-Bouldin index for cluster separation, and Calinski-Harabasz index for cluster density. This provides robust validation from multiple perspectives."
+    },
+    {
+      "id": 110,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "easy",
+      "question": "Which SageMaker feature automatically manages infrastructure scaling and provides cost optimization for training jobs that can tolerate interruptions?",
+      "options": [
+        "Managed Spot Training",
+        "Auto Scaling Groups",
+        "Serverless Training",
+        "Elastic Inference"
+      ],
+      "correct_answer": 0,
+      "explanation": "Managed Spot Training automatically uses EC2 Spot instances for training jobs, providing up to 90% cost savings. It handles spot interruptions through checkpointing and automatic resumption, making it ideal for fault-tolerant training workloads."
+    },
+    {
+      "id": 111,
+      "domain": "Modeling",
+      "difficulty": "hard",
+      "question": "A machine learning engineer is implementing a transformer-based model for NLP tasks using SageMaker. They need to optimize memory usage and training speed for large language models. Which distributed training strategy would be most effective?",
+      "options": [
+        "Data parallelism with gradient accumulation",
+        "Model parallelism with pipeline parallelism",
+        "3D parallelism combining data, model, and pipeline parallelism",
+        "Parameter server architecture with asynchronous updates"
+      ],
+      "correct_answer": 2,
+      "explanation": "3D parallelism is most effective for large language models as it combines data parallelism (batch distribution), model parallelism (layer distribution), and pipeline parallelism (stage distribution) to maximize memory efficiency and training throughput while minimizing communication overhead."
+    },
+    {
+      "id": 112,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A company needs to implement feature versioning and lineage tracking for their ML features stored in SageMaker Feature Store. Which approach provides the most comprehensive solution?",
+      "options": [
+        "Use Feature Store built-in versioning with record timestamps",
+        "Implement custom versioning with S3 and metadata tags",
+        "Use Feature Store with DataZone for lineage tracking",
+        "Use Git-based versioning with feature definitions"
+      ],
+      "correct_answer": 2,
+      "explanation": "SageMaker Feature Store with DataZone provides the most comprehensive solution, offering built-in feature versioning, automatic lineage tracking, governance capabilities, and integration with ML workflows for complete feature lifecycle management."
+    },
+    {
+      "id": 113,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "easy",
+      "question": "When analyzing time series data for seasonality, which statistical test is most appropriate for detecting the presence of seasonal patterns?",
+      "options": [
+        "Augmented Dickey-Fuller test",
+        "Ljung-Box test",
+        "Seasonal decomposition of time series (STL)",
+        "Granger causality test"
+      ],
+      "correct_answer": 2,
+      "explanation": "STL (Seasonal and Trend decomposition using Loess) is most appropriate for detecting seasonal patterns as it explicitly separates time series into trend, seasonal, and residual components, making seasonal patterns clearly visible and quantifiable."
+    },
+    {
+      "id": 114,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to implement automated model retraining triggered by data drift detection. Which SageMaker services should be combined for this workflow?",
+      "options": [
+        "Model Monitor + EventBridge + SageMaker Pipelines",
+        "Clarify + CloudWatch + Lambda + Training Jobs",
+        "Data Wrangler + Step Functions + Endpoints",
+        "Feature Store + CloudTrail + CodePipeline"
+      ],
+      "correct_answer": 0,
+      "explanation": "Model Monitor detects data drift and publishes metrics to CloudWatch, EventBridge can trigger on CloudWatch alarms, and SageMaker Pipelines can orchestrate the automated retraining workflow including data processing, training, evaluation, and deployment."
+    },
+    {
+      "id": 115,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "A data scientist is working on a computer vision task with limited labeled data but abundant unlabeled images. Which approach would be most effective for improving model performance?",
+      "options": [
+        "Semi-supervised learning with pseudo-labeling",
+        "Self-supervised learning with contrastive methods",
+        "Transfer learning from pre-trained models",
+        "All of the above combined"
+      ],
+      "correct_answer": 3,
+      "explanation": "Combining all approaches maximizes performance: transfer learning provides a strong foundation, self-supervised learning leverages unlabeled data for representation learning, and semi-supervised learning with pseudo-labeling utilizes both labeled and unlabeled data effectively."
+    },
+    {
+      "id": 116,
+      "domain": "Data Engineering",
+      "difficulty": "easy",
+      "question": "Which AWS service is most appropriate for converting unstructured documents into structured data for ML training?",
+      "options": [
+        "Amazon Textract",
+        "Amazon Comprehend",
+        "Amazon Rekognition",
+        "AWS Glue DataBrew"
+      ],
+      "correct_answer": 0,
+      "explanation": "Amazon Textract is specifically designed for extracting text and structured data from documents, including forms, tables, and key-value pairs from PDFs and images, making it ideal for converting unstructured documents into structured ML training data."
+    },
+    {
+      "id": 117,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "hard",
+      "question": "A data scientist is analyzing a dataset with mixed data types and needs to identify complex non-linear relationships between variables. Which approach would be most comprehensive?",
+      "options": [
+        "Correlation analysis and mutual information",
+        "Principal Component Analysis and t-SNE",
+        "Random Forest feature importance and SHAP values",
+        "All of the above with ensemble interpretation"
+      ],
+      "correct_answer": 3,
+      "explanation": "A comprehensive approach combines multiple techniques: correlation for linear relationships, mutual information for non-linear dependencies, PCA for dimensionality insights, t-SNE for visualization, Random Forest for feature importance, and SHAP for detailed feature interactions."
+    },
+    {
+      "id": 118,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "hard",
+      "question": "A company needs to implement multi-region model deployment with automatic failover and consistent model versions across regions. Which architecture would be most robust?",
+      "options": [
+        "Cross-region replication of SageMaker endpoints with Route 53 health checks",
+        "Global load balancer with regional SageMaker endpoints",
+        "SageMaker Multi-Model endpoints in each region with shared model registry",
+        "All of the above with centralized model registry and automated deployment"
+      ],
+      "correct_answer": 3,
+      "explanation": "The most robust architecture combines cross-region endpoint replication, global load balancing with health checks, multi-model endpoints for efficiency, centralized model registry for version consistency, and automated deployment pipelines for synchronized updates across regions."
+    },
+    {
+      "id": 119,
+      "domain": "Modeling",
+      "difficulty": "easy",
+      "question": "Which activation function is most commonly used in the hidden layers of deep neural networks to address the vanishing gradient problem?",
+      "options": [
+        "Sigmoid",
+        "Tanh",
+        "ReLU",
+        "Linear"
+      ],
+      "correct_answer": 2,
+      "explanation": "ReLU (Rectified Linear Unit) is most commonly used in hidden layers as it helps address the vanishing gradient problem by providing non-zero gradients for positive inputs, enabling better gradient flow during backpropagation in deep networks."
+    },
+    {
+      "id": 120,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A data team needs to implement incremental data processing that can handle both batch and streaming data with exactly-once semantics. Which AWS service combination would be most appropriate?",
+      "options": [
+        "Kinesis Data Streams + AWS Glue Streaming",
+        "MSK + EMR with Spark Structured Streaming",
+        "Kinesis Data Firehose + Lambda",
+        "Both A and B"
+      ],
+      "correct_answer": 3,
+      "explanation": "Both combinations support exactly-once semantics and unified batch/streaming processing: Kinesis Data Streams with AWS Glue Streaming provides serverless processing, while MSK with EMR Spark Structured Streaming offers more control and advanced streaming capabilities."
+    },
+    {
+      "id": 121,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist is analyzing customer transaction data and suspects there are hidden patterns in spending behavior. Which unsupervised learning technique would be most effective for pattern discovery?",
+      "options": [
+        "K-means clustering",
+        "Association rule mining",
+        "Anomaly detection with Isolation Forest",
+        "Latent Dirichlet Allocation (LDA)"
+      ],
+      "correct_answer": 1,
+      "explanation": "Association rule mining is most effective for discovering hidden patterns in transaction data as it identifies frequent itemsets and rules that show relationships between different spending behaviors, revealing patterns like 'customers who buy X also tend to buy Y'."
+    },
+    {
+      "id": 122,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to implement shadow testing for their new ML model where the new model processes all requests but doesn't affect user experience. Which SageMaker approach is most efficient?",
+      "options": [
+        "Deploy new model with 0% traffic allocation in production variants",
+        "Use separate endpoint with request duplication via API Gateway",
+        "Implement custom inference pipeline with dual model execution",
+        "Use SageMaker Multi-Model endpoint with conditional routing"
+      ],
+      "correct_answer": 0,
+      "explanation": "Deploying the new model with 0% traffic allocation in production variants is most efficient as it allows the model to process all requests for monitoring and comparison without affecting user responses, while minimizing infrastructure overhead and complexity."
+    },
+    {
+      "id": 123,
+      "domain": "Modeling",
+      "difficulty": "hard",
+      "question": "A machine learning engineer is building a recommendation system that needs to handle both explicit feedback (ratings) and implicit feedback (clicks, views) while addressing the cold start problem. Which approach would be most comprehensive?",
+      "options": [
+        "Matrix factorization with weighted implicit feedback",
+        "Deep learning with embedding layers for users and items",
+        "Amazon Personalize with multiple datasets and recipes",
+        "Hybrid approach combining collaborative and content-based filtering"
+      ],
+      "correct_answer": 2,
+      "explanation": "Amazon Personalize provides the most comprehensive solution as it automatically handles both explicit and implicit feedback, addresses cold start problems with content-based recommendations, supports multiple algorithms (HRNN, SIMS, Popularity), and scales automatically."
+    },
+    {
+      "id": 124,
+      "domain": "Data Engineering",
+      "difficulty": "hard",
+      "question": "A company needs to implement a data mesh architecture where different domains manage their own data products while maintaining discoverability and governance. Which AWS services combination would be most appropriate?",
+      "options": [
+        "DataZone + Lake Formation + Glue Data Catalog",
+        "S3 + IAM + CloudTrail + Athena",
+        "Redshift + QuickSight + Glue",
+        "EMR + Kinesis + DynamoDB"
+      ],
+      "correct_answer": 0,
+      "explanation": "DataZone provides data mesh capabilities with domain-oriented ownership and self-service data discovery, Lake Formation offers fine-grained governance and access control, and Glue Data Catalog enables cross-domain data discovery and lineage tracking."
+    },
+    {
+      "id": 125,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "easy",
+      "question": "Which technique is most appropriate for handling categorical variables with high cardinality in machine learning models?",
+      "options": [
+        "One-hot encoding",
+        "Label encoding",
+        "Target encoding",
+        "Binary encoding"
+      ],
+      "correct_answer": 2,
+      "explanation": "Target encoding is most appropriate for high-cardinality categorical variables as it replaces categories with their target mean, reducing dimensionality while preserving the relationship between categories and the target variable, unlike one-hot encoding which creates too many features."
+    },
+    {
+      "id": 126,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "easy",
+      "question": "Which SageMaker feature provides automatic scaling to zero when no requests are being processed, making it cost-effective for intermittent workloads?",
+      "options": [
+        "Real-time inference endpoints",
+        "Serverless inference",
+        "Batch transform jobs",
+        "Multi-model endpoints"
+      ],
+      "correct_answer": 1,
+      "explanation": "Serverless inference automatically scales to zero when no requests are being processed and scales up on-demand, making it highly cost-effective for intermittent or unpredictable workloads while providing fast cold start performance."
+    },
+    {
+      "id": 127,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "A data scientist is working on a time series forecasting problem with multiple related time series that influence each other. Which algorithm would be most appropriate for capturing cross-series dependencies?",
+      "options": [
+        "Individual ARIMA models for each series",
+        "Vector Autoregression (VAR)",
+        "DeepAR with related time series",
+        "Both B and C"
+      ],
+      "correct_answer": 3,
+      "explanation": "Both VAR and DeepAR can effectively capture cross-series dependencies. VAR explicitly models relationships between multiple time series, while DeepAR can learn from related time series and benefit from cross-series patterns through its neural network architecture."
+    },
+    {
+      "id": 128,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A data engineering team needs to implement data quality monitoring that can detect schema changes, data freshness issues, and statistical anomalies automatically. Which AWS service provides these capabilities?",
+      "options": [
+        "AWS Glue Data Quality",
+        "Amazon Macie",
+        "AWS Config",
+        "SageMaker Model Monitor"
+      ],
+      "correct_answer": 0,
+      "explanation": "AWS Glue Data Quality provides comprehensive data quality monitoring including schema drift detection, data freshness validation, statistical anomaly detection, completeness checks, and custom data quality rules with automated alerting capabilities."
+    },
+    {
+      "id": 129,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist is analyzing customer churn data and wants to understand which features contribute most to individual customer churn predictions. Which explainability technique would provide the most actionable insights?",
+      "options": [
+        "Global feature importance from Random Forest",
+        "LIME (Local Interpretable Model-agnostic Explanations)",
+        "SHAP (SHapley Additive exPlanations)",
+        "Permutation feature importance"
+      ],
+      "correct_answer": 2,
+      "explanation": "SHAP provides the most actionable insights for individual predictions as it shows how each feature contributes to specific customer churn predictions, enabling targeted interventions and personalized retention strategies based on individual customer risk factors."
+    },
+    {
+      "id": 130,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "hard",
+      "question": "A company needs to implement comprehensive model governance with automated compliance checking, approval workflows, and audit trails. Which combination of AWS services would be most effective?",
+      "options": [
+        "SageMaker Model Registry + AWS Config + CloudTrail",
+        "SageMaker Pipelines + Lambda + Step Functions",
+        "CodePipeline + SageMaker + CloudFormation",
+        "All services integrated with EventBridge orchestration"
+      ],
+      "correct_answer": 3,
+      "explanation": "Comprehensive model governance requires integration of all services: Model Registry for versioning and approval, Config for compliance monitoring, CloudTrail for audit trails, Pipelines for workflow automation, and EventBridge for orchestrating governance workflows across all components."
+    },
+    {
+      "id": 131,
+      "domain": "Modeling",
+      "difficulty": "easy",
+      "question": "Which loss function is most appropriate for binary classification problems?",
+      "options": [
+        "Mean Squared Error",
+        "Binary Cross-Entropy",
+        "Categorical Cross-Entropy",
+        "Huber Loss"
+      ],
+      "correct_answer": 1,
+      "explanation": "Binary Cross-Entropy is the standard loss function for binary classification as it measures the difference between predicted probabilities and true binary labels, providing appropriate gradients for optimization."
+    },
+    {
+      "id": 132,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A company needs to implement real-time feature serving with sub-millisecond latency for online ML inference. Which caching strategy would be most effective?",
+      "options": [
+        "Amazon ElastiCache for Redis with feature precomputation",
+        "DynamoDB with DAX acceleration",
+        "SageMaker Feature Store online store",
+        "In-memory caching within the inference container"
+      ],
+      "correct_answer": 0,
+      "explanation": "ElastiCache for Redis with feature precomputation provides the lowest latency for real-time feature serving, offering sub-millisecond response times through in-memory storage and the ability to precompute and cache complex features."
+    },
+    {
+      "id": 133,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "hard",
+      "question": "A data scientist is analyzing a dataset with temporal dependencies and needs to identify causal relationships between variables. Which approach would be most appropriate?",
+      "options": [
+        "Correlation analysis",
+        "Granger causality test",
+        "Mutual information",
+        "Principal Component Analysis"
+      ],
+      "correct_answer": 1,
+      "explanation": "Granger causality test is most appropriate for identifying causal relationships in temporal data as it tests whether past values of one variable help predict future values of another variable, establishing directional causality rather than just correlation."
+    },
+    {
+      "id": 134,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to implement automated hyperparameter tuning with budget constraints and early stopping. Which SageMaker strategy would be most cost-effective?",
+      "options": [
+        "Random search with early stopping",
+        "Bayesian optimization with warm start",
+        "Hyperband with multi-fidelity optimization",
+        "Grid search with spot instances"
+      ],
+      "correct_answer": 2,
+      "explanation": "Hyperband with multi-fidelity optimization is most cost-effective as it dynamically allocates resources to promising configurations while terminating poor performers early, maximizing the number of configurations tested within budget constraints."
+    },
+    {
+      "id": 135,
+      "domain": "Modeling",
+      "difficulty": "hard",
+      "question": "A machine learning engineer is building a multi-modal model that processes both text and images for content classification. Which architecture approach would be most effective?",
+      "options": [
+        "Separate models with late fusion",
+        "Shared embedding space with cross-attention",
+        "Multi-task learning with shared backbone",
+        "Ensemble of specialized models"
+      ],
+      "correct_answer": 1,
+      "explanation": "Shared embedding space with cross-attention is most effective for multi-modal learning as it allows the model to learn joint representations and capture interactions between text and image features through attention mechanisms, enabling better understanding of multi-modal content."
+    },
+    {
+      "id": 136,
+      "domain": "Data Engineering",
+      "difficulty": "easy",
+      "question": "Which AWS service is most appropriate for performing large-scale data transformations using SQL on data stored in S3?",
+      "options": [
+        "Amazon Athena",
+        "AWS Glue",
+        "Amazon EMR",
+        "Amazon Redshift"
+      ],
+      "correct_answer": 0,
+      "explanation": "Amazon Athena is most appropriate for SQL-based transformations on S3 data as it's serverless, requires no infrastructure management, and can directly query data in S3 using standard SQL syntax without data movement."
+    },
+    {
+      "id": 137,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist is working with high-dimensional genomic data and needs to reduce dimensionality while preserving biological interpretability. Which technique would be most appropriate?",
+      "options": [
+        "Principal Component Analysis (PCA)",
+        "t-SNE",
+        "Feature selection using biological pathways",
+        "Independent Component Analysis (ICA)"
+      ],
+      "correct_answer": 2,
+      "explanation": "Feature selection using biological pathways preserves interpretability by selecting features based on known biological relationships and pathways, maintaining the original feature meaning while reducing dimensionality in a biologically meaningful way."
+    },
+    {
+      "id": 138,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "hard",
+      "question": "A company needs to implement model monitoring that can detect concept drift, data drift, and performance degradation with automated remediation. Which comprehensive approach would be most effective?",
+      "options": [
+        "SageMaker Model Monitor with CloudWatch alarms",
+        "Custom monitoring with Kinesis Analytics and Lambda",
+        "SageMaker Clarify with EventBridge orchestration",
+        "Integrated solution combining Model Monitor, Clarify, EventBridge, and SageMaker Pipelines"
+      ],
+      "correct_answer": 3,
+      "explanation": "An integrated solution provides comprehensive monitoring: Model Monitor for data/performance drift, Clarify for bias drift, EventBridge for event orchestration, and SageMaker Pipelines for automated remediation workflows including retraining and redeployment."
+    },
+    {
+      "id": 139,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "A data scientist is building a neural network for image classification and wants to prevent overfitting. Which combination of regularization techniques would be most effective?",
+      "options": [
+        "Dropout and L2 regularization",
+        "Batch normalization and data augmentation",
+        "Early stopping and learning rate scheduling",
+        "All of the above combined"
+      ],
+      "correct_answer": 3,
+      "explanation": "Combining all regularization techniques provides the most effective overfitting prevention: dropout prevents co-adaptation, L2 regularization constrains weights, batch normalization stabilizes training, data augmentation increases dataset diversity, early stopping prevents overtraining, and learning rate scheduling optimizes convergence."
+    },
+    {
+      "id": 140,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A data team needs to implement a data lake with ACID transactions, schema evolution, and time travel capabilities. Which table format should they use with S3?",
+      "options": [
+        "Apache Parquet",
+        "Apache Iceberg",
+        "Delta Lake",
+        "Apache Hudi"
+      ],
+      "correct_answer": 1,
+      "explanation": "Apache Iceberg is most appropriate as it provides ACID transactions, schema evolution, time travel queries, and hidden partitioning on S3. It's natively supported by AWS services like Athena, EMR, and Glue for advanced data lake functionality."
+    },
+    {
+      "id": 141,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "easy",
+      "question": "Which visualization is most effective for showing the relationship between two continuous variables?",
+      "options": [
+        "Bar chart",
+        "Histogram",
+        "Scatter plot",
+        "Box plot"
+      ],
+      "correct_answer": 2,
+      "explanation": "A scatter plot is most effective for showing relationships between two continuous variables as it displays individual data points and reveals patterns, correlations, and outliers in the relationship between the variables."
+    },
+    {
+      "id": 142,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to implement A/B testing for their ML model with statistical significance testing and automated traffic shifting. Which approach would be most robust?",
+      "options": [
+        "SageMaker production variants with manual traffic control",
+        "Custom A/B testing framework with statistical analysis",
+        "SageMaker production variants with automated traffic shifting based on performance metrics",
+        "External A/B testing service integrated with SageMaker"
+      ],
+      "correct_answer": 2,
+      "explanation": "SageMaker production variants with automated traffic shifting provides the most robust solution by combining native A/B testing capabilities with automated traffic allocation based on performance metrics, statistical significance testing, and seamless integration with monitoring and alerting."
+    },
+    {
+      "id": 143,
+      "domain": "Modeling",
+      "difficulty": "hard",
+      "question": "A machine learning engineer is working on a reinforcement learning problem for autonomous systems. Which AWS service would be most appropriate for training and simulation?",
+      "options": [
+        "SageMaker with custom RL algorithms",
+        "AWS RoboMaker with RL simulation",
+        "SageMaker RL with built-in algorithms",
+        "Amazon Braket for quantum RL"
+      ],
+      "correct_answer": 1,
+      "explanation": "AWS RoboMaker is most appropriate for autonomous systems as it provides specialized simulation environments, integration with robotics frameworks, and support for RL training in realistic simulated environments before deployment to physical systems."
+    },
+    {
+      "id": 144,
+      "domain": "Data Engineering",
+      "difficulty": "hard",
+      "question": "A company needs to implement cross-region data replication for their ML training datasets with consistency guarantees and automatic failover. Which architecture would be most reliable?",
+      "options": [
+        "S3 Cross-Region Replication with versioning",
+        "DynamoDB Global Tables with eventual consistency",
+        "Multi-region Aurora with synchronous replication",
+        "Custom replication using Kinesis Data Firehose"
+      ],
+      "correct_answer": 0,
+      "explanation": "S3 Cross-Region Replication with versioning provides the most reliable solution for ML datasets, offering automatic replication, versioning for data integrity, eventual consistency suitable for training data, and integration with ML services across regions."
+    },
+    {
+      "id": 145,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist is analyzing customer behavior data with mixed data types and missing values. Which imputation strategy would be most appropriate for preserving data relationships?",
+      "options": [
+        "Mean/mode imputation",
+        "Forward fill/backward fill",
+        "Multiple imputation with chained equations (MICE)",
+        "Deletion of missing values"
+      ],
+      "correct_answer": 2,
+      "explanation": "MICE (Multiple Imputation by Chained Equations) is most appropriate as it models the relationships between variables to impute missing values, preserving the correlation structure and uncertainty in the data while handling mixed data types effectively."
+    },
+    {
+      "id": 146,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "easy",
+      "question": "Which SageMaker feature allows you to track experiments, compare results, and organize ML workflows?",
+      "options": [
+        "SageMaker Experiments",
+        "SageMaker Debugger",
+        "SageMaker Clarify",
+        "SageMaker Profiler"
+      ],
+      "correct_answer": 0,
+      "explanation": "SageMaker Experiments allows you to track ML experiments, compare results across different runs, organize workflows, and maintain reproducibility by capturing metadata, parameters, and metrics from training jobs."
+    },
+    {
+      "id": 147,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "A data scientist is building a model for fraud detection where the cost of false negatives is much higher than false positives. Which approach should they take?",
+      "options": [
+        "Optimize for high precision",
+        "Optimize for high recall",
+        "Use balanced accuracy",
+        "Optimize F1-score"
+      ],
+      "correct_answer": 1,
+      "explanation": "When false negatives (missing fraud) are more costly than false positives (false alarms), optimizing for high recall ensures that most fraud cases are detected, even if it means some legitimate transactions are flagged for review."
+    },
+    {
+      "id": 148,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A data engineering team needs to process streaming IoT data with complex event processing and pattern detection. Which AWS service would be most appropriate?",
+      "options": [
+        "Kinesis Data Analytics with SQL",
+        "Kinesis Data Analytics with Apache Flink",
+        "Lambda with Kinesis triggers",
+        "EMR with Spark Streaming"
+      ],
+      "correct_answer": 1,
+      "explanation": "Kinesis Data Analytics with Apache Flink is most appropriate for complex event processing as Flink provides advanced stream processing capabilities including complex event patterns, stateful processing, and low-latency processing with exactly-once semantics."
+    },
+    {
+      "id": 149,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "hard",
+      "question": "A data scientist is analyzing network data to identify communities and influential nodes. Which graph analysis technique would be most comprehensive?",
+      "options": [
+        "Centrality measures (degree, betweenness, closeness)",
+        "Community detection algorithms (Louvain, modularity)",
+        "PageRank and eigenvector centrality",
+        "All of the above combined with graph visualization"
+      ],
+      "correct_answer": 3,
+      "explanation": "A comprehensive graph analysis combines multiple techniques: centrality measures identify important nodes, community detection reveals network structure, PageRank measures influence, and visualization helps interpret results and discover patterns not apparent in metrics alone."
+    },
+    {
+      "id": 150,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "hard",
+      "question": "A company needs to implement federated learning across multiple data sources while maintaining data privacy and model performance. Which approach would be most effective?",
+      "options": [
+        "Centralized training with data aggregation",
+        "Distributed training with gradient sharing",
+        "Federated learning with differential privacy",
+        "Multi-party computation with secure aggregation"
+      ],
+      "correct_answer": 2,
+      "explanation": "Federated learning with differential privacy is most effective as it enables training across distributed data sources without sharing raw data, while differential privacy adds mathematical guarantees for privacy protection during model updates and aggregation."
+    },
+    {
+      "id": 151,
+      "domain": "Modeling",
+      "difficulty": "easy",
+      "question": "Which metric is most appropriate for evaluating a multi-class classification model with balanced classes?",
+      "options": [
+        "Accuracy",
+        "Precision",
+        "Recall",
+        "F1-score"
+      ],
+      "correct_answer": 0,
+      "explanation": "Accuracy is most appropriate for balanced multi-class classification as it provides a straightforward measure of overall correctness when all classes are equally represented and important."
+    },
+    {
+      "id": 152,
+      "domain": "Data Engineering",
+      "difficulty": "easy",
+      "question": "Which AWS service provides a visual, no-code interface for data preparation and can generate over 250 built-in transformations?",
+      "options": [
+        "AWS Glue DataBrew",
+        "SageMaker Data Wrangler",
+        "Amazon QuickSight",
+        "AWS Glue Studio"
+      ],
+      "correct_answer": 0,
+      "explanation": "AWS Glue DataBrew provides a visual, no-code interface specifically designed for data preparation with over 250 built-in transformations, making it easy for analysts to clean, normalize, and prepare data without coding."
+    },
+    {
+      "id": 153,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist is analyzing sales data with strong seasonal patterns and needs to forecast future sales. Which decomposition approach would be most appropriate?",
+      "options": [
+        "Additive decomposition",
+        "Multiplicative decomposition",
+        "STL decomposition with robust fitting",
+        "X-13ARIMA-SEATS"
+      ],
+      "correct_answer": 2,
+      "explanation": "STL (Seasonal and Trend decomposition using Loess) with robust fitting is most appropriate as it handles complex seasonal patterns, is robust to outliers, and can adapt to changing seasonal patterns over time, making it ideal for sales forecasting."
+    },
+    {
+      "id": 154,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to implement continuous deployment for ML models with automated rollback based on performance metrics. Which strategy would be most reliable?",
+      "options": [
+        "Blue-green deployment with performance monitoring",
+        "Canary deployment with gradual traffic increase",
+        "Rolling deployment with health checks",
+        "Multi-stage deployment with automated gates"
+      ],
+      "correct_answer": 3,
+      "explanation": "Multi-stage deployment with automated gates provides the most reliable approach by combining shadow testing, canary deployment, performance validation gates, and automated rollback mechanisms to ensure model quality before full deployment."
+    },
+    {
+      "id": 155,
+      "domain": "Modeling",
+      "difficulty": "hard",
+      "question": "A machine learning engineer is optimizing a large language model for inference efficiency while maintaining performance. Which combination of techniques would be most effective?",
+      "options": [
+        "Model pruning and quantization",
+        "Knowledge distillation and layer reduction",
+        "Dynamic batching and caching",
+        "All of the above with hardware optimization"
+      ],
+      "correct_answer": 3,
+      "explanation": "Combining all techniques provides maximum efficiency: pruning removes unnecessary parameters, quantization reduces precision, knowledge distillation creates smaller models, dynamic batching optimizes throughput, caching reduces computation, and hardware optimization maximizes performance."
+    },
+    {
+      "id": 156,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A company needs to implement real-time data validation and quality checks on streaming data before it reaches ML models. Which architecture would be most effective?",
+      "options": [
+        "Kinesis Data Streams with Lambda validation functions",
+        "Kinesis Data Analytics with data quality rules",
+        "MSK with Kafka Streams and schema validation",
+        "API Gateway with request validation and SageMaker endpoints"
+      ],
+      "correct_answer": 2,
+      "explanation": "MSK with Kafka Streams provides the most robust solution for real-time data validation, offering schema validation, complex data quality rules, exactly-once processing, and the ability to route invalid data to dead letter queues while maintaining high throughput."
+    },
+    {
+      "id": 157,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "easy",
+      "question": "Which statistical test is most appropriate for comparing the means of more than two groups?",
+      "options": [
+        "T-test",
+        "Chi-square test",
+        "ANOVA",
+        "Mann-Whitney U test"
+      ],
+      "correct_answer": 2,
+      "explanation": "ANOVA (Analysis of Variance) is most appropriate for comparing means of more than two groups as it tests whether there are statistically significant differences between group means while controlling for multiple comparisons."
+    },
+    {
+      "id": 158,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "hard",
+      "question": "A company needs to implement model versioning with semantic versioning, automated testing, and promotion workflows across development, staging, and production environments. Which approach would be most comprehensive?",
+      "options": [
+        "SageMaker Model Registry with manual approval",
+        "Git-based versioning with CI/CD pipelines",
+        "SageMaker Model Registry integrated with CodePipeline and automated testing",
+        "Custom versioning system with database tracking"
+      ],
+      "correct_answer": 2,
+      "explanation": "SageMaker Model Registry integrated with CodePipeline provides comprehensive model versioning with semantic versioning, automated testing stages, approval workflows, and promotion across environments while maintaining full audit trails and governance."
+    },
+    {
+      "id": 159,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "A data scientist is building a time series forecasting model for retail demand with multiple seasonalities (daily, weekly, yearly). Which approach would be most effective?",
+      "options": [
+        "ARIMA with seasonal components",
+        "Prophet with multiple seasonalities",
+        "DeepAR with calendar features",
+        "Both B and C"
+      ],
+      "correct_answer": 3,
+      "explanation": "Both Prophet and DeepAR are effective for multiple seasonalities: Prophet explicitly handles multiple seasonal patterns with Fourier series, while DeepAR can learn complex seasonal patterns through neural networks and benefits from calendar features and related time series."
+    },
+    {
+      "id": 160,
+      "domain": "Data Engineering",
+      "difficulty": "hard",
+      "question": "A data team needs to implement a feature store that supports both online and offline serving with feature versioning, lineage tracking, and automatic feature freshness monitoring. Which solution would be most comprehensive?",
+      "options": [
+        "SageMaker Feature Store with custom monitoring",
+        "Custom feature store using DynamoDB and S3",
+        "SageMaker Feature Store integrated with DataZone and CloudWatch",
+        "Open-source feature store on EMR"
+      ],
+      "correct_answer": 2,
+      "explanation": "SageMaker Feature Store integrated with DataZone and CloudWatch provides the most comprehensive solution: Feature Store handles online/offline serving and versioning, DataZone provides lineage tracking and governance, and CloudWatch enables automated freshness monitoring and alerting."
+    },
+    {
+      "id": 161,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist is analyzing customer survey data with Likert scale responses and needs to identify underlying factors. Which technique would be most appropriate?",
+      "options": [
+        "Principal Component Analysis (PCA)",
+        "Factor Analysis",
+        "Cluster Analysis",
+        "Correspondence Analysis"
+      ],
+      "correct_answer": 1,
+      "explanation": "Factor Analysis is most appropriate for Likert scale data as it's specifically designed to identify underlying latent factors that explain correlations between observed variables, making it ideal for discovering underlying constructs in survey data."
+    },
+    {
+      "id": 162,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to implement automated model performance monitoring with custom business metrics and automated alerting. Which approach would be most flexible?",
+      "options": [
+        "SageMaker Model Monitor with built-in metrics only",
+        "Custom monitoring using CloudWatch custom metrics",
+        "SageMaker Model Monitor with custom containers for business metrics",
+        "Third-party monitoring tools integrated with SageMaker"
+      ],
+      "correct_answer": 2,
+      "explanation": "SageMaker Model Monitor with custom containers provides the most flexibility, allowing you to implement custom business metrics while leveraging the built-in monitoring infrastructure, scheduling, and integration with CloudWatch for alerting."
+    },
+    {
+      "id": 163,
+      "domain": "Modeling",
+      "difficulty": "easy",
+      "question": "Which regularization technique is most effective for feature selection by driving some coefficients to exactly zero?",
+      "options": [
+        "L1 regularization (Lasso)",
+        "L2 regularization (Ridge)",
+        "Elastic Net",
+        "Dropout"
+      ],
+      "correct_answer": 0,
+      "explanation": "L1 regularization (Lasso) is most effective for feature selection as it adds a penalty proportional to the absolute value of coefficients, which can drive some coefficients to exactly zero, effectively performing automatic feature selection."
+    },
+    {
+      "id": 164,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A company needs to implement data lineage tracking that shows how data flows from source systems through transformations to ML models and predictions. Which AWS service provides this capability?",
+      "options": [
+        "AWS CloudTrail",
+        "Amazon DataZone",
+        "AWS Glue Data Catalog",
+        "SageMaker Experiments"
+      ],
+      "correct_answer": 1,
+      "explanation": "Amazon DataZone provides comprehensive data lineage tracking, showing end-to-end data flow from source systems through transformations, feature engineering, model training, and inference, with visual lineage graphs and governance capabilities."
+    },
+    {
+      "id": 165,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "hard",
+      "question": "A data scientist is analyzing a complex dataset with non-linear relationships, mixed data types, and potential interaction effects. Which approach would provide the most comprehensive analysis?",
+      "options": [
+        "Linear regression with polynomial features",
+        "Random Forest with feature importance analysis",
+        "Gradient boosting with SHAP explanations",
+        "Ensemble of multiple techniques with cross-validation"
+      ],
+      "correct_answer": 3,
+      "explanation": "An ensemble approach combining multiple techniques provides the most comprehensive analysis: different algorithms capture different aspects of non-linear relationships, mixed data types, and interactions, while cross-validation ensures robust results across the ensemble."
+    },
+    {
+      "id": 166,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "easy",
+      "question": "Which SageMaker feature automatically handles infrastructure provisioning, scaling, and management for training jobs?",
+      "options": [
+        "SageMaker Notebooks",
+        "SageMaker Training Jobs",
+        "SageMaker Processing Jobs",
+        "All of the above"
+      ],
+      "correct_answer": 3,
+      "explanation": "All SageMaker compute services (Training Jobs, Processing Jobs, and Notebooks) automatically handle infrastructure provisioning, scaling, and management, providing a fully managed experience for ML workloads."
+    },
+    {
+      "id": 167,
+      "domain": "Modeling",
+      "difficulty": "hard",
+      "question": "A machine learning engineer is implementing a graph neural network for social network analysis. Which type of aggregation function would be most appropriate for capturing neighborhood information?",
+      "options": [
+        "Mean aggregation",
+        "Max pooling",
+        "Attention-based aggregation",
+        "LSTM-based aggregation"
+      ],
+      "correct_answer": 2,
+      "explanation": "Attention-based aggregation is most appropriate for graph neural networks as it allows the model to learn which neighbors are most important for each node, providing adaptive weighting based on the specific context and relationships in the social network."
+    },
+    {
+      "id": 168,
+      "domain": "Data Engineering",
+      "difficulty": "easy",
+      "question": "Which AWS service is most cost-effective for storing large amounts of training data that is accessed infrequently?",
+      "options": [
+        "S3 Standard",
+        "S3 Intelligent-Tiering",
+        "S3 Glacier Flexible Retrieval",
+        "EBS volumes"
+      ],
+      "correct_answer": 2,
+      "explanation": "S3 Glacier Flexible Retrieval is most cost-effective for infrequently accessed training data, providing significant cost savings with retrieval times of minutes to hours, which is acceptable for most ML training scenarios."
+    },
+    {
+      "id": 169,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist is analyzing text data and needs to identify topics and themes automatically. Which unsupervised learning technique would be most appropriate?",
+      "options": [
+        "K-means clustering on TF-IDF vectors",
+        "Latent Dirichlet Allocation (LDA)",
+        "Non-negative Matrix Factorization (NMF)",
+        "Both B and C"
+      ],
+      "correct_answer": 3,
+      "explanation": "Both LDA and NMF are effective for topic modeling: LDA is a probabilistic model that discovers latent topics and their word distributions, while NMF provides interpretable topic-word matrices. Both can reveal meaningful themes in text data."
+    },
+    {
+      "id": 170,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to implement model explainability for regulatory compliance with individual prediction explanations. Which SageMaker feature should they use?",
+      "options": [
+        "SageMaker Debugger",
+        "SageMaker Clarify",
+        "SageMaker Experiments",
+        "SageMaker Model Monitor"
+      ],
+      "correct_answer": 1,
+      "explanation": "SageMaker Clarify provides model explainability features including individual prediction explanations using SHAP values, bias detection, and feature importance analysis, making it ideal for regulatory compliance requirements."
+    },
+    {
+      "id": 171,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "A data scientist is building a recommendation system for a streaming platform and needs to handle both new users and new content effectively. Which approach would be most comprehensive?",
+      "options": [
+        "Collaborative filtering with matrix factorization",
+        "Content-based filtering with item features",
+        "Hybrid approach with cold-start handling",
+        "Deep learning with embedding layers"
+      ],
+      "correct_answer": 2,
+      "explanation": "A hybrid approach with cold-start handling is most comprehensive as it combines collaborative filtering for established users/items with content-based methods for new users/content, and includes specific strategies for handling cold-start scenarios."
+    },
+    {
+      "id": 172,
+      "domain": "Data Engineering",
+      "difficulty": "hard",
+      "question": "A company needs to implement a data pipeline that can handle both structured and unstructured data with schema evolution and automatic format optimization. Which architecture would be most flexible?",
+      "options": [
+        "AWS Glue with dynamic frames and schema inference",
+        "EMR with Spark and Delta Lake",
+        "Kinesis with Lambda transformations",
+        "Redshift with external tables"
+      ],
+      "correct_answer": 0,
+      "explanation": "AWS Glue with dynamic frames provides the most flexibility for mixed data types, automatic schema inference, schema evolution handling, and format optimization through its serverless architecture and built-in data catalog integration."
+    },
+    {
+      "id": 173,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "easy",
+      "question": "Which measure of variability is most robust to outliers?",
+      "options": [
+        "Standard deviation",
+        "Variance",
+        "Interquartile range (IQR)",
+        "Range"
+      ],
+      "correct_answer": 2,
+      "explanation": "Interquartile range (IQR) is most robust to outliers as it measures the spread of the middle 50% of the data, making it unaffected by extreme values in the dataset."
+    },
+    {
+      "id": 174,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "hard",
+      "question": "A company needs to implement distributed training for large language models across multiple regions with fault tolerance and automatic recovery. Which approach would be most resilient?",
+      "options": [
+        "SageMaker distributed training with checkpointing",
+        "SageMaker HyperPod with elastic training",
+        "Custom distributed training on EMR",
+        "Multi-region training with data replication"
+      ],
+      "correct_answer": 1,
+      "explanation": "SageMaker HyperPod with elastic training provides the most resilient solution with automatic fault detection, elastic scaling, checkpointless recovery, and optimized distributed training across thousands of accelerators with minimal manual intervention."
+    },
+    {
+      "id": 175,
+      "domain": "Modeling",
+      "difficulty": "easy",
+      "question": "Which evaluation technique is most appropriate for small datasets to get reliable performance estimates?",
+      "options": [
+        "Hold-out validation",
+        "K-fold cross-validation",
+        "Leave-one-out cross-validation",
+        "Bootstrap sampling"
+      ],
+      "correct_answer": 2,
+      "explanation": "Leave-one-out cross-validation is most appropriate for small datasets as it maximizes the use of available data for training while providing unbiased performance estimates, though it can be computationally expensive."
+    },
+    {
+      "id": 176,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A data team needs to implement automated data quality monitoring with custom business rules and integration with existing ML pipelines. Which approach would be most integrated?",
+      "options": [
+        "AWS Glue Data Quality with SageMaker Pipelines",
+        "Custom data quality checks in Lambda functions",
+        "Great Expectations on EMR",
+        "Manual data quality reviews"
+      ],
+      "correct_answer": 0,
+      "explanation": "AWS Glue Data Quality integrated with SageMaker Pipelines provides the most seamless integration, allowing custom business rules, automated monitoring, and direct integration with ML workflows for data quality gates and automated remediation."
+    },
+    {
+      "id": 177,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist is analyzing customer lifetime value data with a highly skewed distribution. Which transformation would be most appropriate for normalization?",
+      "options": [
+        "Square root transformation",
+        "Log transformation",
+        "Box-Cox transformation",
+        "Z-score normalization"
+      ],
+      "correct_answer": 2,
+      "explanation": "Box-Cox transformation is most appropriate for highly skewed data as it automatically finds the optimal power transformation parameter (lambda) to achieve the best normalization, making it more flexible than fixed transformations like log or square root."
+    },
+    {
+      "id": 178,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to implement automated model retraining based on performance degradation with cost optimization. Which strategy would be most efficient?",
+      "options": [
+        "Scheduled retraining at fixed intervals",
+        "Performance-based retraining with thresholds",
+        "Continuous retraining with streaming data",
+        "On-demand retraining with manual triggers"
+      ],
+      "correct_answer": 1,
+      "explanation": "Performance-based retraining with thresholds is most efficient as it only triggers retraining when model performance actually degrades below acceptable levels, optimizing both model performance and computational costs compared to fixed schedules or continuous retraining."
+    },
+    {
+      "id": 179,
+      "domain": "Modeling",
+      "difficulty": "hard",
+      "question": "A machine learning engineer is implementing a multi-task learning model that needs to balance between shared and task-specific representations. Which architecture approach would be most effective?",
+      "options": [
+        "Hard parameter sharing with shared hidden layers",
+        "Soft parameter sharing with regularization",
+        "Task-specific towers with shared bottom layers",
+        "Attention-based task weighting with adaptive sharing"
+      ],
+      "correct_answer": 3,
+      "explanation": "Attention-based task weighting with adaptive sharing is most effective as it allows the model to dynamically determine which representations to share across tasks and which to keep task-specific, optimizing the trade-off between knowledge sharing and task specialization."
+    },
+    {
+      "id": 180,
+      "domain": "Data Engineering",
+      "difficulty": "easy",
+      "question": "Which AWS service provides the most cost-effective solution for running periodic ETL jobs on large datasets?",
+      "options": [
+        "AWS Glue",
+        "Amazon EMR",
+        "AWS Batch",
+        "AWS Lambda"
+      ],
+      "correct_answer": 0,
+      "explanation": "AWS Glue is most cost-effective for periodic ETL jobs as it's serverless, automatically scales based on workload, and you only pay for the resources used during job execution, eliminating the need to manage infrastructure or pay for idle time."
+    },
+    {
+      "id": 181,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist is analyzing customer churn data and wants to identify the most predictive features while handling multicollinearity. Which approach would be most effective?",
+      "options": [
+        "Variance Inflation Factor (VIF) analysis with stepwise selection",
+        "LASSO regression with cross-validation",
+        "Random Forest feature importance with correlation filtering",
+        "All of the above combined"
+      ],
+      "correct_answer": 3,
+      "explanation": "Combining all approaches provides the most robust feature selection: VIF identifies multicollinearity, LASSO performs automatic selection with regularization, Random Forest captures non-linear importance, and correlation filtering removes redundant features."
+    },
+    {
+      "id": 182,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "hard",
+      "question": "A company needs to implement model serving with automatic scaling, A/B testing, and canary deployments while maintaining sub-100ms latency. Which architecture would be most suitable?",
+      "options": [
+        "SageMaker real-time endpoints with production variants",
+        "SageMaker serverless inference with traffic splitting",
+        "Custom inference service on EKS with Istio",
+        "Lambda functions with API Gateway"
+      ],
+      "correct_answer": 0,
+      "explanation": "SageMaker real-time endpoints with production variants provide the best combination of sub-100ms latency, automatic scaling, built-in A/B testing through traffic splitting, and canary deployment capabilities with minimal operational overhead."
+    },
+    {
+      "id": 183,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "A data scientist is building a computer vision model for medical image analysis and needs to ensure high interpretability for clinical use. Which approach would be most appropriate?",
+      "options": [
+        "Convolutional Neural Network with Grad-CAM visualization",
+        "Vision Transformer with attention map visualization",
+        "Ensemble of interpretable models with voting",
+        "Hybrid approach with both CNN and attention mechanisms"
+      ],
+      "correct_answer": 3,
+      "explanation": "A hybrid approach combining CNN for local feature detection with attention mechanisms for global context provides the best interpretability for medical imaging, offering both spatial attention maps and gradient-based explanations for clinical decision support."
+    },
+    {
+      "id": 184,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A data engineering team needs to implement near real-time data synchronization between operational databases and a data lake for ML training. Which approach would be most efficient?",
+      "options": [
+        "Database triggers with Lambda functions",
+        "Change Data Capture (CDC) with DMS and Kinesis",
+        "Scheduled batch exports with Glue",
+        "Database replication with Aurora read replicas"
+      ],
+      "correct_answer": 1,
+      "explanation": "CDC with DMS and Kinesis provides the most efficient near real-time synchronization by capturing only changed data, minimizing database impact, and streaming changes to the data lake with low latency and high throughput."
+    },
+    {
+      "id": 185,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "easy",
+      "question": "Which technique is most appropriate for detecting outliers in multivariate data?",
+      "options": [
+        "Z-score analysis",
+        "Interquartile range (IQR)",
+        "Mahalanobis distance",
+        "Box plots"
+      ],
+      "correct_answer": 2,
+      "explanation": "Mahalanobis distance is most appropriate for multivariate outlier detection as it considers the covariance structure of the data and can identify outliers that may not be apparent when examining variables individually."
+    },
+    {
+      "id": 186,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to implement automated hyperparameter tuning with early stopping and warm start capabilities. Which SageMaker feature combination would be most effective?",
+      "options": [
+        "Automatic Model Tuning with Bayesian optimization",
+        "Hyperband with early stopping",
+        "Random search with warm start",
+        "Automatic Model Tuning with Hyperband and warm start"
+      ],
+      "correct_answer": 3,
+      "explanation": "Automatic Model Tuning with Hyperband and warm start provides the most effective combination: Hyperband for efficient resource allocation with early stopping, and warm start to leverage knowledge from previous tuning jobs, reducing overall tuning time and cost."
+    },
+    {
+      "id": 187,
+      "domain": "Modeling",
+      "difficulty": "hard",
+      "question": "A machine learning engineer is implementing a neural architecture search (NAS) for optimizing model architecture automatically. Which approach would be most practical for production use?",
+      "options": [
+        "Reinforcement learning-based NAS",
+        "Evolutionary algorithm-based NAS",
+        "Differentiable architecture search (DARTS)",
+        "Progressive NAS with early stopping"
+      ],
+      "correct_answer": 3,
+      "explanation": "Progressive NAS with early stopping is most practical for production as it reduces computational cost by progressively building architectures and stopping unpromising searches early, while still finding effective architectures within reasonable time and resource constraints."
+    },
+    {
+      "id": 188,
+      "domain": "Data Engineering",
+      "difficulty": "hard",
+      "question": "A company needs to implement a data pipeline that can handle schema evolution, data quality validation, and automatic format optimization across multiple data sources. Which architecture would be most comprehensive?",
+      "options": [
+        "AWS Glue with Data Quality and schema registry",
+        "EMR with custom validation and Delta Lake",
+        "Kinesis with Lambda validation and S3",
+        "Custom pipeline with Apache Airflow"
+      ],
+      "correct_answer": 0,
+      "explanation": "AWS Glue with Data Quality and schema registry provides the most comprehensive solution with built-in schema evolution handling, automated data quality validation, format optimization, and integration with the AWS ecosystem for seamless data pipeline management."
+    },
+    {
+      "id": 189,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist is analyzing social media sentiment data and needs to identify emerging topics and sentiment trends over time. Which approach would be most effective?",
+      "options": [
+        "Static topic modeling with LDA",
+        "Dynamic topic modeling with time-aware algorithms",
+        "Sentiment analysis with trend detection",
+        "Combined dynamic topic modeling with sentiment tracking"
+      ],
+      "correct_answer": 3,
+      "explanation": "Combined dynamic topic modeling with sentiment tracking is most effective as it captures both the evolution of topics over time and the sentiment associated with each topic, providing comprehensive insights into social media trends and public opinion changes."
+    },
+    {
+      "id": 190,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "easy",
+      "question": "Which SageMaker feature allows you to automatically capture input and output data from model endpoints for monitoring purposes?",
+      "options": [
+        "Data Capture",
+        "Model Monitor",
+        "SageMaker Debugger",
+        "SageMaker Clarify"
+      ],
+      "correct_answer": 0,
+      "explanation": "Data Capture is the SageMaker feature that automatically logs input requests and model outputs from endpoints to S3, providing the foundation for model monitoring, bias detection, and performance analysis."
+    },
+    {
+      "id": 191,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "A data scientist is building a model for predicting customer lifetime value with censored data (customers who haven't churned yet). Which modeling approach would be most appropriate?",
+      "options": [
+        "Linear regression with log transformation",
+        "Survival analysis with Cox proportional hazards",
+        "Time series forecasting with ARIMA",
+        "Classification with churn prediction"
+      ],
+      "correct_answer": 1,
+      "explanation": "Survival analysis with Cox proportional hazards is most appropriate for censored data as it can handle incomplete observations (customers who haven't churned) and model the time-to-event (churn) while accounting for the uncertainty in censored observations."
+    },
+    {
+      "id": 192,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A data team needs to implement feature engineering pipelines that can be reused across different ML projects with version control and testing. Which approach would be most maintainable?",
+      "options": [
+        "SageMaker Processing jobs with custom containers",
+        "AWS Glue jobs with shared libraries",
+        "SageMaker Pipelines with reusable components",
+        "Custom feature engineering service on ECS"
+      ],
+      "correct_answer": 2,
+      "explanation": "SageMaker Pipelines with reusable components provides the most maintainable solution by enabling modular, version-controlled feature engineering steps that can be shared across projects, tested independently, and integrated into different ML workflows."
+    },
+    {
+      "id": 193,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "hard",
+      "question": "A data scientist is analyzing high-frequency trading data and needs to identify market microstructure patterns and anomalies. Which combination of techniques would be most comprehensive?",
+      "options": [
+        "Time series analysis with GARCH models",
+        "Spectral analysis with wavelet transforms",
+        "Machine learning with feature engineering",
+        "All of the above with ensemble methods"
+      ],
+      "correct_answer": 3,
+      "explanation": "A comprehensive approach combines time series analysis for volatility modeling, spectral analysis for frequency domain patterns, machine learning for complex pattern recognition, and ensemble methods to capture different aspects of market microstructure and anomaly detection."
+    },
+    {
+      "id": 194,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "hard",
+      "question": "A company needs to implement model governance with automated compliance checking, risk assessment, and regulatory reporting. Which comprehensive approach would be most effective?",
+      "options": [
+        "SageMaker Model Registry with custom compliance rules",
+        "Third-party governance platform integrated with AWS",
+        "Custom governance framework with audit trails",
+        "Integrated AWS solution with Model Registry, Config, CloudTrail, and custom compliance automation"
+      ],
+      "correct_answer": 3,
+      "explanation": "An integrated AWS solution provides the most comprehensive governance: Model Registry for versioning and approval, Config for compliance monitoring, CloudTrail for audit trails, and custom automation for regulatory reporting and risk assessment, all orchestrated through EventBridge and Lambda."
+    },
+    {
+      "id": 195,
+      "domain": "Modeling",
+      "difficulty": "easy",
+      "question": "Which technique is most effective for handling class imbalance in binary classification?",
+      "options": [
+        "Oversampling minority class",
+        "Undersampling majority class",
+        "SMOTE (Synthetic Minority Oversampling Technique)",
+        "Cost-sensitive learning"
+      ],
+      "correct_answer": 3,
+      "explanation": "Cost-sensitive learning is most effective as it addresses class imbalance by adjusting the cost function to penalize misclassification of minority class more heavily, without artificially modifying the dataset and maintaining the original data distribution."
+    },
+    {
+      "id": 196,
+      "domain": "Data Engineering",
+      "difficulty": "easy",
+      "question": "Which AWS service is most appropriate for orchestrating complex data workflows with dependencies and error handling?",
+      "options": [
+        "AWS Step Functions",
+        "AWS Lambda",
+        "Amazon EventBridge",
+        "AWS Glue Workflows"
+      ],
+      "correct_answer": 0,
+      "explanation": "AWS Step Functions is most appropriate for orchestrating complex workflows as it provides visual workflow definition, built-in error handling, retry logic, parallel execution, and integration with multiple AWS services for comprehensive workflow management."
+    },
+    {
+      "id": 197,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist is analyzing customer segmentation data and wants to determine the optimal number of clusters while considering cluster stability. Which validation approach would be most robust?",
+      "options": [
+        "Elbow method with within-cluster sum of squares",
+        "Silhouette analysis with average silhouette score",
+        "Gap statistic with bootstrap sampling",
+        "Consensus clustering with stability analysis"
+      ],
+      "correct_answer": 3,
+      "explanation": "Consensus clustering with stability analysis is most robust as it evaluates cluster stability across multiple runs and parameter settings, ensuring that the identified clusters are consistent and not artifacts of random initialization or parameter choices."
+    },
+    {
+      "id": 198,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to implement automated model testing including unit tests, integration tests, and performance tests in their ML pipeline. Which approach would be most comprehensive?",
+      "options": [
+        "Custom testing framework with pytest",
+        "SageMaker Pipelines with conditional steps",
+        "CodePipeline with CodeBuild testing stages",
+        "Integrated testing with SageMaker Pipelines, CodeBuild, and custom test suites"
+      ],
+      "correct_answer": 3,
+      "explanation": "An integrated approach combining SageMaker Pipelines for ML workflow testing, CodeBuild for automated test execution, and custom test suites for comprehensive coverage provides the most robust testing framework for ML systems."
+    },
+    {
+      "id": 199,
+      "domain": "Modeling",
+      "difficulty": "hard",
+      "question": "A machine learning engineer is implementing a meta-learning system that can quickly adapt to new tasks with few examples. Which approach would be most effective?",
+      "options": [
+        "Model-Agnostic Meta-Learning (MAML)",
+        "Prototypical Networks",
+        "Few-shot learning with attention mechanisms",
+        "Transfer learning with fine-tuning"
+      ],
+      "correct_answer": 0,
+      "explanation": "MAML is most effective for meta-learning as it learns initial parameters that can be quickly adapted to new tasks with just a few gradient steps, providing a general framework that works across different model architectures and task types."
+    },
+    {
+      "id": 200,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A data team needs to implement data versioning for ML datasets with efficient storage and fast retrieval. Which approach would be most efficient?",
+      "options": [
+        "Git LFS for large file versioning",
+        "S3 versioning with lifecycle policies",
+        "DVC (Data Version Control) with S3 backend",
+        "Custom versioning with metadata tracking"
+      ],
+      "correct_answer": 2,
+      "explanation": "DVC with S3 backend provides the most efficient solution for ML data versioning, offering Git-like versioning for datasets, efficient storage through deduplication, fast retrieval, and integration with ML workflows and experiment tracking."
+    },
+    {
+      "id": 201,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "easy",
+      "question": "Which visualization is most appropriate for showing the distribution of a categorical variable?",
+      "options": [
+        "Histogram",
+        "Bar chart",
+        "Scatter plot",
+        "Box plot"
+      ],
+      "correct_answer": 1,
+      "explanation": "A bar chart is most appropriate for showing the distribution of categorical variables as it displays the frequency or count of each category, making it easy to compare the relative occurrence of different categories."
+    },
+    {
+      "id": 202,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "hard",
+      "question": "A company needs to implement cross-region disaster recovery for their ML inference infrastructure with automatic failover and data consistency. Which architecture would be most resilient?",
+      "options": [
+        "Multi-region SageMaker endpoints with Route 53 health checks",
+        "Global load balancer with regional endpoint clusters",
+        "Cross-region replication with automated failover orchestration",
+        "All of the above with centralized model registry and monitoring"
+      ],
+      "correct_answer": 3,
+      "explanation": "A comprehensive disaster recovery solution combines multi-region endpoints, global load balancing, automated failover, centralized model registry for consistency, and unified monitoring to ensure resilience, data consistency, and minimal downtime during regional failures."
+    },
+    {
+      "id": 203,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "A data scientist is building a model for anomaly detection in network traffic and needs to handle concept drift in attack patterns. Which approach would be most adaptive?",
+      "options": [
+        "Static anomaly detection with periodic retraining",
+        "Online learning with incremental updates",
+        "Ensemble of detectors with adaptive weighting",
+        "Streaming anomaly detection with concept drift adaptation"
+      ],
+      "correct_answer": 3,
+      "explanation": "Streaming anomaly detection with concept drift adaptation is most adaptive as it continuously learns from new data, detects changes in attack patterns, and adapts the model in real-time to maintain detection accuracy as threats evolve."
+    },
+    {
+      "id": 204,
+      "domain": "Data Engineering",
+      "difficulty": "hard",
+      "question": "A company needs to implement a data mesh architecture with domain-driven data ownership, self-service capabilities, and federated governance. Which AWS services combination would be most appropriate?",
+      "options": [
+        "DataZone with Lake Formation and Glue",
+        "S3 with IAM and CloudTrail",
+        "Redshift with QuickSight and Athena",
+        "Custom data mesh platform on EKS"
+      ],
+      "correct_answer": 0,
+      "explanation": "DataZone with Lake Formation and Glue provides the most comprehensive data mesh solution: DataZone enables domain ownership and self-service discovery, Lake Formation provides federated governance and access control, and Glue enables data integration across domains."
+    },
+    {
+      "id": 205,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist is analyzing longitudinal study data with repeated measurements and needs to account for within-subject correlation. Which statistical approach would be most appropriate?",
+      "options": [
+        "Independent t-tests for each time point",
+        "Mixed-effects models with random intercepts",
+        "Repeated measures ANOVA",
+        "Time series analysis with ARIMA"
+      ],
+      "correct_answer": 1,
+      "explanation": "Mixed-effects models with random intercepts are most appropriate for longitudinal data as they account for within-subject correlation, handle missing data well, and can model both fixed effects (population-level) and random effects (individual-level) simultaneously."
+    },
+    {
+      "id": 206,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to implement automated model deployment with blue-green deployment strategy and automated rollback based on performance metrics. Which SageMaker approach would be most reliable?",
+      "options": [
+        "Production variants with traffic shifting",
+        "Separate endpoints with DNS switching",
+        "Multi-model endpoints with model switching",
+        "SageMaker Pipelines with conditional deployment"
+      ],
+      "correct_answer": 0,
+      "explanation": "Production variants with traffic shifting provide the most reliable blue-green deployment as they enable instant traffic switching, automated rollback based on CloudWatch metrics, and seamless deployment without DNS propagation delays or application changes."
+    },
+    {
+      "id": 207,
+      "domain": "Modeling",
+      "difficulty": "hard",
+      "question": "A machine learning engineer is implementing a continual learning system that needs to learn new tasks without forgetting previous ones. Which approach would be most effective for avoiding catastrophic forgetting?",
+      "options": [
+        "Elastic Weight Consolidation (EWC)",
+        "Progressive Neural Networks",
+        "Memory-based approaches with episodic memory",
+        "All of the above with ensemble methods"
+      ],
+      "correct_answer": 3,
+      "explanation": "Combining all approaches provides the most robust solution: EWC preserves important weights, Progressive Networks avoid interference, episodic memory retains examples, and ensemble methods leverage the strengths of each approach for comprehensive continual learning."
+    },
+    {
+      "id": 208,
+      "domain": "Data Engineering",
+      "difficulty": "easy",
+      "question": "Which AWS service is most appropriate for real-time stream processing with SQL queries?",
+      "options": [
+        "Amazon Kinesis Data Analytics",
+        "AWS Lambda",
+        "Amazon EMR",
+        "AWS Glue"
+      ],
+      "correct_answer": 0,
+      "explanation": "Amazon Kinesis Data Analytics is specifically designed for real-time stream processing with SQL queries, providing a serverless environment to analyze streaming data using standard SQL syntax with built-in windowing and aggregation functions."
+    },
+    {
+      "id": 209,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "hard",
+      "question": "A data scientist is analyzing multi-modal sensor data from IoT devices and needs to identify patterns across different sensor types and time scales. Which approach would be most comprehensive?",
+      "options": [
+        "Separate analysis for each sensor type",
+        "Multi-variate time series analysis",
+        "Deep learning with multi-modal fusion",
+        "Ensemble of specialized models with cross-modal attention"
+      ],
+      "correct_answer": 3,
+      "explanation": "An ensemble of specialized models with cross-modal attention is most comprehensive as it allows each model to specialize in different sensor types while the attention mechanism captures cross-modal relationships and temporal dependencies across different time scales."
+    },
+    {
+      "id": 210,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "easy",
+      "question": "Which SageMaker feature provides automatic infrastructure management and cost optimization for training jobs?",
+      "options": [
+        "Managed Spot Training",
+        "SageMaker Training Jobs",
+        "Auto Scaling",
+        "All of the above"
+      ],
+      "correct_answer": 3,
+      "explanation": "All features provide infrastructure management and cost optimization: Managed Spot Training uses spot instances for cost savings, SageMaker Training Jobs handle infrastructure automatically, and Auto Scaling optimizes resource utilization based on demand."
+    },
+    {
+      "id": 211,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "A data scientist is building a model for drug discovery and needs to work with molecular data. Which type of neural network would be most appropriate for molecular property prediction?",
+      "options": [
+        "Convolutional Neural Networks",
+        "Recurrent Neural Networks",
+        "Graph Neural Networks",
+        "Transformer Networks"
+      ],
+      "correct_answer": 2,
+      "explanation": "Graph Neural Networks are most appropriate for molecular data as molecules are naturally represented as graphs with atoms as nodes and bonds as edges, allowing GNNs to capture the structural relationships and chemical properties effectively."
+    },
+    {
+      "id": 212,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A data team needs to implement real-time feature computation with low latency and high throughput for online ML inference. Which architecture would be most performant?",
+      "options": [
+        "Lambda functions with DynamoDB",
+        "Kinesis Data Analytics with ElastiCache",
+        "EMR with Spark Streaming and Redis",
+        "Custom microservices on EKS with in-memory caching"
+      ],
+      "correct_answer": 1,
+      "explanation": "Kinesis Data Analytics with ElastiCache provides the most performant solution for real-time feature computation, offering stream processing capabilities with sub-second latency and ElastiCache for ultra-fast feature serving with microsecond response times."
+    },
+    {
+      "id": 213,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist is analyzing customer journey data and needs to identify common paths and drop-off points. Which analysis technique would be most appropriate?",
+      "options": [
+        "Funnel analysis",
+        "Cohort analysis",
+        "Sequence mining",
+        "Markov chain analysis"
+      ],
+      "correct_answer": 2,
+      "explanation": "Sequence mining is most appropriate for customer journey analysis as it can identify frequent patterns, common paths, and critical drop-off points in sequential customer behavior data, providing insights into customer journey optimization."
+    },
+    {
+      "id": 214,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "hard",
+      "question": "A company needs to implement model serving with multi-tenancy, resource isolation, and dynamic scaling per tenant. Which architecture would be most suitable?",
+      "options": [
+        "SageMaker Multi-Model Endpoints with tenant routing",
+        "Kubernetes with namespace isolation and HPA",
+        "Lambda functions with tenant-specific configurations",
+        "Custom inference service with container orchestration"
+      ],
+      "correct_answer": 1,
+      "explanation": "Kubernetes with namespace isolation and HPA (Horizontal Pod Autoscaler) provides the most suitable architecture for multi-tenant model serving, offering resource isolation, dynamic scaling per tenant, and fine-grained control over resource allocation and security."
+    },
+    {
+      "id": 215,
+      "domain": "Modeling",
+      "difficulty": "easy",
+      "question": "Which optimization algorithm is most commonly used for training deep neural networks?",
+      "options": [
+        "Gradient Descent",
+        "Adam",
+        "RMSprop",
+        "Adagrad"
+      ],
+      "correct_answer": 1,
+      "explanation": "Adam (Adaptive Moment Estimation) is most commonly used for training deep neural networks as it combines the benefits of AdaGrad and RMSprop, providing adaptive learning rates and momentum, making it effective for a wide range of deep learning tasks."
+    },
+    {
+      "id": 216,
+      "domain": "Data Engineering",
+      "difficulty": "hard",
+      "question": "A company needs to implement a data pipeline that can handle both batch and streaming data with exactly-once processing guarantees and schema evolution. Which combination would be most robust?",
+      "options": [
+        "Kafka with Kafka Streams and Schema Registry",
+        "Kinesis with Lambda and DynamoDB",
+        "AWS Glue with streaming and schema inference",
+        "EMR with Spark Structured Streaming and Delta Lake"
+      ],
+      "correct_answer": 0,
+      "explanation": "Kafka with Kafka Streams and Schema Registry provides the most robust solution with exactly-once semantics, unified batch/streaming processing, schema evolution support, and strong consistency guarantees across the entire data pipeline."
+    },
+    {
+      "id": 217,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "easy",
+      "question": "Which correlation coefficient is most appropriate for measuring the relationship between two ordinal variables?",
+      "options": [
+        "Pearson correlation",
+        "Spearman correlation",
+        "Kendall's tau",
+        "Point-biserial correlation"
+      ],
+      "correct_answer": 1,
+      "explanation": "Spearman correlation is most appropriate for ordinal variables as it measures the monotonic relationship between variables based on their ranks rather than their actual values, making it suitable for ordinal data."
+    },
+    {
+      "id": 218,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to implement model monitoring that can detect both statistical drift and semantic drift in production data. Which approach would be most comprehensive?",
+      "options": [
+        "SageMaker Model Monitor for statistical drift only",
+        "Custom monitoring with embedding-based drift detection",
+        "Combined statistical and semantic monitoring with alerts",
+        "Third-party monitoring tools with custom metrics"
+      ],
+      "correct_answer": 2,
+      "explanation": "Combined statistical and semantic monitoring provides the most comprehensive approach, using statistical methods for numerical features and embedding-based techniques for semantic drift in text/categorical data, with integrated alerting for both types of drift."
+    },
+    {
+      "id": 219,
+      "domain": "Modeling",
+      "difficulty": "hard",
+      "question": "A machine learning engineer is implementing a neural network for time series forecasting with multiple seasonalities and external factors. Which architecture would be most effective?",
+      "options": [
+        "LSTM with attention mechanisms",
+        "Transformer with positional encoding",
+        "CNN-LSTM hybrid with multi-scale convolutions",
+        "Neural basis expansion with interpretable components"
+      ],
+      "correct_answer": 3,
+      "explanation": "Neural basis expansion (like N-BEATS or N-HiTS) is most effective for complex time series as it combines the power of neural networks with interpretable components for trend and seasonality, handling multiple seasonalities and external factors while maintaining interpretability."
+    },
+    {
+      "id": 220,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A data team needs to implement data quality monitoring with automated remediation for common data issues. Which approach would be most automated?",
+      "options": [
+        "AWS Glue Data Quality with Lambda remediation",
+        "Custom data quality checks with manual fixes",
+        "Great Expectations with automated data repair",
+        "SageMaker Processing with quality gates"
+      ],
+      "correct_answer": 0,
+      "explanation": "AWS Glue Data Quality with Lambda remediation provides the most automated solution, offering built-in data quality rules, automatic issue detection, and the ability to trigger Lambda functions for automated remediation of common data quality problems."
+    },
+    {
+      "id": 221,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist is analyzing customer feedback text data and needs to identify sentiment trends and topic evolution over time. Which approach would be most insightful?",
+      "options": [
+        "Static sentiment analysis with topic modeling",
+        "Dynamic topic modeling with sentiment tracking",
+        "Time series analysis of sentiment scores",
+        "Combined dynamic topic-sentiment analysis with trend detection"
+      ],
+      "correct_answer": 3,
+      "explanation": "Combined dynamic topic-sentiment analysis with trend detection provides the most insightful approach by tracking how topics evolve over time, monitoring sentiment changes for each topic, and identifying emerging trends in customer feedback."
+    },
+    {
+      "id": 222,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "easy",
+      "question": "Which SageMaker feature allows you to debug training jobs by analyzing gradients, weights, and other training metrics?",
+      "options": [
+        "SageMaker Experiments",
+        "SageMaker Debugger",
+        "SageMaker Profiler",
+        "SageMaker Clarify"
+      ],
+      "correct_answer": 1,
+      "explanation": "SageMaker Debugger allows you to debug training jobs by capturing and analyzing tensors, gradients, weights, and other training metrics in real-time, helping identify issues like vanishing gradients, overfitting, or convergence problems."
+    },
+    {
+      "id": 223,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "A data scientist is building a model for predicting equipment failure and has imbalanced data with rare failure events. Which sampling technique would be most effective?",
+      "options": [
+        "Random oversampling of minority class",
+        "SMOTE (Synthetic Minority Oversampling Technique)",
+        "ADASYN (Adaptive Synthetic Sampling)",
+        "Borderline-SMOTE with careful boundary handling"
+      ],
+      "correct_answer": 3,
+      "explanation": "Borderline-SMOTE is most effective for equipment failure prediction as it focuses on generating synthetic samples near the decision boundary where classification is most difficult, improving model performance on rare but critical failure events."
+    },
+    {
+      "id": 224,
+      "domain": "Data Engineering",
+      "difficulty": "easy",
+      "question": "Which AWS service is most appropriate for extracting structured data from forms and documents?",
+      "options": [
+        "Amazon Textract",
+        "Amazon Comprehend",
+        "Amazon Rekognition",
+        "AWS Glue"
+      ],
+      "correct_answer": 0,
+      "explanation": "Amazon Textract is specifically designed for extracting structured data from forms and documents, including text, tables, and key-value pairs from PDFs and images, making it ideal for document processing workflows."
+    },
+    {
+      "id": 225,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "hard",
+      "question": "A data scientist is analyzing genomic data with high dimensionality and needs to identify disease-associated genetic variants while controlling for population structure. Which approach would be most appropriate?",
+      "options": [
+        "Principal Component Analysis for dimensionality reduction",
+        "Genome-wide association study (GWAS) with population stratification",
+        "Machine learning with feature selection",
+        "Deep learning with attention mechanisms"
+      ],
+      "correct_answer": 1,
+      "explanation": "GWAS with population stratification is most appropriate for genomic data as it's specifically designed to identify disease-associated variants while controlling for population structure and multiple testing, providing statistically rigorous results for genetic association studies."
+    },
+    {
+      "id": 226,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "hard",
+      "question": "A company needs to implement federated learning across multiple organizations while ensuring privacy, security, and model performance. Which approach would be most secure?",
+      "options": [
+        "Centralized aggregation with encrypted gradients",
+        "Differential privacy with secure aggregation",
+        "Homomorphic encryption with federated averaging",
+        "Secure multi-party computation with privacy-preserving protocols"
+      ],
+      "correct_answer": 3,
+      "explanation": "Secure multi-party computation with privacy-preserving protocols provides the highest security for federated learning, enabling computation on encrypted data without revealing individual contributions while maintaining model accuracy and providing strong privacy guarantees."
+    },
+    {
+      "id": 227,
+      "domain": "Modeling",
+      "difficulty": "easy",
+      "question": "Which activation function is most commonly used in the output layer of a regression neural network?",
+      "options": [
+        "ReLU",
+        "Sigmoid",
+        "Tanh",
+        "Linear (no activation)"
+      ],
+      "correct_answer": 3,
+      "explanation": "Linear activation (no activation function) is most commonly used in regression output layers as it allows the network to output any real value, which is appropriate for continuous target variables in regression tasks."
+    },
+    {
+      "id": 228,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A data team needs to implement a data catalog that can automatically discover metadata, track lineage, and provide search capabilities across multiple data sources. Which AWS service would be most comprehensive?",
+      "options": [
+        "AWS Glue Data Catalog",
+        "Amazon DataZone",
+        "AWS Lake Formation",
+        "Amazon Athena"
+      ],
+      "correct_answer": 1,
+      "explanation": "Amazon DataZone provides the most comprehensive data catalog solution with automatic metadata discovery, data lineage tracking, search capabilities, governance features, and integration across multiple data sources and AWS services."
+    },
+    {
+      "id": 229,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist is analyzing A/B test results and needs to account for multiple comparisons and ensure statistical rigor. Which approach would be most appropriate?",
+      "options": [
+        "Bonferroni correction for multiple testing",
+        "False Discovery Rate (FDR) control",
+        "Bayesian A/B testing with credible intervals",
+        "Sequential testing with early stopping rules"
+      ],
+      "correct_answer": 1,
+      "explanation": "False Discovery Rate (FDR) control is most appropriate for A/B testing as it provides a good balance between controlling false positives and maintaining statistical power, especially when testing multiple metrics or segments simultaneously."
+    },
+    {
+      "id": 230,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to implement automated model retraining with data drift detection and performance monitoring. Which SageMaker workflow would be most comprehensive?",
+      "options": [
+        "Model Monitor + CloudWatch + Lambda retraining",
+        "SageMaker Pipelines with scheduled execution",
+        "Model Monitor + EventBridge + SageMaker Pipelines + Model Registry",
+        "Custom monitoring with manual retraining triggers"
+      ],
+      "correct_answer": 2,
+      "explanation": "The combination of Model Monitor for drift detection, EventBridge for event orchestration, SageMaker Pipelines for automated retraining workflow, and Model Registry for version management provides the most comprehensive automated retraining solution."
+    },
+    {
+      "id": 231,
+      "domain": "Modeling",
+      "difficulty": "hard",
+      "question": "A machine learning engineer is implementing a multi-agent reinforcement learning system for autonomous vehicle coordination. Which approach would be most effective for handling non-stationary environments?",
+      "options": [
+        "Independent Q-learning for each agent",
+        "Multi-Agent Deep Deterministic Policy Gradient (MADDPG)",
+        "Centralized training with decentralized execution",
+        "Meta-learning with fast adaptation capabilities"
+      ],
+      "correct_answer": 2,
+      "explanation": "Centralized training with decentralized execution is most effective for multi-agent RL in non-stationary environments as it allows agents to learn coordinated policies during training while maintaining independent execution, handling the non-stationarity caused by other learning agents."
+    },
+    {
+      "id": 232,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A company needs to implement cross-account data sharing for ML training while maintaining data governance and access control. Which AWS approach would be most secure?",
+      "options": [
+        "S3 bucket policies with cross-account access",
+        "AWS Lake Formation with cross-account grants",
+        "IAM roles with cross-account trust relationships",
+        "AWS DataZone with federated governance"
+      ],
+      "correct_answer": 3,
+      "explanation": "AWS DataZone with federated governance provides the most secure cross-account data sharing with fine-grained access control, data discovery, governance policies, and audit trails while maintaining data sovereignty and compliance across organizational boundaries."
+    },
+    {
+      "id": 233,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "easy",
+      "question": "Which technique is most appropriate for identifying the relationship between a continuous and a categorical variable?",
+      "options": [
+        "Correlation analysis",
+        "ANOVA",
+        "Chi-square test",
+        "Regression analysis"
+      ],
+      "correct_answer": 1,
+      "explanation": "ANOVA (Analysis of Variance) is most appropriate for examining the relationship between a continuous dependent variable and a categorical independent variable by testing whether group means differ significantly."
+    },
+    {
+      "id": 234,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "hard",
+      "question": "A company needs to implement model serving with global distribution, edge caching, and automatic failover across multiple regions. Which architecture would be most resilient?",
+      "options": [
+        "CloudFront with Lambda@Edge and SageMaker endpoints",
+        "Global load balancer with regional SageMaker clusters",
+        "Multi-region deployment with Route 53 health checks",
+        "Comprehensive solution with CloudFront, Lambda@Edge, multi-region endpoints, and automated failover"
+      ],
+      "correct_answer": 3,
+      "explanation": "A comprehensive solution combining CloudFront for global distribution, Lambda@Edge for edge computing, multi-region SageMaker endpoints, and automated failover provides the most resilient architecture with low latency, high availability, and automatic disaster recovery."
+    },
+    {
+      "id": 235,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "A data scientist is building a model for credit risk assessment and needs to ensure fairness across different demographic groups. Which approach would be most comprehensive?",
+      "options": [
+        "Demographic parity constraint",
+        "Equalized odds constraint",
+        "Individual fairness with similarity metrics",
+        "Multi-objective optimization with fairness-accuracy trade-offs"
+      ],
+      "correct_answer": 3,
+      "explanation": "Multi-objective optimization with fairness-accuracy trade-offs is most comprehensive as it allows balancing multiple fairness criteria (demographic parity, equalized odds, individual fairness) with model performance, providing flexibility to meet specific regulatory and business requirements."
+    },
+    {
+      "id": 236,
+      "domain": "Data Engineering",
+      "difficulty": "easy",
+      "question": "Which AWS service provides the most cost-effective solution for running infrequent, large-scale data processing jobs?",
+      "options": [
+        "Amazon EMR",
+        "AWS Glue",
+        "AWS Batch",
+        "Amazon ECS"
+      ],
+      "correct_answer": 1,
+      "explanation": "AWS Glue is most cost-effective for infrequent, large-scale data processing as it's serverless, automatically scales, and you only pay for the compute resources used during job execution, with no infrastructure management overhead."
+    },
+    {
+      "id": 237,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "hard",
+      "question": "A data scientist is analyzing complex survey data with hierarchical structure (individuals within organizations within regions) and needs to account for clustering effects. Which statistical approach would be most appropriate?",
+      "options": [
+        "Standard linear regression",
+        "Hierarchical linear modeling (HLM)",
+        "Cluster-robust standard errors",
+        "Generalized Estimating Equations (GEE)"
+      ],
+      "correct_answer": 1,
+      "explanation": "Hierarchical linear modeling (HLM) is most appropriate for hierarchical data as it explicitly models the nested structure, accounts for clustering effects at multiple levels, and provides accurate estimates of both within-group and between-group effects."
+    },
+    {
+      "id": 238,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to implement model interpretability monitoring that tracks how feature importance changes over time in production. Which approach would be most effective?",
+      "options": [
+        "Periodic SHAP analysis with trend tracking",
+        "Real-time feature importance monitoring",
+        "Model-agnostic interpretability with drift detection",
+        "Integrated interpretability monitoring with automated alerts"
+      ],
+      "correct_answer": 3,
+      "explanation": "Integrated interpretability monitoring with automated alerts provides the most effective solution by continuously tracking feature importance changes, detecting significant shifts in model behavior, and triggering alerts when interpretability patterns change beyond acceptable thresholds."
+    },
+    {
+      "id": 239,
+      "domain": "Modeling",
+      "difficulty": "easy",
+      "question": "Which cross-validation technique is most appropriate for time series data to avoid data leakage?",
+      "options": [
+        "K-fold cross-validation",
+        "Stratified k-fold cross-validation",
+        "Time series split (forward chaining)",
+        "Leave-one-out cross-validation"
+      ],
+      "correct_answer": 2,
+      "explanation": "Time series split (forward chaining) is most appropriate for time series data as it respects temporal order by only using past data to predict future values, preventing data leakage that would occur with random splits."
+    },
+    {
+      "id": 240,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A data team needs to implement streaming data ingestion with schema validation, data quality checks, and automatic error handling. Which architecture would be most robust?",
+      "options": [
+        "Kinesis Data Streams with Lambda validation",
+        "MSK with Kafka Connect and schema registry",
+        "Kinesis Data Firehose with data transformation",
+        "EventBridge with custom event processing"
+      ],
+      "correct_answer": 1,
+      "explanation": "MSK with Kafka Connect and schema registry provides the most robust streaming ingestion with built-in schema validation, connector-based data quality checks, dead letter queues for error handling, and exactly-once processing guarantees."
+    },
+    {
+      "id": 241,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist is analyzing customer behavior data with temporal patterns and needs to identify change points where behavior significantly shifts. Which technique would be most appropriate?",
+      "options": [
+        "Moving average analysis",
+        "Change point detection algorithms",
+        "Time series decomposition",
+        "Anomaly detection methods"
+      ],
+      "correct_answer": 1,
+      "explanation": "Change point detection algorithms are most appropriate for identifying significant shifts in temporal data as they're specifically designed to detect structural breaks and regime changes in time series, providing statistical significance testing for detected changes."
+    },
+    {
+      "id": 242,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "hard",
+      "question": "A company needs to implement model governance with automated compliance checking, risk scoring, and regulatory reporting across multiple business units. Which comprehensive approach would be most effective?",
+      "options": [
+        "Centralized governance platform with standardized policies",
+        "Federated governance with business unit autonomy",
+        "Hybrid governance with centralized policies and federated execution",
+        "Third-party governance solution with AWS integration"
+      ],
+      "correct_answer": 2,
+      "explanation": "Hybrid governance with centralized policies and federated execution is most effective as it ensures consistent compliance and risk management across business units while allowing flexibility in implementation and maintaining business unit autonomy within governance frameworks."
+    },
+    {
+      "id": 243,
+      "domain": "Modeling",
+      "difficulty": "medium",
+      "question": "A data scientist is building a model for natural language understanding that needs to handle multiple languages and cultural contexts. Which approach would be most effective?",
+      "options": [
+        "Separate models for each language",
+        "Multilingual transformer with cross-lingual training",
+        "Translation-based approach with English models",
+        "Ensemble of language-specific and multilingual models"
+      ],
+      "correct_answer": 1,
+      "explanation": "Multilingual transformer with cross-lingual training is most effective as it can leverage shared representations across languages, handle code-switching, and benefit from cross-lingual transfer learning while maintaining cultural context understanding."
+    },
+    {
+      "id": 244,
+      "domain": "Data Engineering",
+      "difficulty": "hard",
+      "question": "A company needs to implement a data platform that supports both analytical and operational workloads with ACID transactions, real-time analytics, and global distribution. Which architecture would be most comprehensive?",
+      "options": [
+        "Aurora Global Database with read replicas",
+        "DynamoDB Global Tables with analytics integration",
+        "Multi-region data mesh with federated queries",
+        "Hybrid architecture with Aurora, DynamoDB, and analytics services"
+      ],
+      "correct_answer": 3,
+      "explanation": "A hybrid architecture combining Aurora for ACID transactions, DynamoDB for operational scale, and analytics services (Redshift, Athena) provides the most comprehensive solution, supporting diverse workload requirements with global distribution and real-time capabilities."
+    },
+    {
+      "id": 245,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "easy",
+      "question": "Which technique is most appropriate for reducing the dimensionality of categorical data?",
+      "options": [
+        "Principal Component Analysis (PCA)",
+        "Multiple Correspondence Analysis (MCA)",
+        "Linear Discriminant Analysis (LDA)",
+        "t-SNE"
+      ],
+      "correct_answer": 1,
+      "explanation": "Multiple Correspondence Analysis (MCA) is most appropriate for categorical data dimensionality reduction as it's specifically designed for categorical variables, extending correspondence analysis to handle multiple categorical variables simultaneously."
+    },
+    {
+      "id": 246,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "medium",
+      "question": "A company wants to implement automated model testing that includes data validation, model performance testing, and integration testing. Which approach would be most comprehensive?",
+      "options": [
+        "Unit tests for individual components",
+        "Integration tests for end-to-end workflows",
+        "Performance tests for model accuracy and latency",
+        "Comprehensive testing framework with all test types and automated execution"
+      ],
+      "correct_answer": 3,
+      "explanation": "A comprehensive testing framework combining unit tests for components, integration tests for workflows, performance tests for accuracy/latency, data validation tests, and automated execution provides the most robust quality assurance for ML systems."
+    },
+    {
+      "id": 247,
+      "domain": "Modeling",
+      "difficulty": "hard",
+      "question": "A machine learning engineer is implementing a neural architecture that needs to process both sequential and graph-structured data simultaneously. Which approach would be most effective?",
+      "options": [
+        "Separate models with late fusion",
+        "Graph-augmented sequence models",
+        "Sequence-augmented graph neural networks",
+        "Unified architecture with attention mechanisms for both modalities"
+      ],
+      "correct_answer": 3,
+      "explanation": "A unified architecture with attention mechanisms for both modalities is most effective as it allows the model to learn joint representations, capture interactions between sequential and graph structures, and dynamically focus on relevant information from both modalities."
+    },
+    {
+      "id": 248,
+      "domain": "Data Engineering",
+      "difficulty": "medium",
+      "question": "A data team needs to implement data lineage tracking that shows the complete flow from raw data sources to ML model predictions. Which AWS service provides this end-to-end capability?",
+      "options": [
+        "AWS CloudTrail for audit logs",
+        "Amazon DataZone for comprehensive lineage",
+        "AWS Glue Data Catalog for metadata tracking",
+        "SageMaker Experiments for ML lineage"
+      ],
+      "correct_answer": 1,
+      "explanation": "Amazon DataZone provides comprehensive end-to-end data lineage tracking from raw data sources through transformations, feature engineering, model training, and inference, with visual lineage graphs and governance capabilities."
+    },
+    {
+      "id": 249,
+      "domain": "Exploratory Data Analysis",
+      "difficulty": "medium",
+      "question": "A data scientist is analyzing experimental data with potential confounding variables and needs to establish causal relationships. Which approach would be most rigorous?",
+      "options": [
+        "Correlation analysis with statistical controls",
+        "Randomized controlled trial design",
+        "Instrumental variable analysis",
+        "Causal inference with directed acyclic graphs (DAGs)"
+      ],
+      "correct_answer": 3,
+      "explanation": "Causal inference with DAGs is most rigorous for observational data as it provides a systematic framework for identifying confounders, mediators, and colliders, enabling proper causal identification and avoiding common pitfalls in causal analysis."
+    },
+    {
+      "id": 250,
+      "domain": "Machine Learning Implementation and Operations",
+      "difficulty": "hard",
+      "question": "A company needs to implement a comprehensive MLOps platform that supports the entire ML lifecycle with governance, compliance, and scalability. Which approach would be most strategic?",
+      "options": [
+        "Build custom MLOps platform from scratch",
+        "Use SageMaker with comprehensive MLOps integration",
+        "Adopt third-party MLOps platform with AWS integration",
+        "Hybrid approach combining AWS native services with specialized tools"
+      ],
+      "correct_answer": 3,
+      "explanation": "A hybrid approach combining AWS native services (SageMaker, DataZone, Glue) with specialized MLOps tools provides the most strategic solution, leveraging AWS's scalability and integration while incorporating best-of-breed tools for specific MLOps capabilities like experiment tracking, model monitoring, and governance."
+    }
+  ]
+}

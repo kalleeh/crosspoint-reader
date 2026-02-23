@@ -4,8 +4,10 @@
 #include <GfxRenderer.h>
 #include <SDCardManager.h>
 #include <Txt.h>
+#include <WiFi.h>
 #include <Xtc.h>
 
+#include "../online/OnlineContentFetcher.h"
 #include "CrossPointSettings.h"
 #include "CrossPointState.h"
 #include "fontIds.h"
@@ -26,6 +28,18 @@ void SleepActivity::onEnter() {
 
   if (SETTINGS.sleepScreen == CrossPointSettings::SLEEP_SCREEN_MODE::COVER) {
     return renderCoverSleepScreen();
+  }
+
+  if (SETTINGS.sleepScreen == CrossPointSettings::SLEEP_SCREEN_MODE::WEATHER) {
+    return renderWeatherSleepScreen();
+  }
+
+  if (SETTINGS.sleepScreen == CrossPointSettings::SLEEP_SCREEN_MODE::WORD_OF_DAY) {
+    return renderWordOfDaySleepScreen();
+  }
+
+  if (SETTINGS.sleepScreen == CrossPointSettings::SLEEP_SCREEN_MODE::WIKIPEDIA) {
+    return renderWikipediaSleepScreen();
   }
 
   renderDefaultSleepScreen();
@@ -64,7 +78,7 @@ void SleepActivity::renderCustomSleepScreen() const {
         continue;
       }
 
-      if (filename.substr(filename.length() - 4) != ".bmp") {
+      if (filename.length() < 4 || filename.substr(filename.length() - 4) != ".bmp") {
         Serial.printf("[%lu] [SLP] Skipping non-.bmp file name: %s\n", millis(), name);
         file.close();
         continue;
@@ -133,7 +147,7 @@ void SleepActivity::renderDefaultSleepScreen() const {
     renderer.invertScreen();
   }
 
-  renderer.displayBuffer(EInkDisplay::HALF_REFRESH);
+  renderer.displayBuffer(HalDisplay::HALF_REFRESH);
 }
 
 void SleepActivity::renderBitmapSleepScreen(const Bitmap& bitmap) const {
@@ -189,7 +203,7 @@ void SleepActivity::renderBitmapSleepScreen(const Bitmap& bitmap) const {
     renderer.invertScreen();
   }
 
-  renderer.displayBuffer(EInkDisplay::HALF_REFRESH);
+  renderer.displayBuffer(HalDisplay::HALF_REFRESH);
 
   if (hasGreyscale) {
     bitmap.rewindToData();
@@ -269,7 +283,7 @@ void SleepActivity::renderCoverSleepScreen() const {
   if (SdMan.openFileForRead("SLP", coverBmpPath, file)) {
     Bitmap bitmap(file);
     if (bitmap.parseHeaders() == BmpReaderError::Ok) {
-      Serial.printf("[SLP] Rendering sleep cover: %s\n", coverBmpPath);
+      Serial.printf("[SLP] Rendering sleep cover: %s\n", coverBmpPath.c_str());
       renderBitmapSleepScreen(bitmap);
       return;
     }
@@ -280,5 +294,144 @@ void SleepActivity::renderCoverSleepScreen() const {
 
 void SleepActivity::renderBlankSleepScreen() const {
   renderer.clearScreen();
-  renderer.displayBuffer(EInkDisplay::HALF_REFRESH);
+  renderer.displayBuffer(HalDisplay::HALF_REFRESH);
+}
+
+void SleepActivity::renderWeatherSleepScreen() const {
+  renderer.clearScreen();
+  
+  // Try cached weather first (no WiFi needed)
+  auto data = OnlineContentFetcher::fetchWeather(true);
+  
+  if (!data.success) {
+    // Cache miss or expired, try fetching with WiFi
+    if (!OnlineContentFetcher::ensureWiFi()) {
+      renderer.drawCenteredText(UI_10_FONT_ID, renderer.getScreenHeight() / 2, "Weather unavailable");
+      renderer.displayBuffer(HalDisplay::HALF_REFRESH);
+      WiFi.mode(WIFI_OFF);
+      return;
+    }
+    
+    data = OnlineContentFetcher::fetchWeather(false);
+    WiFi.mode(WIFI_OFF);
+    
+    if (!data.success) {
+      renderer.drawCenteredText(UI_10_FONT_ID, renderer.getScreenHeight() / 2, "Weather unavailable");
+      renderer.displayBuffer(HalDisplay::HALF_REFRESH);
+      return;
+    }
+  }
+  
+  const int height = renderer.getScreenHeight();
+  renderer.drawCenteredText(UI_12_FONT_ID, 50, data.location.c_str());
+  
+  char tempStr[16];
+  snprintf(tempStr, sizeof(tempStr), "%d°C", data.temperature);
+  renderer.drawCenteredText(UI_12_FONT_ID, height / 2 - 20, tempStr);
+  renderer.drawCenteredText(UI_10_FONT_ID, height / 2 + 20, data.condition.c_str());
+  
+  renderer.displayBuffer(HalDisplay::HALF_REFRESH);
+}
+
+void SleepActivity::renderWordOfDaySleepScreen() const {
+  renderer.clearScreen();
+  
+  if (!OnlineContentFetcher::ensureWiFi()) {
+    renderer.drawCenteredText(UI_10_FONT_ID, renderer.getScreenHeight() / 2, "WiFi not connected");
+    renderer.displayBuffer(HalDisplay::HALF_REFRESH);
+    WiFi.mode(WIFI_OFF);
+    return;
+  }
+  
+  auto data = OnlineContentFetcher::fetchWordOfDay();
+  WiFi.mode(WIFI_OFF);
+  
+  if (!data.success) {
+    renderer.drawCenteredText(UI_10_FONT_ID, renderer.getScreenHeight() / 2, "Word unavailable");
+    renderer.displayBuffer(HalDisplay::HALF_REFRESH);
+    return;
+  }
+  
+  const int width = renderer.getScreenWidth();
+  const int height = renderer.getScreenHeight();
+  const int margin = 40;
+  
+  renderer.drawCenteredText(UI_12_FONT_ID, 50, "Word of the Day");
+  renderer.drawCenteredText(UI_12_FONT_ID, 100, data.word.c_str());
+  
+  int y = 150;
+  const int maxWidth = width - 2 * margin;
+  String remaining = data.definition;
+  
+  while (remaining.length() > 0 && y < height - 50) {
+    int breakPos = remaining.length();
+    for (int i = 1; i <= remaining.length(); i++) {
+      if (renderer.getTextWidth(UI_10_FONT_ID, remaining.substring(0, i).c_str()) > maxWidth) {
+        breakPos = i - 1;
+        break;
+      }
+    }
+    if (breakPos < remaining.length()) {
+      int lastSpace = remaining.lastIndexOf(' ', breakPos);
+      if (lastSpace > 0) breakPos = lastSpace;
+    }
+    String line = remaining.substring(0, breakPos);
+    renderer.drawCenteredText(UI_10_FONT_ID, y, line.c_str());
+    y += renderer.getLineHeight(UI_10_FONT_ID) + 5;
+    remaining = remaining.substring(breakPos);
+    remaining.trim();
+  }
+  
+  renderer.displayBuffer(HalDisplay::HALF_REFRESH);
+}
+
+void SleepActivity::renderWikipediaSleepScreen() const {
+  renderer.clearScreen();
+  
+  if (!OnlineContentFetcher::ensureWiFi()) {
+    renderer.drawCenteredText(UI_10_FONT_ID, renderer.getScreenHeight() / 2, "WiFi not connected");
+    renderer.displayBuffer(HalDisplay::HALF_REFRESH);
+    WiFi.mode(WIFI_OFF);
+    return;
+  }
+  
+  auto data = OnlineContentFetcher::fetchWikipediaRandom();
+  WiFi.mode(WIFI_OFF);
+  
+  if (!data.success) {
+    renderer.drawCenteredText(UI_10_FONT_ID, renderer.getScreenHeight() / 2, "Wikipedia unavailable");
+    renderer.displayBuffer(HalDisplay::HALF_REFRESH);
+    return;
+  }
+  
+  const int width = renderer.getScreenWidth();
+  const int height = renderer.getScreenHeight();
+  const int margin = 40;
+  
+  renderer.drawCenteredText(UI_12_FONT_ID, 50, data.title.c_str());
+  
+  int y = 100;
+  const int maxWidth = width - 2 * margin;
+  String remaining = data.extract;
+  
+  while (remaining.length() > 0 && y < height - 50) {
+    int breakPos = remaining.length();
+    for (int i = 1; i <= remaining.length(); i++) {
+      if (renderer.getTextWidth(UI_10_FONT_ID, remaining.substring(0, i).c_str()) > maxWidth) {
+        breakPos = i - 1;
+        break;
+      }
+    }
+    if (breakPos < remaining.length()) {
+      int lastSpace = remaining.lastIndexOf(' ', breakPos);
+      if (lastSpace > 0) breakPos = lastSpace;
+    }
+    String line = remaining.substring(0, breakPos);
+    renderer.drawCenteredText(UI_10_FONT_ID, y, line.c_str());
+    y += renderer.getLineHeight(UI_10_FONT_ID) + 5;
+    remaining = remaining.substring(breakPos);
+    remaining.trim();
+  }
+  
+  renderer.displayBuffer(HalDisplay::HALF_REFRESH);
 }

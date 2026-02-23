@@ -20,7 +20,7 @@ void readAndValidate(FsFile& file, uint8_t& member, const uint8_t maxValue) {
 }
 
 namespace {
-constexpr uint8_t SETTINGS_FILE_VERSION = 1;
+constexpr uint8_t SETTINGS_FILE_VERSION = 2;
 // Increment this when adding new persisted settings fields
 constexpr uint8_t SETTINGS_COUNT = 23;
 constexpr char SETTINGS_FILE[] = "/.crosspoint/settings.bin";

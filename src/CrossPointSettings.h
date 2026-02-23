@@ -15,7 +15,17 @@ class CrossPointSettings {
   CrossPointSettings(const CrossPointSettings&) = delete;
   CrossPointSettings& operator=(const CrossPointSettings&) = delete;
 
-  enum SLEEP_SCREEN_MODE { DARK = 0, LIGHT = 1, CUSTOM = 2, COVER = 3, BLANK = 4, SLEEP_SCREEN_MODE_COUNT };
+  enum SLEEP_SCREEN_MODE { 
+    DARK = 0, 
+    LIGHT = 1, 
+    CUSTOM = 2, 
+    COVER = 3, 
+    BLANK = 4, 
+    WEATHER = 5,
+    WORD_OF_DAY = 6,
+    WIKIPEDIA = 7,
+    SLEEP_SCREEN_MODE_COUNT 
+  };
   enum SLEEP_SCREEN_COVER_MODE { FIT = 0, CROP = 1, SLEEP_SCREEN_COVER_MODE_COUNT };
   enum SLEEP_SCREEN_COVER_FILTER {
     NO_FILTER = 0,
@@ -137,6 +147,17 @@ class CrossPointSettings {
   uint8_t hideBatteryPercentage = HIDE_NEVER;
   // Long-press chapter skip on side buttons
   uint8_t longPressChapterSkip = 1;
+  // Show hidden files in file browser
+  uint8_t showHiddenFiles = 0;
+  
+  // Weather cache (30 min = 1800 seconds)
+  unsigned long weatherCacheTime = 0;
+  char weatherLocation[64] = "";
+  int weatherTemp = 0;
+  int weatherFeelsLike = 0;
+  char weatherCondition[64] = "";
+  int weatherHumidity = 0;
+  int weatherWindSpeed = 0;
 
   ~CrossPointSettings() = default;
 

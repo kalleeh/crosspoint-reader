@@ -59,7 +59,7 @@ class OpdsParser final : public Print {
 
   bool error() const;
 
-  operator bool() { return !error(); }
+  explicit operator bool() { return !error(); }
 
   /**
    * Get the parsed entries (both navigation and book entries).
@@ -100,5 +100,5 @@ class OpdsParser final : public Print {
   bool inAuthorName = false;
   bool inId = false;
 
-  bool errorOccured = false;
+  bool errorOccurred = false;
 };

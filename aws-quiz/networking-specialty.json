@@ -1,0 +1,1485 @@
+{
+  "version": "1.0",
+  "certification": "advanced-networking-specialty",
+  "exam": "ANS-C01",
+  "total_questions": 100,
+  "validation_sources": [
+    "https://docs.aws.amazon.com/whitepapers/latest/aws-vpc-connectivity-options/network-to-amazon-vpc-connectivity-options.html",
+    "https://docs.aws.amazon.com/vpc/latest/tgw/tgw-best-design-practices.html",
+    "https://docs.aws.amazon.com/wellarchitected/latest/framework/rel-02.html",
+    "https://docs.aws.amazon.com/elasticloadbalancing/latest/application/introduction.html",
+    "https://docs.aws.amazon.com/network-firewall/latest/developerguide/nwfw-monitoring-reporting.html"
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "domain": "Network Design",
+      "difficulty": "medium",
+      "question": "A company needs to design a multi-region VPC architecture that supports 50,000 IP addresses per region with room for 100% growth. The design must avoid CIDR overlap and support hub-and-spoke connectivity. What CIDR allocation strategy should be used?",
+      "options": {
+        "A": "Use /16 CIDR blocks (10.0.0.0/16, 10.1.0.0/16) with /24 subnets",
+        "B": "Use /15 CIDR blocks (10.0.0.0/15, 10.2.0.0/15) with /22 subnets", 
+        "C": "Use /14 CIDR blocks (10.0.0.0/14, 10.4.0.0/14) with /20 subnets",
+        "D": "Use /13 CIDR blocks (10.0.0.0/13, 10.8.0.0/13) with /18 subnets"
+      },
+      "correct_answer": "C",
+      "explanation": "A /14 CIDR provides 262,144 IP addresses (4x /16), allowing for 50,000 IPs plus 100% growth with significant headroom. Non-overlapping /14 blocks (10.0.0.0/14, 10.4.0.0/14) ensure no conflicts. /20 subnets provide 4,096 IPs each for proper segmentation."
+    },
+    {
+      "id": 2,
+      "domain": "Network Design",
+      "difficulty": "hard",
+      "question": "An enterprise requires a hybrid network design connecting 20 branch offices to AWS across 3 regions. Each branch needs 1 Gbps bandwidth with 99.9% availability. The solution must support dynamic routing and traffic engineering. What architecture provides the most cost-effective solution?",
+      "options": {
+        "A": "Direct Connect with multiple VIFs per location and BGP communities",
+        "B": "Transit Gateway with Site-to-Site VPN using BGP and ECMP",
+        "C": "SD-WAN solution with Transit Gateway Connect attachments",
+        "D": "VPN CloudHub with multiple customer gateways per branch"
+      },
+      "correct_answer": "C",
+      "explanation": "SD-WAN with Transit Gateway Connect provides dynamic routing, traffic engineering, and cost optimization by using internet connectivity while maintaining enterprise-grade features. It supports BGP, ECMP, and can achieve 99.9% availability with proper design."
+    },
+    {
+      "id": 3,
+      "domain": "Network Design",
+      "difficulty": "easy",
+      "question": "A company needs to design subnets for a 3-tier web application in a VPC with CIDR 10.0.0.0/16. The application requires public subnets for load balancers, private subnets for application servers, and database subnets. What subnet design follows AWS best practices?",
+      "options": {
+        "A": "Public: 10.0.1.0/24, Private: 10.0.2.0/24, Database: 10.0.3.0/24",
+        "B": "Public: 10.0.0.0/20, Private: 10.0.16.0/20, Database: 10.0.32.0/20",
+        "C": "Public: 10.0.1.0/28, Private: 10.0.2.0/24, Database: 10.0.3.0/28",
+        "D": "Public: 10.0.0.0/24, Private: 10.0.0.0/22, Database: 10.0.0.0/26"
+      },
+      "correct_answer": "B",
+      "explanation": "Using /20 subnets provides 4,096 IPs each, allowing for growth. This design follows AWS best practices by allocating larger blocks for different tiers and avoiding overlapping CIDR ranges."
+    },
+    {
+      "id": 4,
+      "domain": "Network Design",
+      "difficulty": "medium",
+      "question": "A financial services company requires network segmentation with strict isolation between environments. The design must support development, staging, and production with no cross-environment communication. Which Transit Gateway design pattern should be implemented?",
+      "options": {
+        "A": "Single Transit Gateway with multiple route tables and no route propagation",
+        "B": "Separate Transit Gateways per environment with no peering",
+        "C": "Single Transit Gateway with security groups controlling access",
+        "D": "Multiple Transit Gateways with selective peering connections"
+      },
+      "correct_answer": "B",
+      "explanation": "Separate Transit Gateways per environment provide complete network isolation, which is essential for financial services compliance. This prevents any possibility of cross-environment communication at the network layer."
+    },
+    {
+      "id": 5,
+      "domain": "Network Design",
+      "difficulty": "hard",
+      "question": "A global company needs to design a network architecture supporting 100 VPCs across 5 AWS regions with centralized internet egress and inspection. The solution must minimize latency and support 10 Gbps aggregate throughput. What architecture should be implemented?",
+      "options": {
+        "A": "Regional Transit Gateways with inter-region peering and centralized NAT Gateways",
+        "B": "Global Transit Gateway with centralized inspection VPC and AWS Network Firewall",
+        "C": "Regional inspection VPCs with Transit Gateway and Network Firewall per region",
+        "D": "CloudWAN with centralized core network and regional inspection points"
+      },
+      "correct_answer": "C",
+      "explanation": "Regional inspection VPCs minimize latency by keeping traffic local to each region while providing centralized control. Network Firewall can handle 10+ Gbps throughput per AZ, and Transit Gateway enables efficient routing."
+    },
+    {
+      "id": 6,
+      "domain": "Network Design",
+      "difficulty": "medium",
+      "question": "An organization needs to design IPv6 connectivity for their AWS infrastructure while maintaining IPv4 compatibility. The design must support 1000 subnets with automatic address assignment. What approach should be used?",
+      "options": {
+        "A": "Dual-stack VPC with /56 IPv6 CIDR and /64 subnets",
+        "B": "IPv6-only VPC with NAT64 for IPv4 compatibility",
+        "C": "Separate IPv4 and IPv6 VPCs with VPC peering",
+        "D": "IPv4 VPC with IPv6 overlay using tunneling"
+      },
+      "correct_answer": "A",
+      "explanation": "Dual-stack VPC with /56 IPv6 CIDR provides 256 /64 subnets, which can be expanded. This maintains IPv4 compatibility while enabling native IPv6 support with automatic address assignment."
+    },
+    {
+      "id": 7,
+      "domain": "Network Design",
+      "difficulty": "easy",
+      "question": "A startup needs to design a cost-effective network architecture for their web application that expects variable traffic patterns. The application requires high availability across 2 AZs. What load balancer configuration is most appropriate?",
+      "options": {
+        "A": "Network Load Balancer with cross-zone load balancing disabled",
+        "B": "Application Load Balancer with cross-zone load balancing enabled",
+        "C": "Gateway Load Balancer with health checks",
+        "D": "Classic Load Balancer with sticky sessions"
+      },
+      "correct_answer": "B",
+      "explanation": "Application Load Balancer is cost-effective for HTTP/HTTPS traffic with variable patterns. Cross-zone load balancing ensures even distribution across AZs for high availability."
+    },
+    {
+      "id": 8,
+      "domain": "Network Design",
+      "difficulty": "hard",
+      "question": "A media company requires a CDN solution that supports real-time streaming with sub-100ms latency globally. The solution must integrate with AWS services and support custom SSL certificates. What architecture should be designed?",
+      "options": {
+        "A": "CloudFront with Lambda@Edge and custom SSL certificates",
+        "B": "Global Accelerator with Network Load Balancers and SSL termination",
+        "C": "CloudFront with real-time streaming and AWS Certificate Manager",
+        "D": "Multi-region Application Load Balancers with Route 53 latency routing"
+      },
+      "correct_answer": "A",
+      "explanation": "CloudFront with Lambda@Edge provides the lowest latency for global content delivery and supports real-time streaming. Custom SSL certificates can be uploaded to CloudFront for brand requirements."
+    },
+    {
+      "id": 9,
+      "domain": "Network Design",
+      "difficulty": "medium",
+      "question": "A healthcare organization needs to design a network that complies with HIPAA requirements. The design must ensure data encryption in transit and at rest, with audit logging. Which components are essential?",
+      "options": {
+        "A": "VPC with default encryption, CloudTrail, and VPC Flow Logs",
+        "B": "Private subnets, TLS 1.2+, AWS Config, and CloudTrail",
+        "C": "NAT Gateways, security groups, and CloudWatch",
+        "D": "Internet Gateway, NACLs, and AWS Shield"
+      },
+      "correct_answer": "B",
+      "explanation": "HIPAA compliance requires private subnets for PHI, TLS 1.2+ for encryption in transit, AWS Config for compliance monitoring, and CloudTrail for audit logging of all API calls."
+    },
+    {
+      "id": 10,
+      "domain": "Network Design",
+      "difficulty": "easy",
+      "question": "A company wants to design a VPC that supports both public-facing web servers and private database servers. The database servers should not have internet access. What subnet design is appropriate?",
+      "options": {
+        "A": "Public subnets for web servers, private subnets with NAT Gateway for databases",
+        "B": "Public subnets for web servers, private subnets without NAT Gateway for databases",
+        "C": "All resources in public subnets with security groups controlling access",
+        "D": "Private subnets for all resources with Application Load Balancer in public subnets"
+      },
+      "correct_answer": "B",
+      "explanation": "Web servers need public subnets for internet access. Database servers should be in private subnets without NAT Gateway to prevent any internet access, following security best practices."
+    },
+    {
+      "id": 11,
+      "domain": "Network Design",
+      "difficulty": "hard",
+      "question": "An enterprise needs to design a network architecture that supports 500 Gbps of bandwidth between on-premises and AWS with sub-10ms latency. The solution must provide redundancy and support BGP routing policies. What design should be implemented?",
+      "options": {
+        "A": "Multiple 100G Direct Connect connections with LAG and BGP communities",
+        "B": "Direct Connect Gateway with multiple 10G connections and ECMP",
+        "C": "Site-to-Site VPN with multiple tunnels and BGP",
+        "D": "AWS Outposts with local connectivity"
+      },
+      "correct_answer": "A",
+      "explanation": "Multiple 100G Direct Connect connections can provide 500+ Gbps bandwidth. LAG provides redundancy and load distribution, while BGP communities enable advanced routing policies for traffic engineering."
+    },
+    {
+      "id": 12,
+      "domain": "Network Design",
+      "difficulty": "medium",
+      "question": "A SaaS company needs to design a multi-tenant network architecture where each tenant's traffic is isolated. The solution must scale to 1000 tenants and support centralized monitoring. What approach should be used?",
+      "options": {
+        "A": "Separate VPCs per tenant with VPC peering",
+        "B": "Single VPC with tenant-specific subnets and security groups",
+        "C": "Transit Gateway with separate route tables per tenant",
+        "D": "Multiple AWS accounts with cross-account roles"
+      },
+      "correct_answer": "C",
+      "explanation": "Transit Gateway with separate route tables per tenant provides scalable isolation while maintaining centralized management. This approach can scale to 1000+ tenants with proper route table design."
+    },
+    {
+      "id": 13,
+      "domain": "Network Design",
+      "difficulty": "easy",
+      "question": "A development team needs to design a network for a microservices application with 20 services. Each service needs to communicate with others securely. What service discovery and networking approach is most suitable?",
+      "options": {
+        "A": "Application Load Balancer with target groups per service",
+        "B": "AWS Cloud Map with VPC Lattice for service-to-service communication",
+        "C": "Network Load Balancer with static IP addresses",
+        "D": "Route 53 private hosted zones with A records"
+      },
+      "correct_answer": "B",
+      "explanation": "AWS Cloud Map provides service discovery for microservices, while VPC Lattice enables secure service-to-service communication without complex networking setup."
+    },
+    {
+      "id": 14,
+      "domain": "Network Design",
+      "difficulty": "medium",
+      "question": "A financial institution requires a network design that supports active-active disaster recovery across two regions with RPO of 1 minute. The solution must maintain session state and support database replication. What architecture should be designed?",
+      "options": {
+        "A": "Global Load Balancer with Route 53 health checks and RDS Multi-AZ",
+        "B": "Route 53 Application Recovery Controller with cross-region replication",
+        "C": "Global Accelerator with Network Load Balancers and Aurora Global Database",
+        "D": "CloudFront with origin failover and DynamoDB Global Tables"
+      },
+      "correct_answer": "C",
+      "explanation": "Global Accelerator provides active-active load balancing with health checks. Aurora Global Database supports cross-region replication with RPO < 1 second, meeting the 1-minute requirement."
+    },
+    {
+      "id": 15,
+      "domain": "Network Design",
+      "difficulty": "hard",
+      "question": "A gaming company needs to design a network architecture for a real-time multiplayer game supporting 1 million concurrent users globally. The solution must minimize latency and support UDP traffic. What design should be implemented?",
+      "options": {
+        "A": "CloudFront with UDP support and Lambda@Edge",
+        "B": "Global Accelerator with Network Load Balancers and UDP listeners",
+        "C": "Route 53 latency-based routing with Application Load Balancers",
+        "D": "Multi-region deployment with local load balancers"
+      },
+      "correct_answer": "B",
+      "explanation": "Global Accelerator optimizes UDP traffic routing using AWS global network. Network Load Balancers support UDP with high performance and can handle millions of concurrent connections."
+    },
+    {
+      "id": 16,
+      "domain": "Network Design",
+      "difficulty": "medium",
+      "question": "An IoT company needs to design a network architecture for 100,000 devices sending telemetry data. The solution must support device authentication and data encryption. What approach should be used?",
+      "options": {
+        "A": "Application Load Balancer with SSL termination and AWS IoT Core",
+        "B": "Network Load Balancer with TCP listeners and custom authentication",
+        "C": "AWS IoT Core with device certificates and MQTT over TLS",
+        "D": "API Gateway with API keys and Lambda functions"
+      },
+      "correct_answer": "C",
+      "explanation": "AWS IoT Core is purpose-built for IoT devices, supporting MQTT over TLS for secure communication and X.509 certificates for device authentication at scale."
+    },
+    {
+      "id": 17,
+      "domain": "Network Design",
+      "difficulty": "easy",
+      "question": "A company needs to design a network that allows their EC2 instances to access S3 without internet traffic. What solution should be implemented?",
+      "options": {
+        "A": "NAT Gateway with S3 bucket policy",
+        "B": "VPC Endpoint for S3 (Gateway Endpoint)",
+        "C": "Internet Gateway with security group rules",
+        "D": "Direct Connect with private VIF"
+      },
+      "correct_answer": "B",
+      "explanation": "VPC Gateway Endpoint for S3 allows private connectivity to S3 without internet traffic. It's free and provides secure access to S3 from within the VPC."
+    },
+    {
+      "id": 18,
+      "domain": "Network Design",
+      "difficulty": "hard",
+      "question": "A multinational corporation needs to design a network architecture that complies with data sovereignty requirements across 10 countries. Each country's data must remain within its borders. What design approach should be used?",
+      "options": {
+        "A": "Single global VPC with country-specific subnets",
+        "B": "Regional VPCs per country with no cross-border connectivity",
+        "C": "Transit Gateway with country-specific route tables and policies",
+        "D": "Separate AWS accounts per country with cross-account roles"
+      },
+      "correct_answer": "B",
+      "explanation": "Regional VPCs per country ensure data sovereignty by keeping all data within country borders. No cross-border connectivity prevents accidental data transfer across jurisdictions."
+    },
+    {
+      "id": 19,
+      "domain": "Network Design",
+      "difficulty": "medium",
+      "question": "A media streaming company needs to design a network that supports adaptive bitrate streaming with global content delivery. The solution must cache content at edge locations and support real-time analytics. What architecture should be implemented?",
+      "options": {
+        "A": "CloudFront with Lambda@Edge and real-time logs",
+        "B": "Global Accelerator with caching enabled",
+        "C": "Route 53 with geolocation routing and CloudWatch",
+        "D": "Multi-region ALBs with sticky sessions"
+      },
+      "correct_answer": "A",
+      "explanation": "CloudFront provides global edge caching for streaming content, Lambda@Edge enables adaptive bitrate logic, and real-time logs provide analytics for optimization."
+    },
+    {
+      "id": 20,
+      "domain": "Network Design",
+      "difficulty": "easy",
+      "question": "A startup needs to design a cost-effective network for their web application that expects low to moderate traffic. The application requires SSL termination and basic load balancing. What solution is most appropriate?",
+      "options": {
+        "A": "Network Load Balancer with SSL certificates",
+        "B": "Application Load Balancer with AWS Certificate Manager",
+        "C": "Classic Load Balancer with self-signed certificates",
+        "D": "Gateway Load Balancer with third-party SSL"
+      },
+      "correct_answer": "B",
+      "explanation": "Application Load Balancer is cost-effective for HTTP/HTTPS traffic with low to moderate volume. AWS Certificate Manager provides free SSL certificates, reducing costs."
+    },
+    {
+      "id": 21,
+      "domain": "Network Design",
+      "difficulty": "medium",
+      "question": "An e-commerce company needs to design a network architecture that supports seasonal traffic spikes of 10x normal load. The solution must automatically scale and maintain performance. What design should be implemented?",
+      "options": {
+        "A": "Auto Scaling Groups with Application Load Balancer and CloudWatch alarms",
+        "B": "Fixed capacity with Network Load Balancer and manual scaling",
+        "C": "Lambda functions with API Gateway and automatic scaling",
+        "D": "ECS Fargate with Service Auto Scaling and ALB"
+      },
+      "correct_answer": "A",
+      "explanation": "Auto Scaling Groups automatically handle traffic spikes by scaling EC2 instances. Application Load Balancer distributes traffic efficiently, and CloudWatch alarms trigger scaling actions."
+    },
+    {
+      "id": 22,
+      "domain": "Network Design",
+      "difficulty": "hard",
+      "question": "A financial services company requires a network design that supports high-frequency trading with sub-millisecond latency requirements. The solution must connect to multiple exchanges and support market data feeds. What architecture should be designed?",
+      "options": {
+        "A": "Dedicated hosts with SR-IOV and enhanced networking",
+        "B": "Placement groups with cluster networking and DPDK",
+        "C": "Standard instances with optimized AMIs",
+        "D": "Spot instances with high network performance"
+      },
+      "correct_answer": "B",
+      "explanation": "Placement groups with cluster networking provide the lowest latency within AWS. DPDK (Data Plane Development Kit) bypasses the kernel for ultra-low latency packet processing required for HFT."
+    },
+    {
+      "id": 23,
+      "domain": "Network Design",
+      "difficulty": "medium",
+      "question": "A healthcare organization needs to design a network that supports DICOM image transfer between hospitals. The solution must ensure data integrity and support large file transfers. What approach should be used?",
+      "options": {
+        "A": "S3 Transfer Acceleration with multipart upload",
+        "B": "Direct Connect with dedicated bandwidth",
+        "C": "VPN with compression and error correction",
+        "D": "AWS DataSync with encryption in transit"
+      },
+      "correct_answer": "D",
+      "explanation": "AWS DataSync is optimized for large file transfers with built-in data integrity checks, encryption in transit, and bandwidth throttling. It's ideal for medical imaging workflows."
+    },
+    {
+      "id": 24,
+      "domain": "Network Design",
+      "difficulty": "easy",
+      "question": "A company needs to design a network that allows their development team to access AWS resources securely from their office. The solution should be quick to implement and cost-effective. What approach should be used?",
+      "options": {
+        "A": "Site-to-Site VPN with customer gateway",
+        "B": "Direct Connect with private VIF",
+        "C": "Client VPN with certificate authentication",
+        "D": "AWS Systems Manager Session Manager"
+      },
+      "correct_answer": "A",
+      "explanation": "Site-to-Site VPN is quick to implement, cost-effective for small teams, and provides secure connectivity between office and AWS. It requires minimal setup compared to Direct Connect."
+    },
+    {
+      "id": 25,
+      "domain": "Network Design",
+      "difficulty": "hard",
+      "question": "A global enterprise needs to design a network architecture that supports zero-trust security principles with microsegmentation. The solution must scale to 10,000 workloads across multiple regions. What architecture should be implemented?",
+      "options": {
+        "A": "VPC Lattice with service-level policies and identity-based access",
+        "B": "Security groups with fine-grained rules per workload",
+        "C": "Network ACLs with subnet-level segmentation",
+        "D": "AWS Network Firewall with application-level inspection"
+      },
+      "correct_answer": "A",
+      "explanation": "VPC Lattice provides service-to-service connectivity with built-in security policies, supporting zero-trust principles and microsegmentation at scale across regions."
+    },
+    {
+      "id": 26,
+      "domain": "Network Implementation",
+      "difficulty": "medium",
+      "question": "You need to implement a Transit Gateway that connects 50 VPCs with selective routing between development and production environments. Development VPCs should not communicate with production VPCs. How should you configure the route tables?",
+      "options": {
+        "A": "Single route table with conditional routing based on tags",
+        "B": "Separate route tables for dev and prod with no cross-propagation",
+        "C": "Default route table with security group rules",
+        "D": "Multiple route tables with overlapping routes"
+      },
+      "correct_answer": "B",
+      "explanation": "Separate route tables for development and production environments with no route propagation between them ensures complete isolation. Each environment's VPCs associate with their respective route table."
+    },
+    {
+      "id": 27,
+      "domain": "Network Implementation",
+      "difficulty": "hard",
+      "question": "You are implementing a Direct Connect connection with BGP routing. The customer wants to advertise specific prefixes to AWS and receive only certain AWS prefixes. How should you configure the BGP session?",
+      "options": {
+        "A": "Use BGP communities and route maps on customer gateway",
+        "B": "Configure allowed prefixes on Direct Connect Gateway",
+        "C": "Implement prefix lists and route filters on both sides",
+        "D": "Use AS-PATH prepending for traffic engineering"
+      },
+      "correct_answer": "C",
+      "explanation": "Prefix lists and route filters on both customer and AWS sides provide granular control over route advertisement and acceptance. This ensures only desired prefixes are exchanged in both directions."
+    },
+    {
+      "id": 28,
+      "domain": "Network Implementation",
+      "difficulty": "easy",
+      "question": "You need to implement a VPC endpoint for S3 to allow private access from EC2 instances. What type of endpoint should you create and how should it be configured?",
+      "options": {
+        "A": "Interface endpoint with security groups allowing HTTPS",
+        "B": "Gateway endpoint with route table entries",
+        "C": "Network Load Balancer endpoint with target groups",
+        "D": "Application Load Balancer endpoint with SSL termination"
+      },
+      "correct_answer": "B",
+      "explanation": "S3 uses Gateway endpoints which are free and automatically add routes to route tables. Interface endpoints are used for other AWS services, not S3."
+    },
+    {
+      "id": 29,
+      "domain": "Network Implementation",
+      "difficulty": "medium",
+      "question": "You are implementing an Application Load Balancer that needs to route traffic based on HTTP headers and URL paths. The application has three microservices: user, order, and payment. How should you configure the routing rules?",
+      "options": {
+        "A": "Single target group with health checks on different ports",
+        "B": "Multiple target groups with path-based routing rules",
+        "C": "Network Load Balancer with TCP listeners",
+        "D": "Classic Load Balancer with sticky sessions"
+      },
+      "correct_answer": "B",
+      "explanation": "Application Load Balancer supports path-based routing with multiple target groups. Configure rules like /user/*, /order/*, /payment/* to route to respective microservice target groups."
+    },
+    {
+      "id": 30,
+      "domain": "Network Implementation",
+      "difficulty": "hard",
+      "question": "You need to implement a multi-region network with Transit Gateway peering. The design requires asymmetric routing where traffic from Region A to Region B uses a different path than return traffic. How should you configure the routing?",
+      "options": {
+        "A": "Use BGP AS-PATH prepending on peering connections",
+        "B": "Configure different route priorities in each region's route tables",
+        "C": "Implement route maps with different metrics",
+        "D": "Use static routes with different administrative distances"
+      },
+      "correct_answer": "B",
+      "explanation": "Transit Gateway route tables support route priorities. Configure different priorities in each region's route tables to achieve asymmetric routing while maintaining connectivity."
+    },
+    {
+      "id": 31,
+      "domain": "Network Implementation",
+      "difficulty": "medium",
+      "question": "You are implementing IPv6 in an existing IPv4 VPC. The application must support both IPv4 and IPv6 clients. What steps are required to enable dual-stack networking?",
+      "options": {
+        "A": "Add IPv6 CIDR to VPC, enable IPv6 on subnets, update route tables and security groups",
+        "B": "Create new IPv6-only subnets and migrate applications",
+        "C": "Configure NAT64 gateway for IPv4 to IPv6 translation",
+        "D": "Enable IPv6 on Internet Gateway only"
+      },
+      "correct_answer": "A",
+      "explanation": "Dual-stack implementation requires: associating IPv6 CIDR with VPC, enabling IPv6 on subnets, updating route tables for IPv6 routes, and modifying security groups to allow IPv6 traffic."
+    },
+    {
+      "id": 32,
+      "domain": "Network Implementation",
+      "difficulty": "easy",
+      "question": "You need to implement a NAT Gateway for private subnet instances to access the internet. What configuration is required?",
+      "options": {
+        "A": "Deploy NAT Gateway in private subnet with Elastic IP",
+        "B": "Deploy NAT Gateway in public subnet with Elastic IP and update private subnet route table",
+        "C": "Deploy NAT Instance in public subnet with source/destination check disabled",
+        "D": "Configure Internet Gateway with NAT rules"
+      },
+      "correct_answer": "B",
+      "explanation": "NAT Gateway must be deployed in a public subnet with an Elastic IP address. Private subnet route tables need a default route (0.0.0.0/0) pointing to the NAT Gateway."
+    },
+    {
+      "id": 33,
+      "domain": "Network Implementation",
+      "difficulty": "hard",
+      "question": "You are implementing AWS Network Firewall with custom Suricata rules for deep packet inspection. The firewall must inspect both north-south and east-west traffic. How should you deploy and configure the firewall?",
+      "options": {
+        "A": "Deploy in inspection VPC with Transit Gateway routing all traffic through firewall subnets",
+        "B": "Deploy in each application VPC with local routing",
+        "C": "Deploy at Internet Gateway with inline inspection",
+        "D": "Deploy with Gateway Load Balancer endpoints in each subnet"
+      },
+      "correct_answer": "A",
+      "explanation": "Centralized inspection VPC with Network Firewall deployed in dedicated subnets, using Transit Gateway to route all traffic through firewall subnets for both north-south and east-west inspection."
+    },
+    {
+      "id": 34,
+      "domain": "Network Implementation",
+      "difficulty": "medium",
+      "question": "You need to implement a Site-to-Site VPN with BGP for dynamic routing. The customer gateway supports BGP but requires specific AS numbers. How should you configure the VPN connection?",
+      "options": {
+        "A": "Use default AWS ASN (64512) and customer ASN",
+        "B": "Configure custom ASN on Virtual Private Gateway and customer gateway",
+        "C": "Use static routing instead of BGP",
+        "D": "Configure OSPF instead of BGP"
+      },
+      "correct_answer": "B",
+      "explanation": "Configure custom ASN on both Virtual Private Gateway (or Transit Gateway) and customer gateway to match customer requirements. BGP requires unique ASNs on each side for proper operation."
+    },
+    {
+      "id": 35,
+      "domain": "Network Implementation",
+      "difficulty": "easy",
+      "question": "You are implementing security groups for a web application with database backend. The web servers need to accept HTTP/HTTPS from anywhere, and database servers should only accept MySQL traffic from web servers. How should you configure the security groups?",
+      "options": {
+        "A": "Web SG: Allow 80,443 from 0.0.0.0/0; DB SG: Allow 3306 from web server IPs",
+        "B": "Web SG: Allow 80,443 from 0.0.0.0/0; DB SG: Allow 3306 from web security group",
+        "C": "Single security group allowing all required ports",
+        "D": "Use NACLs instead of security groups"
+      },
+      "correct_answer": "B",
+      "explanation": "Security groups can reference other security groups as sources. DB security group should allow port 3306 from the web security group, providing dynamic security as instances are added/removed."
+    },
+    {
+      "id": 36,
+      "domain": "Network Implementation",
+      "difficulty": "hard",
+      "question": "You are implementing a Global Accelerator for a gaming application that requires consistent performance and DDoS protection. The application uses both TCP and UDP protocols. How should you configure the accelerator?",
+      "options": {
+        "A": "Single listener with TCP and UDP ports, Network Load Balancer endpoints",
+        "B": "Separate listeners for TCP and UDP, Application Load Balancer endpoints",
+        "C": "TCP listener only with protocol translation",
+        "D": "UDP listener only with custom health checks"
+      },
+      "correct_answer": "A",
+      "explanation": "Global Accelerator supports both TCP and UDP in a single listener. Network Load Balancer endpoints are required for UDP traffic and provide the performance needed for gaming applications."
+    },
+    {
+      "id": 37,
+      "domain": "Network Implementation",
+      "difficulty": "medium",
+      "question": "You need to implement CloudFront distribution for a dynamic web application with user authentication. The application requires cookies and custom headers to be forwarded to the origin. How should you configure the distribution?",
+      "options": {
+        "A": "Cache all content with default TTL",
+        "B": "Configure cache behaviors with whitelist headers and forward all cookies",
+        "C": "Disable caching for all dynamic content",
+        "D": "Use Lambda@Edge for all request processing"
+      },
+      "correct_answer": "B",
+      "explanation": "Configure cache behaviors to whitelist required headers and forward necessary cookies. This allows CloudFront to cache static content while properly handling dynamic content with authentication."
+    },
+    {
+      "id": 38,
+      "domain": "Network Implementation",
+      "difficulty": "easy",
+      "question": "You are implementing Route 53 DNS for a multi-region application. The application should route users to the closest healthy region. What routing policy should you use?",
+      "options": {
+        "A": "Simple routing with multiple values",
+        "B": "Latency-based routing with health checks",
+        "C": "Geolocation routing with default record",
+        "D": "Weighted routing with equal weights"
+      },
+      "correct_answer": "B",
+      "explanation": "Latency-based routing automatically directs users to the region with lowest latency. Health checks ensure traffic only goes to healthy endpoints, providing automatic failover."
+    },
+    {
+      "id": 39,
+      "domain": "Network Implementation",
+      "difficulty": "hard",
+      "question": "You are implementing a private DNS solution using Route 53 Resolver. The solution must resolve on-premises DNS queries for AWS resources and AWS queries for on-premises resources. How should you configure the resolver?",
+      "options": {
+        "A": "Inbound and outbound resolver endpoints with conditional forwarding rules",
+        "B": "Inbound resolver endpoint only with DNS forwarding",
+        "C": "Outbound resolver endpoint only with custom DNS servers",
+        "D": "Route 53 private hosted zones with CNAME records"
+      },
+      "correct_answer": "A",
+      "explanation": "Inbound endpoints allow on-premises to query AWS DNS, outbound endpoints allow AWS to query on-premises DNS. Conditional forwarding rules determine which queries go where based on domain names."
+    },
+    {
+      "id": 40,
+      "domain": "Network Implementation",
+      "difficulty": "medium",
+      "question": "You need to implement VPC peering between VPCs in different regions with overlapping CIDR blocks. The application requires connectivity between specific subnets only. What solution should you implement?",
+      "options": {
+        "A": "VPC peering with route table modifications",
+        "B": "Transit Gateway with inter-region peering",
+        "C": "PrivateLink with VPC endpoints",
+        "D": "VPN connection between regions"
+      },
+      "correct_answer": "C",
+      "explanation": "VPC peering doesn't work with overlapping CIDRs. PrivateLink with VPC endpoints allows connectivity between specific services across VPCs with overlapping IP ranges."
+    },
+    {
+      "id": 41,
+      "domain": "Network Implementation",
+      "difficulty": "easy",
+      "question": "You are implementing an Elastic IP address for a NAT instance. The instance needs to maintain the same public IP after restart. How should you configure this?",
+      "options": {
+        "A": "Associate Elastic IP with the instance at launch",
+        "B": "Use Auto Scaling Group with Elastic IP allocation",
+        "C": "Configure static IP in instance operating system",
+        "D": "Use Network Load Balancer with static IP"
+      },
+      "correct_answer": "A",
+      "explanation": "Elastic IP addresses remain associated with instances through stops/starts. Associate the EIP with the NAT instance to ensure consistent public IP address."
+    },
+    {
+      "id": 42,
+      "domain": "Network Implementation",
+      "difficulty": "hard",
+      "question": "You are implementing a network architecture that requires traffic inspection using third-party security appliances. The solution must support auto-scaling and high availability. How should you implement this?",
+      "options": {
+        "A": "Gateway Load Balancer with security appliance target groups and auto-scaling",
+        "B": "Network Load Balancer with security appliances as targets",
+        "C": "Application Load Balancer with Lambda functions for inspection",
+        "D": "Transit Gateway with security VPC and static routing"
+      },
+      "correct_answer": "A",
+      "explanation": "Gateway Load Balancer is designed for third-party security appliances, supporting auto-scaling, high availability, and transparent traffic inspection with GENEVE encapsulation."
+    },
+    {
+      "id": 43,
+      "domain": "Network Implementation",
+      "difficulty": "medium",
+      "question": "You need to implement a solution that allows EC2 instances in private subnets to access AWS services without internet connectivity. The solution must be cost-effective and secure. What should you implement?",
+      "options": {
+        "A": "NAT Gateway with service-specific routes",
+        "B": "VPC endpoints for required AWS services",
+        "C": "Internet Gateway with restrictive security groups",
+        "D": "Direct Connect with private VIF"
+      },
+      "correct_answer": "B",
+      "explanation": "VPC endpoints provide private connectivity to AWS services without internet access. Gateway endpoints (S3, DynamoDB) are free, and interface endpoints are cost-effective for other services."
+    },
+    {
+      "id": 44,
+      "domain": "Network Implementation",
+      "difficulty": "easy",
+      "question": "You are implementing a load balancer health check for a web application. The application has a custom health check endpoint at /health that returns HTTP 200 when healthy. How should you configure the health check?",
+      "options": {
+        "A": "Default health check on port 80 with / path",
+        "B": "Custom health check on application port with /health path",
+        "C": "TCP health check on application port",
+        "D": "HTTPS health check with SSL certificate validation"
+      },
+      "correct_answer": "B",
+      "explanation": "Configure custom health check to use the application's /health endpoint. This provides more accurate health status than default checks and allows the application to determine its own health."
+    },
+    {
+      "id": 45,
+      "domain": "Network Implementation",
+      "difficulty": "hard",
+      "question": "You are implementing a multi-account network architecture using AWS Organizations. Each account needs isolated networking but shared services like DNS and monitoring. How should you implement this?",
+      "options": {
+        "A": "Shared VPC with account-specific subnets",
+        "B": "Transit Gateway in network account with cross-account sharing",
+        "C": "VPC peering between all accounts",
+        "D": "Separate networks with VPN connections"
+      },
+      "correct_answer": "B",
+      "explanation": "Transit Gateway in a dedicated network account with Resource Access Manager (RAM) sharing provides centralized networking while maintaining account isolation. Shared services can be accessed through the Transit Gateway."
+    },
+    {
+      "id": 46,
+      "domain": "Network Implementation",
+      "difficulty": "medium",
+      "question": "You need to implement SSL/TLS termination for a web application with custom SSL certificates. The solution must support SNI for multiple domains. Which load balancer configuration should you use?",
+      "options": {
+        "A": "Network Load Balancer with TLS listener and certificate list",
+        "B": "Application Load Balancer with HTTPS listener and certificate list",
+        "C": "Classic Load Balancer with SSL certificate",
+        "D": "Gateway Load Balancer with SSL passthrough"
+      },
+      "correct_answer": "B",
+      "explanation": "Application Load Balancer supports SNI with multiple SSL certificates in a certificate list. This allows serving multiple domains with different certificates from a single load balancer."
+    },
+    {
+      "id": 47,
+      "domain": "Network Implementation",
+      "difficulty": "easy",
+      "question": "You are implementing a bastion host for secure access to private subnet instances. What security configuration should be applied?",
+      "options": {
+        "A": "Place in private subnet with VPN access",
+        "B": "Place in public subnet with SSH access from specific IP ranges",
+        "C": "Place in public subnet with RDP access from anywhere",
+        "D": "Use NAT instance as bastion host"
+      },
+      "correct_answer": "B",
+      "explanation": "Bastion host should be in public subnet for external access but restrict SSH access to specific trusted IP ranges. This provides secure administrative access to private resources."
+    },
+    {
+      "id": 48,
+      "domain": "Network Implementation",
+      "difficulty": "hard",
+      "question": "You are implementing a disaster recovery solution that requires network failover between regions within 60 seconds. The solution must maintain session state and support database replication. How should you implement this?",
+      "options": {
+        "A": "Route 53 health checks with 30-second intervals and Aurora Global Database",
+        "B": "Global Accelerator with health checks and RDS Multi-AZ",
+        "C": "CloudFront with origin failover and DynamoDB Global Tables",
+        "D": "Application Load Balancer with cross-region targets"
+      },
+      "correct_answer": "A",
+      "explanation": "Route 53 health checks with 30-second intervals can detect failures and failover within 60 seconds. Aurora Global Database provides cross-region replication with minimal RPO/RTO."
+    },
+    {
+      "id": 49,
+      "domain": "Network Implementation",
+      "difficulty": "medium",
+      "question": "You need to implement a solution that provides dedicated network capacity between your data center and AWS with consistent performance. The solution must support multiple VPCs across regions. What should you implement?",
+      "options": {
+        "A": "Site-to-Site VPN with multiple tunnels",
+        "B": "Direct Connect with Direct Connect Gateway",
+        "C": "Internet Gateway with dedicated bandwidth",
+        "D": "Transit Gateway with VPN attachments"
+      },
+      "correct_answer": "B",
+      "explanation": "Direct Connect provides dedicated network capacity with consistent performance. Direct Connect Gateway enables connection to multiple VPCs across regions from a single Direct Connect connection."
+    },
+    {
+      "id": 50,
+      "domain": "Network Implementation",
+      "difficulty": "easy",
+      "question": "You are implementing network monitoring for a VPC to capture traffic metadata for security analysis. What AWS service should you enable?",
+      "options": {
+        "A": "CloudTrail for API logging",
+        "B": "VPC Flow Logs for traffic metadata",
+        "C": "CloudWatch for performance metrics",
+        "D": "Config for configuration changes"
+      },
+      "correct_answer": "B",
+      "explanation": "VPC Flow Logs capture metadata about IP traffic flowing through network interfaces, including source/destination IPs, ports, protocols, and traffic volume for security analysis."
+    },
+    {
+      "id": 51,
+      "domain": "Network Management and Operations",
+      "difficulty": "medium",
+      "question": "You need to troubleshoot connectivity issues between EC2 instances in different subnets. VPC Flow Logs show traffic leaving source but not reaching destination. What should you check first?",
+      "options": {
+        "A": "Security group rules on both instances",
+        "B": "Network ACL rules on both subnets",
+        "C": "Route table entries for both subnets",
+        "D": "Internet Gateway configuration"
+      },
+      "correct_answer": "C",
+      "explanation": "If traffic leaves source but doesn't reach destination, route table entries are the most likely cause. Ensure both subnets have routes to each other's CIDR blocks."
+    },
+    {
+      "id": 52,
+      "domain": "Network Management and Operations",
+      "difficulty": "hard",
+      "question": "You are analyzing VPC Flow Logs and notice a high volume of REJECT entries from specific source IPs. The traffic is targeting port 22 on multiple instances. What automated response should you implement?",
+      "options": {
+        "A": "CloudWatch alarm with SNS notification",
+        "B": "Lambda function to update security groups and block IPs",
+        "C": "AWS WAF with IP blocking rules",
+        "D": "GuardDuty with automatic remediation"
+      },
+      "correct_answer": "B",
+      "explanation": "Lambda function triggered by CloudWatch Logs can automatically analyze flow logs, detect brute force attacks, and update security groups to block malicious IPs in real-time."
+    },
+    {
+      "id": 53,
+      "domain": "Network Management and Operations",
+      "difficulty": "easy",
+      "question": "You need to monitor the health and performance of your Application Load Balancer. Which CloudWatch metrics should you focus on?",
+      "options": {
+        "A": "NetworkIn and NetworkOut",
+        "B": "RequestCount, TargetResponseTime, and HTTPCode_Target_2XX_Count",
+        "C": "CPUUtilization and MemoryUtilization",
+        "D": "DiskReadOps and DiskWriteOps"
+      },
+      "correct_answer": "B",
+      "explanation": "ALB-specific metrics like RequestCount (traffic volume), TargetResponseTime (performance), and HTTPCode_Target_2XX_Count (success rate) provide insights into load balancer health and performance."
+    },
+    {
+      "id": 54,
+      "domain": "Network Management and Operations",
+      "difficulty": "medium",
+      "question": "You are managing a Transit Gateway with 30 VPC attachments. You need to implement centralized logging and monitoring for all route propagation changes. What solution should you implement?",
+      "options": {
+        "A": "CloudTrail with Transit Gateway API logging",
+        "B": "VPC Flow Logs on all attachments",
+        "C": "CloudWatch Events for route table changes",
+        "D": "AWS Config rules for Transit Gateway compliance"
+      },
+      "correct_answer": "A",
+      "explanation": "CloudTrail logs all Transit Gateway API calls including route propagation changes, attachment modifications, and route table updates, providing centralized audit trail."
+    },
+    {
+      "id": 55,
+      "domain": "Network Management and Operations",
+      "difficulty": "hard",
+      "question": "You need to implement automated network path analysis to verify connectivity between specific EC2 instances across multiple VPCs. The solution should run daily and alert on connectivity failures. What should you implement?",
+      "options": {
+        "A": "VPC Reachability Analyzer with Lambda automation and CloudWatch alarms",
+        "B": "Custom ping tests with CloudWatch synthetic monitoring",
+        "C": "Network Load Balancer health checks with notifications",
+        "D": "VPC Flow Logs analysis with custom scripts"
+      },
+      "correct_answer": "A",
+      "explanation": "VPC Reachability Analyzer can be automated with Lambda to run daily path analysis between specified instances. CloudWatch alarms can trigger notifications when connectivity issues are detected."
+    },
+    {
+      "id": 56,
+      "domain": "Network Management and Operations",
+      "difficulty": "medium",
+      "question": "You are troubleshooting intermittent connection timeouts to your RDS database from EC2 instances. The database is in a private subnet with proper security groups. What diagnostic approach should you use?",
+      "options": {
+        "A": "Enable VPC Flow Logs and analyze connection patterns",
+        "B": "Check RDS performance metrics and connection counts",
+        "C": "Verify DNS resolution and network latency",
+        "D": "All of the above in systematic order"
+      },
+      "correct_answer": "D",
+      "explanation": "Intermittent timeouts require systematic diagnosis: VPC Flow Logs for network connectivity, RDS metrics for database performance, and DNS/latency checks for infrastructure issues."
+    },
+    {
+      "id": 57,
+      "domain": "Network Management and Operations",
+      "difficulty": "easy",
+      "question": "You need to monitor bandwidth utilization on your Direct Connect connection. Which CloudWatch metrics should you track?",
+      "options": {
+        "A": "ConnectionBpsEgress and ConnectionBpsIngress",
+        "B": "NetworkPacketsIn and NetworkPacketsOut",
+        "C": "ConnectionCRCErrorCount and ConnectionLightLevelLow",
+        "D": "VirtualInterfaceBpsEgress and VirtualInterfaceBpsIngress"
+      },
+      "correct_answer": "D",
+      "explanation": "VirtualInterfaceBpsEgress and VirtualInterfaceBpsIngress metrics show actual bandwidth utilization per VIF, which is more granular than connection-level metrics."
+    },
+    {
+      "id": 58,
+      "domain": "Network Management and Operations",
+      "difficulty": "hard",
+      "question": "You are managing a complex network with multiple Transit Gateways across regions. You need to implement centralized route management and prevent routing loops. What solution should you implement?",
+      "options": {
+        "A": "AWS Network Manager with global network topology",
+        "B": "Custom Lambda functions for route management",
+        "C": "CloudFormation templates with route dependencies",
+        "D": "Manual route table management with documentation"
+      },
+      "correct_answer": "A",
+      "explanation": "AWS Network Manager provides centralized visibility and management of global network topology, including Transit Gateway routing, with built-in loop prevention and route optimization."
+    },
+    {
+      "id": 59,
+      "domain": "Network Management and Operations",
+      "difficulty": "medium",
+      "question": "You need to implement traffic mirroring for security analysis of suspicious network activity. The solution must capture all traffic from specific instances without impacting performance. How should you configure this?",
+      "options": {
+        "A": "VPC Traffic Mirroring with Network Load Balancer as target",
+        "B": "VPC Flow Logs with detailed monitoring",
+        "C": "CloudWatch Logs with custom agents",
+        "D": "AWS Network Firewall with logging enabled"
+      },
+      "correct_answer": "A",
+      "explanation": "VPC Traffic Mirroring captures actual packet data (not just metadata) and can use Network Load Balancer as target for high-performance analysis without impacting source instances."
+    },
+    {
+      "id": 60,
+      "domain": "Network Management and Operations",
+      "difficulty": "easy",
+      "question": "You are monitoring CloudFront distribution performance and notice high cache miss rates. What metrics should you analyze to optimize caching?",
+      "options": {
+        "A": "OriginLatency and CacheHitRate",
+        "B": "Requests and BytesDownloaded",
+        "C": "ErrorRate and 4xxErrorRate",
+        "D": "ViewerRequests and ViewerResponseTime"
+      },
+      "correct_answer": "A",
+      "explanation": "OriginLatency shows how long origins take to respond, and CacheHitRate indicates caching effectiveness. These metrics help identify caching optimization opportunities."
+    },
+    {
+      "id": 61,
+      "domain": "Network Management and Operations",
+      "difficulty": "hard",
+      "question": "You need to implement automated remediation for network security incidents detected by GuardDuty. The solution should isolate compromised instances and preserve evidence. What architecture should you implement?",
+      "options": {
+        "A": "GuardDuty → CloudWatch Events → Lambda → Security Group isolation + EBS snapshot",
+        "B": "GuardDuty → SNS → Manual intervention",
+        "C": "GuardDuty → Systems Manager → Instance termination",
+        "D": "GuardDuty → AWS Config → Compliance remediation"
+      },
+      "correct_answer": "A",
+      "explanation": "Automated response using CloudWatch Events triggers Lambda function to isolate instances by modifying security groups and create EBS snapshots for forensic analysis while preserving evidence."
+    },
+    {
+      "id": 62,
+      "domain": "Network Management and Operations",
+      "difficulty": "medium",
+      "question": "You are managing DNS resolution for a hybrid environment with Route 53 Resolver. You need to troubleshoot DNS queries that are not resolving correctly. What diagnostic tools should you use?",
+      "options": {
+        "A": "Route 53 Resolver query logs and CloudWatch metrics",
+        "B": "VPC Flow Logs for DNS traffic analysis",
+        "C": "CloudTrail for DNS API calls",
+        "D": "Network Load Balancer access logs"
+      },
+      "correct_answer": "A",
+      "explanation": "Route 53 Resolver query logs show DNS resolution details, and CloudWatch metrics provide performance data. These are the primary tools for DNS troubleshooting in hybrid environments."
+    },
+    {
+      "id": 63,
+      "domain": "Network Management and Operations",
+      "difficulty": "easy",
+      "question": "You need to set up monitoring alerts for when your NAT Gateway approaches its bandwidth limits. What CloudWatch metric should you monitor?",
+      "options": {
+        "A": "NetworkIn and NetworkOut",
+        "B": "BytesInFromDestination and BytesToDestination",
+        "C": "PacketsDropCount and ErrorPortAllocation",
+        "D": "ActiveConnectionCount and NewConnectionCount"
+      },
+      "correct_answer": "B",
+      "explanation": "BytesInFromDestination and BytesToDestination metrics show actual data transfer through NAT Gateway, which helps monitor bandwidth utilization and set appropriate alerts."
+    },
+    {
+      "id": 64,
+      "domain": "Network Management and Operations",
+      "difficulty": "hard",
+      "question": "You are implementing a comprehensive network monitoring solution for a multi-account, multi-region environment. The solution must provide centralized visibility and automated alerting. What architecture should you implement?",
+      "options": {
+        "A": "Centralized CloudWatch with cross-account roles and custom dashboards",
+        "B": "AWS Network Manager with CloudWatch integration and EventBridge rules",
+        "C": "Third-party monitoring tools with AWS API integration",
+        "D": "Individual account monitoring with manual aggregation"
+      },
+      "correct_answer": "B",
+      "explanation": "AWS Network Manager provides centralized network topology visibility across accounts and regions, integrating with CloudWatch for metrics and EventBridge for automated alerting and remediation."
+    },
+    {
+      "id": 65,
+      "domain": "Network Management and Operations",
+      "difficulty": "medium",
+      "question": "You need to analyze network performance issues affecting application response times. Users report slow performance during peak hours. What monitoring approach should you implement?",
+      "options": {
+        "A": "Application Load Balancer metrics with target response time analysis",
+        "B": "VPC Flow Logs with traffic pattern analysis",
+        "C": "CloudWatch Application Insights with network correlation",
+        "D": "Custom application metrics with network latency measurements"
+      },
+      "correct_answer": "C",
+      "explanation": "CloudWatch Application Insights automatically correlates application performance with infrastructure metrics, including network performance, providing comprehensive analysis of performance issues."
+    },
+    {
+      "id": 66,
+      "domain": "Network Management and Operations",
+      "difficulty": "easy",
+      "question": "You are troubleshooting a Site-to-Site VPN connection that frequently disconnects. What CloudWatch metrics should you monitor to identify the issue?",
+      "options": {
+        "A": "TunnelState and TunnelIpAddress",
+        "B": "VpnConnectionState and CustomerGatewayState",
+        "C": "TunnelState and PacketDropCount",
+        "D": "ConnectionState and BGPStatus"
+      },
+      "correct_answer": "C",
+      "explanation": "TunnelState shows tunnel connectivity status, and PacketDropCount indicates packet loss issues. These metrics help identify VPN stability problems and network quality issues."
+    },
+    {
+      "id": 67,
+      "domain": "Network Management and Operations",
+      "difficulty": "hard",
+      "question": "You need to implement automated capacity planning for your network infrastructure. The solution should predict bandwidth requirements and recommend scaling actions. What approach should you use?",
+      "options": {
+        "A": "CloudWatch anomaly detection with custom Lambda functions",
+        "B": "AWS Forecast with network metrics and automated scaling",
+        "C": "Custom machine learning models with SageMaker",
+        "D": "Static thresholds with manual capacity planning"
+      },
+      "correct_answer": "B",
+      "explanation": "AWS Forecast can analyze historical network metrics to predict future bandwidth requirements, enabling proactive capacity planning and automated scaling recommendations."
+    },
+    {
+      "id": 68,
+      "domain": "Network Management and Operations",
+      "difficulty": "medium",
+      "question": "You are managing a global application with CloudFront distribution. You need to monitor and optimize performance for users in different geographic regions. What approach should you implement?",
+      "options": {
+        "A": "CloudFront real-time logs with geographic analysis",
+        "B": "Route 53 health checks from multiple regions",
+        "C": "Global Accelerator performance monitoring",
+        "D": "Custom synthetic monitoring from edge locations"
+      },
+      "correct_answer": "A",
+      "explanation": "CloudFront real-time logs provide detailed performance data by geographic region, enabling analysis of cache performance, origin latency, and user experience optimization."
+    },
+    {
+      "id": 69,
+      "domain": "Network Management and Operations",
+      "difficulty": "easy",
+      "question": "You need to monitor the health of targets behind your Network Load Balancer. The targets are failing health checks intermittently. What should you investigate first?",
+      "options": {
+        "A": "Target group health check configuration",
+        "B": "Security group rules on targets",
+        "C": "Network ACL rules on target subnets",
+        "D": "Load balancer cross-zone configuration"
+      },
+      "correct_answer": "A",
+      "explanation": "Health check configuration (interval, timeout, healthy/unhealthy thresholds) is the most common cause of intermittent health check failures. Verify these settings match application requirements."
+    },
+    {
+      "id": 70,
+      "domain": "Network Management and Operations",
+      "difficulty": "hard",
+      "question": "You are implementing a network observability solution that correlates application performance with network metrics across microservices. The solution must provide distributed tracing and network insights. What should you implement?",
+      "options": {
+        "A": "AWS X-Ray with VPC Flow Logs correlation",
+        "B": "CloudWatch ServiceLens with network monitoring",
+        "C": "Custom observability platform with AWS APIs",
+        "D": "Application Performance Monitoring (APM) tools only"
+      },
+      "correct_answer": "B",
+      "explanation": "CloudWatch ServiceLens provides service map visualization with distributed tracing and correlates application performance with infrastructure metrics, including network performance."
+    },
+    {
+      "id": 71,
+      "domain": "Network Management and Operations",
+      "difficulty": "medium",
+      "question": "You need to implement cost optimization for your network infrastructure. The solution should identify underutilized resources and recommend cost savings. What approach should you use?",
+      "options": {
+        "A": "AWS Cost Explorer with network resource filtering",
+        "B": "AWS Trusted Advisor with network optimization checks",
+        "C": "Custom cost analysis with CloudWatch metrics",
+        "D": "AWS Compute Optimizer for network resources"
+      },
+      "correct_answer": "B",
+      "explanation": "AWS Trusted Advisor provides specific network optimization recommendations, including underutilized load balancers, idle Elastic IPs, and Direct Connect optimization opportunities."
+    },
+    {
+      "id": 72,
+      "domain": "Network Management and Operations",
+      "difficulty": "easy",
+      "question": "You are monitoring AWS Network Firewall performance and need to track blocked connections and allowed traffic. Which logs should you enable?",
+      "options": {
+        "A": "Flow logs only",
+        "B": "Alert logs only",
+        "C": "Both flow logs and alert logs",
+        "D": "CloudTrail logs only"
+      },
+      "correct_answer": "C",
+      "explanation": "Flow logs capture all traffic (allowed and denied), while alert logs capture traffic that matches rules with DROP or ALERT actions. Both provide comprehensive visibility."
+    },
+    {
+      "id": 73,
+      "domain": "Network Management and Operations",
+      "difficulty": "hard",
+      "question": "You need to implement automated network change management that validates changes before deployment and provides rollback capabilities. What solution should you implement?",
+      "options": {
+        "A": "AWS Config with remediation actions and change tracking",
+        "B": "CloudFormation with change sets and stack rollback",
+        "C": "AWS Systems Manager Change Calendar with approval workflows",
+        "D": "Custom CI/CD pipeline with network validation tests"
+      },
+      "correct_answer": "B",
+      "explanation": "CloudFormation change sets allow preview of network changes before deployment, and stack rollback provides automated rollback capabilities for network infrastructure changes."
+    },
+    {
+      "id": 74,
+      "domain": "Network Management and Operations",
+      "difficulty": "medium",
+      "question": "You are troubleshooting performance issues with your Direct Connect connection. BGP routes are being received but traffic is not flowing optimally. What should you investigate?",
+      "options": {
+        "A": "BGP AS-PATH attributes and route preferences",
+        "B": "Virtual interface VLAN configuration",
+        "C": "Direct Connect Gateway allowed prefixes",
+        "D": "Customer gateway BGP configuration"
+      },
+      "correct_answer": "A",
+      "explanation": "BGP AS-PATH attributes and route preferences determine traffic flow paths. Suboptimal routing often results from incorrect AS-PATH prepending or local preference settings."
+    },
+    {
+      "id": 75,
+      "domain": "Network Management and Operations",
+      "difficulty": "easy",
+      "question": "You need to monitor SSL certificate expiration for your load balancers to prevent service disruptions. What monitoring solution should you implement?",
+      "options": {
+        "A": "CloudWatch custom metrics with certificate expiration dates",
+        "B": "AWS Certificate Manager with CloudWatch Events",
+        "C": "Third-party certificate monitoring tools",
+        "D": "Manual calendar reminders"
+      },
+      "correct_answer": "B",
+      "explanation": "AWS Certificate Manager automatically monitors certificate expiration and can trigger CloudWatch Events for automated notifications and renewal processes."
+    },
+    {
+      "id": 76,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "medium",
+      "question": "A financial services company requires network-level DDoS protection for their public-facing applications. The solution must provide real-time attack mitigation and detailed reporting. What should you implement?",
+      "options": {
+        "A": "AWS Shield Standard with CloudWatch monitoring",
+        "B": "AWS Shield Advanced with DDoS Response Team support",
+        "C": "AWS WAF with rate limiting rules",
+        "D": "Network Load Balancer with security groups"
+      },
+      "correct_answer": "B",
+      "explanation": "AWS Shield Advanced provides enhanced DDoS protection with real-time attack mitigation, detailed reporting, and 24/7 DDoS Response Team support, which is essential for financial services."
+    },
+    {
+      "id": 77,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "hard",
+      "question": "You need to implement a zero-trust network architecture that validates every connection attempt. The solution must support microsegmentation and identity-based access control. What architecture should you implement?",
+      "options": {
+        "A": "VPC Lattice with service-level authentication and authorization policies",
+        "B": "Security groups with fine-grained rules per instance",
+        "C": "AWS Network Firewall with application-level inspection",
+        "D": "PrivateLink with VPC endpoints and IAM policies"
+      },
+      "correct_answer": "A",
+      "explanation": "VPC Lattice provides service-to-service connectivity with built-in authentication, authorization, and microsegmentation capabilities, implementing true zero-trust networking principles."
+    },
+    {
+      "id": 78,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "easy",
+      "question": "You need to implement web application protection against common attacks like SQL injection and XSS. The solution should integrate with your Application Load Balancer. What should you use?",
+      "options": {
+        "A": "AWS Shield for DDoS protection",
+        "B": "AWS WAF with managed rule sets",
+        "C": "Security groups with HTTP rules",
+        "D": "Network ACLs with port restrictions"
+      },
+      "correct_answer": "B",
+      "explanation": "AWS WAF integrates with Application Load Balancer and provides managed rule sets for common web application attacks including SQL injection, XSS, and other OWASP Top 10 threats."
+    },
+    {
+      "id": 79,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "hard",
+      "question": "A healthcare organization requires HIPAA-compliant network architecture with end-to-end encryption and audit logging. The solution must support patient data segregation. What architecture should you implement?",
+      "options": {
+        "A": "Separate VPCs per patient group with VPC Flow Logs and encryption in transit",
+        "B": "Single VPC with encrypted subnets and CloudTrail logging",
+        "C": "Multi-account architecture with dedicated networking and comprehensive logging",
+        "D": "Shared VPC with security groups and AWS Config compliance"
+      },
+      "correct_answer": "C",
+      "explanation": "Multi-account architecture provides the strongest isolation for HIPAA compliance, with dedicated networking per account, comprehensive audit logging via CloudTrail, and encryption at all layers."
+    },
+    {
+      "id": 80,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "medium",
+      "question": "You need to implement network access control that prevents lateral movement in case of a security breach. The solution must segment network traffic based on application tiers. What should you implement?",
+      "options": {
+        "A": "Security groups with tier-specific rules and no cross-tier communication",
+        "B": "Network ACLs with subnet-level segmentation",
+        "C": "AWS Network Firewall with application-aware rules",
+        "D": "VPC peering with selective routing"
+      },
+      "correct_answer": "C",
+      "explanation": "AWS Network Firewall provides application-aware inspection and can implement microsegmentation rules to prevent lateral movement between application tiers based on application protocols and behavior."
+    },
+    {
+      "id": 81,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "easy",
+      "question": "You need to ensure that all network traffic between your VPC and on-premises network is encrypted. What solution provides the strongest encryption?",
+      "options": {
+        "A": "Site-to-Site VPN with IPsec encryption",
+        "B": "Direct Connect with MACsec encryption",
+        "C": "Internet Gateway with TLS encryption",
+        "D": "NAT Gateway with application-level encryption"
+      },
+      "correct_answer": "B",
+      "explanation": "Direct Connect with MACsec provides Layer 2 encryption for the entire connection, offering stronger security than IPsec VPN which operates at Layer 3."
+    },
+    {
+      "id": 82,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "hard",
+      "question": "You are implementing a security architecture that requires all internet-bound traffic to be inspected by multiple security functions in sequence. The solution must support high availability and auto-scaling. What architecture should you implement?",
+      "options": {
+        "A": "Gateway Load Balancer with chained security appliances and auto-scaling groups",
+        "B": "Network Load Balancer with security appliances in target groups",
+        "C": "Application Load Balancer with Lambda functions for inspection",
+        "D": "Transit Gateway with security VPC and static routing"
+      },
+      "correct_answer": "A",
+      "explanation": "Gateway Load Balancer supports service chaining of multiple security functions with auto-scaling groups, providing high availability and transparent traffic inspection."
+    },
+    {
+      "id": 83,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "medium",
+      "question": "A government agency requires network architecture that meets FedRAMP compliance requirements. The solution must provide continuous compliance monitoring and automated remediation. What should you implement?",
+      "options": {
+        "A": "AWS Config with FedRAMP compliance rules and automatic remediation",
+        "B": "AWS Security Hub with compliance standards and manual remediation",
+        "C": "CloudTrail with log analysis and custom compliance checks",
+        "D": "AWS Systems Manager with compliance scanning"
+      },
+      "correct_answer": "A",
+      "explanation": "AWS Config provides continuous compliance monitoring with FedRAMP-specific rules and can trigger automatic remediation actions when non-compliance is detected."
+    },
+    {
+      "id": 84,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "easy",
+      "question": "You need to implement DNS security to prevent DNS hijacking and ensure DNS query integrity. What solution should you use?",
+      "options": {
+        "A": "Route 53 with DNSSEC validation",
+        "B": "Private hosted zones only",
+        "C": "Custom DNS servers with encryption",
+        "D": "CloudFront with DNS caching"
+      },
+      "correct_answer": "A",
+      "explanation": "Route 53 supports DNSSEC (DNS Security Extensions) which provides authentication and integrity verification for DNS queries, preventing DNS hijacking and spoofing attacks."
+    },
+    {
+      "id": 85,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "hard",
+      "question": "You need to implement a network security architecture that provides threat intelligence integration and automated response to emerging threats. The solution must correlate network and application-level threats. What should you implement?",
+      "options": {
+        "A": "GuardDuty with custom threat intelligence feeds and automated remediation",
+        "B": "AWS Security Hub with third-party threat intelligence integration",
+        "C": "AWS Network Firewall with Suricata rules and threat feeds",
+        "D": "Custom SIEM solution with AWS API integration"
+      },
+      "correct_answer": "A",
+      "explanation": "GuardDuty provides threat intelligence integration, machine learning-based threat detection, and can trigger automated remediation through CloudWatch Events and Lambda functions."
+    },
+    {
+      "id": 86,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "medium",
+      "question": "A multinational corporation needs to implement data residency controls to ensure customer data remains within specific geographic boundaries. What network architecture approach should you use?",
+      "options": {
+        "A": "Regional VPCs with no cross-region connectivity and local data processing",
+        "B": "Global VPC with geolocation-based routing",
+        "C": "Single region deployment with global load balancing",
+        "D": "Multi-region deployment with data replication controls"
+      },
+      "correct_answer": "A",
+      "explanation": "Regional VPCs with no cross-region connectivity ensure data residency by keeping all data processing and storage within specific geographic regions, meeting regulatory requirements."
+    },
+    {
+      "id": 87,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "easy",
+      "question": "You need to implement network-level logging for compliance auditing. The logs must capture all network communication metadata and be tamper-proof. What solution should you implement?",
+      "options": {
+        "A": "VPC Flow Logs with S3 bucket versioning and MFA delete",
+        "B": "CloudTrail with log file validation",
+        "C": "CloudWatch Logs with encryption",
+        "D": "Custom logging with database storage"
+      },
+      "correct_answer": "A",
+      "explanation": "VPC Flow Logs capture all network communication metadata. S3 bucket versioning and MFA delete provide tamper-proof storage for compliance auditing requirements."
+    },
+    {
+      "id": 88,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "hard",
+      "question": "You are implementing a network security architecture for a PCI DSS compliant e-commerce platform. The solution must provide network segmentation, encryption, and continuous monitoring. What architecture should you implement?",
+      "options": {
+        "A": "Multi-tier VPC with dedicated subnets, AWS WAF, Network Firewall, and comprehensive logging",
+        "B": "Single VPC with security groups and basic monitoring",
+        "C": "Shared VPC with application-level security only",
+        "D": "Public subnet deployment with load balancer security"
+      },
+      "correct_answer": "A",
+      "explanation": "PCI DSS requires network segmentation (multi-tier subnets), web application protection (WAF), network-level inspection (Network Firewall), and comprehensive logging for compliance."
+    },
+    {
+      "id": 89,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "medium",
+      "question": "You need to implement certificate management for SSL/TLS termination across multiple load balancers and CloudFront distributions. The solution must provide automated renewal and compliance reporting. What should you use?",
+      "options": {
+        "A": "AWS Certificate Manager with automated renewal and CloudWatch Events",
+        "B": "Third-party certificate authority with manual management",
+        "C": "Self-signed certificates with custom renewal scripts",
+        "D": "Let's Encrypt with automated deployment"
+      },
+      "correct_answer": "A",
+      "explanation": "AWS Certificate Manager provides automated certificate provisioning, renewal, and deployment to AWS services, with CloudWatch Events for compliance monitoring and reporting."
+    },
+    {
+      "id": 90,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "easy",
+      "question": "You need to prevent unauthorized access to your private subnets from the internet while allowing outbound internet access. What security configuration should you implement?",
+      "options": {
+        "A": "Internet Gateway with restrictive security groups",
+        "B": "NAT Gateway in public subnet with private subnet routing",
+        "C": "VPN Gateway with encrypted tunnels",
+        "D": "Direct Connect with private VIF only"
+      },
+      "correct_answer": "B",
+      "explanation": "NAT Gateway in public subnet allows outbound internet access from private subnets while preventing inbound internet access, providing the required security posture."
+    },
+    {
+      "id": 91,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "hard",
+      "question": "You are implementing a network security architecture that must detect and prevent data exfiltration attempts. The solution should analyze network patterns and block suspicious transfers. What should you implement?",
+      "options": {
+        "A": "VPC Flow Logs analysis with machine learning models and automated blocking",
+        "B": "AWS Macie with network traffic analysis",
+        "C": "GuardDuty with VPC Flow Logs and automated remediation",
+        "D": "Custom DLP solution with network monitoring"
+      },
+      "correct_answer": "C",
+      "explanation": "GuardDuty analyzes VPC Flow Logs using machine learning to detect data exfiltration patterns and can trigger automated remediation through CloudWatch Events and Lambda functions."
+    },
+    {
+      "id": 92,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "medium",
+      "question": "A financial institution requires network architecture that supports regulatory examination and provides immutable audit trails. What logging and monitoring solution should you implement?",
+      "options": {
+        "A": "CloudTrail with log file integrity validation and S3 Object Lock",
+        "B": "CloudWatch Logs with encryption at rest",
+        "C": "VPC Flow Logs with standard S3 storage",
+        "D": "Custom logging with database replication"
+      },
+      "correct_answer": "A",
+      "explanation": "CloudTrail with log file integrity validation ensures audit trail authenticity, and S3 Object Lock provides immutable storage required for regulatory compliance in financial services."
+    },
+    {
+      "id": 93,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "easy",
+      "question": "You need to implement network access control that allows only specific applications to communicate with your database servers. What is the most granular approach?",
+      "options": {
+        "A": "Security groups referencing source security groups",
+        "B": "Network ACLs with port-based rules",
+        "C": "VPC endpoints with resource policies",
+        "D": "Route table modifications"
+      },
+      "correct_answer": "A",
+      "explanation": "Security groups can reference other security groups as sources, providing dynamic and granular access control that automatically adjusts as instances are added or removed from application tiers."
+    },
+    {
+      "id": 94,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "hard",
+      "question": "You are implementing a network security architecture for a multi-tenant SaaS application that requires complete tenant isolation and compliance with SOC 2 requirements. What architecture should you implement?",
+      "options": {
+        "A": "Separate AWS accounts per tenant with dedicated networking and comprehensive audit logging",
+        "B": "Single VPC with tenant-specific subnets and security groups",
+        "C": "Shared infrastructure with application-level tenant isolation",
+        "D": "Container-based isolation with shared networking"
+      },
+      "correct_answer": "A",
+      "explanation": "Separate AWS accounts per tenant provide the strongest isolation for SOC 2 compliance, with dedicated networking, IAM boundaries, and comprehensive audit trails per tenant."
+    },
+    {
+      "id": 95,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "medium",
+      "question": "You need to implement network security controls that prevent privilege escalation attacks through network lateral movement. What combination of controls should you implement?",
+      "options": {
+        "A": "Microsegmentation with security groups, Network Firewall inspection, and GuardDuty monitoring",
+        "B": "Network ACLs with broad rules and basic monitoring",
+        "C": "VPC peering with selective routing only",
+        "D": "Application-level security controls only"
+      },
+      "correct_answer": "A",
+      "explanation": "Microsegmentation limits lateral movement, Network Firewall provides deep packet inspection, and GuardDuty detects suspicious network behavior, creating defense in depth against privilege escalation."
+    },
+    {
+      "id": 96,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "easy",
+      "question": "You need to ensure that all API calls to AWS networking services are logged for security auditing. What service should you enable?",
+      "options": {
+        "A": "VPC Flow Logs",
+        "B": "AWS CloudTrail",
+        "C": "CloudWatch Logs",
+        "D": "AWS Config"
+      },
+      "correct_answer": "B",
+      "explanation": "AWS CloudTrail logs all API calls to AWS services, including networking services, providing comprehensive audit trails for security analysis and compliance requirements."
+    },
+    {
+      "id": 97,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "hard",
+      "question": "You are implementing a network security architecture that must comply with GDPR requirements for data protection and privacy. The solution must support data encryption, access logging, and right to be forgotten. What architecture should you implement?",
+      "options": {
+        "A": "Multi-region architecture with encryption at rest and in transit, comprehensive logging, and automated data deletion capabilities",
+        "B": "Single region deployment with basic encryption",
+        "C": "Shared infrastructure with application-level controls",
+        "D": "Public cloud deployment with standard security"
+      },
+      "correct_answer": "A",
+      "explanation": "GDPR compliance requires encryption at rest and in transit, comprehensive access logging for audit trails, and automated data deletion capabilities to support right to be forgotten requests."
+    },
+    {
+      "id": 98,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "medium",
+      "question": "You need to implement network threat detection that can identify compromised instances communicating with known malicious IP addresses. What solution should you implement?",
+      "options": {
+        "A": "GuardDuty with threat intelligence feeds and VPC Flow Logs analysis",
+        "B": "AWS WAF with IP reputation lists",
+        "C": "Security groups with IP blacklists",
+        "D": "Network ACLs with blocked IP ranges"
+      },
+      "correct_answer": "A",
+      "explanation": "GuardDuty analyzes VPC Flow Logs against threat intelligence feeds to detect communication with known malicious IP addresses and can identify compromised instances automatically."
+    },
+    {
+      "id": 99,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "easy",
+      "question": "You need to implement secure remote access for administrators to manage EC2 instances in private subnets without exposing SSH to the internet. What solution should you use?",
+      "options": {
+        "A": "Bastion host in public subnet",
+        "B": "AWS Systems Manager Session Manager",
+        "C": "VPN connection with SSH access",
+        "D": "Direct Connect with administrative access"
+      },
+      "correct_answer": "B",
+      "explanation": "AWS Systems Manager Session Manager provides secure shell access to EC2 instances without requiring SSH keys, bastion hosts, or open inbound ports, using IAM for authentication and authorization."
+    },
+    {
+      "id": 100,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "hard",
+      "question": "You are implementing a comprehensive network security governance framework for a large enterprise. The solution must provide policy enforcement, compliance monitoring, and automated remediation across multiple accounts. What architecture should you implement?",
+      "options": {
+        "A": "AWS Organizations with SCPs, AWS Config with organization-wide rules, and automated remediation",
+        "B": "Individual account management with manual compliance checks",
+        "C": "Centralized security account with cross-account roles",
+        "D": "Third-party governance tools with AWS API integration"
+      },
+      "correct_answer": "A",
+      "explanation": "AWS Organizations with Service Control Policies (SCPs) provides policy enforcement, AWS Config with organization-wide rules enables compliance monitoring, and automated remediation ensures consistent security posture."
+    },
+    {
+      "id": 101,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "medium",
+      "question": "You need to implement network security controls that prevent DNS tunneling and other DNS-based attacks. What solution should you implement?",
+      "options": {
+        "A": "Route 53 Resolver with DNS filtering and threat intelligence",
+        "B": "Custom DNS servers with manual rule management",
+        "C": "Network ACLs blocking DNS traffic",
+        "D": "Security groups restricting DNS access"
+      },
+      "correct_answer": "A",
+      "explanation": "Route 53 Resolver supports DNS filtering with threat intelligence feeds to block malicious domains and prevent DNS tunneling attacks while maintaining legitimate DNS functionality."
+    },
+    {
+      "id": 102,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "easy",
+      "question": "You need to ensure that all network traffic within your VPC is encrypted. What approach provides the most comprehensive encryption coverage?",
+      "options": {
+        "A": "Application-level TLS encryption for all communications",
+        "B": "VPC-level encryption using AWS PrivateLink",
+        "C": "IPsec encryption between all instances",
+        "D": "Load balancer SSL termination only"
+      },
+      "correct_answer": "A",
+      "explanation": "Application-level TLS encryption provides end-to-end encryption for all network communications within the VPC, ensuring data protection regardless of the underlying network infrastructure."
+    },
+    {
+      "id": 103,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "hard",
+      "question": "You are implementing a network security architecture for a critical infrastructure organization that requires air-gapped security for sensitive operations. What AWS solution can provide the highest level of isolation?",
+      "options": {
+        "A": "AWS Outposts with local networking and no internet connectivity",
+        "B": "Private VPC with no internet gateway",
+        "C": "Dedicated hosts with isolated networking",
+        "D": "Single-tenant hardware with custom networking"
+      },
+      "correct_answer": "A",
+      "explanation": "AWS Outposts provides on-premises AWS infrastructure that can be completely air-gapped from the internet while still providing AWS services, meeting critical infrastructure security requirements."
+    },
+    {
+      "id": 104,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "medium",
+      "question": "You need to implement network access controls that support just-in-time access for administrative operations. The solution must integrate with identity providers and provide audit trails. What should you implement?",
+      "options": {
+        "A": "AWS SSO with temporary credentials and CloudTrail logging",
+        "B": "IAM users with permanent access keys",
+        "C": "Security groups with time-based rules",
+        "D": "VPN access with manual approval"
+      },
+      "correct_answer": "A",
+      "explanation": "AWS SSO provides just-in-time access with temporary credentials, integrates with external identity providers, and CloudTrail provides comprehensive audit trails for administrative access."
+    },
+    {
+      "id": 105,
+      "domain": "Network Security, Compliance, and Governance",
+      "difficulty": "easy",
+      "question": "You need to implement network security monitoring that can detect unusual traffic patterns and potential security incidents. What combination of services should you use?",
+      "options": {
+        "A": "VPC Flow Logs, GuardDuty, and CloudWatch anomaly detection",
+        "B": "CloudTrail and basic CloudWatch metrics",
+        "C": "Security groups and Network ACL logs",
+        "D": "Application logs and custom monitoring"
+      },
+      "correct_answer": "A",
+      "explanation": "VPC Flow Logs provide network traffic data, GuardDuty analyzes patterns for threats, and CloudWatch anomaly detection identifies unusual traffic patterns, providing comprehensive network security monitoring."
+    }
+  ]
+}

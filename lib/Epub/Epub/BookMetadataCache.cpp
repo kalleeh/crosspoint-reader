@@ -9,7 +9,7 @@
 #include "FsHelpers.h"
 
 namespace {
-constexpr uint8_t BOOK_CACHE_VERSION = 5;
+constexpr uint8_t BOOK_CACHE_VERSION = 6;
 constexpr char bookBinFile[] = "/book.bin";
 constexpr char tmpSpineBinFile[] = "/spine.bin.tmp";
 constexpr char tmpTocBinFile[] = "/toc.bin.tmp";
@@ -224,7 +224,7 @@ bool BookMetadataCache::buildBookBin(const std::string& epubPath, const BookMeta
 
     spineEntry.tocIndex = spineToTocIndex[i];
 
-    // Not a huge deal if we don't fine a TOC entry for the spine entry, this is expected behaviour for EPUBs
+    // Not a huge deal if we don't find a TOC entry for the spine entry, this is expected behaviour for EPUBs
     // Logging here is for debugging
     if (spineEntry.tocIndex == -1) {
       Serial.printf(

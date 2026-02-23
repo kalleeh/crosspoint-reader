@@ -5,6 +5,7 @@
 #include <SDCardManager.h>
 #include <expat.h>
 
+#include "../../Epub.h"
 #include "../Page.h"
 
 const char* HEADER_TAGS[] = {"h1", "h2", "h3", "h4", "h5", "h6"};
@@ -96,29 +97,79 @@ void XMLCALL ChapterHtmlSlimParser::startElement(void* userData, const XML_Char*
   }
 
   if (matches(name, IMAGE_TAGS, NUM_IMAGE_TAGS)) {
-    // TODO: Start processing image tags
-    std::string alt = "[Image]";
+    // Extract image src attribute
+    std::string imageSrc;
     if (atts != nullptr) {
       for (int i = 0; atts[i]; i += 2) {
-        if (strcmp(atts[i], "alt") == 0) {
-          if (strlen(atts[i + 1]) > 0) {
-            alt = "[Image: " + std::string(atts[i + 1]) + "]";
-          }
+        if (strcmp(atts[i], "src") == 0) {
+          imageSrc = atts[i + 1];
           break;
         }
       }
     }
 
-    Serial.printf("[%lu] [EHP] Image alt: %s\n", millis(), alt.c_str());
+    if (!imageSrc.empty()) {
+      Serial.printf("[%lu] [EHP] Found image: %s\n", millis(), imageSrc.c_str());
+      
+      // Resolve image path relative to current HTML file
+      std::string resolvedImagePath = imageSrc;
+      // Only prepend directory if path is relative (doesn't start with /)
+      if (imageSrc[0] != '/' && !self->htmlFileDir.empty()) {
+        // Check if path already contains a directory (e.g., "OEBPS/image.jpg")
+        if (imageSrc.find('/') == std::string::npos) {
+          // Simple filename, prepend directory
+          resolvedImagePath = self->htmlFileDir + "/" + imageSrc;
+        }
+        // else: path already has directory, use as-is
+      }
+      
+      // Cache the image and get the cached BMP path
+      std::string cachedPath = imageSrc;
+      int imageWidth = self->viewportWidth;
+      int imageHeight = 200;  // Default fallback
+      
+      if (self->epub) {
+        if (self->epub->cacheImage(resolvedImagePath)) {
+          cachedPath = self->epub->getImageCachePath(resolvedImagePath);
+          Serial.printf("[%lu] [EHP] Image cached to: %s\n", millis(), cachedPath.c_str());
+          
+          // Get actual image dimensions
+          if (self->epub->getImageDimensions(cachedPath, imageWidth, imageHeight)) {
+            Serial.printf("[%lu] [EHP] Image dimensions: %dx%d\n", millis(), imageWidth, imageHeight);
+          }
+        }
+      }
+      
+      // Create image block with actual dimensions
+      auto imageBlock = std::make_shared<ImageBlock>(cachedPath, 0, 0, imageWidth, imageHeight);
+      
+      // Flush any pending text before adding image
+      self->flushPartWordBuffer();
+      self->makePages();
+      
+      // Add image to current page
+      if (self->currentPage == nullptr) {
+        self->currentPage = std::unique_ptr<Page>(new Page());
+        self->currentPageNextY = 0;
+      }
+      
+      auto pageImage = std::make_shared<PageImage>(imageBlock, 0, self->currentPageNextY);
+      self->currentPage->elements.push_back(pageImage);
+      
+      // Reserve space for image using actual height
+      self->currentPageNextY += imageHeight;
+      
+      // Check if we need a new page
+      if (self->currentPageNextY >= self->viewportHeight) {
+        self->completePageFn(std::move(self->currentPage));
+        self->currentPage = nullptr;
+        self->currentPageNextY = 0;
+      }
+    }
 
-    self->startNewTextBlock(TextBlock::CENTER_ALIGN);
-    self->italicUntilDepth = min(self->italicUntilDepth, self->depth);
-    // Advance depth before processing character data (like you would for a element with text)
+    // Skip image element contents
+    self->skipUntilDepth = self->depth;
     self->depth += 1;
-    self->characterData(userData, alt.c_str(), alt.length());
-
-    // Skip table contents (skip until parent as we pre-advanced depth above)
-    self->skipUntilDepth = self->depth - 1;
     return;
   }
 

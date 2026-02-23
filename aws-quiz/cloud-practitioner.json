@@ -1,0 +1,3618 @@
+{
+  "version": "1.0",
+  "certification": "cloud-practitioner",
+  "exam": "CLF-C02",
+  "total_questions": 200,
+  "questions": [
+    {
+      "question": "A company is evaluating cloud migration. They want to reduce upfront capital expenses and pay only for resources they use. Which cloud computing benefit does this describe?",
+      "options": [
+        "Trade capital expense for variable expense",
+        "High availability",
+        "Elasticity",
+        "Global reach"
+      ],
+      "correct": 0,
+      "explanation": "One of the key benefits of cloud computing is the ability to trade capital expense (upfront costs for data centers and servers) for variable expense (pay-as-you-go). This aligns with the scenario's requirement to reduce upfront costs and pay only for what is used.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Cloud Economics documentation",
+        "AWS Well-Architected Framework"
+      ]
+    },
+    {
+      "question": "An organization wants to implement a disaster recovery strategy that can recover their applications in another AWS region within 4 hours. Which cloud design principle BEST supports this requirement?",
+      "options": [
+        "Design for failure",
+        "Think parallel",
+        "Decouple components",
+        "Implement elasticity"
+      ],
+      "correct": 0,
+      "explanation": "Design for failure is the cloud design principle that emphasizes building systems that can handle component failures and recover quickly. This principle directly supports disaster recovery strategies by planning for failures and implementing recovery mechanisms.",
+      "domain": "Cloud Concepts",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Well-Architected Framework",
+        "AWS Cloud Design Principles"
+      ]
+    },
+    {
+      "question": "A startup needs to quickly deploy a web application without managing servers or infrastructure. They want to focus only on their application code. Which AWS service BEST meets this requirement?",
+      "options": [
+        "AWS Lambda",
+        "Amazon EC2",
+        "AWS Batch",
+        "Amazon ECS"
+      ],
+      "correct": 0,
+      "explanation": "AWS Lambda is a serverless compute service that lets you run code without provisioning or managing servers. It's ideal for startups wanting to focus on application code rather than infrastructure management.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Lambda documentation",
+        "AWS Serverless computing"
+      ]
+    },
+    {
+      "question": "A company is migrating from on-premises to AWS and wants to understand the total cost of ownership over 3 years. Which AWS tool should they use to compare costs?",
+      "options": [
+        "AWS Budgets",
+        "AWS Cost and Usage Report",
+        "AWS Cost Explorer",
+        "AWS Pricing Calculator"
+      ],
+      "correct": 3,
+      "explanation": "AWS Pricing Calculator is designed for estimating costs before deployment and comparing on-premises vs cloud costs over time periods like 3 years. It's specifically built for TCO analysis and migration planning.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Pricing Calculator documentation",
+        "AWS TCO analysis tools"
+      ]
+    },
+    {
+      "question": "An enterprise wants to adopt cloud services while maintaining some applications on-premises due to regulatory requirements. What type of cloud deployment model should they implement?",
+      "options": [
+        "Private cloud",
+        "Hybrid cloud",
+        "Public cloud",
+        "Community cloud"
+      ],
+      "correct": 1,
+      "explanation": "Hybrid cloud combines on-premises infrastructure with cloud services, allowing organizations to keep sensitive or regulated applications on-premises while leveraging cloud benefits for other workloads.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Hybrid Cloud documentation",
+        "AWS Cloud deployment models"
+      ]
+    },
+    {
+      "question": "A company needs to scale their web application automatically based on demand. During peak hours, they need 10 servers, but during off-peak hours, they only need 2 servers. Which cloud computing characteristic enables this capability?",
+      "options": [
+        "Rapid elasticity",
+        "On-demand self-service",
+        "Broad network access",
+        "Resource pooling"
+      ],
+      "correct": 0,
+      "explanation": "Rapid elasticity allows resources to be automatically scaled up or down based on demand. This characteristic enables the automatic scaling from 2 to 10 servers based on traffic patterns.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "NIST Cloud Computing definition",
+        "AWS Auto Scaling documentation"
+      ]
+    },
+    {
+      "question": "A financial services company is considering AWS but is concerned about data sovereignty and wants to ensure their data remains within their country's borders. Which AWS concept addresses this concern?",
+      "options": [
+        "Local Zones",
+        "Availability Zones",
+        "AWS Regions",
+        "Edge Locations"
+      ],
+      "correct": 2,
+      "explanation": "AWS Regions are geographically separated areas that allow customers to choose where their data is stored and processed, addressing data sovereignty requirements by keeping data within specific country borders.",
+      "domain": "Cloud Concepts",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Global Infrastructure",
+        "AWS Regions documentation"
+      ]
+    },
+    {
+      "question": "A company wants to migrate their email system to the cloud but doesn't want to manage the underlying infrastructure, operating system, or email software. What type of cloud service model should they choose?",
+      "options": [
+        "Function as a Service (FaaS)",
+        "Platform as a Service (PaaS)",
+        "Software as a Service (SaaS)",
+        "Infrastructure as a Service (IaaS)"
+      ],
+      "correct": 2,
+      "explanation": "Software as a Service (SaaS) provides complete applications over the internet where the provider manages all infrastructure, platform, and software components. Email services like Microsoft 365 or Google Workspace are examples of SaaS.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Cloud service models documentation",
+        "AWS SaaS offerings"
+      ]
+    },
+    {
+      "question": "An organization is planning a large-scale migration to AWS and wants to follow AWS best practices. Which AWS program provides prescriptive guidance and proven strategies for cloud adoption?",
+      "options": [
+        "AWS Cloud Adoption Framework",
+        "AWS Well-Architected Framework",
+        "AWS Migration Acceleration Program",
+        "AWS Professional Services"
+      ],
+      "correct": 0,
+      "explanation": "AWS Cloud Adoption Framework (CAF) provides prescriptive guidance and proven strategies to help organizations develop efficient and effective plans for cloud adoption and migration.",
+      "domain": "Cloud Concepts",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Cloud Adoption Framework documentation",
+        "AWS migration best practices"
+      ]
+    },
+    {
+      "question": "A company wants to ensure their AWS architecture can handle component failures without affecting the overall system availability. Which design principle should they follow?",
+      "options": [
+        "Minimize redundancy",
+        "Design for failure",
+        "Use monolithic architecture",
+        "Implement strong consistency"
+      ],
+      "correct": 1,
+      "explanation": "Design for failure is a fundamental cloud design principle that assumes components will fail and builds systems that can continue operating despite individual component failures through redundancy and fault tolerance.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Well-Architected Framework",
+        "AWS Reliability Pillar"
+      ]
+    },
+    {
+      "question": "A startup is comparing cloud providers and wants to understand AWS's approach to innovation and feature releases. What is a key advantage of AWS's continuous innovation model?",
+      "options": [
+        "Bi-annual releases with backward compatibility",
+        "Quarterly updates with breaking changes",
+        "Frequent small releases with new services and features",
+        "Annual major releases with all new features"
+      ],
+      "correct": 2,
+      "explanation": "AWS follows a continuous innovation model with frequent small releases, launching new services and features regularly throughout the year rather than waiting for major annual releases.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS innovation approach",
+        "AWS service release history"
+      ]
+    },
+    {
+      "question": "A company needs to ensure their critical application can withstand the failure of an entire data center. Which AWS infrastructure concept provides this level of resilience?",
+      "options": [
+        "Multiple Edge Locations",
+        "Multiple Wavelength Zones",
+        "Multiple Local Zones",
+        "Multiple Availability Zones"
+      ],
+      "correct": 3,
+      "explanation": "Multiple Availability Zones within a region provide resilience against data center failures. Each AZ is a separate data center with independent power, cooling, and networking.",
+      "domain": "Cloud Concepts",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Availability Zones documentation",
+        "AWS infrastructure resilience"
+      ]
+    },
+    {
+      "question": "An organization wants to reduce their IT operational overhead and focus more on business innovation. Which cloud computing benefit BEST addresses this need?",
+      "options": [
+        "Cost savings",
+        "Reduced operational burden",
+        "Global reach",
+        "Increased security"
+      ],
+      "correct": 1,
+      "explanation": "Reduced operational burden is a key cloud benefit that allows organizations to offload infrastructure management to the cloud provider, freeing up resources to focus on business innovation and core competencies.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS cloud benefits",
+        "Cloud operational advantages"
+      ]
+    },
+    {
+      "question": "A company is evaluating whether to build their own data center or use AWS. They want to understand the economic benefits of cloud computing. Which factor represents the MOST significant economic advantage of AWS?",
+      "options": [
+        "Elimination of all IT costs",
+        "Fixed monthly pricing",
+        "Economies of scale",
+        "Guaranteed cost reduction"
+      ],
+      "correct": 2,
+      "explanation": "Economies of scale allow AWS to achieve lower costs per unit by spreading infrastructure costs across millions of customers, passing these savings to customers through lower prices than they could achieve independently.",
+      "domain": "Cloud Concepts",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS economics of scale",
+        "Cloud economic benefits"
+      ]
+    },
+    {
+      "question": "A global company wants to deploy their application close to users worldwide to minimize latency. Which AWS infrastructure component should they primarily utilize?",
+      "options": [
+        "Multiple Regions",
+        "Multiple Availability Zones",
+        "AWS Direct Connect",
+        "AWS PrivateLink"
+      ],
+      "correct": 0,
+      "explanation": "Multiple AWS Regions allow deployment of applications close to users worldwide, reducing latency by serving users from the nearest geographic location.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Global Infrastructure",
+        "AWS Regions for global deployment"
+      ]
+    },
+    {
+      "question": "A company is concerned about vendor lock-in when moving to the cloud. Which AWS approach helps address this concern?",
+      "options": [
+        "Open standards and APIs",
+        "Proprietary APIs only",
+        "Mandatory long-term contracts",
+        "Single cloud strategy"
+      ],
+      "correct": 0,
+      "explanation": "AWS supports open standards and provides APIs that work with industry-standard tools and technologies, reducing vendor lock-in by allowing customers to use familiar tools and potentially migrate to other platforms if needed.",
+      "domain": "Cloud Concepts",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS open standards approach",
+        "AWS API documentation"
+      ]
+    },
+    {
+      "question": "An organization wants to implement a cloud-first strategy but needs to maintain some legacy systems on-premises temporarily. What migration strategy should they consider?",
+      "options": [
+        "Rehost (lift and shift)",
+        "Replatform",
+        "Refactor",
+        "Hybrid approach"
+      ],
+      "correct": 3,
+      "explanation": "A hybrid approach allows organizations to move some workloads to the cloud while maintaining legacy systems on-premises, providing a gradual migration path that accommodates both cloud-first strategy and legacy system constraints.",
+      "domain": "Cloud Concepts",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS migration strategies",
+        "AWS hybrid cloud approach"
+      ]
+    },
+    {
+      "question": "A company wants to understand the environmental benefits of using AWS instead of running their own data center. Which AWS initiative demonstrates environmental responsibility?",
+      "options": [
+        "Security compliance certifications",
+        "Cost optimization programs",
+        "Sustainability and renewable energy commitments",
+        "Global infrastructure expansion"
+      ],
+      "correct": 2,
+      "explanation": "AWS has made significant commitments to sustainability, including plans to power operations with 100% renewable energy and achieve net-zero carbon emissions, demonstrating environmental responsibility.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Sustainability",
+        "AWS renewable energy commitments"
+      ]
+    },
+    {
+      "question": "A startup needs to quickly prototype and test multiple application architectures. Which cloud computing characteristic provides the MOST value for this use case?",
+      "options": [
+        "Broad network access",
+        "On-demand self-service",
+        "Measured service",
+        "Resource pooling"
+      ],
+      "correct": 1,
+      "explanation": "On-demand self-service allows users to provision computing resources automatically without human interaction, enabling rapid prototyping and testing of different architectures without delays.",
+      "domain": "Cloud Concepts",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "NIST Cloud Computing characteristics",
+        "AWS self-service capabilities"
+      ]
+    },
+    {
+      "question": "A company is migrating to AWS and wants to ensure they follow cloud best practices from the beginning. Which AWS framework provides architectural best practices?",
+      "options": [
+        "AWS Security Framework",
+        "AWS Migration Framework",
+        "AWS Well-Architected Framework",
+        "AWS Cloud Adoption Framework"
+      ],
+      "correct": 2,
+      "explanation": "AWS Well-Architected Framework provides architectural best practices across five pillars: operational excellence, security, reliability, performance efficiency, and cost optimization.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Well-Architected Framework documentation",
+        "AWS architectural best practices"
+      ]
+    },
+    {
+      "question": "An organization wants to leverage cloud computing but is concerned about losing control over their IT infrastructure. Which cloud deployment model provides the MOST control while still offering cloud benefits?",
+      "options": [
+        "Multi-cloud",
+        "Public cloud",
+        "Private cloud",
+        "Hybrid cloud"
+      ],
+      "correct": 2,
+      "explanation": "Private cloud provides the most control over infrastructure while offering cloud benefits like elasticity and self-service. Organizations maintain dedicated infrastructure either on-premises or hosted by a provider.",
+      "domain": "Cloud Concepts",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Cloud deployment models",
+        "AWS private cloud options"
+      ]
+    },
+    {
+      "question": "A company wants to modernize their applications by breaking them into smaller, independent services. Which cloud architecture pattern supports this approach?",
+      "options": [
+        "Microservices architecture",
+        "Layered architecture",
+        "Client-server architecture",
+        "Monolithic architecture"
+      ],
+      "correct": 0,
+      "explanation": "Microservices architecture breaks applications into smaller, independent services that can be developed, deployed, and scaled independently, supporting application modernization goals.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS microservices documentation",
+        "Cloud architecture patterns"
+      ]
+    },
+    {
+      "question": "A financial institution is evaluating AWS and needs to understand how AWS ensures the security and compliance of their infrastructure. What should they review?",
+      "options": [
+        "AWS customer case studies",
+        "AWS compliance certifications and attestations",
+        "AWS service level agreements",
+        "AWS pricing documentation"
+      ],
+      "correct": 1,
+      "explanation": "AWS compliance certifications and attestations demonstrate that AWS infrastructure meets various security and compliance standards required by financial institutions, such as SOC, PCI DSS, and FedRAMP.",
+      "domain": "Cloud Concepts",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS compliance programs",
+        "AWS security certifications"
+      ]
+    },
+    {
+      "question": "A company wants to ensure business continuity and minimize downtime. Which cloud computing benefit directly supports this requirement?",
+      "options": [
+        "High availability and fault tolerance",
+        "Scalability",
+        "Cost reduction",
+        "Global reach"
+      ],
+      "correct": 0,
+      "explanation": "High availability and fault tolerance are cloud benefits that directly support business continuity by ensuring systems remain operational even when individual components fail, minimizing downtime.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS high availability",
+        "Cloud reliability benefits"
+      ]
+    },
+    {
+      "question": "A company is deploying applications on Amazon EC2 instances. According to the AWS Shared Responsibility Model, who is responsible for patching the guest operating system?",
+      "options": [
+        "The customer is responsible",
+        "Both AWS and customer share responsibility",
+        "AWS is responsible",
+        "Third-party vendors are responsible"
+      ],
+      "correct": 0,
+      "explanation": "Under the AWS Shared Responsibility Model, customers are responsible for security 'in' the cloud, including patching the guest operating system on EC2 instances. AWS is responsible for security 'of' the cloud infrastructure.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Shared Responsibility Model documentation",
+        "AWS security best practices"
+      ]
+    },
+    {
+      "question": "A company needs to grant temporary access to AWS resources for a mobile application. Which AWS service should they use to provide secure, temporary credentials?",
+      "options": [
+        "AWS IAM Policies",
+        "AWS IAM Users",
+        "AWS STS (Security Token Service)",
+        "AWS IAM Groups"
+      ],
+      "correct": 2,
+      "explanation": "AWS STS (Security Token Service) provides temporary, limited-privilege credentials for accessing AWS resources, which is ideal for mobile applications that need temporary access without storing long-term credentials.",
+      "domain": "Security & Compliance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS STS documentation",
+        "AWS temporary credentials best practices"
+      ]
+    },
+    {
+      "question": "An organization wants to ensure that all data stored in Amazon S3 is encrypted. Which encryption option provides the LEAST operational overhead?",
+      "options": [
+        "Server-side encryption with Amazon S3-managed keys (SSE-S3)",
+        "Server-side encryption with customer-provided keys (SSE-C)",
+        "Server-side encryption with AWS KMS keys (SSE-KMS)",
+        "Client-side encryption"
+      ],
+      "correct": 0,
+      "explanation": "Server-side encryption with Amazon S3-managed keys (SSE-S3) provides automatic encryption with the least operational overhead, as AWS handles all key management automatically.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon S3 encryption documentation",
+        "AWS encryption best practices"
+      ]
+    },
+    {
+      "question": "A healthcare company needs to ensure their AWS environment complies with HIPAA requirements. Which AWS program should they review?",
+      "options": [
+        "AWS SOC compliance",
+        "AWS PCI DSS compliance",
+        "AWS HIPAA compliance program",
+        "AWS FedRAMP compliance"
+      ],
+      "correct": 2,
+      "explanation": "AWS HIPAA compliance program provides the framework and eligible services for healthcare organizations to build HIPAA-compliant applications on AWS infrastructure.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS HIPAA compliance documentation",
+        "AWS healthcare compliance"
+      ]
+    },
+    {
+      "question": "A company wants to monitor and detect potential security threats in their AWS environment automatically. Which AWS service provides this capability?",
+      "options": [
+        "Amazon GuardDuty",
+        "AWS CloudTrail",
+        "AWS Systems Manager",
+        "AWS Config"
+      ],
+      "correct": 0,
+      "explanation": "Amazon GuardDuty is a threat detection service that uses machine learning to automatically monitor for malicious activity and unauthorized behavior in AWS environments.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon GuardDuty documentation",
+        "AWS threat detection services"
+      ]
+    },
+    {
+      "question": "An organization needs to create an IAM policy that allows users to access only their own folder in an S3 bucket. Which IAM concept enables this granular access control?",
+      "options": [
+        "IAM Roles",
+        "IAM Policy Variables",
+        "IAM Groups",
+        "IAM Users"
+      ],
+      "correct": 1,
+      "explanation": "IAM Policy Variables (like ${aws:username}) enable dynamic, granular access control by allowing policies to reference user-specific information, enabling access to user-specific folders.",
+      "domain": "Security & Compliance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS IAM policy variables documentation",
+        "AWS granular access control"
+      ]
+    },
+    {
+      "question": "A company wants to ensure all API calls made to their AWS account are logged for security auditing. Which AWS service should they enable?",
+      "options": [
+        "Amazon Inspector",
+        "Amazon CloudWatch",
+        "AWS CloudTrail",
+        "AWS Config"
+      ],
+      "correct": 2,
+      "explanation": "AWS CloudTrail logs all API calls made to AWS services, providing a complete audit trail of actions taken in an AWS account for security and compliance purposes.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS CloudTrail documentation",
+        "AWS API logging best practices"
+      ]
+    },
+    {
+      "question": "A financial services company needs to encrypt data at rest and in transit. Which AWS service helps manage encryption keys centrally?",
+      "options": [
+        "AWS Key Management Service (KMS)",
+        "AWS Certificate Manager",
+        "AWS Systems Manager Parameter Store",
+        "AWS Secrets Manager"
+      ],
+      "correct": 0,
+      "explanation": "AWS Key Management Service (KMS) is a managed service that helps create and control encryption keys used to encrypt data across AWS services and applications.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS KMS documentation",
+        "AWS encryption key management"
+      ]
+    },
+    {
+      "question": "A company wants to implement multi-factor authentication (MFA) for their AWS root account. Which AWS security best practice does this address?",
+      "options": [
+        "Network segmentation",
+        "Data encryption",
+        "Principle of least privilege",
+        "Defense in depth"
+      ],
+      "correct": 3,
+      "explanation": "Implementing MFA for the root account is part of defense in depth strategy, adding multiple layers of security controls to protect against unauthorized access.",
+      "domain": "Security & Compliance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS MFA documentation",
+        "AWS security best practices"
+      ]
+    },
+    {
+      "question": "An organization needs to assess the security configuration of their EC2 instances for vulnerabilities. Which AWS service should they use?",
+      "options": [
+        "AWS Shield",
+        "Amazon GuardDuty",
+        "Amazon Inspector",
+        "AWS Security Hub"
+      ],
+      "correct": 2,
+      "explanation": "Amazon Inspector is an automated security assessment service that helps improve the security and compliance of applications by assessing EC2 instances for vulnerabilities and configuration issues.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Inspector documentation",
+        "AWS vulnerability assessment"
+      ]
+    },
+    {
+      "question": "A company wants to protect their web application from common web exploits like SQL injection and cross-site scripting. Which AWS service provides this protection?",
+      "options": [
+        "Amazon GuardDuty",
+        "AWS Security Hub",
+        "AWS Shield",
+        "AWS WAF"
+      ],
+      "correct": 3,
+      "explanation": "AWS WAF (Web Application Firewall) protects web applications from common web exploits like SQL injection, cross-site scripting, and other OWASP Top 10 vulnerabilities.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS WAF documentation",
+        "AWS web application protection"
+      ]
+    },
+    {
+      "question": "A startup needs to store database passwords securely and rotate them automatically. Which AWS service is MOST appropriate for this requirement?",
+      "options": [
+        "AWS KMS",
+        "Amazon S3",
+        "AWS Systems Manager Parameter Store",
+        "AWS Secrets Manager"
+      ],
+      "correct": 3,
+      "explanation": "AWS Secrets Manager is specifically designed for storing and automatically rotating database passwords, API keys, and other secrets with built-in rotation capabilities.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Secrets Manager documentation",
+        "AWS secrets management best practices"
+      ]
+    },
+    {
+      "question": "A company is subject to PCI DSS compliance requirements for processing credit card data. Which AWS compliance program should they review?",
+      "options": [
+        "AWS ISO 27001",
+        "AWS PCI DSS compliance",
+        "AWS SOC 2",
+        "AWS HIPAA compliance"
+      ],
+      "correct": 1,
+      "explanation": "AWS PCI DSS compliance program provides the framework for organizations that process, store, or transmit credit card data to meet Payment Card Industry Data Security Standard requirements.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS PCI DSS compliance documentation",
+        "AWS payment card compliance"
+      ]
+    },
+    {
+      "question": "An organization wants to implement network-level security controls to isolate their application tiers. Which AWS service provides this capability?",
+      "options": [
+        "Amazon Route 53",
+        "Amazon VPC Security Groups",
+        "AWS WAF",
+        "AWS IAM"
+      ],
+      "correct": 1,
+      "explanation": "Amazon VPC Security Groups act as virtual firewalls that control inbound and outbound traffic at the instance level, providing network-level security controls for application tier isolation.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon VPC Security Groups documentation",
+        "AWS network security"
+      ]
+    },
+    {
+      "question": "A company needs to ensure that their AWS resources comply with internal security policies continuously. Which AWS service helps with compliance monitoring?",
+      "options": [
+        "Amazon CloudWatch",
+        "AWS Systems Manager",
+        "AWS Config",
+        "AWS CloudTrail"
+      ],
+      "correct": 2,
+      "explanation": "AWS Config continuously monitors and records AWS resource configurations and evaluates them against desired configurations and compliance rules.",
+      "domain": "Security & Compliance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Config documentation",
+        "AWS compliance monitoring"
+      ]
+    },
+    {
+      "question": "A government agency needs to use AWS services that meet FedRAMP compliance requirements. What should they verify before selecting AWS services?",
+      "options": [
+        "Service performance metrics",
+        "Service pricing",
+        "Service availability in their region",
+        "Service FedRAMP authorization status"
+      ],
+      "correct": 3,
+      "explanation": "Government agencies must verify that AWS services have FedRAMP authorization status to ensure they meet federal security requirements for cloud services.",
+      "domain": "Security & Compliance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS FedRAMP compliance documentation",
+        "AWS government compliance"
+      ]
+    },
+    {
+      "question": "A company wants to implement the principle of least privilege for their AWS IAM users. What is the BEST approach to achieve this?",
+      "options": [
+        "Start with no permissions and add only necessary permissions",
+        "Create one policy for all users",
+        "Grant full administrative access to all users",
+        "Use only AWS managed policies"
+      ],
+      "correct": 0,
+      "explanation": "The principle of least privilege is best implemented by starting with no permissions and gradually adding only the minimum permissions necessary for users to perform their job functions.",
+      "domain": "Security & Compliance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS IAM best practices",
+        "AWS least privilege principle"
+      ]
+    },
+    {
+      "question": "An organization needs to protect their AWS infrastructure from DDoS attacks. Which AWS service provides this protection automatically?",
+      "options": [
+        "Amazon GuardDuty",
+        "AWS WAF",
+        "AWS Security Hub",
+        "AWS Shield Standard"
+      ],
+      "correct": 3,
+      "explanation": "AWS Shield Standard provides automatic DDoS protection for all AWS customers at no additional charge, protecting against common network and transport layer attacks.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Shield documentation",
+        "AWS DDoS protection"
+      ]
+    },
+    {
+      "question": "A company wants to centrally manage security findings from multiple AWS security services. Which AWS service provides this capability?",
+      "options": [
+        "AWS Security Hub",
+        "AWS CloudTrail",
+        "Amazon Inspector",
+        "AWS Config"
+      ],
+      "correct": 0,
+      "explanation": "AWS Security Hub provides a central dashboard that aggregates security findings from multiple AWS security services like GuardDuty, Inspector, and Macie.",
+      "domain": "Security & Compliance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Security Hub documentation",
+        "AWS centralized security management"
+      ]
+    },
+    {
+      "question": "A healthcare organization needs to ensure that patient data is encrypted both at rest and in transit. According to the AWS Shared Responsibility Model, who is responsible for configuring this encryption?",
+      "options": [
+        "Both AWS and customer share responsibility",
+        "AWS is fully responsible",
+        "The customer is responsible",
+        "Third-party vendors are responsible"
+      ],
+      "correct": 2,
+      "explanation": "Under the AWS Shared Responsibility Model, customers are responsible for configuring encryption of their data both at rest and in transit, while AWS provides the encryption capabilities.",
+      "domain": "Security & Compliance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Shared Responsibility Model",
+        "AWS encryption responsibilities"
+      ]
+    },
+    {
+      "question": "A company wants to ensure that only authorized applications can access their Amazon RDS database. Which security control should they implement?",
+      "options": [
+        "AWS WAF rules",
+        "VPC Security Groups",
+        "Amazon GuardDuty monitoring",
+        "AWS Shield protection"
+      ],
+      "correct": 1,
+      "explanation": "VPC Security Groups act as virtual firewalls that can be configured to allow database access only from specific sources, ensuring only authorized applications can connect to RDS.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon RDS security documentation",
+        "VPC Security Groups for databases"
+      ]
+    },
+    {
+      "question": "An organization needs to demonstrate compliance with SOC 2 Type II requirements to their customers. Which AWS resource should they reference?",
+      "options": [
+        "AWS technical documentation",
+        "AWS pricing documentation",
+        "AWS service level agreements",
+        "AWS SOC compliance reports"
+      ],
+      "correct": 3,
+      "explanation": "AWS SOC compliance reports provide detailed information about AWS controls and compliance with SOC 2 Type II requirements that organizations can share with their customers and auditors.",
+      "domain": "Security & Compliance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS SOC compliance documentation",
+        "AWS compliance reports"
+      ]
+    },
+    {
+      "question": "A company wants to implement role-based access control where employees can assume different roles based on their job functions. Which AWS IAM feature should they use?",
+      "options": [
+        "IAM Groups",
+        "IAM Users",
+        "IAM Policies",
+        "IAM Roles"
+      ],
+      "correct": 3,
+      "explanation": "IAM Roles allow users to assume different sets of permissions temporarily based on their job functions, implementing role-based access control effectively.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS IAM Roles documentation",
+        "AWS role-based access control"
+      ]
+    },
+    {
+      "question": "A financial institution needs to ensure that all access to sensitive data is logged and monitored. Which combination of AWS services provides comprehensive access logging?",
+      "options": [
+        "CloudWatch and GuardDuty",
+        "CloudTrail and VPC Flow Logs",
+        "Config and Inspector",
+        "WAF and Shield"
+      ],
+      "correct": 1,
+      "explanation": "CloudTrail logs API calls and user activities, while VPC Flow Logs capture network traffic information, together providing comprehensive access logging for sensitive data.",
+      "domain": "Security & Compliance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS CloudTrail documentation",
+        "VPC Flow Logs documentation"
+      ]
+    },
+    {
+      "question": "A company wants to automatically remediate security configuration issues in their AWS environment. Which AWS service can help automate security responses?",
+      "options": [
+        "AWS Config Rules",
+        "Amazon Inspector",
+        "AWS GuardDuty",
+        "AWS Lambda with CloudWatch Events"
+      ],
+      "correct": 3,
+      "explanation": "AWS Lambda functions triggered by CloudWatch Events can automatically respond to security findings and remediate configuration issues, providing automated security response capabilities.",
+      "domain": "Security & Compliance",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS Lambda security automation",
+        "AWS automated remediation patterns"
+      ]
+    },
+    {
+      "question": "An organization needs to ensure that their AWS account root user is secured according to best practices. Which security measures should they implement?",
+      "options": [
+        "Use root user for daily administrative tasks",
+        "Disable root user account completely",
+        "Share root user credentials with the team",
+        "Enable MFA and avoid using root user for daily tasks"
+      ],
+      "correct": 3,
+      "explanation": "AWS best practices recommend enabling MFA for the root user and avoiding its use for daily administrative tasks, instead using IAM users or roles with appropriate permissions.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS root user security best practices",
+        "AWS account security"
+      ]
+    },
+    {
+      "question": "A company needs to ensure that their Amazon S3 buckets are not publicly accessible unless explicitly required. Which S3 feature helps prevent accidental public access?",
+      "options": [
+        "S3 Transfer Acceleration",
+        "S3 Block Public Access",
+        "S3 Cross-Region Replication",
+        "S3 Versioning"
+      ],
+      "correct": 1,
+      "explanation": "S3 Block Public Access provides settings to block public access to S3 buckets and objects, helping prevent accidental exposure of sensitive data.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon S3 Block Public Access documentation",
+        "S3 security best practices"
+      ]
+    },
+    {
+      "question": "A healthcare company needs to implement data loss prevention (DLP) to protect patient information. Which AWS service can help identify and protect sensitive data?",
+      "options": [
+        "Amazon GuardDuty",
+        "AWS Inspector",
+        "Amazon Macie",
+        "AWS Config"
+      ],
+      "correct": 2,
+      "explanation": "Amazon Macie is a data security service that uses machine learning to automatically discover, classify, and protect sensitive data like personally identifiable information (PII) and protected health information (PHI).",
+      "domain": "Security & Compliance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Macie documentation",
+        "AWS data loss prevention"
+      ]
+    },
+    {
+      "question": "A company wants to ensure that their AWS infrastructure meets industry security standards continuously. Which AWS service provides security benchmarks and compliance checks?",
+      "options": [
+        "AWS Systems Manager",
+        "AWS Security Hub",
+        "AWS Trusted Advisor",
+        "Amazon Inspector"
+      ],
+      "correct": 1,
+      "explanation": "AWS Security Hub provides security benchmarks like CIS AWS Foundations Benchmark and AWS Foundational Security Standard, continuously checking compliance against industry standards.",
+      "domain": "Security & Compliance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Security Hub compliance standards",
+        "AWS security benchmarks"
+      ]
+    },
+    {
+      "question": "A company needs to run a web application that can automatically scale based on demand. They want to manage the underlying infrastructure. Which AWS compute service should they choose?",
+      "options": [
+        "AWS Fargate",
+        "Amazon EC2 with Auto Scaling",
+        "Amazon ECS",
+        "AWS Lambda"
+      ],
+      "correct": 1,
+      "explanation": "Amazon EC2 with Auto Scaling allows you to manage the underlying infrastructure while providing automatic scaling capabilities based on demand, making it ideal for web applications that need infrastructure control.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon EC2 Auto Scaling documentation",
+        "AWS compute services comparison"
+      ]
+    },
+    {
+      "question": "A startup needs to store user-uploaded images and videos that will be accessed frequently for the first 30 days, then infrequently afterward. Which S3 storage class combination is MOST cost-effective?",
+      "options": [
+        "S3 One Zone-IA for all objects",
+        "S3 Glacier for all objects",
+        "S3 Standard with lifecycle policy to S3 Infrequent Access",
+        "S3 Standard for all objects"
+      ],
+      "correct": 2,
+      "explanation": "S3 Standard for frequent access in the first 30 days, then automatically transitioning to S3 Infrequent Access using lifecycle policies provides the most cost-effective solution for this access pattern.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon S3 storage classes documentation",
+        "S3 lifecycle management"
+      ]
+    },
+    {
+      "question": "A company wants to run code in response to events without managing servers. Which AWS service is MOST appropriate?",
+      "options": [
+        "AWS Batch",
+        "AWS Lambda",
+        "Amazon ECS",
+        "Amazon EC2"
+      ],
+      "correct": 1,
+      "explanation": "AWS Lambda is a serverless compute service that runs code in response to events without requiring server management, making it perfect for event-driven applications.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Lambda documentation",
+        "AWS serverless computing"
+      ]
+    },
+    {
+      "question": "An e-commerce company needs a database that can handle high read traffic with microsecond latency for product recommendations. Which AWS database service should they use?",
+      "options": [
+        "Amazon Aurora",
+        "Amazon RDS",
+        "Amazon DynamoDB",
+        "Amazon Redshift"
+      ],
+      "correct": 2,
+      "explanation": "Amazon DynamoDB is a NoSQL database service that provides single-digit millisecond latency and can handle high read traffic, making it ideal for real-time applications like product recommendations.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon DynamoDB documentation",
+        "AWS database services comparison"
+      ]
+    },
+    {
+      "question": "A company needs to distribute content globally with low latency to improve user experience. Which AWS service should they use?",
+      "options": [
+        "Amazon CloudFront",
+        "AWS Direct Connect",
+        "Amazon Route 53",
+        "Amazon S3"
+      ],
+      "correct": 0,
+      "explanation": "Amazon CloudFront is a content delivery network (CDN) that distributes content globally through edge locations, providing low latency access to users worldwide.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon CloudFront documentation",
+        "AWS content delivery"
+      ]
+    },
+    {
+      "question": "A financial services company needs a relational database with automatic backups, patching, and high availability. Which AWS service meets these requirements with the LEAST operational overhead?",
+      "options": [
+        "Amazon DynamoDB",
+        "Amazon Redshift",
+        "Amazon EC2 with self-managed database",
+        "Amazon RDS"
+      ],
+      "correct": 3,
+      "explanation": "Amazon RDS is a managed relational database service that handles automatic backups, patching, and high availability with minimal operational overhead compared to self-managed databases.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon RDS documentation",
+        "AWS managed database services"
+      ]
+    },
+    {
+      "question": "A company needs to process large amounts of data for analytics and reporting. They want a data warehouse solution that can scale automatically. Which AWS service should they choose?",
+      "options": [
+        "Amazon Redshift",
+        "Amazon RDS",
+        "Amazon DynamoDB",
+        "Amazon ElastiCache"
+      ],
+      "correct": 0,
+      "explanation": "Amazon Redshift is a fully managed data warehouse service designed for analytics and reporting on large datasets, with the ability to scale automatically based on workload demands.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Redshift documentation",
+        "AWS data warehouse services"
+      ]
+    },
+    {
+      "question": "A mobile application needs to store user session data with fast read and write performance. Which AWS service is MOST suitable?",
+      "options": [
+        "Amazon ElastiCache",
+        "Amazon RDS",
+        "Amazon EFS",
+        "Amazon S3"
+      ],
+      "correct": 0,
+      "explanation": "Amazon ElastiCache provides in-memory caching with sub-millisecond latency, making it ideal for storing user session data that requires fast read and write performance.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon ElastiCache documentation",
+        "AWS caching services"
+      ]
+    },
+    {
+      "question": "A company wants to create a private network in AWS with full control over the networking environment. Which AWS service should they use?",
+      "options": [
+        "AWS PrivateLink",
+        "Amazon Route 53",
+        "AWS Direct Connect",
+        "Amazon VPC"
+      ],
+      "correct": 3,
+      "explanation": "Amazon VPC (Virtual Private Cloud) allows you to create a private network in AWS with full control over IP address ranges, subnets, routing tables, and network gateways.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon VPC documentation",
+        "AWS networking services"
+      ]
+    },
+    {
+      "question": "A company needs to run containers without managing the underlying infrastructure. Which AWS service provides this capability?",
+      "options": [
+        "AWS Fargate",
+        "Amazon ECS with EC2 launch type",
+        "Amazon EC2",
+        "AWS Lambda"
+      ],
+      "correct": 0,
+      "explanation": "AWS Fargate is a serverless compute engine for containers that allows you to run containers without managing the underlying infrastructure or EC2 instances.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Fargate documentation",
+        "AWS container services"
+      ]
+    },
+    {
+      "question": "A company needs shared file storage that can be accessed by multiple EC2 instances simultaneously. Which AWS service should they use?",
+      "options": [
+        "Amazon EFS",
+        "Amazon S3",
+        "Amazon EBS",
+        "AWS Storage Gateway"
+      ],
+      "correct": 0,
+      "explanation": "Amazon EFS (Elastic File System) provides shared file storage that can be mounted and accessed by multiple EC2 instances simultaneously, unlike EBS which is block storage for single instances.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon EFS documentation",
+        "AWS storage services comparison"
+      ]
+    },
+    {
+      "question": "A company wants to route traffic to different endpoints based on geographic location of users. Which AWS service provides this capability?",
+      "options": [
+        "AWS Global Accelerator",
+        "Amazon CloudFront",
+        "Elastic Load Balancer",
+        "Amazon Route 53"
+      ],
+      "correct": 3,
+      "explanation": "Amazon Route 53 provides geolocation routing policies that allow you to route traffic to different endpoints based on the geographic location of users making DNS queries.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Route 53 documentation",
+        "AWS DNS routing policies"
+      ]
+    },
+    {
+      "question": "A startup needs object storage for their web application to store user documents. They want a simple, scalable solution. Which AWS service should they choose?",
+      "options": [
+        "Amazon EFS",
+        "Amazon EBS",
+        "Amazon S3",
+        "AWS Storage Gateway"
+      ],
+      "correct": 2,
+      "explanation": "Amazon S3 is an object storage service that provides simple, scalable storage for web applications, making it ideal for storing user documents with virtually unlimited capacity.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon S3 documentation",
+        "AWS object storage"
+      ]
+    },
+    {
+      "question": "A company needs to send notifications to mobile devices when certain events occur in their application. Which AWS service should they use?",
+      "options": [
+        "AWS Lambda",
+        "Amazon SNS",
+        "Amazon SQS",
+        "Amazon SES"
+      ],
+      "correct": 1,
+      "explanation": "Amazon SNS (Simple Notification Service) is a messaging service that can send notifications to mobile devices, email, SMS, and other endpoints when events occur.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon SNS documentation",
+        "AWS messaging services"
+      ]
+    },
+    {
+      "question": "A company wants to decouple their application components by using a message queue. Which AWS service provides this functionality?",
+      "options": [
+        "AWS Step Functions",
+        "Amazon SNS",
+        "Amazon SES",
+        "Amazon SQS"
+      ],
+      "correct": 3,
+      "explanation": "Amazon SQS (Simple Queue Service) is a message queuing service that enables decoupling of application components by allowing them to communicate asynchronously through messages.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon SQS documentation",
+        "AWS application decoupling"
+      ]
+    },
+    {
+      "question": "A company needs to monitor their AWS resources and applications, and wants to create custom dashboards. Which AWS service should they use?",
+      "options": [
+        "AWS CloudTrail",
+        "AWS Config",
+        "AWS Systems Manager",
+        "Amazon CloudWatch"
+      ],
+      "correct": 3,
+      "explanation": "Amazon CloudWatch is a monitoring service that collects metrics, logs, and events from AWS resources and applications, and allows creation of custom dashboards for visualization.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon CloudWatch documentation",
+        "AWS monitoring services"
+      ]
+    },
+    {
+      "question": "A company needs to establish a dedicated network connection between their on-premises data center and AWS. Which service should they use?",
+      "options": [
+        "AWS PrivateLink",
+        "AWS VPN",
+        "AWS Direct Connect",
+        "Amazon VPC"
+      ],
+      "correct": 2,
+      "explanation": "AWS Direct Connect provides a dedicated network connection between on-premises data centers and AWS, offering more consistent network performance than internet-based connections.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Direct Connect documentation",
+        "AWS hybrid connectivity"
+      ]
+    },
+    {
+      "question": "A company wants to run batch processing jobs that can tolerate interruptions and want to minimize costs. Which EC2 pricing model should they use?",
+      "options": [
+        "Dedicated Hosts",
+        "Reserved Instances",
+        "Spot Instances",
+        "On-Demand Instances"
+      ],
+      "correct": 2,
+      "explanation": "Spot Instances offer significant cost savings (up to 90%) for fault-tolerant workloads that can handle interruptions, making them ideal for batch processing jobs.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon EC2 Spot Instances documentation",
+        "AWS cost optimization"
+      ]
+    },
+    {
+      "question": "A company needs to store backup data that will be accessed infrequently and can tolerate retrieval times of several hours. Which S3 storage class is MOST cost-effective?",
+      "options": [
+        "S3 Glacier",
+        "S3 Infrequent Access",
+        "S3 Standard",
+        "S3 One Zone-IA"
+      ],
+      "correct": 0,
+      "explanation": "S3 Glacier is designed for long-term archival and backup with retrieval times of minutes to hours, offering the lowest cost for infrequently accessed data.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon S3 Glacier documentation",
+        "S3 storage classes comparison"
+      ]
+    },
+    {
+      "question": "A company wants to implement a microservices architecture using containers. They need a service to orchestrate and manage these containers. Which AWS service should they use?",
+      "options": [
+        "Amazon EC2",
+        "AWS Lambda",
+        "Amazon ECS",
+        "AWS Batch"
+      ],
+      "correct": 2,
+      "explanation": "Amazon ECS (Elastic Container Service) is a container orchestration service that manages and scales containerized applications, making it ideal for microservices architectures.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon ECS documentation",
+        "AWS container orchestration"
+      ]
+    },
+    {
+      "question": "A company needs to perform real-time analytics on streaming data from IoT devices. Which AWS service is MOST appropriate?",
+      "options": [
+        "Amazon Redshift",
+        "Amazon RDS",
+        "Amazon Kinesis",
+        "Amazon S3"
+      ],
+      "correct": 2,
+      "explanation": "Amazon Kinesis is designed for real-time processing of streaming data, making it ideal for analyzing data from IoT devices as it arrives.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Kinesis documentation",
+        "AWS streaming analytics"
+      ]
+    },
+    {
+      "question": "A company wants to add machine learning capabilities to their application without having deep ML expertise. Which type of AWS AI service should they consider?",
+      "options": [
+        "AWS Lambda with ML libraries",
+        "AWS AI/ML APIs (like Amazon Rekognition)",
+        "Amazon EC2 with custom ML frameworks",
+        "Amazon SageMaker"
+      ],
+      "correct": 1,
+      "explanation": "AWS AI/ML APIs like Amazon Rekognition, Comprehend, and Polly provide pre-built machine learning capabilities that can be easily integrated without requiring deep ML expertise.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS AI/ML services documentation",
+        "AWS machine learning APIs"
+      ]
+    },
+    {
+      "question": "A company needs persistent block storage for their EC2 instances that can survive instance termination. Which AWS service should they use?",
+      "options": [
+        "Instance Store",
+        "Amazon EFS",
+        "Amazon S3",
+        "Amazon EBS"
+      ],
+      "correct": 3,
+      "explanation": "Amazon EBS (Elastic Block Store) provides persistent block storage that persists independently of EC2 instance lifecycle, unlike instance store which is ephemeral.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon EBS documentation",
+        "AWS storage persistence"
+      ]
+    },
+    {
+      "question": "A company wants to distribute incoming traffic across multiple EC2 instances to improve availability. Which AWS service should they use?",
+      "options": [
+        "Amazon Route 53",
+        "AWS Auto Scaling",
+        "Elastic Load Balancer",
+        "Amazon CloudFront"
+      ],
+      "correct": 2,
+      "explanation": "Elastic Load Balancer distributes incoming application traffic across multiple EC2 instances in multiple Availability Zones, improving fault tolerance and availability.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Elastic Load Balancing documentation",
+        "AWS load balancing"
+      ]
+    },
+    {
+      "question": "A company needs to send transactional emails from their application. Which AWS service is designed for this purpose?",
+      "options": [
+        "AWS Lambda",
+        "Amazon SES",
+        "Amazon SQS",
+        "Amazon SNS"
+      ],
+      "correct": 1,
+      "explanation": "Amazon SES (Simple Email Service) is specifically designed for sending transactional and marketing emails from applications with high deliverability rates.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon SES documentation",
+        "AWS email services"
+      ]
+    },
+    {
+      "question": "A company wants to create a data lake to store structured and unstructured data for analytics. Which AWS service is MOST suitable as the foundation?",
+      "options": [
+        "Amazon Redshift",
+        "Amazon RDS",
+        "Amazon S3",
+        "Amazon DynamoDB"
+      ],
+      "correct": 2,
+      "explanation": "Amazon S3 is commonly used as the foundation for data lakes because it can store any type of data (structured and unstructured) at scale with various storage classes for cost optimization.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS data lake architecture",
+        "Amazon S3 for data lakes"
+      ]
+    },
+    {
+      "question": "A company needs to coordinate multiple AWS services in a workflow with error handling and retry logic. Which AWS service should they use?",
+      "options": [
+        "Amazon SNS",
+        "Amazon SQS",
+        "AWS Lambda",
+        "AWS Step Functions"
+      ],
+      "correct": 3,
+      "explanation": "AWS Step Functions is a serverless orchestration service that coordinates multiple AWS services in workflows with built-in error handling, retry logic, and visual workflow management.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Step Functions documentation",
+        "AWS workflow orchestration"
+      ]
+    },
+    {
+      "question": "A company wants to migrate their on-premises VMware environment to AWS with minimal changes. Which AWS service facilitates this migration?",
+      "options": [
+        "VMware Cloud on AWS",
+        "AWS Lambda",
+        "Amazon ECS",
+        "Amazon EC2"
+      ],
+      "correct": 0,
+      "explanation": "VMware Cloud on AWS allows companies to run VMware workloads natively on AWS infrastructure with minimal changes to existing VMware environments.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "VMware Cloud on AWS documentation",
+        "AWS VMware migration"
+      ]
+    },
+    {
+      "question": "A company needs to process and analyze log files from their web servers. They want a managed service that can handle the ingestion, processing, and visualization. Which AWS service combination is MOST appropriate?",
+      "options": [
+        "S3 + Lambda + CloudWatch",
+        "Kinesis + Lambda + QuickSight",
+        "CloudWatch Logs + CloudWatch Insights",
+        "Redshift + Glue + QuickSight"
+      ],
+      "correct": 2,
+      "explanation": "CloudWatch Logs can ingest log files from web servers, and CloudWatch Insights provides powerful querying and visualization capabilities for log analysis without additional setup.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "Amazon CloudWatch Logs documentation",
+        "CloudWatch Insights"
+      ]
+    },
+    {
+      "question": "A company wants to implement a content management system that can automatically convert images to different formats and sizes. Which AWS services would work together for this solution?",
+      "options": [
+        "CloudFront + S3 + Lambda",
+        "S3 + Lambda + Image processing libraries",
+        "EC2 + EBS + Custom software",
+        "S3 + Lambda + Rekognition"
+      ],
+      "correct": 1,
+      "explanation": "S3 can store images, Lambda can be triggered by S3 events to process images using image processing libraries, providing a serverless solution for automatic image conversion.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS serverless image processing",
+        "Lambda image processing patterns"
+      ]
+    },
+    {
+      "question": "A company needs to run a legacy application that requires a specific version of an operating system and cannot be containerized. Which AWS compute service is MOST appropriate?",
+      "options": [
+        "AWS Fargate",
+        "Amazon EC2",
+        "Amazon ECS",
+        "AWS Lambda"
+      ],
+      "correct": 1,
+      "explanation": "Amazon EC2 provides full control over the operating system and allows running legacy applications with specific OS requirements that cannot be containerized or run serverlessly.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon EC2 documentation",
+        "AWS legacy application migration"
+      ]
+    },
+    {
+      "question": "A company wants to implement a search functionality for their e-commerce website. Which AWS service provides managed search capabilities?",
+      "options": [
+        "Amazon RDS",
+        "Amazon OpenSearch Service",
+        "Amazon Redshift",
+        "Amazon DynamoDB"
+      ],
+      "correct": 1,
+      "explanation": "Amazon OpenSearch Service (formerly Amazon Elasticsearch Service) is a managed service that provides search and analytics capabilities for applications like e-commerce search functionality.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon OpenSearch Service documentation",
+        "AWS search services"
+      ]
+    },
+    {
+      "question": "A company needs to backup their on-premises data to AWS in a cost-effective manner. Which AWS service is designed for this use case?",
+      "options": [
+        "AWS DataSync",
+        "AWS Storage Gateway",
+        "Amazon EFS",
+        "Amazon S3 Standard"
+      ],
+      "correct": 1,
+      "explanation": "AWS Storage Gateway connects on-premises environments to AWS storage services like S3, providing seamless and cost-effective backup solutions for on-premises data.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Storage Gateway documentation",
+        "AWS hybrid storage"
+      ]
+    },
+    {
+      "question": "A company has predictable workloads that will run continuously for 3 years. Which EC2 pricing model provides the MOST cost savings?",
+      "options": [
+        "Reserved Instances",
+        "Spot Instances",
+        "On-Demand Instances",
+        "Dedicated Hosts"
+      ],
+      "correct": 0,
+      "explanation": "Reserved Instances provide up to 75% cost savings compared to On-Demand pricing for predictable workloads with 1 or 3-year commitments, making them ideal for continuous 3-year workloads.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Reserved Instances documentation",
+        "AWS pricing models comparison"
+      ]
+    },
+    {
+      "question": "A startup wants to understand their AWS spending patterns and identify cost optimization opportunities. Which AWS tool should they use?",
+      "options": [
+        "AWS Cost and Usage Report",
+        "AWS Budgets",
+        "AWS Pricing Calculator",
+        "AWS Cost Explorer"
+      ],
+      "correct": 3,
+      "explanation": "AWS Cost Explorer provides visualization and analysis of AWS spending patterns, helping identify cost optimization opportunities through detailed cost and usage analytics.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Cost Explorer documentation",
+        "AWS cost management tools"
+      ]
+    },
+    {
+      "question": "A company wants to receive alerts when their monthly AWS bill exceeds $1000. Which AWS service should they configure?",
+      "options": [
+        "AWS Trusted Advisor",
+        "AWS Pricing Calculator",
+        "AWS Budgets",
+        "AWS Cost Explorer"
+      ],
+      "correct": 2,
+      "explanation": "AWS Budgets allows you to set custom cost and usage budgets with alerts via email or SNS when actual or forecasted costs exceed defined thresholds.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Budgets documentation",
+        "AWS cost alerting"
+      ]
+    },
+    {
+      "question": "A company needs 24/7 phone support with less than 15-minute response time for production system outages. Which AWS Support plan should they choose?",
+      "options": [
+        "Business Support+",
+        "Basic Support",
+        "Developer Support",
+        "Enterprise Support"
+      ],
+      "correct": 3,
+      "explanation": "Enterprise Support provides 24/7 phone support with less than 15-minute response time for production system down cases, along with a designated Technical Account Manager.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Support plans documentation",
+        "AWS support response times"
+      ]
+    },
+    {
+      "question": "A development team wants access to AWS support engineers during business hours for general guidance. Which is the MOST cost-effective support plan for their needs?",
+      "options": [
+        "Enterprise Support",
+        "Basic Support",
+        "Business Support+",
+        "Developer Support"
+      ],
+      "correct": 3,
+      "explanation": "Developer Support provides access to support engineers during business hours for general guidance and is the most cost-effective option for development teams needing technical support.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Support plans comparison",
+        "AWS Developer Support"
+      ]
+    },
+    {
+      "question": "A company wants to optimize their AWS costs and needs recommendations on Reserved Instance purchases. Which AWS service provides these recommendations?",
+      "options": [
+        "AWS Cost Explorer",
+        "AWS Trusted Advisor",
+        "AWS Pricing Calculator",
+        "AWS Budgets"
+      ],
+      "correct": 1,
+      "explanation": "AWS Trusted Advisor provides cost optimization recommendations including Reserved Instance purchase recommendations based on your usage patterns and potential savings.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Trusted Advisor documentation",
+        "AWS cost optimization recommendations"
+      ]
+    },
+    {
+      "question": "A company is comparing Savings Plans vs Reserved Instances for their compute workloads. What is a key advantage of Savings Plans?",
+      "options": [
+        "No commitment required",
+        "Lower discount rates",
+        "Only available for EC2",
+        "Flexibility across instance types and services"
+      ],
+      "correct": 3,
+      "explanation": "Savings Plans offer flexibility across instance types, sizes, operating systems, tenancy, and AWS services (EC2, Lambda, Fargate), while Reserved Instances are more restrictive to specific configurations.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Savings Plans documentation",
+        "Savings Plans vs Reserved Instances comparison"
+      ]
+    },
+    {
+      "question": "A company wants to track costs by department and project. What AWS feature should they implement?",
+      "options": [
+        "AWS Organizations",
+        "AWS CloudTrail",
+        "Resource tagging",
+        "AWS Config"
+      ],
+      "correct": 2,
+      "explanation": "Resource tagging allows you to assign metadata to AWS resources for cost allocation and tracking by department, project, or any other business dimension in cost reports.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS resource tagging documentation",
+        "AWS cost allocation tags"
+      ]
+    },
+    {
+      "question": "A company has variable workloads that can tolerate interruptions and wants to minimize compute costs. Which pricing model should they consider?",
+      "options": [
+        "On-Demand Instances",
+        "Reserved Instances",
+        "Savings Plans",
+        "Spot Instances"
+      ],
+      "correct": 3,
+      "explanation": "Spot Instances can provide up to 90% cost savings compared to On-Demand prices for fault-tolerant workloads that can handle interruptions when AWS needs the capacity back.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon EC2 Spot Instances pricing",
+        "AWS cost optimization strategies"
+      ]
+    },
+    {
+      "question": "A company wants to consolidate billing across multiple AWS accounts. Which AWS service should they use?",
+      "options": [
+        "AWS Trusted Advisor",
+        "AWS Organizations",
+        "AWS Cost Explorer",
+        "AWS Budgets"
+      ],
+      "correct": 1,
+      "explanation": "AWS Organizations provides consolidated billing across multiple AWS accounts, allowing you to receive a single bill and take advantage of volume discounts across all accounts.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Organizations consolidated billing",
+        "AWS multi-account billing"
+      ]
+    },
+    {
+      "question": "A company needs detailed programmatic access to their AWS billing and cost data for custom reporting. Which AWS service provides this capability?",
+      "options": [
+        "AWS Cost Explorer API",
+        "AWS Budgets",
+        "AWS Trusted Advisor",
+        "AWS Pricing Calculator"
+      ],
+      "correct": 0,
+      "explanation": "AWS Cost Explorer API provides programmatic access to cost and usage data, enabling custom reporting and integration with third-party tools for detailed billing analysis.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Cost Explorer API documentation",
+        "AWS programmatic billing access"
+      ]
+    },
+    {
+      "question": "A company wants to estimate the cost of migrating their on-premises infrastructure to AWS before making the move. Which tool should they use?",
+      "options": [
+        "AWS Budgets",
+        "AWS Cost and Usage Report",
+        "AWS Pricing Calculator",
+        "AWS Cost Explorer"
+      ],
+      "correct": 2,
+      "explanation": "AWS Pricing Calculator allows you to estimate costs for AWS services before deployment, making it ideal for migration planning and cost estimation.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Pricing Calculator documentation",
+        "AWS migration cost estimation"
+      ]
+    },
+    {
+      "question": "A large enterprise with multiple AWS accounts wants to implement centralized single sign-on access management for their workforce. Which AWS service should they use to manage access across all accounts?",
+      "options": [
+        "AWS Directory Service",
+        "AWS IAM Identity Center",
+        "AWS IAM Users and Groups",
+        "Amazon Cognito"
+      ],
+      "correct": 1,
+      "explanation": "AWS IAM Identity Center (formerly AWS SSO) is specifically designed for centralized single sign-on access management across multiple AWS accounts within AWS Organizations, enabling workforce identity management and access control from a single location.",
+      "domain": "Security & Compliance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS IAM Identity Center documentation",
+        "AWS multi-account access management"
+      ]
+    },
+    {
+      "question": "A company wants to build an event-driven architecture where different microservices can communicate asynchronously through events. Which AWS service provides serverless event routing capabilities?",
+      "options": [
+        "Amazon SNS",
+        "Amazon EventBridge",
+        "Amazon SQS",
+        "AWS Step Functions"
+      ],
+      "correct": 1,
+      "explanation": "Amazon EventBridge is a serverless event bus service that enables event-driven architectures by routing events between different services and applications. It acts as an event router that can filter, transform, and deliver events from various sources to multiple targets.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon EventBridge documentation",
+        "AWS event-driven architecture patterns"
+      ]
+    },
+    {
+      "question": "A multinational financial services company is migrating their core banking system to AWS. They must comply with PCI DSS, SOX, and local data residency laws in 15 countries. The system processes 50TB of data daily with strict RPO of 15 minutes and RTO of 1 hour. They need to minimize data transfer costs while ensuring compliance. Which combination of AWS services and deployment strategy BEST addresses all these constraints?",
+      "options": [
+        "Implement hybrid architecture with AWS Storage Gateway, on-premises primary databases, AWS Database Migration Service for replication, and AWS Transit Gateway for connectivity",
+        "Deploy in a single region with AWS Outposts for local data residency, use RDS Multi-AZ with cross-region read replicas, and AWS Direct Connect for connectivity",
+        "Deploy regionally with AWS Organizations for account separation, Aurora Global Database for replication, AWS PrivateLink for secure connectivity, and S3 Cross-Region Replication with lifecycle policies",
+        "Use multi-region deployment with AWS Control Tower for governance, RDS with automated backups, CloudFront for global distribution, and VPC endpoints to minimize data transfer"
+      ],
+      "correct": 2,
+      "explanation": "This complex scenario requires regional deployment to meet data residency laws, AWS Organizations for multi-account governance and compliance separation, Aurora Global Database for meeting strict RPO/RTO requirements across regions, AWS PrivateLink to minimize data transfer costs while maintaining security, and S3 Cross-Region Replication with lifecycle policies for cost-effective backup and archival. This approach addresses PCI DSS compliance through network isolation, SOX compliance through audit trails and access controls, data residency through regional deployment, and cost optimization through private connectivity and intelligent data management.",
+      "domain": "Cloud Concepts",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS multi-region compliance architecture",
+        "AWS financial services compliance",
+        "AWS data residency best practices"
+      ]
+    },
+    {
+      "question": "A healthcare organization is implementing a HIPAA-compliant data analytics platform on AWS. They need to process PHI from multiple sources, ensure data encryption at rest and in transit, implement fine-grained access controls, and maintain detailed audit logs. The solution must support both batch processing of historical data and real-time analytics. Which architectural approach BEST meets these requirements while maintaining cost efficiency?",
+      "options": [
+        "Implement Amazon Redshift with encryption, AWS Lambda for processing, Amazon DynamoDB for real-time data, and Amazon CloudWatch for monitoring",
+        "Use Amazon S3 with SSE-KMS, Amazon EMR for batch processing, Amazon Kinesis for streaming, AWS Glue for ETL, and Amazon QuickSight for visualization",
+        "Use Amazon EFS with encryption, Amazon EC2 with custom applications, Amazon RDS with encryption, and AWS CloudTrail for auditing",
+        "Deploy Amazon S3 with SSE-KMS and bucket policies, AWS Glue with job bookmarks, Amazon Kinesis Data Analytics, Amazon Athena for queries, and AWS Lake Formation for governance"
+      ],
+      "correct": 3,
+      "explanation": "For HIPAA-compliant healthcare analytics, this solution provides: S3 with SSE-KMS for encrypted data lake storage meeting HIPAA encryption requirements, AWS Glue with job bookmarks for cost-efficient batch ETL processing, Kinesis Data Analytics for real-time stream processing, Athena for serverless querying reducing costs, and AWS Lake Formation for comprehensive data governance including fine-grained access controls and audit logging. This serverless approach minimizes operational overhead while ensuring HIPAA compliance through encryption, access controls, and comprehensive auditing.",
+      "domain": "Security & Compliance",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS HIPAA compliance architecture",
+        "AWS healthcare data analytics",
+        "AWS Lake Formation security"
+      ]
+    },
+    {
+      "question": "A global e-commerce company experiences seasonal traffic spikes of 10x normal load during holiday periods. They need a solution that automatically scales compute resources, optimizes costs during low-traffic periods, maintains sub-100ms response times globally, and handles payment processing with PCI DSS compliance. Which combination of services and pricing models provides the MOST cost-effective solution?",
+      "options": [
+        "Use Auto Scaling Groups with mixed instance types, Compute Savings Plans for baseline, On-Demand for peaks, Global Accelerator for performance, and AWS Config for PCI compliance monitoring",
+        "Deploy ECS Fargate with Application Load Balancer, Savings Plans for predictable workloads, Spot Instances for burst capacity, CloudFront for content delivery, and separate PCI-compliant account",
+        "Implement AWS Lambda with API Gateway, DynamoDB with on-demand billing, CloudFront with edge locations, and AWS Payment Cryptography for PCI compliance",
+        "Use Application Load Balancer with Auto Scaling Groups, Reserved Instances for baseline capacity, Spot Instances for peak scaling, CloudFront for global distribution, and dedicated PCI-compliant VPC"
+      ],
+      "correct": 1,
+      "explanation": "This solution optimally addresses all constraints: ECS Fargate provides serverless container orchestration that automatically scales without managing infrastructure, Savings Plans offer up to 72% savings for predictable baseline workloads, Spot Instances provide up to 90% savings for fault-tolerant burst capacity during seasonal spikes, CloudFront ensures global sub-100ms response times through edge caching, and a separate PCI-compliant account provides proper isolation for payment processing while maintaining compliance. This combination maximizes cost efficiency through optimal pricing model selection while meeting performance and compliance requirements.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS auto scaling best practices",
+        "AWS cost optimization strategies",
+        "AWS PCI DSS compliance"
+      ]
+    },
+    {
+      "question": "A manufacturing company is migrating their ERP system to AWS. The system requires 99.99% availability, processes 1PB of data monthly, needs integration with 50+ legacy systems, and must maintain data consistency across multiple databases. They want to minimize vendor lock-in while optimizing for cost and performance. Which migration strategy and architecture BEST addresses these requirements?",
+      "options": [
+        "Use re-platforming approach with Aurora PostgreSQL, Amazon MQ for messaging, AWS Database Migration Service, and AWS Application Migration Service with open-source tools",
+        "Use lift-and-shift migration with EC2 instances, EBS volumes, and Application Load Balancer across multiple AZs",
+        "Implement microservices architecture with containers on EKS, RDS for databases, and API Gateway for integration",
+        "Deploy using Aurora Global Database, AWS App Mesh for service communication, AWS DataSync for data migration, and AWS Systems Manager for legacy integration"
+      ],
+      "correct": 0,
+      "explanation": "This approach minimizes vendor lock-in through open-source technologies: Aurora PostgreSQL is compatible with open-source PostgreSQL, Amazon MQ supports open-source Apache ActiveMQ and RabbitMQ, AWS Database Migration Service supports heterogeneous migrations to open-source databases, and AWS Application Migration Service facilitates migration while maintaining flexibility. This combination achieves 99.99% availability through Aurora's multi-AZ deployment, handles 1PB monthly data processing through Aurora's scalability, integrates with legacy systems through MQ's messaging capabilities, and maintains data consistency through Aurora's ACID compliance and transaction support.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS migration strategies",
+        "AWS open-source database options",
+        "AWS enterprise integration patterns"
+      ]
+    },
+    {
+      "question": "A media company streams video content globally and faces challenges with data transfer costs, which represent 40% of their AWS bill. They serve 100TB daily to users across 6 continents, need to comply with content licensing restrictions by geography, and require real-time analytics on viewing patterns. Which optimization strategy provides the GREATEST cost reduction while maintaining compliance and analytics capabilities?",
+      "options": [
+        "Implement AWS Global Accelerator, use S3 with lifecycle policies, and Amazon OpenSearch for analytics",
+        "Implement CloudFront with geographic restrictions, use S3 Transfer Acceleration, and CloudWatch for analytics",
+        "Use CloudFront with Lambda@Edge for geo-blocking, S3 Intelligent-Tiering for storage optimization, and Kinesis Data Analytics for real-time insights",
+        "Deploy regional S3 buckets with Cross-Region Replication, use VPC endpoints, and Kinesis for analytics"
+      ],
+      "correct": 2,
+      "explanation": "This solution maximizes cost reduction: CloudFront reduces data transfer costs by up to 85% through edge caching and eliminates cross-region transfer charges, Lambda@Edge enables real-time geo-blocking for licensing compliance without additional infrastructure, S3 Intelligent-Tiering automatically optimizes storage costs by moving data between access tiers (up to 68% savings), and Kinesis Data Analytics provides real-time viewing pattern analysis without managing infrastructure. This combination addresses the primary cost driver (data transfer) while maintaining compliance and analytics requirements through serverless, managed services.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS data transfer cost optimization",
+        "CloudFront pricing benefits",
+        "AWS media streaming architecture"
+      ]
+    },
+    {
+      "question": "A financial institution is subject to regulatory examination and needs to demonstrate that their AWS environment meets SOC 2 Type II, PCI DSS Level 1, and FedRAMP High requirements simultaneously. They operate in a shared responsibility model and need to prove continuous compliance monitoring. Which combination of AWS services and practices provides the MOST comprehensive compliance demonstration?",
+      "options": [
+        "Use AWS Config Rules, CloudTrail, and AWS Artifact for compliance reports",
+        "Use AWS Well-Architected Tool, AWS Trusted Advisor, and manual compliance documentation",
+        "Deploy AWS Control Tower, AWS Config, GuardDuty, and third-party compliance tools",
+        "Implement AWS Security Hub, AWS Audit Manager, AWS Artifact, and AWS Systems Manager Compliance"
+      ],
+      "correct": 3,
+      "explanation": "This comprehensive approach addresses all compliance frameworks: AWS Security Hub provides centralized compliance posture management across SOC 2, PCI DSS, and FedRAMP controls, AWS Audit Manager automates evidence collection and assessment preparation for all three frameworks, AWS Artifact provides access to compliance reports and agreements including SOC 2 Type II reports and FedRAMP authorization documentation, and AWS Systems Manager Compliance enables continuous monitoring and remediation of configuration drift. This combination provides automated, continuous compliance monitoring and evidence collection required for regulatory examinations across multiple frameworks simultaneously.",
+      "domain": "Security & Compliance",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS multi-framework compliance",
+        "AWS Audit Manager capabilities",
+        "AWS financial services compliance"
+      ]
+    },
+    {
+      "question": "A startup is building a serverless application that processes user-uploaded images, performs ML-based content analysis, stores metadata in a database, and sends notifications. The application must handle traffic spikes from 100 to 100,000 requests per minute, maintain costs under $500/month during normal operations, and ensure sub-second response times. Which architectural approach BEST meets these requirements?",
+      "options": [
+        "Deploy Application Load Balancer with ECS Fargate, S3 for images, Aurora Serverless for database, and SQS for processing",
+        "Use API Gateway with Lambda, S3 for storage, RDS for metadata, and SNS for notifications",
+        "Use CloudFront with Lambda@Edge, S3 for storage, ElastiCache for caching, and SES for notifications",
+        "Implement API Gateway with Lambda, S3 with event triggers, DynamoDB with on-demand billing, Amazon Rekognition, and EventBridge for orchestration"
+      ],
+      "correct": 3,
+      "explanation": "This serverless architecture optimally handles the requirements: API Gateway with Lambda automatically scales from 100 to 100,000 requests with pay-per-use pricing, S3 event triggers enable efficient image processing workflows, DynamoDB on-demand billing eliminates idle costs during low traffic periods, Amazon Rekognition provides managed ML content analysis without infrastructure costs, and EventBridge orchestrates the workflow with sub-second latency. This combination minimizes costs during normal operations through serverless pay-per-use models while automatically scaling to handle traffic spikes without performance degradation.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS serverless architecture patterns",
+        "AWS cost optimization for startups",
+        "AWS Lambda scaling limits"
+      ]
+    },
+    {
+      "question": "A government agency needs to migrate sensitive data to AWS while maintaining air-gapped security for classified information, ensuring FIPS 140-2 Level 3 compliance, implementing zero-trust architecture, and providing disaster recovery across geographically separated regions. Which AWS deployment model and security approach BEST addresses these stringent requirements?",
+      "options": [
+        "Use AWS GovCloud with dedicated tenancy, AWS CloudHSM, VPC with private subnets, and cross-region replication",
+        "Deploy AWS Secret Region with AWS Nitro Enclaves, dedicated hosts, AWS Certificate Manager Private CA, and AWS Backup",
+        "Use on-premises AWS Outposts with AWS CloudHSM, dedicated networking, and manual backup procedures",
+        "Implement AWS GovCloud with AWS CloudHSM FIPS 140-2 Level 3, AWS PrivateLink, AWS Nitro Enclaves, and AWS Backup across multiple GovCloud regions"
+      ],
+      "correct": 3,
+      "explanation": "This solution addresses all stringent requirements: AWS GovCloud provides FedRAMP High authorized environment for sensitive government data, AWS CloudHSM FIPS 140-2 Level 3 provides hardware-based key management meeting the highest security standards, AWS PrivateLink enables zero-trust networking by eliminating internet exposure, AWS Nitro Enclaves provides air-gapped compute environments for processing classified data, and AWS Backup across multiple GovCloud regions ensures geographically separated disaster recovery. This combination provides the highest level of security and compliance available on AWS for government workloads.",
+      "domain": "Security & Compliance",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS GovCloud compliance",
+        "AWS FIPS 140-2 Level 3 capabilities",
+        "AWS zero-trust architecture"
+      ]
+    },
+    {
+      "question": "A large enterprise has a complex billing scenario with 200+ AWS accounts, multiple Reserved Instance purchases across different teams, Savings Plans commitments, and significant data transfer costs between regions. They need to optimize costs while maintaining current performance levels and implementing chargeback to business units. Which comprehensive cost optimization strategy provides the MAXIMUM savings?",
+      "options": [
+        "Use AWS Organizations consolidated billing, AWS Cost Categories for chargeback, Compute Savings Plans conversion, data transfer optimization through VPC endpoints and CloudFront, and automated RI management",
+        "Deploy AWS Control Tower for governance, AWS Cost and Usage Reports with custom analytics, RI Exchange for optimization, and third-party cost management tools",
+        "Implement AWS Organizations with cost allocation tags, AWS Cost Anomaly Detection, Reserved Instance recommendations, and AWS Budgets for chargeback",
+        "Use AWS Organizations consolidated billing, Cost Explorer for analysis, and manual chargeback allocation"
+      ],
+      "correct": 0,
+      "explanation": "This comprehensive approach maximizes savings: AWS Organizations consolidated billing enables volume discounts across all 200+ accounts, AWS Cost Categories provide automated chargeback allocation to business units, converting Reserved Instances to Compute Savings Plans offers greater flexibility and potentially higher savings (up to 72%), optimizing data transfer through VPC endpoints eliminates NAT Gateway costs and CloudFront reduces cross-region transfer costs by up to 85%, and automated RI management ensures optimal utilization and exchanges. This strategy addresses all cost components while maintaining performance and enabling accurate chargeback.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS enterprise cost optimization",
+        "AWS Savings Plans vs Reserved Instances",
+        "AWS data transfer cost optimization"
+      ]
+    },
+    {
+      "question": "A biotechnology company processes genomic data requiring 500TB storage, 10,000 CPU hours monthly for analysis, strict data encryption, audit trails for FDA compliance, and collaboration with research institutions globally. The workload is highly variable with 80% of compute occurring in 4-hour bursts twice weekly. Which cost-optimized architecture BEST supports these requirements?",
+      "options": [
+        "Use S3 Standard with lifecycle policies, Lambda for processing, CloudWatch for monitoring, and API Gateway for collaboration",
+        "Deploy EFS for shared storage, ECS with Fargate Spot, AWS Config for compliance, and Direct Connect for partnerships",
+        "Implement S3 Intelligent-Tiering with KMS encryption, AWS Batch with Spot Instances, CloudTrail for auditing, and AWS PrivateLink for secure collaboration",
+        "Use S3 Glacier for storage, EC2 Reserved Instances for compute, and VPN connections for collaboration"
+      ],
+      "correct": 2,
+      "explanation": "This architecture optimally addresses all requirements: S3 Intelligent-Tiering automatically optimizes storage costs for 500TB of genomic data (up to 68% savings) while KMS encryption ensures data security, AWS Batch with Spot Instances provides up to 90% cost savings for the variable compute workload (10,000 CPU hours in bursts), CloudTrail provides comprehensive audit trails for FDA compliance requirements, and AWS PrivateLink enables secure collaboration with research institutions without exposing data to the internet. This combination maximizes cost efficiency for the bursty workload pattern while maintaining security and compliance.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS genomics architecture",
+        "AWS Batch cost optimization",
+        "AWS life sciences compliance"
+      ]
+    },
+    {
+      "question": "A retail company wants to implement a disaster recovery strategy that allows them to quickly restore operations in a different AWS region if their primary region becomes unavailable. Which cloud design principle BEST supports this requirement?",
+      "options": [
+        "Use managed services",
+        "Automate everything",
+        "Design for failure",
+        "Implement loose coupling"
+      ],
+      "correct": 2,
+      "explanation": "Design for failure is the cloud design principle that emphasizes building systems that can handle failures at any level, including entire regions. This principle supports disaster recovery by planning for regional failures and implementing cross-region recovery mechanisms.",
+      "domain": "Cloud Concepts",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Well-Architected Framework",
+        "AWS disaster recovery best practices"
+      ]
+    },
+    {
+      "question": "A manufacturing company needs to process IoT sensor data from factory equipment in real-time to prevent equipment failures. Which cloud computing characteristic enables this real-time processing capability?",
+      "options": [
+        "Resource pooling",
+        "Rapid elasticity",
+        "Broad network access",
+        "On-demand self-service"
+      ],
+      "correct": 1,
+      "explanation": "Rapid elasticity allows cloud resources to be automatically scaled up or down based on demand, enabling real-time processing of IoT data by instantly providing additional compute resources when sensor data volume increases.",
+      "domain": "Cloud Concepts",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "NIST Cloud Computing definition",
+        "AWS IoT real-time processing"
+      ]
+    },
+    {
+      "question": "A pharmaceutical company is evaluating cloud adoption but is concerned about maintaining control over their intellectual property and research data. Which cloud deployment model provides the HIGHEST level of control while still offering cloud benefits?",
+      "options": [
+        "Public cloud",
+        "Community cloud",
+        "Hybrid cloud",
+        "Private cloud"
+      ],
+      "correct": 3,
+      "explanation": "Private cloud provides the highest level of control over infrastructure, data, and security while still offering cloud benefits like elasticity and self-service. It's ideal for organizations with strict control requirements over intellectual property.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Cloud deployment models",
+        "AWS private cloud solutions"
+      ]
+    },
+    {
+      "question": "A logistics company wants to optimize their supply chain by analyzing data from multiple sources including GPS tracking, weather data, and traffic information. Which cloud computing benefit BEST enables this comprehensive data analysis?",
+      "options": [
+        "Global reach and data integration",
+        "Simplified management",
+        "Cost reduction",
+        "Increased security"
+      ],
+      "correct": 0,
+      "explanation": "Global reach and data integration capabilities of cloud computing enable organizations to collect, process, and analyze data from multiple distributed sources worldwide, making comprehensive supply chain optimization possible.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS global infrastructure",
+        "Cloud data integration benefits"
+      ]
+    },
+    {
+      "question": "A healthcare organization needs to ensure their patient management system can handle sudden increases in patient volume during health emergencies. Which cloud characteristic directly addresses this requirement?",
+      "options": [
+        "Rapid elasticity",
+        "Resource pooling",
+        "Broad network access",
+        "Measured service"
+      ],
+      "correct": 0,
+      "explanation": "Rapid elasticity allows systems to automatically scale resources up during high demand (health emergencies) and scale down during normal operations, ensuring the system can handle sudden increases in patient volume.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "NIST Cloud Computing characteristics",
+        "AWS healthcare scalability"
+      ]
+    },
+    {
+      "question": "A financial services company is migrating to AWS and wants to follow a framework that provides guidance on organizational capabilities needed for successful cloud adoption. Which AWS framework should they use?",
+      "options": [
+        "AWS Well-Architected Framework",
+        "AWS Cloud Adoption Framework (CAF)",
+        "AWS Cost Optimization Framework",
+        "AWS Security Framework"
+      ],
+      "correct": 1,
+      "explanation": "AWS Cloud Adoption Framework (CAF) provides guidance on organizational capabilities and change management needed for successful cloud adoption, focusing on people, processes, and technology transformation.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Cloud Adoption Framework documentation",
+        "AWS organizational transformation"
+      ]
+    },
+    {
+      "question": "A media company streams content globally and experiences varying demand throughout the day. They want to pay only for the compute resources they actually use. Which cloud computing economic benefit does this represent?",
+      "options": [
+        "Improved time to market",
+        "Variable expense model",
+        "Economies of scale",
+        "Reduced operational complexity"
+      ],
+      "correct": 1,
+      "explanation": "Variable expense model allows organizations to pay only for the resources they consume, converting fixed infrastructure costs into variable costs that scale with actual usage and demand.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS cloud economics",
+        "Pay-as-you-go pricing model"
+      ]
+    },
+    {
+      "question": "A startup wants to launch their application in multiple countries simultaneously to reach a global audience from day one. Which cloud computing advantage makes this possible without significant upfront investment?",
+      "options": [
+        "Cost optimization",
+        "Security compliance",
+        "High availability",
+        "Global infrastructure and reach"
+      ],
+      "correct": 3,
+      "explanation": "Global infrastructure and reach provided by cloud providers like AWS enable startups to deploy applications worldwide without building physical infrastructure in multiple countries, reducing upfront investment and time to market.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS global infrastructure",
+        "Cloud global deployment benefits"
+      ]
+    },
+    {
+      "question": "An e-commerce company experiences unpredictable traffic spikes during flash sales and promotional events. Which cloud design principle helps them handle these unpredictable loads efficiently?",
+      "options": [
+        "Design for failure",
+        "Automate everything",
+        "Implement elasticity",
+        "Implement security in every layer"
+      ],
+      "correct": 2,
+      "explanation": "Implement elasticity is the design principle that enables systems to automatically scale resources up during traffic spikes and scale down during normal periods, efficiently handling unpredictable loads without over-provisioning.",
+      "domain": "Cloud Concepts",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Well-Architected Framework",
+        "AWS elasticity design patterns"
+      ]
+    },
+    {
+      "question": "A research institution wants to collaborate with universities worldwide on a climate modeling project. Which cloud deployment model would BEST facilitate this collaboration while maintaining data governance?",
+      "options": [
+        "Public cloud",
+        "Private cloud",
+        "Community cloud",
+        "Hybrid cloud"
+      ],
+      "correct": 2,
+      "explanation": "Community cloud is designed for organizations with shared concerns and requirements, such as research institutions collaborating on climate modeling, providing shared infrastructure while maintaining appropriate governance and access controls.",
+      "domain": "Cloud Concepts",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Cloud deployment models",
+        "AWS research collaboration solutions"
+      ]
+    },
+    {
+      "question": "A company wants to modernize their monolithic application by breaking it into smaller, independent services that can be developed and deployed separately. Which architectural approach aligns with cloud-native principles?",
+      "options": [
+        "Event-driven architecture",
+        "Service-oriented architecture",
+        "Microservices architecture",
+        "Layered architecture"
+      ],
+      "correct": 2,
+      "explanation": "Microservices architecture breaks applications into smaller, independent services that can be developed, deployed, and scaled independently, aligning with cloud-native principles of loose coupling and independent scalability.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS microservices architecture",
+        "Cloud-native application design"
+      ]
+    },
+    {
+      "question": "A government agency needs to ensure their cloud infrastructure meets specific regulatory requirements and security standards. Which aspect of cloud computing addresses compliance and regulatory concerns?",
+      "options": [
+        "Compliance certifications and attestations",
+        "Shared responsibility model",
+        "Multi-tenancy isolation",
+        "Service level agreements"
+      ],
+      "correct": 0,
+      "explanation": "Compliance certifications and attestations demonstrate that cloud providers meet various regulatory requirements and security standards, helping government agencies ensure their infrastructure complies with necessary regulations.",
+      "domain": "Cloud Concepts",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS compliance programs",
+        "Government cloud compliance"
+      ]
+    },
+    {
+      "question": "A manufacturing company wants to reduce the time it takes to provision new development environments from weeks to minutes. Which cloud computing benefit directly addresses this need?",
+      "options": [
+        "Improved security",
+        "Global availability",
+        "Speed and agility",
+        "Cost reduction"
+      ],
+      "correct": 2,
+      "explanation": "Speed and agility is a key cloud benefit that enables rapid provisioning of resources, reducing the time to create new environments from weeks to minutes through on-demand self-service and automation.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS cloud benefits",
+        "Cloud provisioning speed"
+      ]
+    },
+    {
+      "question": "A financial institution is concerned about the environmental impact of their IT infrastructure. Which cloud computing benefit helps reduce their carbon footprint?",
+      "options": [
+        "Improved performance",
+        "Environmental sustainability through shared infrastructure",
+        "Reduced operational complexity",
+        "Better security"
+      ],
+      "correct": 1,
+      "explanation": "Environmental sustainability through shared infrastructure allows multiple organizations to share the same physical resources, improving energy efficiency and reducing overall carbon footprint compared to individual data centers.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS sustainability initiatives",
+        "Cloud environmental benefits"
+      ]
+    },
+    {
+      "question": "A company wants to ensure their application architecture can handle individual component failures without affecting the overall system. Which cloud design principle should they prioritize?",
+      "options": [
+        "Implement loose coupling",
+        "Optimize for cost",
+        "Automate security",
+        "Use managed services"
+      ],
+      "correct": 0,
+      "explanation": "Implement loose coupling is the design principle that ensures components are independent and can fail without affecting other parts of the system, improving overall system resilience and fault tolerance.",
+      "domain": "Cloud Concepts",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Well-Architected Framework",
+        "AWS loose coupling patterns"
+      ]
+    },
+    {
+      "question": "A healthcare organization needs to implement data loss prevention for patient records stored in Amazon S3. Which AWS service can automatically discover and classify sensitive healthcare data?",
+      "options": [
+        "AWS Config",
+        "Amazon Inspector",
+        "Amazon GuardDuty",
+        "Amazon Macie"
+      ],
+      "correct": 3,
+      "explanation": "Amazon Macie uses machine learning to automatically discover, classify, and protect sensitive data including protected health information (PHI) and personally identifiable information (PII) in S3 buckets.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Macie documentation",
+        "AWS healthcare data protection"
+      ]
+    },
+    {
+      "question": "A financial services company needs to ensure that all database connections use encrypted channels. According to the AWS Shared Responsibility Model, who is responsible for configuring encryption in transit?",
+      "options": [
+        "Third-party security vendors are responsible",
+        "Both AWS and customer share responsibility",
+        "AWS is fully responsible",
+        "The customer is responsible"
+      ],
+      "correct": 3,
+      "explanation": "Under the AWS Shared Responsibility Model, customers are responsible for configuring encryption in transit for their applications and data, while AWS provides the encryption capabilities and secure infrastructure.",
+      "domain": "Security & Compliance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Shared Responsibility Model",
+        "AWS encryption in transit"
+      ]
+    },
+    {
+      "question": "A company wants to implement centralized logging for security analysis across all their AWS accounts. Which combination of services provides comprehensive security event logging?",
+      "options": [
+        "Security Hub and Macie",
+        "CloudWatch and GuardDuty",
+        "Config and Inspector",
+        "CloudTrail and VPC Flow Logs"
+      ],
+      "correct": 3,
+      "explanation": "CloudTrail provides comprehensive API call logging across all AWS services, while VPC Flow Logs capture network traffic information, together providing complete security event logging for analysis.",
+      "domain": "Security & Compliance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS CloudTrail documentation",
+        "VPC Flow Logs security analysis"
+      ]
+    },
+    {
+      "question": "A government contractor needs to ensure their AWS environment meets FedRAMP High requirements. Which AWS service helps demonstrate continuous compliance with government security standards?",
+      "options": [
+        "AWS Systems Manager",
+        "Amazon Inspector",
+        "AWS Security Hub",
+        "AWS Trusted Advisor"
+      ],
+      "correct": 2,
+      "explanation": "AWS Security Hub provides centralized security posture management and includes compliance standards like FedRAMP, helping government contractors demonstrate continuous compliance with security requirements.",
+      "domain": "Security & Compliance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Security Hub compliance",
+        "AWS FedRAMP documentation"
+      ]
+    },
+    {
+      "question": "A retail company wants to protect their web application from SQL injection attacks and cross-site scripting. Which AWS service provides application-layer protection?",
+      "options": [
+        "AWS WAF",
+        "AWS Shield",
+        "Amazon GuardDuty",
+        "VPC Security Groups"
+      ],
+      "correct": 0,
+      "explanation": "AWS WAF (Web Application Firewall) provides application-layer protection against common web exploits like SQL injection, cross-site scripting, and other OWASP Top 10 vulnerabilities.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS WAF documentation",
+        "AWS application security"
+      ]
+    },
+    {
+      "question": "A company needs to rotate database passwords automatically every 30 days for compliance requirements. Which AWS service is specifically designed for this use case?",
+      "options": [
+        "AWS Systems Manager Parameter Store",
+        "AWS Certificate Manager",
+        "AWS KMS",
+        "AWS Secrets Manager"
+      ],
+      "correct": 3,
+      "explanation": "AWS Secrets Manager is specifically designed for storing and automatically rotating secrets like database passwords, API keys, and other credentials with built-in rotation capabilities.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Secrets Manager documentation",
+        "AWS credential rotation"
+      ]
+    },
+    {
+      "question": "A multinational corporation needs to ensure data residency compliance by keeping customer data within specific geographic boundaries. Which AWS concept helps address data sovereignty requirements?",
+      "options": [
+        "Local Zones",
+        "AWS Regions",
+        "Edge Locations",
+        "Availability Zones"
+      ],
+      "correct": 1,
+      "explanation": "AWS Regions are geographically separated areas that allow customers to choose where their data is stored and processed, helping meet data sovereignty and residency requirements by keeping data within specific country or regional boundaries.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Regions documentation",
+        "AWS data residency compliance"
+      ]
+    },
+    {
+      "question": "A company wants to implement network segmentation to isolate their production environment from development. Which AWS service provides network-level access control?",
+      "options": [
+        "AWS IAM",
+        "VPC Security Groups and NACLs",
+        "Amazon Route 53",
+        "AWS WAF"
+      ],
+      "correct": 1,
+      "explanation": "VPC Security Groups and Network Access Control Lists (NACLs) provide network-level access control and segmentation, allowing isolation of different environments like production and development.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "VPC Security Groups documentation",
+        "AWS network segmentation"
+      ]
+    },
+    {
+      "question": "A financial institution needs to demonstrate that their AWS infrastructure meets SOC 2 Type II requirements for their annual audit. Which AWS resource should they reference?",
+      "options": [
+        "AWS service level agreements",
+        "AWS technical whitepapers",
+        "AWS SOC compliance reports",
+        "AWS pricing documentation"
+      ],
+      "correct": 2,
+      "explanation": "AWS SOC compliance reports provide detailed information about AWS controls and compliance with SOC 2 Type II requirements that financial institutions can use for their audits and compliance demonstrations.",
+      "domain": "Security & Compliance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS SOC compliance documentation",
+        "AWS audit support"
+      ]
+    },
+    {
+      "question": "A company wants to ensure that only authorized users can access their Amazon RDS database from specific IP addresses. Which security control should they implement?",
+      "options": [
+        "VPC Security Groups with IP restrictions",
+        "Amazon GuardDuty monitoring",
+        "AWS Shield protection",
+        "AWS WAF rules"
+      ],
+      "correct": 0,
+      "explanation": "VPC Security Groups can be configured with specific IP address ranges to control which sources can access RDS databases, providing network-level access control based on IP addresses.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "VPC Security Groups documentation",
+        "Amazon RDS security"
+      ]
+    },
+    {
+      "question": "A healthcare organization needs to encrypt patient data at rest in their data lake. Which AWS service provides centralized encryption key management?",
+      "options": [
+        "AWS Secrets Manager",
+        "AWS Key Management Service (KMS)",
+        "AWS Certificate Manager",
+        "AWS Systems Manager"
+      ],
+      "correct": 1,
+      "explanation": "AWS Key Management Service (KMS) provides centralized encryption key management for encrypting data at rest across AWS services, including data lakes and healthcare applications.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS KMS documentation",
+        "AWS healthcare encryption"
+      ]
+    },
+    {
+      "question": "A company wants to detect unusual API activity that might indicate a security breach. Which AWS service provides intelligent threat detection?",
+      "options": [
+        "AWS CloudTrail",
+        "AWS Config",
+        "Amazon Inspector",
+        "Amazon GuardDuty"
+      ],
+      "correct": 3,
+      "explanation": "Amazon GuardDuty uses machine learning to analyze CloudTrail events, DNS logs, and VPC Flow Logs to detect unusual API activity and potential security threats automatically.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon GuardDuty documentation",
+        "AWS threat detection"
+      ]
+    },
+    {
+      "question": "A company needs to ensure their EC2 instances are compliant with security benchmarks like CIS. Which AWS service can assess instance configurations against security standards?",
+      "options": [
+        "AWS Config",
+        "AWS Security Hub",
+        "Amazon Inspector",
+        "Amazon GuardDuty"
+      ],
+      "correct": 2,
+      "explanation": "Amazon Inspector assesses EC2 instances and container images for software vulnerabilities and unintended network exposure, including compliance with security benchmarks like CIS.",
+      "domain": "Security & Compliance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Inspector documentation",
+        "AWS security benchmarks"
+      ]
+    },
+    {
+      "question": "A company wants to implement the principle of least privilege for their AWS IAM users. What is the recommended approach?",
+      "options": [
+        "Grant full access initially and remove permissions as needed",
+        "Use only AWS managed policies",
+        "Create identical permissions for all users",
+        "Start with no permissions and add only necessary permissions"
+      ],
+      "correct": 3,
+      "explanation": "The principle of least privilege is best implemented by starting with no permissions and gradually adding only the minimum permissions necessary for users to perform their specific job functions.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS IAM best practices",
+        "AWS least privilege principle"
+      ]
+    },
+    {
+      "question": "A company needs to protect their AWS infrastructure from large-scale DDoS attacks. Which AWS service provides automatic DDoS protection?",
+      "options": [
+        "Amazon GuardDuty",
+        "AWS Shield Standard",
+        "AWS WAF",
+        "VPC Security Groups"
+      ],
+      "correct": 1,
+      "explanation": "AWS Shield Standard provides automatic DDoS protection for all AWS customers at no additional charge, protecting against common network and transport layer DDoS attacks.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Shield documentation",
+        "AWS DDoS protection"
+      ]
+    },
+    {
+      "question": "A gaming company needs to store player profiles and game state data with single-digit millisecond latency for real-time multiplayer games. Which AWS database service is MOST suitable?",
+      "options": [
+        "Amazon Redshift",
+        "Amazon DynamoDB",
+        "Amazon Aurora",
+        "Amazon RDS"
+      ],
+      "correct": 1,
+      "explanation": "Amazon DynamoDB is a NoSQL database service that provides single-digit millisecond latency at any scale, making it ideal for real-time gaming applications that require fast data access for player profiles and game states.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon DynamoDB documentation",
+        "AWS gaming architecture"
+      ]
+    },
+    {
+      "question": "A media company needs to transcode video files uploaded by users into multiple formats and resolutions. Which AWS service combination provides a serverless solution for this workflow?",
+      "options": [
+        "ECS with Fargate and custom containers",
+        "EC2 with custom transcoding software",
+        "S3 with Lambda and AWS Elemental MediaConvert",
+        "Batch with EC2 instances"
+      ],
+      "correct": 2,
+      "explanation": "S3 can trigger Lambda functions when videos are uploaded, and Lambda can then invoke AWS Elemental MediaConvert to transcode videos into multiple formats, providing a fully serverless video processing workflow.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Elemental MediaConvert documentation",
+        "AWS serverless video processing"
+      ]
+    },
+    {
+      "question": "A company wants to migrate their on-premises file shares to AWS while maintaining the same file system interface for their applications. Which AWS service should they use?",
+      "options": [
+        "Amazon FSx",
+        "Amazon EBS",
+        "Amazon S3",
+        "AWS Storage Gateway"
+      ],
+      "correct": 3,
+      "explanation": "AWS Storage Gateway provides a hybrid cloud storage service that connects on-premises environments to AWS storage services while maintaining familiar file system interfaces for existing applications.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Storage Gateway documentation",
+        "AWS hybrid storage solutions"
+      ]
+    },
+    {
+      "question": "A financial services company needs to run complex risk calculations that require high-performance computing with thousands of CPU cores for short periods. Which AWS service is MOST cost-effective for this use case?",
+      "options": [
+        "Amazon ECS with Fargate",
+        "AWS Lambda",
+        "Amazon EC2 Reserved Instances",
+        "AWS Batch with Spot Instances"
+      ],
+      "correct": 3,
+      "explanation": "AWS Batch with Spot Instances provides the most cost-effective solution for high-performance computing workloads that can tolerate interruptions, offering up to 90% cost savings compared to On-Demand instances.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Batch documentation",
+        "AWS HPC cost optimization"
+      ]
+    },
+    {
+      "question": "A startup needs to implement user authentication and authorization for their mobile application with social media login options. Which AWS service provides managed authentication?",
+      "options": [
+        "Amazon Cognito",
+        "AWS Single Sign-On",
+        "AWS IAM",
+        "AWS Directory Service"
+      ],
+      "correct": 0,
+      "explanation": "Amazon Cognito provides managed user authentication and authorization for mobile and web applications, including support for social media identity providers like Facebook, Google, and Amazon.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Cognito documentation",
+        "AWS mobile authentication"
+      ]
+    },
+    {
+      "question": "A company needs to process streaming data from IoT sensors and perform real-time analytics to detect anomalies. Which AWS service is designed for real-time stream processing?",
+      "options": [
+        "Amazon EMR",
+        "Amazon Redshift",
+        "AWS Glue",
+        "Amazon Kinesis Data Analytics"
+      ],
+      "correct": 3,
+      "explanation": "Amazon Kinesis Data Analytics is specifically designed for real-time processing and analysis of streaming data, making it ideal for IoT sensor data processing and anomaly detection.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Kinesis Data Analytics documentation",
+        "AWS IoT analytics"
+      ]
+    },
+    {
+      "question": "A company wants to implement a content delivery network to reduce latency for their global users. Which AWS service provides global content caching?",
+      "options": [
+        "Amazon S3",
+        "AWS Global Accelerator",
+        "Amazon CloudFront",
+        "Amazon Route 53"
+      ],
+      "correct": 2,
+      "explanation": "Amazon CloudFront is a content delivery network (CDN) service that caches content at edge locations worldwide, reducing latency for global users by serving content from the nearest geographic location.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon CloudFront documentation",
+        "AWS content delivery"
+      ]
+    },
+    {
+      "question": "A company needs to run containerized applications without managing the underlying infrastructure. Which AWS service provides serverless container hosting?",
+      "options": [
+        "Amazon ECS with EC2",
+        "AWS Lambda",
+        "AWS Fargate",
+        "Amazon EKS"
+      ],
+      "correct": 2,
+      "explanation": "AWS Fargate is a serverless compute engine for containers that allows you to run containerized applications without managing servers or clusters, handling all infrastructure management automatically.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Fargate documentation",
+        "AWS serverless containers"
+      ]
+    },
+    {
+      "question": "A company wants to implement a data warehouse for business intelligence and reporting on large datasets. Which AWS service is specifically designed for data warehousing?",
+      "options": [
+        "Amazon DynamoDB",
+        "Amazon RDS",
+        "Amazon Redshift",
+        "Amazon Aurora"
+      ],
+      "correct": 2,
+      "explanation": "Amazon Redshift is a fully managed data warehouse service designed for business intelligence and analytics on large datasets, optimized for complex queries and reporting workloads.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Redshift documentation",
+        "AWS data warehousing"
+      ]
+    },
+    {
+      "question": "A company needs to send automated email notifications from their application when certain events occur. Which AWS service is designed for sending emails?",
+      "options": [
+        "Amazon SES",
+        "Amazon SNS",
+        "Amazon SQS",
+        "AWS Lambda"
+      ],
+      "correct": 0,
+      "explanation": "Amazon SES (Simple Email Service) is specifically designed for sending transactional and marketing emails from applications, providing high deliverability and email management features.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon SES documentation",
+        "AWS email services"
+      ]
+    },
+    {
+      "question": "A company wants to implement a message queue to decouple their application components and handle traffic spikes. Which AWS service provides managed message queuing?",
+      "options": [
+        "Amazon Kinesis",
+        "AWS Step Functions",
+        "Amazon SQS",
+        "Amazon SNS"
+      ],
+      "correct": 2,
+      "explanation": "Amazon SQS (Simple Queue Service) is a fully managed message queuing service that enables decoupling of application components and can handle traffic spikes by buffering messages between components.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon SQS documentation",
+        "AWS message queuing"
+      ]
+    },
+    {
+      "question": "A company needs to perform ETL (Extract, Transform, Load) operations on their data stored in S3. Which AWS service provides serverless ETL capabilities?",
+      "options": [
+        "AWS Glue",
+        "AWS Data Pipeline",
+        "Amazon EMR",
+        "Amazon Redshift"
+      ],
+      "correct": 0,
+      "explanation": "AWS Glue is a fully managed ETL service that can automatically discover, catalog, and transform data stored in S3 and other AWS data stores without managing infrastructure.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Glue documentation",
+        "AWS serverless ETL"
+      ]
+    },
+    {
+      "question": "A company wants to implement search functionality for their e-commerce website with features like faceted search and auto-complete. Which AWS service provides managed search capabilities?",
+      "options": [
+        "Amazon DynamoDB",
+        "Amazon RDS",
+        "Amazon OpenSearch Service",
+        "Amazon CloudSearch"
+      ],
+      "correct": 2,
+      "explanation": "Amazon OpenSearch Service (formerly Amazon Elasticsearch Service) provides managed search and analytics capabilities with features like faceted search, auto-complete, and full-text search for e-commerce applications.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon OpenSearch Service documentation",
+        "AWS search services"
+      ]
+    },
+    {
+      "question": "A company needs to orchestrate a complex workflow involving multiple AWS services with conditional logic and error handling. Which AWS service is designed for workflow orchestration?",
+      "options": [
+        "AWS Lambda",
+        "AWS Step Functions",
+        "Amazon EventBridge",
+        "Amazon SQS"
+      ],
+      "correct": 1,
+      "explanation": "AWS Step Functions is a serverless orchestration service that coordinates multiple AWS services in workflows with built-in conditional logic, error handling, and visual workflow management.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Step Functions documentation",
+        "AWS workflow orchestration"
+      ]
+    },
+    {
+      "question": "A company wants to add machine learning capabilities to their application to analyze customer sentiment from reviews. Which AWS service provides pre-built sentiment analysis?",
+      "options": [
+        "Amazon Textract",
+        "Amazon SageMaker",
+        "Amazon Comprehend",
+        "Amazon Rekognition"
+      ],
+      "correct": 2,
+      "explanation": "Amazon Comprehend is a natural language processing service that provides pre-built sentiment analysis capabilities, allowing applications to analyze customer sentiment from text reviews without building custom ML models.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Comprehend documentation",
+        "AWS AI/ML services"
+      ]
+    },
+    {
+      "question": "A company needs to migrate a large amount of data from their on-premises data center to AWS. Which AWS service is specifically designed for large-scale data migration?",
+      "options": [
+        "AWS Direct Connect",
+        "Amazon S3 Transfer Acceleration",
+        "AWS Storage Gateway",
+        "AWS DataSync"
+      ],
+      "correct": 3,
+      "explanation": "AWS DataSync is specifically designed for large-scale data migration and synchronization between on-premises storage and AWS storage services, providing efficient and secure data transfer.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS DataSync documentation",
+        "AWS data migration services"
+      ]
+    },
+    {
+      "question": "A company wants to implement a NoSQL database that can automatically scale based on demand without capacity planning. Which DynamoDB feature provides this capability?",
+      "options": [
+        "Reserved capacity",
+        "Provisioned capacity",
+        "Burst capacity",
+        "On-demand capacity"
+      ],
+      "correct": 3,
+      "explanation": "DynamoDB On-demand capacity automatically scales based on application traffic without requiring capacity planning, charging only for the read and write requests actually consumed.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon DynamoDB on-demand documentation",
+        "DynamoDB scaling options"
+      ]
+    },
+    {
+      "question": "A company needs to convert speech to text for their customer service application. Which AWS service provides speech recognition capabilities?",
+      "options": [
+        "Amazon Comprehend",
+        "Amazon Polly",
+        "Amazon Transcribe",
+        "Amazon Translate"
+      ],
+      "correct": 2,
+      "explanation": "Amazon Transcribe is a speech recognition service that converts speech to text, making it ideal for customer service applications that need to transcribe voice calls or audio recordings.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Transcribe documentation",
+        "AWS speech services"
+      ]
+    },
+    {
+      "question": "A company wants to implement a relational database with automatic failover and read replicas for high availability. Which AWS service provides managed relational database with these features?",
+      "options": [
+        "Amazon RDS",
+        "Amazon Redshift",
+        "Amazon DocumentDB",
+        "Amazon DynamoDB"
+      ],
+      "correct": 0,
+      "explanation": "Amazon RDS is a managed relational database service that provides automatic failover through Multi-AZ deployments and read replicas for improved availability and read performance.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon RDS documentation",
+        "RDS high availability features"
+      ]
+    },
+    {
+      "question": "A company needs to process large datasets using Apache Spark for big data analytics. Which AWS service provides managed Spark clusters?",
+      "options": [
+        "Amazon Redshift",
+        "AWS Batch",
+        "AWS Glue",
+        "Amazon EMR"
+      ],
+      "correct": 3,
+      "explanation": "Amazon EMR (Elastic MapReduce) is a managed big data platform that provides Apache Spark clusters for processing large datasets, handling cluster provisioning and management automatically.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon EMR documentation",
+        "AWS big data services"
+      ]
+    },
+    {
+      "question": "A company wants to implement caching to improve application performance and reduce database load. Which AWS service provides managed in-memory caching?",
+      "options": [
+        "Amazon RDS",
+        "Amazon DynamoDB",
+        "Amazon S3",
+        "Amazon ElastiCache"
+      ],
+      "correct": 3,
+      "explanation": "Amazon ElastiCache is a managed in-memory caching service that supports Redis and Memcached, improving application performance by caching frequently accessed data.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon ElastiCache documentation",
+        "AWS caching solutions"
+      ]
+    },
+    {
+      "question": "A company needs to create a virtual private network in AWS with complete control over IP addressing and routing. Which AWS service provides this capability?",
+      "options": [
+        "Amazon Route 53",
+        "AWS PrivateLink",
+        "Amazon VPC",
+        "AWS Direct Connect"
+      ],
+      "correct": 2,
+      "explanation": "Amazon VPC (Virtual Private Cloud) allows you to create a virtual network in AWS with complete control over IP address ranges, subnets, routing tables, and network gateways.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon VPC documentation",
+        "AWS networking fundamentals"
+      ]
+    },
+    {
+      "question": "A company wants to implement image recognition to automatically tag photos uploaded to their application. Which AWS service provides pre-built image analysis capabilities?",
+      "options": [
+        "Amazon Comprehend",
+        "Amazon SageMaker",
+        "Amazon Rekognition",
+        "Amazon Textract"
+      ],
+      "correct": 2,
+      "explanation": "Amazon Rekognition is a computer vision service that provides pre-built image and video analysis capabilities, including object detection, facial recognition, and automatic image tagging.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Rekognition documentation",
+        "AWS computer vision services"
+      ]
+    },
+    {
+      "question": "A company needs to establish a dedicated network connection between their data center and AWS for consistent network performance. Which AWS service provides dedicated connectivity?",
+      "options": [
+        "AWS PrivateLink",
+        "Amazon VPC",
+        "AWS VPN",
+        "AWS Direct Connect"
+      ],
+      "correct": 3,
+      "explanation": "AWS Direct Connect provides a dedicated network connection between on-premises data centers and AWS, offering more consistent network performance and potentially lower costs than internet-based connections.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Direct Connect documentation",
+        "AWS hybrid connectivity"
+      ]
+    },
+    {
+      "question": "A company wants to implement a document database for their content management system. Which AWS service provides managed document database capabilities?",
+      "options": [
+        "Amazon DynamoDB",
+        "Amazon Redshift",
+        "Amazon RDS",
+        "Amazon DocumentDB"
+      ],
+      "correct": 3,
+      "explanation": "Amazon DocumentDB is a managed document database service that is compatible with MongoDB, designed for content management systems and other applications that need flexible document storage.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon DocumentDB documentation",
+        "AWS document database services"
+      ]
+    },
+    {
+      "question": "A company needs to convert text to speech for their accessibility features. Which AWS service provides text-to-speech capabilities?",
+      "options": [
+        "Amazon Translate",
+        "Amazon Polly",
+        "Amazon Comprehend",
+        "Amazon Transcribe"
+      ],
+      "correct": 1,
+      "explanation": "Amazon Polly is a text-to-speech service that converts text into lifelike speech, making it ideal for accessibility features and voice-enabled applications.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Polly documentation",
+        "AWS text-to-speech services"
+      ]
+    },
+    {
+      "question": "A company wants to implement a time-series database for IoT sensor data and monitoring metrics. Which AWS service is optimized for time-series data?",
+      "options": [
+        "Amazon RDS",
+        "Amazon Redshift",
+        "Amazon DynamoDB",
+        "Amazon Timestream"
+      ],
+      "correct": 3,
+      "explanation": "Amazon Timestream is a purpose-built time-series database service optimized for IoT sensor data, monitoring metrics, and other time-series applications with automatic scaling and data lifecycle management.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Timestream documentation",
+        "AWS time-series database"
+      ]
+    },
+    {
+      "question": "A company needs to extract text and data from scanned documents and forms. Which AWS service provides document analysis capabilities?",
+      "options": [
+        "Amazon Rekognition",
+        "Amazon Transcribe",
+        "Amazon Textract",
+        "Amazon Comprehend"
+      ],
+      "correct": 2,
+      "explanation": "Amazon Textract is a document analysis service that extracts text, handwriting, and data from scanned documents and forms using machine learning, going beyond simple OCR.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Textract documentation",
+        "AWS document processing services"
+      ]
+    },
+    {
+      "question": "A company wants to implement a graph database to analyze relationships between users in their social network application. Which AWS service provides managed graph database capabilities?",
+      "options": [
+        "Amazon DynamoDB",
+        "Amazon RDS",
+        "Amazon Neptune",
+        "Amazon DocumentDB"
+      ],
+      "correct": 2,
+      "explanation": "Amazon Neptune is a fully managed graph database service that supports both property graph and RDF graph models, ideal for social networks, recommendation engines, and relationship analysis.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Neptune documentation",
+        "AWS graph database services"
+      ]
+    },
+    {
+      "question": "A company needs to translate content into multiple languages for their global application. Which AWS service provides language translation capabilities?",
+      "options": [
+        "Amazon Translate",
+        "Amazon Polly",
+        "Amazon Transcribe",
+        "Amazon Comprehend"
+      ],
+      "correct": 0,
+      "explanation": "Amazon Translate is a neural machine translation service that provides fast, high-quality, and affordable language translation for global applications and content localization.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon Translate documentation",
+        "AWS language services"
+      ]
+    },
+    {
+      "question": "A company has unpredictable workloads that can tolerate interruptions and wants to minimize compute costs. Which EC2 pricing model can provide up to 90% cost savings?",
+      "options": [
+        "Reserved Instances",
+        "Spot Instances",
+        "Dedicated Hosts",
+        "On-Demand Instances"
+      ],
+      "correct": 1,
+      "explanation": "Spot Instances can provide up to 90% cost savings compared to On-Demand prices for fault-tolerant workloads that can handle interruptions when AWS needs the capacity back for On-Demand customers.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "Amazon EC2 Spot Instances pricing",
+        "AWS cost optimization strategies"
+      ]
+    },
+    {
+      "question": "A startup wants to track their AWS spending by different projects and departments. Which AWS feature enables cost allocation and tracking by business dimensions?",
+      "options": [
+        "AWS Organizations",
+        "AWS Budgets",
+        "Resource tagging",
+        "AWS Cost Explorer"
+      ],
+      "correct": 2,
+      "explanation": "Resource tagging allows you to assign metadata to AWS resources for cost allocation and tracking by projects, departments, or any other business dimension in cost reports and billing analysis.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS resource tagging documentation",
+        "AWS cost allocation tags"
+      ]
+    },
+    {
+      "question": "A company wants to receive detailed programmatic access to their AWS billing data for integration with their internal financial systems. Which AWS service provides this capability?",
+      "options": [
+        "AWS Cost Explorer",
+        "AWS Cost and Usage Report",
+        "AWS Budgets",
+        "AWS Pricing Calculator"
+      ],
+      "correct": 1,
+      "explanation": "AWS Cost and Usage Report provides the most detailed billing data available, with programmatic access through S3, enabling integration with internal financial systems and custom reporting tools.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Cost and Usage Report documentation",
+        "AWS programmatic billing access"
+      ]
+    },
+    {
+      "question": "A company with predictable workloads wants to commit to using AWS for 1-3 years to receive significant discounts. Which pricing model provides the highest savings for consistent usage?",
+      "options": [
+        "Savings Plans",
+        "On-Demand Instances",
+        "Spot Instances",
+        "Dedicated Hosts"
+      ],
+      "correct": 0,
+      "explanation": "Savings Plans provide up to 72% savings compared to On-Demand pricing in exchange for a commitment to a consistent amount of usage (measured in $/hour) for 1 or 3 years, offering flexibility across instance types and services.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Savings Plans documentation",
+        "AWS commitment-based pricing"
+      ]
+    },
+    {
+      "question": "A company wants to set up automated alerts when their monthly AWS costs exceed specific thresholds. Which AWS service should they configure?",
+      "options": [
+        "AWS Pricing Calculator",
+        "AWS Cost Explorer",
+        "AWS Trusted Advisor",
+        "AWS Budgets"
+      ],
+      "correct": 3,
+      "explanation": "AWS Budgets allows you to set custom cost and usage budgets with automated alerts via email or SNS when actual or forecasted costs exceed defined thresholds.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Budgets documentation",
+        "AWS cost alerting"
+      ]
+    },
+    {
+      "question": "A large enterprise with multiple AWS accounts wants to consolidate billing and take advantage of volume discounts. Which AWS service enables consolidated billing?",
+      "options": [
+        "AWS Budgets",
+        "AWS Cost Explorer",
+        "AWS Organizations",
+        "AWS Control Tower"
+      ],
+      "correct": 2,
+      "explanation": "AWS Organizations provides consolidated billing across multiple AWS accounts, allowing organizations to receive a single bill and benefit from volume discounts across all member accounts.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Organizations consolidated billing",
+        "AWS multi-account billing"
+      ]
+    },
+    {
+      "question": "A company needs 24/7 technical support with a 15-minute response time for production system outages. Which AWS Support plan provides this level of support?",
+      "options": [
+        "Enterprise Support",
+        "Developer Support",
+        "Business Support",
+        "Basic Support"
+      ],
+      "correct": 0,
+      "explanation": "Enterprise Support provides 24/7 technical support with a 15-minute response time for production system down cases, along with a designated Technical Account Manager and other premium support features.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Support plans documentation",
+        "AWS Enterprise Support features"
+      ]
+    },
+    {
+      "question": "A development team wants access to AWS support engineers during business hours for general guidance on best practices. Which is the MOST cost-effective support plan for their needs?",
+      "options": [
+        "Enterprise Support",
+        "Developer Support",
+        "Business Support",
+        "Basic Support"
+      ],
+      "correct": 1,
+      "explanation": "Developer Support provides access to support engineers during business hours for general guidance and best practices, making it the most cost-effective option for development teams needing technical support.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Support plans comparison",
+        "AWS Developer Support features"
+      ]
+    },
+    {
+      "question": "A company wants to analyze their AWS spending patterns and identify opportunities for cost optimization. Which AWS tool provides detailed cost analysis and recommendations?",
+      "options": [
+        "AWS Cost Explorer",
+        "AWS Pricing Calculator",
+        "AWS Cost and Usage Report",
+        "AWS Budgets"
+      ],
+      "correct": 0,
+      "explanation": "AWS Cost Explorer provides detailed cost analysis, visualization of spending patterns, and built-in recommendations for cost optimization including Reserved Instance and Savings Plans recommendations.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Cost Explorer documentation",
+        "AWS cost analysis tools"
+      ]
+    },
+    {
+      "question": "A company is comparing the total cost of ownership between on-premises infrastructure and AWS over a 3-year period. Which AWS tool should they use for this analysis?",
+      "options": [
+        "AWS TCO Calculator",
+        "AWS Budgets",
+        "AWS Cost Explorer",
+        "AWS Pricing Calculator"
+      ],
+      "correct": 3,
+      "explanation": "AWS Pricing Calculator (which replaced the TCO Calculator) helps estimate and compare the total cost of ownership between on-premises infrastructure and AWS over different time periods for migration planning.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Pricing Calculator documentation",
+        "AWS TCO analysis"
+      ]
+    },
+    {
+      "question": "A company wants to optimize their Reserved Instance purchases based on their usage patterns. Which AWS service provides RI recommendations?",
+      "options": [
+        "Both AWS Cost Explorer and AWS Trusted Advisor",
+        "AWS Trusted Advisor",
+        "AWS Budgets",
+        "AWS Cost Explorer"
+      ],
+      "correct": 0,
+      "explanation": "Both AWS Cost Explorer and AWS Trusted Advisor provide Reserved Instance purchase recommendations based on usage patterns, helping optimize RI investments for maximum cost savings.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Cost Explorer RI recommendations",
+        "AWS Trusted Advisor cost optimization"
+      ]
+    },
+    {
+      "question": "A company has variable compute workloads and wants flexibility to change instance types while still receiving discounts. Which pricing model provides the MOST flexibility?",
+      "options": [
+        "EC2 Instance Savings Plans",
+        "Reserved Instances",
+        "Compute Savings Plans",
+        "Spot Instances"
+      ],
+      "correct": 2,
+      "explanation": "Compute Savings Plans provide the most flexibility, offering savings across instance types, sizes, operating systems, tenancy, and AWS services (EC2, Lambda, Fargate) while still providing significant discounts.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Savings Plans documentation",
+        "Compute Savings Plans flexibility"
+      ]
+    },
+    {
+      "question": "A company wants to understand which AWS services are driving their costs and identify unused resources. Which combination of AWS tools provides the BEST cost visibility?",
+      "options": [
+        "AWS Organizations and AWS Control Tower",
+        "AWS Cost and Usage Report and AWS Config",
+        "AWS Budgets and AWS Pricing Calculator",
+        "AWS Cost Explorer and AWS Trusted Advisor"
+      ],
+      "correct": 3,
+      "explanation": "AWS Cost Explorer provides detailed service-level cost analysis and spending patterns, while AWS Trusted Advisor identifies unused and underutilized resources, together providing comprehensive cost visibility.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS cost visibility tools",
+        "AWS cost optimization best practices"
+      ]
+    },
+    {
+      "question": "A startup needs to estimate AWS costs for their new application before deployment. Which AWS tool should they use for cost estimation?",
+      "options": [
+        "AWS Pricing Calculator",
+        "AWS Cost and Usage Report",
+        "AWS Cost Explorer",
+        "AWS Budgets"
+      ],
+      "correct": 0,
+      "explanation": "AWS Pricing Calculator allows you to estimate costs for AWS services before deployment, making it ideal for startups planning their infrastructure costs and budgeting for new applications.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Pricing Calculator documentation",
+        "AWS cost estimation"
+      ]
+    },
+    {
+      "question": "A company needs access to AWS Trusted Advisor's full set of cost optimization checks and security recommendations. Which support plan provides complete Trusted Advisor access?",
+      "options": [
+        "Enterprise Support only",
+        "Business Support and above",
+        "Developer Support",
+        "Basic Support"
+      ],
+      "correct": 1,
+      "explanation": "Business Support and Enterprise Support plans provide access to the full set of AWS Trusted Advisor checks, including all cost optimization, security, fault tolerance, and performance recommendations.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Trusted Advisor documentation",
+        "AWS Support plan features"
+      ]
+    },
+    {
+      "question": "A healthcare organization is migrating their patient records system to AWS and must comply with HIPAA requirements. They need to ensure data encryption, access logging, and network isolation. Which combination of AWS services BEST addresses these compliance requirements?",
+      "options": [
+        "RDS with default settings, GuardDuty, and internet gateway",
+        "EBS with no encryption, Config, and security groups",
+        "S3 with default encryption, CloudWatch, and public subnets",
+        "S3 with KMS encryption, CloudTrail, and VPC with private subnets"
+      ],
+      "correct": 3,
+      "explanation": "For HIPAA compliance, S3 with KMS encryption ensures data encryption at rest, CloudTrail provides comprehensive access logging for audit trails, and VPC with private subnets ensures network isolation and security required for protected health information.",
+      "domain": "Security & Compliance",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS HIPAA compliance",
+        "AWS healthcare security best practices"
+      ]
+    },
+    {
+      "question": "A global manufacturing company needs to deploy applications across multiple AWS regions for disaster recovery, with data replication and automatic failover capabilities. Which architectural approach provides the MOST comprehensive disaster recovery solution?",
+      "options": [
+        "Single AZ deployment with manual backup procedures",
+        "Single region with multiple AZs and automated backups",
+        "Multi-region deployment with Aurora Global Database and Route 53 health checks",
+        "Multi-AZ deployment with cross-region VPC peering"
+      ],
+      "correct": 2,
+      "explanation": "Multi-region deployment with Aurora Global Database provides cross-region data replication with sub-second failover, while Route 53 health checks enable automatic DNS failover to healthy regions, providing comprehensive disaster recovery capabilities.",
+      "domain": "Cloud Concepts",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS disaster recovery strategies",
+        "Aurora Global Database documentation"
+      ]
+    },
+    {
+      "question": "A financial services company processes sensitive transaction data and needs to implement a zero-trust security model with end-to-end encryption, network microsegmentation, and continuous monitoring. Which AWS services combination BEST implements zero-trust architecture?",
+      "options": [
+        "VPC with public subnets, basic security groups, and CloudWatch",
+        "Single security group, S3 public buckets, and manual monitoring",
+        "VPC with private subnets, NACLs, Security Groups, PrivateLink, KMS, and GuardDuty",
+        "Default VPC settings with internet gateway and basic encryption"
+      ],
+      "correct": 2,
+      "explanation": "Zero-trust architecture requires: VPC with private subnets for network isolation, NACLs and Security Groups for microsegmentation, PrivateLink for secure service communication, KMS for end-to-end encryption, and GuardDuty for continuous threat monitoring.",
+      "domain": "Security & Compliance",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS zero-trust architecture",
+        "AWS financial services security"
+      ]
+    },
+    {
+      "question": "A media streaming company experiences highly variable traffic with 10x spikes during live events. They need a cost-optimized architecture that automatically scales and minimizes costs during low-traffic periods. Which combination provides the MOST cost-effective solution?",
+      "options": [
+        "Reserved Instances with manual scaling",
+        "Single large instance running continuously",
+        "Fixed capacity with On-Demand Instances",
+        "Auto Scaling Groups with mixed instance types, Spot Instances, and CloudFront"
+      ],
+      "correct": 3,
+      "explanation": "Auto Scaling Groups with mixed instance types provide flexibility, Spot Instances offer up to 90% savings for fault-tolerant workloads during spikes, and CloudFront reduces origin load and costs through global caching, optimizing costs across traffic variations.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS auto scaling best practices",
+        "AWS cost optimization for variable workloads"
+      ]
+    },
+    {
+      "question": "A pharmaceutical company needs to run complex drug discovery simulations requiring thousands of CPU cores for short periods, with strict data security and compliance requirements. Which AWS approach BEST meets these requirements while optimizing costs?",
+      "options": [
+        "Lambda functions for all processing",
+        "Dedicated Hosts with Reserved Instances",
+        "Single large EC2 instance running continuously",
+        "AWS Batch with Spot Instances in a private VPC with encryption"
+      ],
+      "correct": 3,
+      "explanation": "AWS Batch automatically manages compute resources for batch workloads, Spot Instances provide up to 90% cost savings for fault-tolerant simulations, private VPC ensures security isolation, and encryption meets pharmaceutical compliance requirements.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS Batch for HPC",
+        "AWS pharmaceutical compliance"
+      ]
+    },
+    {
+      "question": "A multinational corporation with 50+ AWS accounts needs centralized cost management, governance, and compliance monitoring across all accounts. Which AWS services combination provides comprehensive multi-account management?",
+      "options": [
+        "Single account with resource tagging",
+        "Individual account management with manual reporting",
+        "AWS Organizations with Control Tower, consolidated billing, and Security Hub",
+        "Basic cost tracking with spreadsheets"
+      ],
+      "correct": 2,
+      "explanation": "AWS Organizations enables multi-account management, Control Tower provides governance and compliance guardrails, consolidated billing offers volume discounts and centralized cost management, and Security Hub provides centralized security posture across all accounts.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS multi-account strategy",
+        "AWS Organizations best practices"
+      ]
+    },
+    {
+      "question": "A retail company needs to implement a real-time recommendation engine that processes customer behavior data, updates ML models continuously, and serves recommendations with sub-100ms latency globally. Which architecture BEST supports these requirements?",
+      "options": [
+        "Batch processing with daily model updates",
+        "Manual data processing with weekly updates",
+        "Single region deployment with RDS",
+        "Kinesis Data Streams, Lambda, DynamoDB Global Tables, and CloudFront"
+      ],
+      "correct": 3,
+      "explanation": "Kinesis Data Streams processes real-time customer behavior, Lambda enables serverless model updates, DynamoDB Global Tables provide sub-100ms global access to recommendations, and CloudFront ensures global low-latency delivery.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS real-time ML architecture",
+        "AWS global low-latency patterns"
+      ]
+    },
+    {
+      "question": "A government agency needs to migrate classified data to AWS while maintaining air-gapped security, FIPS 140-2 Level 3 compliance, and ensuring data never leaves government-controlled infrastructure. Which AWS solution BEST meets these stringent requirements?",
+      "options": [
+        "Public cloud with VPN connections",
+        "AWS GovCloud with CloudHSM FIPS 140-2 Level 3 and dedicated tenancy",
+        "AWS Outposts in commercial regions",
+        "Standard AWS regions with encryption"
+      ],
+      "correct": 1,
+      "explanation": "AWS GovCloud provides FedRAMP High authorized environment for classified data, CloudHSM FIPS 140-2 Level 3 provides hardware-based key management meeting the highest security standards, and dedicated tenancy ensures physical isolation.",
+      "domain": "Security & Compliance",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS GovCloud compliance",
+        "AWS FIPS 140-2 Level 3"
+      ]
+    },
+    {
+      "question": "A startup is building a serverless application that needs to handle unpredictable traffic from 10 to 100,000 concurrent users, process images, store metadata, and send notifications. Which architecture provides the MOST scalable and cost-effective solution?",
+      "options": [
+        "API Gateway, Lambda, S3, DynamoDB, and SNS",
+        "Single large server with manual scaling",
+        "EC2 instances with load balancers",
+        "Container-based solution with fixed capacity"
+      ],
+      "correct": 0,
+      "explanation": "This serverless architecture automatically scales: API Gateway handles traffic spikes, Lambda processes requests without server management, S3 stores images with unlimited capacity, DynamoDB scales automatically, and SNS handles notifications, all with pay-per-use pricing.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS serverless architecture patterns",
+        "AWS auto-scaling serverless solutions"
+      ]
+    },
+    {
+      "question": "A large enterprise has complex billing requirements with 200+ accounts, multiple business units, and needs detailed chargeback allocation with cost optimization recommendations. Which comprehensive cost management strategy provides the BEST results?",
+      "options": [
+        "Manual cost tracking with spreadsheets",
+        "AWS Organizations, Cost Categories, Savings Plans, and automated RI management",
+        "Single account with basic tagging",
+        "Third-party tools only"
+      ],
+      "correct": 1,
+      "explanation": "AWS Organizations enables consolidated billing across 200+ accounts, Cost Categories provide automated chargeback allocation to business units, Savings Plans offer flexible discounts, and automated RI management optimizes Reserved Instance utilization and exchanges.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS enterprise cost management",
+        "AWS Cost Categories documentation"
+      ]
+    },
+    {
+      "question": "A biotechnology company processes genomic data requiring 500TB storage, variable compute workloads, strict data encryption, and collaboration with research institutions globally. Which architecture optimizes costs while meeting security and collaboration requirements?",
+      "options": [
+        "Local storage with manual backup",
+        "Single storage class with fixed compute",
+        "S3 Standard with public access for collaboration",
+        "S3 Intelligent-Tiering with KMS, Batch with Spot Instances, and PrivateLink"
+      ],
+      "correct": 3,
+      "explanation": "S3 Intelligent-Tiering automatically optimizes storage costs for 500TB data, KMS provides encryption for sensitive genomic data, Batch with Spot Instances offers up to 90% compute savings for variable workloads, and PrivateLink enables secure collaboration.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS genomics architecture",
+        "AWS life sciences cost optimization"
+      ]
+    },
+    {
+      "question": "A financial institution needs to implement a comprehensive security monitoring solution that detects threats, ensures compliance with multiple frameworks (SOC 2, PCI DSS), and provides automated incident response. Which AWS services combination provides the MOST comprehensive security solution?",
+      "options": [
+        "Single security service implementation",
+        "Security Hub, GuardDuty, Config, CloudTrail, and Lambda for automation",
+        "Basic CloudWatch monitoring only",
+        "Manual security reviews"
+      ],
+      "correct": 1,
+      "explanation": "Security Hub centralizes security findings and compliance status, GuardDuty detects threats using ML, Config monitors compliance with SOC 2 and PCI DSS rules, CloudTrail provides audit trails, and Lambda enables automated incident response workflows.",
+      "domain": "Security & Compliance",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS comprehensive security monitoring",
+        "AWS automated incident response"
+      ]
+    },
+    {
+      "question": "A global e-commerce company needs to implement a data lake architecture that ingests data from multiple sources, processes it in real-time and batch modes, and provides analytics capabilities while optimizing costs. Which architecture BEST meets these requirements?",
+      "options": [
+        "S3 data lake with Kinesis, Glue, EMR, Athena, and lifecycle policies",
+        "Single database with manual processing",
+        "Basic file storage with manual analysis",
+        "On-premises data warehouse only"
+      ],
+      "correct": 0,
+      "explanation": "S3 provides scalable data lake foundation, Kinesis handles real-time ingestion, Glue provides serverless ETL, EMR handles big data processing, Athena enables serverless analytics, and lifecycle policies optimize storage costs across different access patterns.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS data lake architecture",
+        "AWS analytics services integration"
+      ]
+    },
+    {
+      "question": "A manufacturing company wants to implement predictive maintenance using IoT sensors, machine learning, and real-time alerts. They need to process sensor data, detect anomalies, and trigger maintenance workflows. Which AWS architecture BEST supports this IoT and ML use case?",
+      "options": [
+        "IoT Core, Kinesis Analytics, SageMaker, Lambda, and SNS",
+        "Single server processing all data",
+        "Manual data collection and analysis",
+        "Batch processing with weekly analysis"
+      ],
+      "correct": 0,
+      "explanation": "IoT Core manages sensor connectivity, Kinesis Analytics processes streaming sensor data in real-time, SageMaker provides ML models for anomaly detection, Lambda triggers maintenance workflows, and SNS sends real-time alerts to maintenance teams.",
+      "domain": "Cloud Technology & Services",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS IoT predictive maintenance",
+        "AWS industrial IoT architecture"
+      ]
+    },
+    {
+      "question": "A media company has significant data transfer costs representing 40% of their AWS bill due to global content distribution. They need to optimize these costs while maintaining performance and implementing geographic content restrictions. Which strategy provides the GREATEST cost reduction?",
+      "options": [
+        "Manual content distribution",
+        "Single region deployment only",
+        "Reduce content quality to minimize transfer",
+        "CloudFront with Lambda@Edge, S3 Intelligent-Tiering, and regional optimization"
+      ],
+      "correct": 3,
+      "explanation": "CloudFront reduces data transfer costs by up to 85% through edge caching, Lambda@Edge enables geographic restrictions without additional infrastructure, S3 Intelligent-Tiering optimizes storage costs, and regional optimization minimizes cross-region transfer charges.",
+      "domain": "Billing, Pricing & Support",
+      "difficulty": "hard",
+      "validated": true,
+      "validation_sources": [
+        "AWS data transfer cost optimization",
+        "CloudFront cost benefits"
+      ]
+    }
+  ]
+}
