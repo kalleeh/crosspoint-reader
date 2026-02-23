@@ -15,9 +15,11 @@
         "Amazon Timestream",
         "Amazon DocumentDB"
       ],
-      "correct_answer": 2,
       "explanation": "Amazon Timestream is purpose-built for time-series data with high ingestion rates. It automatically scales to handle millions of time-series data points per second and provides built-in time-based analytics functions.",
-      "validation_sources": ["https://docs.aws.amazon.com/timestream/latest/developerguide/what-is-timestream.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/timestream/latest/developerguide/what-is-timestream.html"
+      ],
+      "correct": 2
     },
     {
       "id": 2,
@@ -30,9 +32,11 @@
         "Use DynamoDB encryption at rest with customer managed KMS keys",
         "Store encrypted data in S3 and reference it from DynamoDB"
       ],
-      "correct_answer": 1,
       "explanation": "Client-side encryption with customer managed KMS keys provides field-level encryption control and allows quarterly key rotation. DynamoDB encryption at rest encrypts the entire item, not individual fields.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/client-side-encryption.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/client-side-encryption.html"
+      ],
+      "correct": 1
     },
     {
       "id": 3,
@@ -45,9 +49,11 @@
         "AWS Application Discovery Service",
         "AWS Migration Hub"
       ],
-      "correct_answer": 1,
       "explanation": "AWS Schema Conversion Tool (SCT) should be used first to analyze the source Oracle schema and generate a conversion assessment report, identifying potential issues before starting the actual migration with DMS.",
-      "validation_sources": ["https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_Welcome.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_Welcome.html"
+      ],
+      "correct": 1
     },
     {
       "id": 4,
@@ -60,9 +66,11 @@
         "90 days",
         "1 year"
       ],
-      "correct_answer": 1,
       "explanation": "Amazon RDS supports automated backup retention for up to 35 days. Manual snapshots can be retained indefinitely.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithAutomatedBackups.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithAutomatedBackups.html"
+      ],
+      "correct": 1
     },
     {
       "id": 5,
@@ -75,9 +83,11 @@
         "Global Secondary Index capacity exceeded",
         "Network connectivity issues"
       ],
-      "correct_answer": 1,
       "explanation": "Hot partitions caused by uneven distribution of requests across partition key values is a common cause of throttling even when overall table capacity is sufficient. This indicates poor partition key design.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html"
+      ],
+      "correct": 1
     },
     {
       "id": 6,
@@ -90,9 +100,11 @@
         "Amazon RDS with complex joins",
         "Amazon DocumentDB with aggregation pipelines"
       ],
-      "correct_answer": 1,
       "explanation": "Amazon Neptune is a purpose-built graph database that excels at relationship queries. Gremlin traversal language can efficiently handle complex relationship patterns like mutual friends and friend recommendations.",
-      "validation_sources": ["https://docs.aws.amazon.com/neptune/latest/userguide/graph-get-started.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/neptune/latest/userguide/graph-get-started.html"
+      ],
+      "correct": 1
     },
     {
       "id": 7,
@@ -105,9 +117,11 @@
         "dynamodb:Select",
         "dynamodb:ReturnValues"
       ],
-      "correct_answer": 1,
       "explanation": "The dynamodb:LeadingKeys condition allows fine-grained access control by restricting access to items with specific partition key values, enabling user-specific data isolation.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/specifying-conditions.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/specifying-conditions.html"
+      ],
+      "correct": 1
     },
     {
       "id": 8,
@@ -120,9 +134,11 @@
         "Homogeneous migrations support larger databases",
         "Heterogeneous migrations have lower downtime"
       ],
-      "correct_answer": 1,
       "explanation": "Heterogeneous migrations involve different database engines (e.g., Oracle to PostgreSQL) and require schema conversion, while homogeneous migrations use the same database engine.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.html"
+      ],
+      "correct": 1
     },
     {
       "id": 9,
@@ -135,9 +151,11 @@
         "Aurora Serverless v2 with auto-scaling",
         "Multiple Aurora clusters with DMS replication"
       ],
-      "correct_answer": 0,
       "explanation": "Aurora Global Database provides cross-region read replicas with sub-second replication lag and is more cost-effective than maintaining separate clusters or using DMS for replication.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html"
+      ],
+      "correct": 0
     },
     {
       "id": 10,
@@ -150,9 +168,11 @@
         "SuccessfulRequestLatency",
         "UserErrors"
       ],
-      "correct_answer": 1,
       "explanation": "ThrottledRequests metric indicates when requests are being rejected due to capacity limits, which often reveals partition-level hotspots and capacity distribution issues.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/monitoring-cloudwatch.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/monitoring-cloudwatch.html"
+      ],
+      "correct": 1
     },
     {
       "id": 11,
@@ -165,9 +185,11 @@
         "Use a composite primary key with game_id as partition key and score as sort key",
         "Use DynamoDB Streams to maintain a separate leaderboard table"
       ],
-      "correct_answer": 2,
       "explanation": "Using game_id as partition key and score as sort key allows efficient range queries for leaderboards while distributing load across game partitions. GSI with score as partition key would create hot partitions.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-sort-keys.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-sort-keys.html"
+      ],
+      "correct": 2
     },
     {
       "id": 12,
@@ -180,9 +202,11 @@
         "IAM Database Authentication",
         "SSL/TLS encryption"
       ],
-      "correct_answer": 1,
       "explanation": "VPC provides network isolation by placing RDS instances in a private network. Security groups control traffic, but VPC provides the fundamental network isolation.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.html"
+      ],
+      "correct": 1
     },
     {
       "id": 13,
@@ -195,9 +219,11 @@
         "Configure parallel load for multiple tables",
         "Optimize the source database redo log configuration"
       ],
-      "correct_answer": 3,
       "explanation": "CDC performance heavily depends on source database log configuration. Optimizing Oracle redo log size, frequency, and archiving can significantly improve CDC latency before scaling infrastructure.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.Oracle.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.Oracle.html"
+      ],
+      "correct": 3
     },
     {
       "id": 14,
@@ -210,9 +236,11 @@
         "Use Aurora Serverless for automatic upgrades",
         "Restore from snapshot to new version"
       ],
-      "correct_answer": 1,
       "explanation": "Blue-green deployment provides the safest approach for major version upgrades, allowing testing and quick rollback if issues occur, minimizing downtime and risk.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html"
+      ],
+      "correct": 1
     },
     {
       "id": 15,
@@ -225,9 +253,11 @@
         "Storage I/O performance and IOPS limits",
         "Memory allocation and buffer cache hit ratio"
       ],
-      "correct_answer": 2,
       "explanation": "High wait events typically indicate I/O bottlenecks. Aurora's storage is distributed, but investigating I/O patterns and potential storage performance issues should be the first step when CPU is high but time is spent waiting.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights.html"
+      ],
+      "correct": 2
     },
     {
       "id": 16,
@@ -240,9 +270,11 @@
         "Amazon DocumentDB",
         "Amazon ElastiCache"
       ],
-      "correct_answer": 2,
       "explanation": "Amazon DocumentDB is purpose-built for document storage with MongoDB compatibility, providing native JSON document support and flexible schema capabilities.",
-      "validation_sources": ["https://docs.aws.amazon.com/documentdb/latest/developerguide/what-is.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/documentdb/latest/developerguide/what-is.html"
+      ],
+      "correct": 2
     },
     {
       "id": 17,
@@ -255,9 +287,11 @@
         "Database Activity Streams + CloudTrail",
         "AWS Config + CloudWatch Events"
       ],
-      "correct_answer": 2,
       "explanation": "Database Activity Streams provide real-time monitoring of database activity, while CloudTrail captures API calls. Together they provide comprehensive auditing of both database operations and management actions.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html"
+      ],
+      "correct": 2
     },
     {
       "id": 18,
@@ -270,9 +304,11 @@
         "Use AWS Snow family device with DMS",
         "Perform logical replication with pg_dump/pg_restore"
       ],
-      "correct_answer": 2,
       "explanation": "For very large databases (10TB+), using AWS Snow family devices to transfer the initial data load, followed by DMS for CDC, minimizes network transfer time and downtime.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_LargeDBs.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_LargeDBs.html"
+      ],
+      "correct": 2
     },
     {
       "id": 19,
@@ -285,9 +321,11 @@
         "14 days",
         "30 days"
       ],
-      "correct_answer": 1,
       "explanation": "The default backup retention period for RDS instances is 7 days. This can be modified from 0 to 35 days.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithAutomatedBackups.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithAutomatedBackups.html"
+      ],
+      "correct": 1
     },
     {
       "id": 20,
@@ -300,9 +338,11 @@
         "Insufficient provisioned capacity",
         "Global Secondary Index throttling"
       ],
-      "correct_answer": 1,
       "explanation": "On-demand tables don't have provisioned capacity limits, but they can still experience throttling due to hot partitions caused by uneven access patterns across partition keys.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/on-demand-capacity-mode.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/on-demand-capacity-mode.html"
+      ],
+      "correct": 1
     },
     {
       "id": 21,
@@ -315,9 +355,11 @@
         "Amazon DynamoDB with streams",
         "Amazon Aurora with backtrack"
       ],
-      "correct_answer": 1,
       "explanation": "Amazon QLDB is purpose-built for ledger applications, providing immutable transaction logs with cryptographic verification using SHA-256 hashing and Merkle trees.",
-      "validation_sources": ["https://docs.aws.amazon.com/qldb/latest/developerguide/what-is.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/qldb/latest/developerguide/what-is.html"
+      ],
+      "correct": 1
     },
     {
       "id": 22,
@@ -330,9 +372,11 @@
         "Create separate tables for each user",
         "Use views with WHERE clauses for each user"
       ],
-      "correct_answer": 1,
       "explanation": "PostgreSQL Row Level Security (RLS) policies provide database-level enforcement of row-level access control, which is more secure and efficient than application-level filtering.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.RLS.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.RLS.html"
+      ],
+      "correct": 1
     },
     {
       "id": 23,
@@ -345,9 +389,11 @@
         "AWS Schema Conversion Tool",
         "AWS Database Migration Service"
       ],
-      "correct_answer": 2,
       "explanation": "AWS Schema Conversion Tool (SCT) provides detailed assessment reports that estimate the complexity and effort required for database schema conversions in migration projects.",
-      "validation_sources": ["https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_AssessmentReport.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_AssessmentReport.html"
+      ],
+      "correct": 2
     },
     {
       "id": 24,
@@ -360,9 +406,11 @@
         "32",
         "64"
       ],
-      "correct_answer": 1,
       "explanation": "Aurora supports up to 15 read replicas per cluster, which can be distributed across multiple Availability Zones for high availability and read scaling.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html"
+      ],
+      "correct": 1
     },
     {
       "id": 25,
@@ -375,9 +423,11 @@
         "Performance Insights",
         "Database Activity Streams"
       ],
-      "correct_answer": 2,
       "explanation": "Performance Insights provides detailed query-level performance data, including top SQL statements, wait events, and database load analysis.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights.html"
+      ],
+      "correct": 2
     },
     {
       "id": 26,
@@ -390,9 +440,11 @@
         "Use composite partition key with tenant_id and data_type",
         "Use a single table with tenant_id in all item attributes"
       ],
-      "correct_answer": 1,
       "explanation": "Using tenant_id as partition key ensures data isolation and even distribution, while data_type as sort key enables efficient queries within each tenant's data partition.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html"
+      ],
+      "correct": 1
     },
     {
       "id": 27,
@@ -405,9 +457,11 @@
         "CloudWatch alarm thresholds",
         "Auto-scaling policy configuration"
       ],
-      "correct_answer": 1,
       "explanation": "Non-default max_connections parameter values can prevent Aurora Serverless v2 from scaling down to minimum ACU. The parameter affects memory allocation and scaling behavior.",
-      "validation_sources": ["https://aws.amazon.com/blogs/database/understanding-how-certain-database-parameters-impact-scaling-in-amazon-aurora-serverless-v2/"]
+      "validation_sources": [
+        "https://aws.amazon.com/blogs/database/understanding-how-certain-database-parameters-impact-scaling-in-amazon-aurora-serverless-v2/"
+      ],
+      "correct": 1
     },
     {
       "id": 28,
@@ -420,9 +474,11 @@
         "AWS IAM database authentication + temporary credentials",
         "AWS KMS + encrypted environment variables"
       ],
-      "correct_answer": 0,
       "explanation": "AWS Secrets Manager with Lambda rotation functions can automatically rotate RDS passwords and update applications seamlessly without downtime.",
-      "validation_sources": ["https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotating-secrets-rds.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotating-secrets-rds.html"
+      ],
+      "correct": 0
     },
     {
       "id": 29,
@@ -435,9 +491,11 @@
         "ThrottledRequests",
         "SuccessfulRequestLatency"
       ],
-      "correct_answer": 2,
       "explanation": "ThrottledRequests metric indicates when write requests are being rejected due to insufficient capacity, signaling the need for additional write capacity units.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/monitoring-cloudwatch.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/monitoring-cloudwatch.html"
+      ],
+      "correct": 2
     },
     {
       "id": 30,
@@ -450,9 +508,11 @@
         "Exclude LOB columns from initial migration",
         "Enable parallel load for LOB tables"
       ],
-      "correct_answer": 1,
       "explanation": "Limited LOB mode with appropriate size limits prevents memory issues and improves performance by handling LOBs more efficiently during migration.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.LOBSupport.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.LOBSupport.html"
+      ],
+      "correct": 1
     },
     {
       "id": 31,
@@ -465,9 +525,11 @@
         "Amazon DynamoDB Accelerator (DAX)",
         "Amazon Aurora Global Database"
       ],
-      "correct_answer": 1,
       "explanation": "Amazon ElastiCache is purpose-built for caching and provides in-memory data storage with microsecond latency for frequently accessed data.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html"
+      ],
+      "correct": 1
     },
     {
       "id": 32,
@@ -480,9 +542,11 @@
         "Centralized access management",
         "Lower connection latency"
       ],
-      "correct_answer": 2,
       "explanation": "IAM database authentication provides centralized access management through IAM policies, eliminating the need to manage database passwords separately.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html"
+      ],
+      "correct": 2
     },
     {
       "id": 33,
@@ -495,9 +559,11 @@
         "72 hours",
         "Unlimited with continuous backups"
       ],
-      "correct_answer": 1,
       "explanation": "Aurora supports point-in-time recovery for up to 35 days with continuous backup to Amazon S3, allowing recovery to any second within the retention period.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Managing.Backups.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Managing.Backups.html"
+      ],
+      "correct": 1
     },
     {
       "id": 34,
@@ -510,9 +576,11 @@
         "Network connectivity issues to the GSI",
         "CloudWatch metrics are delayed"
       ],
-      "correct_answer": 0,
       "explanation": "GSI throttling often occurs due to hot partitions caused by low cardinality partition keys, concentrating writes on few partitions even when overall GSI capacity is sufficient.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/gsi-throttling.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/gsi-throttling.html"
+      ],
+      "correct": 0
     },
     {
       "id": 35,
@@ -525,9 +593,11 @@
         "Set up SSL encryption",
         "Enable binary logging"
       ],
-      "correct_answer": 0,
       "explanation": "Supplemental logging must be enabled on Oracle source tables to capture all necessary information for change data capture (CDC) during ongoing replication.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.Oracle.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.Oracle.html"
+      ],
+      "correct": 0
     },
     {
       "id": 36,
@@ -540,9 +610,11 @@
         "RDS + CloudWatch Events + Lambda",
         "DocumentDB + Change Streams + EMR"
       ],
-      "correct_answer": 1,
       "explanation": "Kinesis Data Streams handles high-throughput streaming data, Kinesis Analytics performs real-time complex aggregations, and Aurora stores the processed results efficiently.",
-      "validation_sources": ["https://docs.aws.amazon.com/kinesis/latest/dev/introduction.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/kinesis/latest/dev/introduction.html"
+      ],
+      "correct": 1
     },
     {
       "id": 37,
@@ -555,9 +627,11 @@
         "VPC isolation and IAM authentication",
         "Multi-factor authentication for all users"
       ],
-      "correct_answer": 1,
       "explanation": "HIPAA compliance requires encryption at rest and in transit for PHI, plus comprehensive audit logging to track all access to patient data.",
-      "validation_sources": ["https://docs.aws.amazon.com/whitepapers/latest/architecting-hipaa-security-and-compliance-on-aws/amazon-rds.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/whitepapers/latest/architecting-hipaa-security-and-compliance-on-aws/amazon-rds.html"
+      ],
+      "correct": 1
     },
     {
       "id": 38,
@@ -570,9 +644,11 @@
         "They continue serving read traffic only",
         "They require manual intervention to restart"
       ],
-      "correct_answer": 1,
       "explanation": "Aurora automatically promotes a read replica to become the new primary instance during failover, typically completing the process in under 30 seconds.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraHighAvailability.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraHighAvailability.html"
+      ],
+      "correct": 1
     },
     {
       "id": 39,
@@ -585,9 +661,11 @@
         "ReadLatency",
         "FreeableMemory"
       ],
-      "correct_answer": 1,
       "explanation": "DatabaseConnections metric shows current connection count against the max_connections limit. Connection timeouts often occur when the connection limit is reached.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/monitoring-cloudwatch.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/monitoring-cloudwatch.html"
+      ],
+      "correct": 1
     },
     {
       "id": 40,
@@ -600,9 +678,11 @@
         "Minimal downtime with CDC capability",
         "Lower cost per GB transferred"
       ],
-      "correct_answer": 2,
       "explanation": "DMS's key advantage is its change data capture (CDC) capability, which enables minimal downtime migrations by continuously replicating changes during the migration process.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Introduction.html"
+      ],
+      "correct": 2
     },
     {
       "id": 41,
@@ -615,9 +695,11 @@
         "ElastiCache Redis cluster with persistence",
         "Timestream with high ingestion rate"
       ],
-      "correct_answer": 2,
       "explanation": "ElastiCache Redis provides microsecond latency and can handle millions of operations per second, making it ideal for high-frequency trading data with persistence enabled for durability.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/WhatIs.html"
+      ],
+      "correct": 2
     },
     {
       "id": 42,
@@ -630,9 +712,11 @@
         "Encryption at rest",
         "DynamoDB Streams"
       ],
-      "correct_answer": 1,
       "explanation": "IAM condition keys like dynamodb:LeadingKeys and dynamodb:Attributes enable fine-grained access control, restricting access to specific items and attributes based on user context.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/specifying-conditions.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/specifying-conditions.html"
+      ],
+      "correct": 1
     },
     {
       "id": 43,
@@ -645,9 +729,11 @@
         "Schedule during low-traffic periods with read replica promotion",
         "Disable automatic maintenance and perform manual updates"
       ],
-      "correct_answer": 2,
       "explanation": "Scheduling maintenance during low-traffic periods and using read replica promotion minimizes impact. Aurora's fast failover capabilities make this approach effective for production environments.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_UpgradeDBInstance.Maintenance.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_UpgradeDBInstance.Maintenance.html"
+      ],
+      "correct": 2
     },
     {
       "id": 44,
@@ -660,9 +746,11 @@
         "Database Activity Streams",
         "Enhanced Monitoring"
       ],
-      "correct_answer": 2,
       "explanation": "Database Activity Streams provide real-time monitoring of database activity, capturing SQL statements and database events as they occur.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html"
+      ],
+      "correct": 2
     },
     {
       "id": 45,
@@ -675,9 +763,11 @@
         "All MongoDB applications work without modification",
         "Only basic CRUD operations are supported"
       ],
-      "correct_answer": 1,
       "explanation": "DocumentDB has specific MongoDB version compatibility. Not all MongoDB 4.4 features may be supported, so checking compatibility documentation for specific features is crucial before migration.",
-      "validation_sources": ["https://docs.aws.amazon.com/documentdb/latest/developerguide/mongo-apis.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/documentdb/latest/developerguide/mongo-apis.html"
+      ],
+      "correct": 1
     },
     {
       "id": 46,
@@ -690,9 +780,11 @@
         "DynamoDB Transactions",
         "Batch write operations"
       ],
-      "correct_answer": 2,
       "explanation": "DynamoDB Transactions provide ACID properties for operations across multiple items, ensuring atomic updates to shopping cart contents.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/transaction-apis.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/transaction-apis.html"
+      ],
+      "correct": 2
     },
     {
       "id": 47,
@@ -705,9 +797,11 @@
         "Encryption at rest with AWS managed keys",
         "Encryption at rest with customer managed keys"
       ],
-      "correct_answer": 1,
       "explanation": "DynamoDB tables are encrypted at rest by default using AWS owned keys, providing encryption without additional configuration or cost.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/EncryptionAtRest.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/EncryptionAtRest.html"
+      ],
+      "correct": 1
     },
     {
       "id": 48,
@@ -720,9 +814,11 @@
         "Use Aurora parallel query for all operations",
         "Implement connection pooling with RDS Proxy"
       ],
-      "correct_answer": 1,
       "explanation": "Dedicated read replicas for OLAP workloads isolate analytical queries from transactional workloads, preventing performance impact on the primary OLTP operations.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html"
+      ],
+      "correct": 1
     },
     {
       "id": 49,
@@ -735,9 +831,11 @@
         "Hot partition problems",
         "Incorrect CloudWatch metrics"
       ],
-      "correct_answer": 0,
       "explanation": "Scan operations consume read capacity units for all items examined, not just returned items, leading to high capacity consumption with potentially low actual data retrieval.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-query-scan.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-query-scan.html"
+      ],
+      "correct": 0
     },
     {
       "id": 50,
@@ -750,9 +848,11 @@
         "The source database is automatically paused",
         "All pending changes are lost"
       ],
-      "correct_answer": 1,
       "explanation": "DMS buffers changes when the target is unavailable and applies them once connectivity is restored, ensuring no data loss during temporary outages.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.html"
+      ],
+      "correct": 1
     },
     {
       "id": 51,
@@ -765,9 +865,11 @@
         "Amazon Neptune",
         "Amazon Redshift"
       ],
-      "correct_answer": 2,
       "explanation": "Amazon Neptune is a purpose-built graph database that excels at storing and querying highly connected data with complex relationships.",
-      "validation_sources": ["https://docs.aws.amazon.com/neptune/latest/userguide/graph-get-started.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/neptune/latest/userguide/graph-get-started.html"
+      ],
+      "correct": 2
     },
     {
       "id": 52,
@@ -780,9 +882,11 @@
         "Enable Aurora database activity streams",
         "Use VPC security groups to restrict access"
       ],
-      "correct_answer": 1,
       "explanation": "Client-side encryption ensures that data is encrypted before it reaches the database, making it unreadable even to database administrators who have system-level access.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Overview.Encryption.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Overview.Encryption.html"
+      ],
+      "correct": 1
     },
     {
       "id": 53,
@@ -795,9 +899,11 @@
         "256 TB",
         "Virtually unlimited (up to 128 TiB)"
       ],
-      "correct_answer": 3,
       "explanation": "Aurora storage automatically scales up to 128 TiB (approximately 140 TB) without requiring pre-provisioning, making it virtually unlimited for most use cases.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Overview.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Overview.html"
+      ],
+      "correct": 3
     },
     {
       "id": 54,
@@ -810,9 +916,11 @@
         "Lock wait events",
         "Network wait events"
       ],
-      "correct_answer": 1,
       "explanation": "High commit latency in Aurora PostgreSQL is often related to I/O wait events, particularly synchronous_commit operations waiting for log writes to complete.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights.html"
+      ],
+      "correct": 1
     },
     {
       "id": 55,
@@ -825,9 +933,11 @@
         "Physical backup and restore",
         "Percona XtraBackup"
       ],
-      "correct_answer": 1,
       "explanation": "AWS DMS with full load followed by CDC provides minimal downtime for medium-sized databases by continuously replicating changes during the migration process.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_GettingStarted.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_GettingStarted.html"
+      ],
+      "correct": 1
     },
     {
       "id": 56,
@@ -840,9 +950,11 @@
         "ElastiCache Redis with cross-region replication",
         "RDS with cross-region read replicas"
       ],
-      "correct_answer": 0,
       "explanation": "DynamoDB Global Tables provide multi-region, multi-master replication with eventual consistency, ideal for global leaderboards that need fast local reads and writes.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GlobalTables.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GlobalTables.html"
+      ],
+      "correct": 0
     },
     {
       "id": 57,
@@ -855,9 +967,11 @@
         "CloudWatch Logs + Lambda + DynamoDB",
         "Performance Insights + CloudWatch + SNS"
       ],
-      "correct_answer": 1,
       "explanation": "Database Activity Streams capture all database activity, Kinesis Data Firehose provides reliable delivery, and S3 with appropriate configurations can provide tamper-proof storage for compliance.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html"
+      ],
+      "correct": 1
     },
     {
       "id": 58,
@@ -870,9 +984,11 @@
         "7 days",
         "14 days"
       ],
-      "correct_answer": 0,
       "explanation": "RDS allows setting backup retention to 0 days, which disables automated backups. However, this is not recommended for production databases.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithAutomatedBackups.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_WorkingWithAutomatedBackups.html"
+      ],
+      "correct": 0
     },
     {
       "id": 59,
@@ -885,9 +1001,11 @@
         "ThrottledRequests for the base table",
         "ProvisionedWriteCapacityUnits for the GSI"
       ],
-      "correct_answer": 1,
       "explanation": "Monitoring ConsumedWriteCapacityUnits for the GSI compared to its provisioned capacity helps identify if the GSI is the bottleneck causing base table throttling.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/gsi-throttling.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/gsi-throttling.html"
+      ],
+      "correct": 1
     },
     {
       "id": 60,
@@ -900,9 +1018,11 @@
         "AWS Application Discovery Service",
         "AWS Migration Hub"
       ],
-      "correct_answer": 1,
       "explanation": "AWS Schema Conversion Tool (SCT) is specifically designed to convert database schemas and code objects like stored procedures between different database engines.",
-      "validation_sources": ["https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_Welcome.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_Welcome.html"
+      ],
+      "correct": 1
     },
     {
       "id": 61,
@@ -915,9 +1035,11 @@
         "Store recent data in RDS, archive to S3",
         "Use Aurora with partitioned tables"
       ],
-      "correct_answer": 1,
       "explanation": "Timestream automatically tiers data from memory to magnetic storage based on age, providing cost-effective storage for time-series data with built-in lifecycle management.",
-      "validation_sources": ["https://docs.aws.amazon.com/timestream/latest/developerguide/storage.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/timestream/latest/developerguide/storage.html"
+      ],
+      "correct": 1
     },
     {
       "id": 62,
@@ -930,9 +1052,11 @@
         "IAM database authentication",
         "AWS PrivateLink endpoints"
       ],
-      "correct_answer": 0,
       "explanation": "Aurora supports SSL/TLS enforcement at the database level, automatically encrypting all connections without requiring application code changes.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html"
+      ],
+      "correct": 0
     },
     {
       "id": 63,
@@ -945,9 +1069,11 @@
         "Point-in-time recovery is not possible",
         "Use Aurora Backtrack if enabled"
       ],
-      "correct_answer": 1,
       "explanation": "If automated backup retention doesn't cover the desired restore point, manual snapshots (if available) or Aurora Backtrack (if previously enabled) are the only options for point-in-time recovery.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Managing.Backups.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Managing.Backups.html"
+      ],
+      "correct": 1
     },
     {
       "id": 64,
@@ -960,9 +1086,11 @@
         "Aurora fault tolerance",
         "Performance Insights"
       ],
-      "correct_answer": 2,
       "explanation": "Aurora's built-in fault tolerance automatically detects database crashes and restarts the database process without requiring Multi-AZ failover.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraHighAvailability.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraHighAvailability.html"
+      ],
+      "correct": 2
     },
     {
       "id": 65,
@@ -975,9 +1103,11 @@
         "Connection string changes are required",
         "Data must be denormalized before migration"
       ],
-      "correct_answer": 0,
       "explanation": "DocumentDB doesn't support MongoDB's native sharding. Applications using sharded MongoDB may need architectural changes or data redistribution strategies.",
-      "validation_sources": ["https://docs.aws.amazon.com/documentdb/latest/developerguide/limits.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/documentdb/latest/developerguide/limits.html"
+      ],
+      "correct": 0
     },
     {
       "id": 66,
@@ -990,9 +1120,11 @@
         "Reserved capacity",
         "Provisioned capacity with manual scaling"
       ],
-      "correct_answer": 1,
       "explanation": "On-demand capacity automatically scales with traffic and charges only for actual usage, making it cost-effective for unpredictable workloads with occasional spikes.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/on-demand-capacity-mode.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/on-demand-capacity-mode.html"
+      ],
+      "correct": 1
     },
     {
       "id": 67,
@@ -1005,9 +1137,11 @@
         "No network access",
         "Access from specific IP ranges only"
       ],
-      "correct_answer": 1,
       "explanation": "By default, new RDS instances are created with private access only within the VPC, requiring explicit configuration to enable public access.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.html"
+      ],
+      "correct": 1
     },
     {
       "id": 68,
@@ -1020,9 +1154,11 @@
         "512 ACUs",
         "1024 ACUs"
       ],
-      "correct_answer": 1,
       "explanation": "Aurora Serverless v2 can scale up to a maximum of 256 ACUs, with each ACU providing approximately 2 GiB of memory and corresponding CPU and networking resources.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html"
+      ],
+      "correct": 1
     },
     {
       "id": 69,
@@ -1035,9 +1171,11 @@
         "Use eventually consistent reads instead of strongly consistent reads",
         "Create a Global Secondary Index"
       ],
-      "correct_answer": 2,
       "explanation": "Eventually consistent reads provide better performance and lower latency than strongly consistent reads, and should be used when strong consistency isn't required.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/HowItWorks.ReadConsistency.html"
+      ],
+      "correct": 2
     },
     {
       "id": 70,
@@ -1050,9 +1188,11 @@
         "Monitor database performance during migration",
         "Replicate data in real-time"
       ],
-      "correct_answer": 1,
       "explanation": "AWS Schema Conversion Tool (SCT) is specifically designed to convert database schemas and code objects from one database engine to another.",
-      "validation_sources": ["https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_Welcome.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_Welcome.html"
+      ],
+      "correct": 1
     },
     {
       "id": 71,
@@ -1065,9 +1205,11 @@
         "ElastiCache Redis with RDB persistence",
         "RDS with read replicas and connection pooling"
       ],
-      "correct_answer": 1,
       "explanation": "DynamoDB with DAX provides microsecond latency for reads and single-digit millisecond latency for writes, while maintaining durability for order history.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DAX.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DAX.html"
+      ],
+      "correct": 1
     },
     {
       "id": 72,
@@ -1080,9 +1222,11 @@
         "IAM condition keys with item-level filtering",
         "DynamoDB resource-based policies"
       ],
-      "correct_answer": 2,
       "explanation": "IAM condition keys like dynamodb:LeadingKeys enable item-level access control by restricting access based on partition key values and user attributes.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/specifying-conditions.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/specifying-conditions.html"
+      ],
+      "correct": 2
     },
     {
       "id": 73,
@@ -1095,9 +1239,11 @@
         "2-3 minutes",
         "5-10 minutes"
       ],
-      "correct_answer": 1,
       "explanation": "Aurora typically completes failover to a read replica in 30-60 seconds, significantly faster than traditional RDS Multi-AZ failover.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraHighAvailability.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraHighAvailability.html"
+      ],
+      "correct": 1
     },
     {
       "id": 74,
@@ -1110,9 +1256,11 @@
         "Commit frequency too high - batch transactions",
         "Network latency - use placement groups"
       ],
-      "correct_answer": 2,
       "explanation": "'Log file sync' wait events indicate frequent commits waiting for log writes. Batching transactions reduces commit frequency and improves performance.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights.html"
+      ],
+      "correct": 2
     },
     {
       "id": 75,
@@ -1125,9 +1273,11 @@
         "Use full table scan for CDC",
         "Create unique indexes as substitutes"
       ],
-      "correct_answer": 1,
       "explanation": "Adding primary keys before migration ensures efficient CDC operation and prevents performance issues during ongoing replication.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_BestPractices.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_BestPractices.html"
+      ],
+      "correct": 1
     },
     {
       "id": 76,
@@ -1140,9 +1290,11 @@
         "DynamoDB with ElastiCache",
         "Aurora PostgreSQL with full-text search"
       ],
-      "correct_answer": 1,
       "explanation": "DocumentDB handles flexible document structure well, while Amazon OpenSearch provides powerful full-text search capabilities for content management systems.",
-      "validation_sources": ["https://docs.aws.amazon.com/documentdb/latest/developerguide/what-is.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/documentdb/latest/developerguide/what-is.html"
+      ],
+      "correct": 1
     },
     {
       "id": 77,
@@ -1155,9 +1307,11 @@
         "Single table with tenant_id in all attributes",
         "Separate AWS accounts per tenant"
       ],
-      "correct_answer": 1,
       "explanation": "Separate tables per tenant with tenant-specific IAM policies provides the strongest isolation, preventing any possibility of cross-tenant data access.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html"
+      ],
+      "correct": 1
     },
     {
       "id": 78,
@@ -1170,9 +1324,11 @@
         "Fixed at 5000 connections",
         "Unlimited connections"
       ],
-      "correct_answer": 0,
       "explanation": "Aurora Serverless v2 connection limits depend on the ACU configuration and the max_connections parameter, which scales with the allocated memory.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html"
+      ],
+      "correct": 0
     },
     {
       "id": 79,
@@ -1185,9 +1341,11 @@
         "Global Secondary Indexes",
         "Point-in-time recovery"
       ],
-      "correct_answer": 1,
       "explanation": "DynamoDB Time To Live (TTL) automatically deletes expired items based on a timestamp attribute, reducing storage costs without manual intervention.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html"
+      ],
+      "correct": 1
     },
     {
       "id": 80,
@@ -1200,9 +1358,11 @@
         "Large replication instance with full load + CDC and table-level parallelism",
         "Use AWS Snow family for initial load, then DMS for CDC"
       ],
-      "correct_answer": 2,
       "explanation": "For heavy write activity during migration, a large replication instance with full load + CDC and table-level parallelism provides the best performance and minimal downtime.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_BestPractices.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_BestPractices.html"
+      ],
+      "correct": 2
     },
     {
       "id": 81,
@@ -1215,9 +1375,11 @@
         "Amazon DynamoDB",
         "Amazon Redshift"
       ],
-      "correct_answer": 1,
       "explanation": "Amazon Timestream is purpose-built for time-series data, providing automatic data lifecycle management and built-in analytics functions for IoT use cases.",
-      "validation_sources": ["https://docs.aws.amazon.com/timestream/latest/developerguide/what-is-timestream.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/timestream/latest/developerguide/what-is-timestream.html"
+      ],
+      "correct": 1
     },
     {
       "id": 82,
@@ -1230,9 +1392,11 @@
         "Database Activity Streams",
         "CloudWatch Logs"
       ],
-      "correct_answer": 2,
       "explanation": "Database Activity Streams provide real-time monitoring of database activity with tamper-resistant logs, ideal for security compliance requirements.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html"
+      ],
+      "correct": 2
     },
     {
       "id": 83,
@@ -1245,9 +1409,11 @@
         "Use Aurora Auto Scaling with aggressive scaling policies",
         "Switch to provisioned instances temporarily"
       ],
-      "correct_answer": 1,
       "explanation": "Adding temporary read replicas before the spike and removing them afterward is more cost-effective than maintaining high ACU limits or aggressive auto-scaling for short-term spikes.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html"
+      ],
+      "correct": 1
     },
     {
       "id": 84,
@@ -1260,9 +1426,11 @@
         "Network connectivity issues",
         "Item size growth over time"
       ],
-      "correct_answer": 3,
       "explanation": "Increasing read latency with consistent traffic often indicates item size growth, which increases the amount of data that needs to be read and transferred.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-use-cases.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-use-cases.html"
+      ],
+      "correct": 3
     },
     {
       "id": 85,
@@ -1275,9 +1443,11 @@
         "Perform database assessment with SCT",
         "Configure network connectivity"
       ],
-      "correct_answer": 2,
       "explanation": "Performing a database assessment with SCT helps understand migration complexity, compatibility issues, and effort required before starting the actual migration process.",
-      "validation_sources": ["https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_AssessmentReport.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_AssessmentReport.html"
+      ],
+      "correct": 2
     },
     {
       "id": 86,
@@ -1290,9 +1460,11 @@
         "Amazon QLDB",
         "DocumentDB with audit logging"
       ],
-      "correct_answer": 2,
       "explanation": "Amazon QLDB (Quantum Ledger Database) provides immutable transaction logs with cryptographic verification using SHA-256 and Merkle trees, perfect for blockchain-like applications.",
-      "validation_sources": ["https://docs.aws.amazon.com/qldb/latest/developerguide/what-is.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/qldb/latest/developerguide/what-is.html"
+      ],
+      "correct": 2
     },
     {
       "id": 87,
@@ -1305,9 +1477,11 @@
         "Encryption at rest with customer managed keys",
         "Encryption in transit only"
       ],
-      "correct_answer": 0,
       "explanation": "Aurora clusters are not encrypted by default. Encryption must be enabled during cluster creation and cannot be added to existing unencrypted clusters.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Overview.Encryption.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Overview.Encryption.html"
+      ],
+      "correct": 0
     },
     {
       "id": 88,
@@ -1320,9 +1494,11 @@
         "One read replica is promoted to primary",
         "Read replicas are automatically restarted"
       ],
-      "correct_answer": 1,
       "explanation": "During planned maintenance on the primary instance, Aurora read replicas continue serving read traffic independently, maintaining application availability.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_UpgradeDBInstance.Maintenance.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_UpgradeDBInstance.Maintenance.html"
+      ],
+      "correct": 1
     },
     {
       "id": 89,
@@ -1335,9 +1511,11 @@
         "CloudWatch alarm thresholds",
         "Network connectivity to DynamoDB"
       ],
-      "correct_answer": 1,
       "explanation": "Auto-scaling addresses table-level capacity but cannot resolve hot partition issues. Uneven partition key distribution is the most common cause of throttling despite adequate overall capacity.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html"
+      ],
+      "correct": 1
     },
     {
       "id": 90,
@@ -1350,9 +1528,11 @@
         "CLOB, BLOB, and Oracle-specific types",
         "NUMERIC and DECIMAL types"
       ],
-      "correct_answer": 2,
       "explanation": "CLOB, BLOB, and Oracle-specific data types (like ROWID, XMLTYPE) require special handling and conversion strategies when migrating to PostgreSQL.",
-      "validation_sources": ["https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_Converting.Oracle.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_Converting.Oracle.html"
+      ],
+      "correct": 2
     },
     {
       "id": 91,
@@ -1365,9 +1545,11 @@
         "Document database with nested user profiles",
         "Key-value store with serialized preference data"
       ],
-      "correct_answer": 1,
       "explanation": "Graph databases excel at storing and querying relationships, making them ideal for recommendation engines that need to traverse user-item and item-item relationships efficiently.",
-      "validation_sources": ["https://docs.aws.amazon.com/neptune/latest/userguide/graph-get-started.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/neptune/latest/userguide/graph-get-started.html"
+      ],
+      "correct": 1
     },
     {
       "id": 92,
@@ -1380,9 +1562,11 @@
         "Deletion protection",
         "Conditional writes"
       ],
-      "correct_answer": 2,
       "explanation": "DynamoDB deletion protection prevents accidental table deletion by requiring explicit confirmation, providing an additional safety layer for critical data.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithTables.Basics.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithTables.Basics.html"
+      ],
+      "correct": 2
     },
     {
       "id": 93,
@@ -1395,9 +1579,11 @@
         "20",
         "25"
       ],
-      "correct_answer": 2,
       "explanation": "DynamoDB supports up to 20 Global Secondary Indexes per table, allowing flexible query patterns on different attributes.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Limits.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Limits.html"
+      ],
+      "correct": 2
     },
     {
       "id": 94,
@@ -1410,9 +1596,11 @@
         "Analyze query execution plans for optimization",
         "Increase connection pool size"
       ],
-      "correct_answer": 2,
       "explanation": "High CPU wait events often indicate inefficient queries. Analyzing execution plans to identify missing indexes or poorly optimized queries should be the first step.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights.html"
+      ],
+      "correct": 2
     },
     {
       "id": 95,
@@ -1425,9 +1613,11 @@
         "Source database is corrupted - repair source database",
         "Insufficient target database capacity - scale up instance"
       ],
-      "correct_answer": 1,
       "explanation": "Duplicate key errors during full load typically occur when the target table already contains data. Configuring the task to handle duplicates or truncating the target table resolves this issue.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.html"
+      ],
+      "correct": 1
     },
     {
       "id": 96,
@@ -1440,9 +1630,11 @@
         "DynamoDB Accelerator (DAX)",
         "Eventually consistent reads"
       ],
-      "correct_answer": 2,
       "explanation": "DynamoDB Accelerator (DAX) is an in-memory cache that provides microsecond latency for DynamoDB read operations.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DAX.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DAX.html"
+      ],
+      "correct": 2
     },
     {
       "id": 97,
@@ -1455,9 +1647,11 @@
         "Implement transparent data encryption (TDE)",
         "Store PII in separate encrypted tables"
       ],
-      "correct_answer": 1,
       "explanation": "Application-level encryption for specific PII fields allows querying non-encrypted fields normally while protecting sensitive data, providing the best balance of security and performance.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Overview.Encryption.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Overview.Encryption.html"
+      ],
+      "correct": 1
     },
     {
       "id": 98,
@@ -1470,9 +1664,11 @@
         "Upgrade read replicas first",
         "Use Aurora Serverless for automatic upgrades"
       ],
-      "correct_answer": 1,
       "explanation": "Aurora cloning creates a cost-effective copy of the production database for testing upgrades without impacting the production environment.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Managing.Clone.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Managing.Clone.html"
+      ],
+      "correct": 1
     },
     {
       "id": 99,
@@ -1485,9 +1681,11 @@
         "High SuccessfulRequestLatency for reads",
         "High ConsumedWriteCapacityUnits"
       ],
-      "correct_answer": 2,
       "explanation": "High read latency (SuccessfulRequestLatency) indicates that read operations are taking longer than desired, which DAX caching can significantly improve.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DAX.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DAX.html"
+      ],
+      "correct": 2
     },
     {
       "id": 100,
@@ -1500,9 +1698,11 @@
         "Apply changes to target first, then source",
         "Use SCT to convert and apply schema changes"
       ],
-      "correct_answer": 1,
       "explanation": "DMS doesn't automatically replicate DDL changes. The recommended approach is to stop replication, apply schema changes to both source and target, then restart replication.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_BestPractices.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_BestPractices.html"
+      ],
+      "correct": 1
     },
     {
       "id": 101,
@@ -1515,9 +1715,11 @@
         "Kinesis Data Streams with Kinesis Analytics and S3 storage",
         "ElastiCache for real-time analysis with RDS for historical data"
       ],
-      "correct_answer": 0,
       "explanation": "DynamoDB Streams with Lambda provides real-time processing of transaction changes, while DynamoDB stores both current and historical data efficiently for fraud detection patterns.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Streams.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Streams.html"
+      ],
+      "correct": 0
     },
     {
       "id": 102,
@@ -1530,9 +1732,11 @@
         "IAM database authentication with temporary tokens",
         "Encrypted configuration files"
       ],
-      "correct_answer": 2,
       "explanation": "IAM database authentication eliminates the need for long-term credentials by using temporary tokens, providing the strongest security model for database access.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.IAMDBAuth.html"
+      ],
+      "correct": 2
     },
     {
       "id": 103,
@@ -1545,9 +1749,11 @@
         "1 ACU",
         "2 ACU"
       ],
-      "correct_answer": 1,
       "explanation": "Aurora Serverless v2 can scale down to a minimum of 0.5 ACU, providing cost-effective scaling for low-traffic periods.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html"
+      ],
+      "correct": 1
     },
     {
       "id": 104,
@@ -1560,9 +1766,11 @@
         "Focus on overall table capacity utilization",
         "Check network connectivity to DynamoDB endpoints"
       ],
-      "correct_answer": 1,
       "explanation": "Each GSI has its own partition key distribution and potential hot spots. Analyzing each GSI separately helps identify which specific query patterns are causing performance issues.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-gsi-overloading.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-gsi-overloading.html"
+      ],
+      "correct": 1
     },
     {
       "id": 105,
@@ -1575,9 +1783,11 @@
         "10 TB per task",
         "It depends on the replication instance size and complexity"
       ],
-      "correct_answer": 3,
       "explanation": "DMS task size limits depend on replication instance capacity, source/target complexity, and network bandwidth. Large tasks should be split based on these factors for optimal performance.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_BestPractices.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_BestPractices.html"
+      ],
+      "correct": 3
     },
     {
       "id": 106,
@@ -1590,9 +1800,11 @@
         "ElastiCache Redis Cluster with read replicas and persistence",
         "RDS with read replicas and ProxySQL"
       ],
-      "correct_answer": 2,
       "explanation": "ElastiCache Redis Cluster provides sub-millisecond latency, high availability through clustering, and can handle bulk updates efficiently with persistence enabled for durability.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Replication.Redis.Groups.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Replication.Redis.Groups.html"
+      ],
+      "correct": 2
     },
     {
       "id": 107,
@@ -1605,9 +1817,11 @@
         "Implement application-level encryption before data insertion",
         "Use AWS KMS data keys for each sensitive column"
       ],
-      "correct_answer": 1,
       "explanation": "PostgreSQL pgcrypto extension allows selective column encryption within the database, maintaining query performance on non-encrypted columns while securing sensitive patient data.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.Extensions.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.Extensions.html"
+      ],
+      "correct": 1
     },
     {
       "id": 108,
@@ -1620,9 +1834,11 @@
         "Export all data to S3, then import to Aurora using parallel processing",
         "Create Aurora cluster and replicate using Oracle GoldenGate"
       ],
-      "correct_answer": 1,
       "explanation": "SCT assessment identifies conversion complexity, phased schema conversion reduces risk, and DMS handles data migration efficiently for heterogeneous migrations with complex objects.",
-      "validation_sources": ["https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_Welcome.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_Welcome.html"
+      ],
+      "correct": 1
     },
     {
       "id": 109,
@@ -1635,9 +1851,11 @@
         "Use Aurora provisioned instances during peak hours",
         "Set appropriate scaling timeout and force scaling parameters"
       ],
-      "correct_answer": 3,
       "explanation": "Aurora Serverless v2 scaling timeout and force scaling parameters control how quickly the cluster responds to load changes, ensuring it can scale from 2 to 64 ACU within the required timeframe.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html"
+      ],
+      "correct": 3
     },
     {
       "id": 110,
@@ -1650,9 +1868,11 @@
         "Check CloudWatch contributor insights for top partition keys",
         "Review DynamoDB Streams for write patterns"
       ],
-      "correct_answer": 1,
       "explanation": "GSI overloading uses the same index for multiple entity types. Each entity type may have different partition key distributions, requiring separate analysis to identify which entities cause hot partitions.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-gsi-overloading.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-gsi-overloading.html"
+      ],
+      "correct": 1
     },
     {
       "id": 111,
@@ -1665,9 +1885,11 @@
         "Implement fan-out on read with real-time aggregation",
         "Use GSI with timestamp as partition key for chronological access"
       ],
-      "correct_answer": 1,
       "explanation": "Fan-out on write creates individual timelines for each user, providing fast read performance for news feeds while distributing write load across user partitions.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-modeling-nosql.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-modeling-nosql.html"
+      ],
+      "correct": 1
     },
     {
       "id": 112,
@@ -1680,9 +1902,11 @@
         "Data is encrypted using customer managed KMS keys",
         "Encryption is optional and must be configured"
       ],
-      "correct_answer": 2,
       "explanation": "Aurora database activity streams require customer managed KMS keys for encryption, ensuring that AWS cannot access the activity stream data.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html"
+      ],
+      "correct": 2
     },
     {
       "id": 113,
@@ -1695,9 +1919,11 @@
         "Use AWS Snow family device for data transfer",
         "Implement transactional replication with minimal downtime"
       ],
-      "correct_answer": 1,
       "explanation": "For a 2TB database with a 4-hour window, exporting to S3 using native SQL Server tools and importing to Aurora using parallel processing provides the fastest transfer speed.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Migrating.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraMySQL.Migrating.html"
+      ],
+      "correct": 1
     },
     {
       "id": 114,
@@ -1710,9 +1936,11 @@
         "Optimize write patterns to reduce transaction size",
         "Enable Aurora parallel query on secondary clusters"
       ],
-      "correct_answer": 2,
       "explanation": "Large transactions increase replication lag in Aurora Global Database. Optimizing write patterns to use smaller, more frequent transactions reduces the replication overhead and lag.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html"
+      ],
+      "correct": 2
     },
     {
       "id": 115,
@@ -1725,9 +1953,11 @@
         "Document size and retrieval patterns",
         "Cluster scaling and instance types"
       ],
-      "correct_answer": 2,
       "explanation": "High network I/O wait events in DocumentDB often indicate large document retrievals or inefficient query patterns that return excessive data, requiring optimization of document size and query selectivity.",
-      "validation_sources": ["https://docs.aws.amazon.com/documentdb/latest/developerguide/profiling.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/documentdb/latest/developerguide/profiling.html"
+      ],
+      "correct": 2
     },
     {
       "id": 116,
@@ -1740,9 +1970,11 @@
         "RDS with auto-scaling read replicas",
         "ElastiCache with cluster mode"
       ],
-      "correct_answer": 1,
       "explanation": "DynamoDB with on-demand capacity requires minimal operational overhead, automatically scales with traffic, and charges only for actual usage, making it ideal for unpredictable startup workloads.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/on-demand-capacity-mode.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/on-demand-capacity-mode.html"
+      ],
+      "correct": 1
     },
     {
       "id": 117,
@@ -1755,9 +1987,11 @@
         "Aurora with database activity streams and VPC isolation",
         "DynamoDB with client-side encryption and AWS KMS"
       ],
-      "correct_answer": 1,
       "explanation": "Client-side encryption with HSM-managed keys ensures data is encrypted before reaching the database, making it unreadable even to database administrators with system-level access.",
-      "validation_sources": ["https://docs.aws.amazon.com/cloudhsm/latest/userguide/introduction.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/cloudhsm/latest/userguide/introduction.html"
+      ],
+      "correct": 1
     },
     {
       "id": 118,
@@ -1770,9 +2004,11 @@
         "High availability during migration",
         "Support for more source databases"
       ],
-      "correct_answer": 2,
       "explanation": "Multi-AZ DMS replication instances provide high availability by automatically failing over to a standby instance if the primary fails, ensuring migration continuity.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_ReplicationInstance.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_ReplicationInstance.html"
+      ],
+      "correct": 2
     },
     {
       "id": 119,
@@ -1785,9 +2021,11 @@
         "Use Aurora parallel query for all analytical workloads",
         "Implement Aurora Global Database with regional separation"
       ],
-      "correct_answer": 1,
       "explanation": "Dedicated read replicas with appropriate instance types (smaller for OLTP, larger for OLAP) provide workload isolation while optimizing costs for each use case.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html"
+      ],
+      "correct": 1
     },
     {
       "id": 120,
@@ -1800,9 +2038,11 @@
         "Check overall table consumed capacity utilization",
         "Review DynamoDB auto-scaling policies"
       ],
-      "correct_answer": 1,
       "explanation": "Single-table design with multiple GSIs requires analyzing each GSI's partition key distribution separately, as different access patterns may create hot partitions in specific indexes.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-modeling-nosql.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-modeling-nosql.html"
+      ],
+      "correct": 1
     },
     {
       "id": 121,
@@ -1815,9 +2055,11 @@
         "Aurora with stored procedures for atomic updates",
         "DynamoDB with transactions and composite sort keys"
       ],
-      "correct_answer": 1,
       "explanation": "Redis sorted sets provide atomic operations for leaderboard updates with O(log N) complexity, while persistence ensures data durability for gaming applications.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Replication.Redis.Groups.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Replication.Redis.Groups.html"
+      ],
+      "correct": 1
     },
     {
       "id": 122,
@@ -1830,9 +2072,11 @@
         "Database native audit logs with S3 backup",
         "Performance Insights with extended retention"
       ],
-      "correct_answer": 0,
       "explanation": "Aurora database activity streams with customer managed KMS keys provide tamper-resistant audit trails that database administrators cannot modify or disable.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html"
+      ],
+      "correct": 0
     },
     {
       "id": 123,
@@ -1845,9 +2089,11 @@
         "Sharding must be reimplemented using DocumentDB clusters",
         "All data must be denormalized before migration"
       ],
-      "correct_answer": 1,
       "explanation": "DocumentDB implements change streams and transactions differently than MongoDB, requiring application code modifications and testing during migration.",
-      "validation_sources": ["https://docs.aws.amazon.com/documentdb/latest/developerguide/change_streams.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/documentdb/latest/developerguide/change_streams.html"
+      ],
+      "correct": 1
     },
     {
       "id": 124,
@@ -1860,9 +2106,11 @@
         "90 days",
         "1 year"
       ],
-      "correct_answer": 1,
       "explanation": "Aurora supports automated backup retention for up to 35 days, same as RDS. Manual snapshots can be retained indefinitely.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Managing.Backups.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Managing.Backups.html"
+      ],
+      "correct": 1
     },
     {
       "id": 125,
@@ -1875,9 +2123,11 @@
         "Optimize queries to reduce lock contention",
         "Enable Aurora parallel query"
       ],
-      "correct_answer": 2,
       "explanation": "High lwlock (lightweight lock) wait events indicate lock contention between concurrent operations. Optimizing queries to reduce lock duration and contention provides the most effective improvement.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights.html"
+      ],
+      "correct": 2
     },
     {
       "id": 126,
@@ -1890,9 +2140,11 @@
         "OpenSearch with k-NN search and DynamoDB metadata",
         "Neptune with vector properties and Gremlin queries"
       ],
-      "correct_answer": 2,
       "explanation": "OpenSearch provides native k-NN search capabilities for high-dimensional vectors with excellent performance, while DynamoDB stores metadata for fast entity lookups.",
-      "validation_sources": ["https://docs.aws.amazon.com/opensearch-service/latest/developerguide/knn.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/opensearch-service/latest/developerguide/knn.html"
+      ],
+      "correct": 2
     },
     {
       "id": 127,
@@ -1905,9 +2157,11 @@
         "AWS owned keys",
         "Client-side encryption"
       ],
-      "correct_answer": 2,
       "explanation": "DynamoDB automatically encrypts all data at rest using AWS owned keys by default, requiring no additional configuration or cost.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/EncryptionAtRest.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/EncryptionAtRest.html"
+      ],
+      "correct": 2
     },
     {
       "id": 128,
@@ -1920,9 +2174,11 @@
         "Exclude BLOB columns and migrate separately",
         "Use full LOB mode with increased timeout"
       ],
-      "correct_answer": 1,
       "explanation": "Limited LOB mode with appropriate size threshold prevents memory exhaustion while efficiently handling most BLOB data during migration.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.LOBSupport.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.LOBSupport.html"
+      ],
+      "correct": 1
     },
     {
       "id": 129,
@@ -1935,9 +2191,11 @@
         "Switch to provisioned instances for the event period",
         "Use Aurora auto-scaling with aggressive policies"
       ],
-      "correct_answer": 1,
       "explanation": "Adding temporary read replicas before the event and removing them afterward provides the most cost-effective scaling for predictable, time-limited traffic spikes.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html"
+      ],
+      "correct": 1
     },
     {
       "id": 130,
@@ -1950,9 +2208,11 @@
         "Add more dimensions to improve partitioning",
         "Enable magnetic store writes for recent data"
       ],
-      "correct_answer": 1,
       "explanation": "Optimizing batch sizes (typically 100-500 records) and implementing parallel ingestion streams reduces latency and improves throughput for high-volume IoT data ingestion.",
-      "validation_sources": ["https://docs.aws.amazon.com/timestream/latest/developerguide/best-practices.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/timestream/latest/developerguide/best-practices.html"
+      ],
+      "correct": 1
     },
     {
       "id": 131,
@@ -1965,9 +2225,11 @@
         "Neptune with property graph model",
         "DocumentDB with embedded documents"
       ],
-      "correct_answer": 2,
       "explanation": "Neptune's property graph model excels at representing and querying complex relationships in supply chain networks, providing efficient traversal of supplier-product-location connections.",
-      "validation_sources": ["https://docs.aws.amazon.com/neptune/latest/userguide/graph-get-started.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/neptune/latest/userguide/graph-get-started.html"
+      ],
+      "correct": 2
     },
     {
       "id": 132,
@@ -1980,9 +2242,11 @@
         "Application-level filtering with encrypted tenant_id",
         "VPC isolation with separate Aurora clusters per tenant"
       ],
-      "correct_answer": 3,
       "explanation": "VPC isolation with separate Aurora clusters provides the strongest security guarantee by ensuring complete network and resource isolation between tenants.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_VPC.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_VPC.html"
+      ],
+      "correct": 3
     },
     {
       "id": 133,
@@ -1995,9 +2259,11 @@
         "Enable CloudWatch logging for detailed monitoring",
         "Configure the task with table statistics enabled"
       ],
-      "correct_answer": 1,
       "explanation": "Testing DMS tasks with a subset of production data in a test environment allows validation of schema conversion, data transformation, and performance without affecting production systems.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_BestPractices.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_BestPractices.html"
+      ],
+      "correct": 1
     },
     {
       "id": 134,
@@ -2010,9 +2276,11 @@
         "Use Aurora Serverless v2 for automatic failover",
         "Implement application-level failover with health checks"
       ],
-      "correct_answer": 1,
       "explanation": "Aurora Global Database managed planned failover can promote a secondary region to primary in under 1 minute, meeting both RTO and RPO requirements for disaster recovery.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-disaster-recovery.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-disaster-recovery.html"
+      ],
+      "correct": 1
     },
     {
       "id": 135,
@@ -2025,9 +2293,11 @@
         "Auto-scaling policies for each GSI",
         "Query consistency settings"
       ],
-      "correct_answer": 1,
       "explanation": "Sparse GSIs only contain items with the GSI key attributes present. Uneven costs often result from different sparsity levels and projection settings across GSIs.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GSI.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GSI.html"
+      ],
+      "correct": 1
     },
     {
       "id": 136,
@@ -2040,9 +2310,11 @@
         "DynamoDB with ElastiCache for search indexing",
         "RDS MySQL with JSON columns and FULLTEXT indexes"
       ],
-      "correct_answer": 1,
       "explanation": "DocumentDB handles flexible document structures well, while OpenSearch provides powerful full-text search capabilities, making this combination ideal for content management.",
-      "validation_sources": ["https://docs.aws.amazon.com/documentdb/latest/developerguide/what-is.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/documentdb/latest/developerguide/what-is.html"
+      ],
+      "correct": 1
     },
     {
       "id": 137,
@@ -2055,9 +2327,11 @@
         "Performance Insights with extended retention period",
         "Custom application logging with encrypted S3 storage"
       ],
-      "correct_answer": 0,
       "explanation": "Aurora database activity streams provide tamper-resistant logging with user attribution, while Kinesis Data Firehose delivers logs to S3 for long-term storage and analysis.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html"
+      ],
+      "correct": 0
     },
     {
       "id": 138,
@@ -2070,9 +2344,11 @@
         "Use AWS Snow family for initial load, then DMS for incremental changes",
         "Implement Oracle GoldenGate replication to Redshift"
       ],
-      "correct_answer": 2,
       "explanation": "For 50TB with 24/7 operations, Snow family devices handle the bulk data transfer offline, while DMS manages incremental changes, minimizing network impact and downtime.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_LargeDBs.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_LargeDBs.html"
+      ],
+      "correct": 2
     },
     {
       "id": 139,
@@ -2085,9 +2361,11 @@
         "Use Aurora cloning for dev/staging with Serverless v2 for production",
         "Use separate clusters with Aurora auto-scaling"
       ],
-      "correct_answer": 0,
       "explanation": "Aurora Serverless v2 with different ACU limits provides cost-effective scaling for different environments, automatically adjusting capacity based on actual usage.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html"
+      ],
+      "correct": 0
     },
     {
       "id": 140,
@@ -2100,9 +2378,11 @@
         "Add indexes on frequently traversed properties",
         "Optimize Gremlin queries to reduce traversal depth"
       ],
-      "correct_answer": 3,
       "explanation": "As graphs grow, deep traversals become exponentially expensive. Optimizing Gremlin queries to reduce traversal depth and use more selective filters provides the most immediate performance improvement.",
-      "validation_sources": ["https://docs.aws.amazon.com/neptune/latest/userguide/best-practices-gremlin-query-tuning.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/neptune/latest/userguide/best-practices-gremlin-query-tuning.html"
+      ],
+      "correct": 3
     },
     {
       "id": 141,
@@ -2115,9 +2395,11 @@
         "Neptune with location-based graph traversals",
         "ElastiCache with geospatial data structures"
       ],
-      "correct_answer": 0,
       "explanation": "Aurora with PostGIS extensions provides powerful geospatial query capabilities, indexing, and real-time route optimization functions needed for logistics applications.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.Extensions.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.Extensions.html"
+      ],
+      "correct": 0
     },
     {
       "id": 142,
@@ -2130,9 +2412,11 @@
         "Separate tables for each user and department",
         "Views with complex WHERE clauses"
       ],
-      "correct_answer": 1,
       "explanation": "PostgreSQL Row Level Security with dynamic policies can enforce complex access rules based on user identity and department membership at the database level efficiently.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.RLS.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.RLS.html"
+      ],
+      "correct": 1
     },
     {
       "id": 143,
@@ -2145,9 +2429,11 @@
         "Reduce DMS batch size and increase frequency",
         "Enable SQL Server log reader optimization"
       ],
-      "correct_answer": 1,
       "explanation": "Frequent transaction log backups on SQL Server prevent log growth during CDC operations, allowing DMS to read changes without causing log space issues.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.SQLServer.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.SQLServer.html"
+      ],
+      "correct": 1
     },
     {
       "id": 144,
@@ -2160,9 +2446,11 @@
         "15",
         "20"
       ],
-      "correct_answer": 0,
       "explanation": "RDS supports up to 5 read replicas per source database instance, which can be distributed across multiple Availability Zones and regions.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_ReadRepl.html"
+      ],
+      "correct": 0
     },
     {
       "id": 145,
@@ -2175,9 +2463,11 @@
         "Scale up the QLDB instance size",
         "Use PartiQL query optimization techniques"
       ],
-      "correct_answer": 0,
       "explanation": "QLDB performance degrades with large journals without proper indexing. Creating indexes on frequently queried attributes significantly improves query performance.",
-      "validation_sources": ["https://docs.aws.amazon.com/qldb/latest/developerguide/working-with-indexes.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/qldb/latest/developerguide/working-with-indexes.html"
+      ],
+      "correct": 0
     },
     {
       "id": 146,
@@ -2190,9 +2480,11 @@
         "ElastiCache Redis with Lua scripts and persistence",
         "In-memory computing with periodic Aurora persistence"
       ],
-      "correct_answer": 2,
       "explanation": "Redis with Lua scripts provides atomic operations with sub-millisecond latency, while persistence ensures durability for financial transactions in order matching.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Scripting.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Scripting.html"
+      ],
+      "correct": 2
     },
     {
       "id": 147,
@@ -2205,9 +2497,11 @@
         "GuardDuty RDS Protection",
         "CloudWatch anomaly detection"
       ],
-      "correct_answer": 2,
       "explanation": "GuardDuty RDS Protection uses machine learning to detect unusual database access patterns and potential security threats automatically.",
-      "validation_sources": ["https://docs.aws.amazon.com/guardduty/latest/ug/rds-protection.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/guardduty/latest/ug/rds-protection.html"
+      ],
+      "correct": 2
     },
     {
       "id": 148,
@@ -2220,9 +2514,11 @@
         "DynamoDB Transactions for atomic operations",
         "Optimistic locking with version attributes"
       ],
-      "correct_answer": 2,
       "explanation": "DynamoDB Transactions provide ACID properties similar to Cassandra's lightweight transactions, enabling atomic operations across multiple items.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/transaction-apis.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/transaction-apis.html"
+      ],
+      "correct": 2
     },
     {
       "id": 149,
@@ -2235,9 +2531,11 @@
         "Network latency between AZs",
         "Large uncommitted transactions during failover"
       ],
-      "correct_answer": 3,
       "explanation": "Large uncommitted transactions must be rolled back during failover, extending the failover time beyond the typical 30-second window.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraHighAvailability.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraHighAvailability.html"
+      ],
+      "correct": 3
     },
     {
       "id": 150,
@@ -2250,9 +2548,11 @@
         "Monitor burst capacity consumption patterns",
         "Review auto-scaling policy responsiveness"
       ],
-      "correct_answer": 2,
       "explanation": "Even with sufficient provisioned capacity and good key distribution, throttling can occur if burst capacity is exhausted by sudden traffic spikes before auto-scaling responds.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html"
+      ],
+      "correct": 2
     },
     {
       "id": 151,
@@ -2265,9 +2565,11 @@
         "DynamoDB with composite partition key using user_id and date",
         "ElastiCache with Aurora as persistent storage"
       ],
-      "correct_answer": 2,
       "explanation": "Composite partition key with user_id and date distributes writes across time-based partitions while enabling efficient queries for user history and recommendations.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html"
+      ],
+      "correct": 2
     },
     {
       "id": 152,
@@ -2280,9 +2582,11 @@
         "DynamoDB with streams and Lambda for audit processing",
         "CloudTrail with data events enabled for database access"
       ],
-      "correct_answer": 1,
       "explanation": "QLDB provides immutable audit trails with cryptographic verification, while Aurora handles the main application data, ensuring complete audit integrity for healthcare compliance.",
-      "validation_sources": ["https://docs.aws.amazon.com/qldb/latest/developerguide/what-is.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/qldb/latest/developerguide/what-is.html"
+      ],
+      "correct": 1
     },
     {
       "id": 153,
@@ -2295,9 +2599,11 @@
         "Migrates data faster than DMS",
         "Eliminates the need for testing"
       ],
-      "correct_answer": 1,
       "explanation": "SCT assessment reports analyze source databases and provide detailed effort estimates, compatibility issues, and conversion complexity before migration begins.",
-      "validation_sources": ["https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_AssessmentReport.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_AssessmentReport.html"
+      ],
+      "correct": 1
     },
     {
       "id": 154,
@@ -2310,9 +2616,11 @@
         "Promote secondary region manually during maintenance window",
         "Use Aurora Serverless v2 for automatic regional scaling"
       ],
-      "correct_answer": 0,
       "explanation": "Aurora managed planned failover with pre-warming ensures zero data loss and minimal downtime by coordinating the failover process and preparing the target region.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-disaster-recovery.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-disaster-recovery.html"
+      ],
+      "correct": 0
     },
     {
       "id": 155,
@@ -2325,9 +2633,11 @@
         "Enable DocumentDB profiler for query analysis",
         "Implement connection pooling"
       ],
-      "correct_answer": 1,
       "explanation": "Optimizing queries to reduce the working set size (amount of data accessed) decreases memory pressure and cache evictions, improving overall performance.",
-      "validation_sources": ["https://docs.aws.amazon.com/documentdb/latest/developerguide/profiling.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/documentdb/latest/developerguide/profiling.html"
+      ],
+      "correct": 1
     },
     {
       "id": 156,
@@ -2340,9 +2650,11 @@
         "RDS with AWS Storage Gateway for offline access",
         "ElastiCache with periodic S3 backups"
       ],
-      "correct_answer": 0,
       "explanation": "DynamoDB with AWS AppSync provides built-in offline synchronization capabilities, conflict resolution, and real-time updates for mobile applications.",
-      "validation_sources": ["https://docs.aws.amazon.com/appsync/latest/devguide/conflict-detection-and-sync.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/appsync/latest/devguide/conflict-detection-and-sync.html"
+      ],
+      "correct": 0
     },
     {
       "id": 157,
@@ -2355,9 +2667,11 @@
         "DynamoDB encryption with AWS KMS integration",
         "Application-level encryption with proxy decryption"
       ],
-      "correct_answer": 1,
       "explanation": "Searchable encryption schemes allow certain operations on encrypted data without decryption, though this requires specialized cryptographic implementations and has limitations.",
-      "validation_sources": ["https://docs.aws.amazon.com/encryption-sdk/latest/developer-guide/searchable-encryption.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/encryption-sdk/latest/developer-guide/searchable-encryption.html"
+      ],
+      "correct": 1
     },
     {
       "id": 158,
@@ -2370,9 +2684,11 @@
         "Use DMS table mapping to handle constraint dependencies",
         "Migrate parent tables first, then child tables in dependency order"
       ],
-      "correct_answer": 1,
       "explanation": "Disabling foreign key checks during migration prevents constraint violations, allowing parallel data loading, then re-enabling constraints validates data integrity after migration.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_BestPractices.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_BestPractices.html"
+      ],
+      "correct": 1
     },
     {
       "id": 159,
@@ -2385,9 +2701,11 @@
         "Use Aurora parallel query for analytics workloads",
         "Implement Aurora cloning for analytics environments"
       ],
-      "correct_answer": 1,
       "explanation": "Dedicated read replicas with appropriate instance types (smaller for production reads, larger for analytics) provide complete workload isolation and optimal resource allocation.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html"
+      ],
+      "correct": 1
     },
     {
       "id": 160,
@@ -2400,9 +2718,11 @@
         "Check auto-scaling policies for the table",
         "Review GSI utilization patterns"
       ],
-      "correct_answer": 1,
       "explanation": "Single-table design stores different entity types with potentially different access patterns. Each entity type may have different partition key distributions requiring separate analysis.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-modeling-nosql.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-modeling-nosql.html"
+      ],
+      "correct": 1
     },
     {
       "id": 161,
@@ -2415,9 +2735,11 @@
         "OpenSearch with geospatial data types",
         "Neptune with location-based graph queries"
       ],
-      "correct_answer": 1,
       "explanation": "Aurora PostgreSQL with PostGIS provides comprehensive geospatial indexing, complex spatial queries, and efficient distance calculations for real estate applications.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.Extensions.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.Extensions.html"
+      ],
+      "correct": 1
     },
     {
       "id": 162,
@@ -2430,9 +2752,11 @@
         "AWS Systems Manager Parameter Store with scheduled updates",
         "Aurora proxy with credential management"
       ],
-      "correct_answer": 0,
       "explanation": "AWS Secrets Manager with Lambda rotation functions automatically rotates passwords and updates applications seamlessly without downtime using dual password support.",
-      "validation_sources": ["https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotating-secrets-rds.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotating-secrets-rds.html"
+      ],
+      "correct": 0
     },
     {
       "id": 163,
@@ -2445,9 +2769,11 @@
         "CDC lag causing out-of-order operations - optimize DMS task settings",
         "Source database corruption - repair source database"
       ],
-      "correct_answer": 2,
       "explanation": "High concurrent write activity can cause CDC operations to arrive out of order, leading to constraint violations. Optimizing DMS batch settings and parallelism resolves this issue.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.html"
+      ],
+      "correct": 2
     },
     {
       "id": 164,
@@ -2460,9 +2786,11 @@
         "Aurora storage (distributed SSD)",
         "Magnetic storage"
       ],
-      "correct_answer": 2,
       "explanation": "Aurora uses its own distributed SSD storage that automatically scales and provides high performance without requiring storage type selection.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Overview.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Overview.html"
+      ],
+      "correct": 2
     },
     {
       "id": 165,
@@ -2475,9 +2803,11 @@
         "Scale up instance size for more I/O capacity",
         "Enable Aurora parallel query"
       ],
-      "correct_answer": 1,
       "explanation": "Optimizing checkpoint_completion_target spreads checkpoint I/O over a longer period, reducing checkpoint-related wait events and improving performance during peak hours.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.BestPractices.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.BestPractices.html"
+      ],
+      "correct": 1
     },
     {
       "id": 166,
@@ -2490,9 +2820,11 @@
         "Kinesis Analytics for real-time processing with Neptune for graph storage",
         "ElastiCache for real-time analysis with periodic Neptune synchronization"
       ],
-      "correct_answer": 0,
       "explanation": "DynamoDB Streams with Lambda provides real-time transaction processing while updating Neptune graph database, enabling both immediate fraud detection and relationship analysis.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Streams.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Streams.html"
+      ],
+      "correct": 0
     },
     {
       "id": 167,
@@ -2505,9 +2837,11 @@
         "DynamoDB Streams",
         "Backup and restore"
       ],
-      "correct_answer": 1,
       "explanation": "DynamoDB deletion protection prevents accidental table deletion by requiring explicit confirmation, providing an additional safety layer for critical data.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithTables.Basics.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithTables.Basics.html"
+      ],
+      "correct": 1
     },
     {
       "id": 168,
@@ -2520,9 +2854,11 @@
         "UUID generation functions",
         "Identity columns with GENERATED ALWAYS"
       ],
-      "correct_answer": 1,
       "explanation": "PostgreSQL SERIAL data types automatically create sequences for primary key generation, providing equivalent functionality to Oracle sequences.",
-      "validation_sources": ["https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_Converting.Oracle.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_Converting.Oracle.html"
+      ],
+      "correct": 1
     },
     {
       "id": 169,
@@ -2535,9 +2871,11 @@
         "Scale up the primary instance before batch processing",
         "Use Aurora auto-scaling with aggressive scaling policies"
       ],
-      "correct_answer": 1,
       "explanation": "Adding temporary read replicas with appropriate instance sizes for batch processing and removing them afterward provides cost-effective scaling for predictable workloads.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html"
+      ],
+      "correct": 1
     },
     {
       "id": 170,
@@ -2550,9 +2888,11 @@
         "Optimize time-based partitioning strategy",
         "Use more selective dimension filters"
       ],
-      "correct_answer": 3,
       "explanation": "Adding selective dimension filters reduces the amount of data scanned across time ranges, significantly improving query performance in Timestream.",
-      "validation_sources": ["https://docs.aws.amazon.com/timestream/latest/developerguide/best-practices.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/timestream/latest/developerguide/best-practices.html"
+      ],
+      "correct": 3
     },
     {
       "id": 171,
@@ -2565,9 +2905,11 @@
         "ElastiCache with sorted sets for each matching dimension",
         "OpenSearch with multi-field queries and geospatial filters"
       ],
-      "correct_answer": 3,
       "explanation": "OpenSearch provides efficient multi-dimensional queries with geospatial capabilities, making it ideal for complex matchmaking algorithms with multiple criteria.",
-      "validation_sources": ["https://docs.aws.amazon.com/opensearch-service/latest/developerguide/geospatial.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/opensearch-service/latest/developerguide/geospatial.html"
+      ],
+      "correct": 3
     },
     {
       "id": 172,
@@ -2580,9 +2922,11 @@
         "CloudWatch Logs with database log exports",
         "Enhanced Monitoring with connection tracking"
       ],
-      "correct_answer": 1,
       "explanation": "Database Activity Streams capture all database activity including authentication attempts, providing comprehensive access logging for security monitoring.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html"
+      ],
+      "correct": 1
     },
     {
       "id": 173,
@@ -2595,9 +2939,11 @@
         "10 tasks per replication instance",
         "Unlimited, based on instance capacity"
       ],
-      "correct_answer": 3,
       "explanation": "DMS supports multiple tasks per replication instance, limited only by the instance's CPU, memory, and network capacity rather than a fixed number.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_ReplicationInstance.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_ReplicationInstance.html"
+      ],
+      "correct": 3
     },
     {
       "id": 174,
@@ -2610,9 +2956,11 @@
         "Implement application-level failover with connection redirection",
         "Use Aurora cross-region automated backups for restoration"
       ],
-      "correct_answer": 1,
       "explanation": "Aurora managed planned failover can promote a European secondary region to primary with minimal data loss and coordinated switchover process.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-disaster-recovery.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-disaster-recovery.html"
+      ],
+      "correct": 1
     },
     {
       "id": 175,
@@ -2625,9 +2973,11 @@
         "Auto-scaling affects TTL deletion performance",
         "GSI updates interfere with TTL processing"
       ],
-      "correct_answer": 0,
       "explanation": "DynamoDB TTL deletion is a background process that typically occurs within 48 hours of expiration but is not guaranteed to be immediate or consistent in timing.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/TTL.html"
+      ],
+      "correct": 0
     },
     {
       "id": 176,
@@ -2640,9 +2990,11 @@
         "DynamoDB with content hashing and Lambda processing",
         "OpenSearch with document similarity and deduplication"
       ],
-      "correct_answer": 3,
       "explanation": "OpenSearch provides native document similarity analysis, full-text search, and deduplication capabilities ideal for news aggregation and content analysis.",
-      "validation_sources": ["https://docs.aws.amazon.com/opensearch-service/latest/developerguide/knn.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/opensearch-service/latest/developerguide/knn.html"
+      ],
+      "correct": 3
     },
     {
       "id": 177,
@@ -2655,9 +3007,11 @@
         "Aurora encryption with AWS CloudHSM integration",
         "Client-side encryption with AWS KMS"
       ],
-      "correct_answer": 2,
       "explanation": "AWS CloudHSM provides FIPS 140-2 Level 3 validated hardware security modules, which can be integrated with Aurora for government-grade encryption requirements.",
-      "validation_sources": ["https://docs.aws.amazon.com/cloudhsm/latest/userguide/introduction.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/cloudhsm/latest/userguide/introduction.html"
+      ],
+      "correct": 2
     },
     {
       "id": 178,
@@ -2670,9 +3024,11 @@
         "CloudWatch Events integration",
         "DynamoDB Streams with Lambda triggers"
       ],
-      "correct_answer": 0,
       "explanation": "DocumentDB provides change streams with similar functionality to MongoDB, allowing applications to monitor data changes in real-time with minimal code modifications.",
-      "validation_sources": ["https://docs.aws.amazon.com/documentdb/latest/developerguide/change_streams.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/documentdb/latest/developerguide/change_streams.html"
+      ],
+      "correct": 0
     },
     {
       "id": 179,
@@ -2685,9 +3041,11 @@
         "Aurora Serverless v2 with cross-region replication",
         "Manual snapshots with cross-region copying"
       ],
-      "correct_answer": 0,
       "explanation": "Aurora Global Database provides sub-second replication lag and can failover in under 1 minute, easily meeting both RTO and RPO requirements cost-effectively.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database.html"
+      ],
+      "correct": 0
     },
     {
       "id": 180,
@@ -2700,9 +3058,11 @@
         "Use more selective vertex and edge filters",
         "Optimize Gremlin queries to reduce memory usage"
       ],
-      "correct_answer": 1,
       "explanation": "Graph preprocessing to cache common traversal paths (like user similarity scores) reduces the need for deep traversals during query time, significantly improving performance.",
-      "validation_sources": ["https://docs.aws.amazon.com/neptune/latest/userguide/best-practices-gremlin-query-tuning.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/neptune/latest/userguide/best-practices-gremlin-query-tuning.html"
+      ],
+      "correct": 1
     },
     {
       "id": 181,
@@ -2715,9 +3075,11 @@
         "ElastiCache Redis with sorted sets and time-based expiration",
         "Aurora with partitioned tables and specialized indexes"
       ],
-      "correct_answer": 2,
       "explanation": "ElastiCache Redis with sorted sets provides microsecond latency for order book operations and efficient range queries by price, ideal for high-frequency trading.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Replication.Redis.Groups.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Replication.Redis.Groups.html"
+      ],
+      "correct": 2
     },
     {
       "id": 182,
@@ -2730,9 +3092,11 @@
         "Single table with tenant_id partitioning and shared encryption",
         "Separate AWS accounts per tenant with dedicated databases"
       ],
-      "correct_answer": 3,
       "explanation": "Separate AWS accounts per tenant provides the strongest isolation with complete resource separation, individual billing, and tenant-specific security controls.",
-      "validation_sources": ["https://docs.aws.amazon.com/whitepapers/latest/saas-architecture-fundamentals/tenant-isolation.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/whitepapers/latest/saas-architecture-fundamentals/tenant-isolation.html"
+      ],
+      "correct": 3
     },
     {
       "id": 183,
@@ -2745,9 +3109,11 @@
         "Perform manual validation after migration",
         "Use application-level validation during migration"
       ],
-      "correct_answer": 1,
       "explanation": "DMS provides built-in data validation that can be enabled in task settings to automatically compare source and target data during migration.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Validating.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Validating.html"
+      ],
+      "correct": 1
     },
     {
       "id": 184,
@@ -2760,9 +3126,11 @@
         "Adjust scaling timeout and force scaling parameters",
         "Use provisioned instances during peak periods"
       ],
-      "correct_answer": 2,
       "explanation": "Aurora Serverless v2 scaling timeout and force scaling parameters control how aggressively the cluster scales in response to load changes, improving responsiveness.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html"
+      ],
+      "correct": 2
     },
     {
       "id": 185,
@@ -2775,9 +3143,11 @@
         "Scale up the QLDB instance",
         "Implement query result caching"
       ],
-      "correct_answer": 0,
       "explanation": "Creating indexes on frequently joined columns significantly improves QLDB query performance by reducing the need for full table scans during join operations.",
-      "validation_sources": ["https://docs.aws.amazon.com/qldb/latest/developerguide/working-with-indexes.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/qldb/latest/developerguide/working-with-indexes.html"
+      ],
+      "correct": 0
     },
     {
       "id": 186,
@@ -2790,9 +3160,11 @@
         "Aurora with read replicas and ElastiCache for caching",
         "OpenSearch with hot-warm architecture and real-time indexing"
       ],
-      "correct_answer": 0,
       "explanation": "Kinesis Data Streams handles high-throughput ingestion while Timestream provides efficient time-series storage and sub-second analytics for IoT sensor data.",
-      "validation_sources": ["https://docs.aws.amazon.com/timestream/latest/developerguide/what-is-timestream.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/timestream/latest/developerguide/what-is-timestream.html"
+      ],
+      "correct": 0
     },
     {
       "id": 187,
@@ -2805,9 +3177,11 @@
         "GuardDuty RDS Protection",
         "AWS WAF integration"
       ],
-      "correct_answer": 2,
       "explanation": "GuardDuty RDS Protection uses machine learning to detect suspicious database activities including SQL injection attempts and other security threats.",
-      "validation_sources": ["https://docs.aws.amazon.com/guardduty/latest/ug/rds-protection.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/guardduty/latest/ug/rds-protection.html"
+      ],
+      "correct": 2
     },
     {
       "id": 188,
@@ -2820,9 +3194,11 @@
         "DynamoDB Streams with Lambda indexing",
         "Sparse indexes with conditional writes"
       ],
-      "correct_answer": 1,
       "explanation": "DynamoDB Global Secondary Indexes provide similar functionality to Cassandra secondary indexes, allowing queries on non-primary key attributes.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GSI.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GSI.html"
+      ],
+      "correct": 1
     },
     {
       "id": 189,
@@ -2835,9 +3211,11 @@
         "Use separate Aurora Serverless v2 clusters with different ACU limits",
         "Use RDS for development and Aurora for production"
       ],
-      "correct_answer": 0,
       "explanation": "Aurora Serverless v2 for development provides cost-effective scaling for occasional use, while provisioned instances ensure consistent performance for production.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html"
+      ],
+      "correct": 0
     },
     {
       "id": 190,
@@ -2850,9 +3228,11 @@
         "Check auto-scaling policies for each GSI",
         "Review application write patterns"
       ],
-      "correct_answer": 0,
       "explanation": "GSI sparsity (how many items have the GSI key attributes) and projection settings directly impact write costs. Dense GSIs with ALL projection consume more write capacity.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GSI.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GSI.html"
+      ],
+      "correct": 0
     },
     {
       "id": 191,
@@ -2865,9 +3245,11 @@
         "DocumentDB with change streams and document versioning",
         "QLDB with immutable transaction history"
       ],
-      "correct_answer": 2,
       "explanation": "DocumentDB with change streams provides real-time change notifications while document versioning supports operational transformation and conflict resolution for collaborative editing.",
-      "validation_sources": ["https://docs.aws.amazon.com/documentdb/latest/developerguide/change_streams.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/documentdb/latest/developerguide/change_streams.html"
+      ],
+      "correct": 2
     },
     {
       "id": 192,
@@ -2880,9 +3262,11 @@
         "Application-level access control with audit logging",
         "VPC security groups with network-level restrictions"
       ],
-      "correct_answer": 1,
       "explanation": "Database-level roles with column-level permissions provide the most granular control for HIPAA compliance, ensuring users only access the minimum necessary patient data.",
-      "validation_sources": ["https://docs.aws.amazon.com/whitepapers/latest/architecting-hipaa-security-and-compliance-on-aws/amazon-rds.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/whitepapers/latest/architecting-hipaa-security-and-compliance-on-aws/amazon-rds.html"
+      ],
+      "correct": 1
     },
     {
       "id": 193,
@@ -2895,9 +3279,11 @@
         "Implement DMS task parallelism and batch optimization",
         "Enable SQL Server change tracking instead of CDC"
       ],
-      "correct_answer": 1,
       "explanation": "Optimizing SQL Server transaction log backup frequency prevents log growth and improves CDC performance by ensuring DMS can read changes efficiently.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.SQLServer.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.SQLServer.html"
+      ],
+      "correct": 1
     },
     {
       "id": 194,
@@ -2910,9 +3296,11 @@
         "2 ACU",
         "4 ACU"
       ],
-      "correct_answer": 1,
       "explanation": "Aurora Serverless v1 has a minimum setting of 1 ACU, while Aurora Serverless v2 can scale down to 0.5 ACU.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html"
+      ],
+      "correct": 1
     },
     {
       "id": 195,
@@ -2925,9 +3313,11 @@
         "Enable read preference for secondary reads",
         "Optimize document structure to reduce update conflicts"
       ],
-      "correct_answer": 3,
       "explanation": "Optimizing document structure to minimize overlapping updates and using atomic operators reduces lock contention in concurrent document modifications.",
-      "validation_sources": ["https://docs.aws.amazon.com/documentdb/latest/developerguide/profiling.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/documentdb/latest/developerguide/profiling.html"
+      ],
+      "correct": 3
     },
     {
       "id": 196,
@@ -2940,9 +3330,11 @@
         "RDS with auto-scaling",
         "ElastiCache with automatic failover"
       ],
-      "correct_answer": 1,
       "explanation": "DynamoDB with on-demand capacity provides automatic scaling, minimal administration, and pay-per-use pricing, ideal for startups with unpredictable traffic.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/on-demand-capacity-mode.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/on-demand-capacity-mode.html"
+      ],
+      "correct": 1
     },
     {
       "id": 197,
@@ -2955,9 +3347,11 @@
         "Aurora with IAM database authentication",
         "Application-level encryption with rotating keys"
       ],
-      "correct_answer": 0,
       "explanation": "SSL/TLS 1.2 with ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) cipher suites provides perfect forward secrecy by generating unique session keys for each connection.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html"
+      ],
+      "correct": 0
     },
     {
       "id": 198,
@@ -2970,9 +3364,11 @@
         "MySQL Workbench Migration Wizard",
         "AWS Application Discovery Service"
       ],
-      "correct_answer": 1,
       "explanation": "AWS Schema Conversion Tool analyzes MySQL custom functions and stored procedures, providing compatibility assessment and conversion recommendations for Aurora MySQL.",
-      "validation_sources": ["https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_Welcome.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_Welcome.html"
+      ],
+      "correct": 1
     },
     {
       "id": 199,
@@ -2985,9 +3381,11 @@
         "Create Aurora clone for testing before applying maintenance",
         "Use Aurora Backtrack to quickly recover if issues occur"
       ],
-      "correct_answer": 0,
       "explanation": "Aurora blue-green deployment creates a synchronized copy for maintenance, allowing zero-downtime switchover with no data loss for planned maintenance.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html"
+      ],
+      "correct": 0
     },
     {
       "id": 200,
@@ -3000,9 +3398,11 @@
         "Use composite sort keys to distribute high-cardinality data",
         "Move high-cardinality entities to separate tables"
       ],
-      "correct_answer": 1,
       "explanation": "GSI write sharding distributes high-cardinality entity writes across multiple logical partitions, preventing hot spots while maintaining the single-table design benefits.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-gsi-overloading.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-gsi-overloading.html"
+      ],
+      "correct": 1
     },
     {
       "id": 201,
@@ -3015,9 +3415,11 @@
         "ElastiCache Redis with geospatial data structures",
         "Neptune with location-based graph queries"
       ],
-      "correct_answer": 2,
       "explanation": "ElastiCache Redis with geospatial commands (GEORADIUS, GEOADD) provides sub-second location-based queries with the performance needed for real-time ride matching.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/GeoSpatial.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/GeoSpatial.html"
+      ],
+      "correct": 2
     },
     {
       "id": 202,
@@ -3030,9 +3432,11 @@
         "Performance Insights with extended retention",
         "Custom application logging with S3 object lock"
       ],
-      "correct_answer": 1,
       "explanation": "Aurora database activity streams with customer managed KMS keys provide tamper-resistant audit trails that meet SOC 2 requirements for audit log integrity.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html"
+      ],
+      "correct": 1
     },
     {
       "id": 203,
@@ -3045,9 +3449,11 @@
         "Use DMS automatic time zone conversion",
         "Store time zone information separately"
       ],
-      "correct_answer": 0,
       "explanation": "Converting all timestamps to UTC before migration eliminates time zone confusion and ensures consistent data interpretation across regions.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_BestPractices.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_BestPractices.html"
+      ],
+      "correct": 0
     },
     {
       "id": 204,
@@ -3060,9 +3466,11 @@
         "Use Aurora Serverless v2 for automatic regional scaling",
         "Implement DNS-based failover with Route 53"
       ],
-      "correct_answer": 0,
       "explanation": "Aurora managed planned failover can promote a secondary region to primary in under 1 minute, meeting the 2-minute RTO requirement for disaster recovery.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-disaster-recovery.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-disaster-recovery.html"
+      ],
+      "correct": 0
     },
     {
       "id": 205,
@@ -3075,9 +3483,11 @@
         "Scale up the Timestream compute capacity",
         "Use magnetic store for all historical data"
       ],
-      "correct_answer": 1,
       "explanation": "Adding selective dimension filters reduces the amount of data scanned across large time ranges, significantly improving query performance and reducing memory usage.",
-      "validation_sources": ["https://docs.aws.amazon.com/timestream/latest/developerguide/best-practices.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/timestream/latest/developerguide/best-practices.html"
+      ],
+      "correct": 1
     },
     {
       "id": 206,
@@ -3090,9 +3500,11 @@
         "OpenSearch with k-NN search and vector indexing",
         "Neptune with vector properties and custom similarity algorithms"
       ],
-      "correct_answer": 2,
       "explanation": "OpenSearch with k-NN search provides native support for high-dimensional vector similarity queries with efficient indexing algorithms like HNSW for large-scale ML applications.",
-      "validation_sources": ["https://docs.aws.amazon.com/opensearch-service/latest/developerguide/knn.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/opensearch-service/latest/developerguide/knn.html"
+      ],
+      "correct": 2
     },
     {
       "id": 207,
@@ -3105,9 +3517,11 @@
         "Customer managed KMS keys",
         "Client-side encryption"
       ],
-      "correct_answer": 3,
       "explanation": "Client-side encryption provides the highest level of customer control, as data is encrypted before it reaches DynamoDB using customer-controlled keys and processes.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/client-side-encryption.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/client-side-encryption.html"
+      ],
+      "correct": 3
     },
     {
       "id": 208,
@@ -3120,9 +3534,11 @@
         "Aurora Global Database with multi-region writes",
         "Aurora Serverless v2 with auto-scaling"
       ],
-      "correct_answer": 0,
       "explanation": "Aurora Multi-AZ provides high availability similar to Oracle RAC, with automatic failover and shared storage architecture across multiple availability zones.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraHighAvailability.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraHighAvailability.html"
+      ],
+      "correct": 0
     },
     {
       "id": 209,
@@ -3135,9 +3551,11 @@
         "Use Aurora parallel query for all analytical workloads",
         "Implement time-based workload scheduling"
       ],
-      "correct_answer": 1,
       "explanation": "Dedicated read replicas with larger instance types provide complete isolation for resource-intensive data science workloads while maintaining production performance.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html"
+      ],
+      "correct": 1
     },
     {
       "id": 210,
@@ -3150,9 +3568,11 @@
         "Check auto-scaling policies and capacity utilization",
         "Review GSI performance metrics across all indexes"
       ],
-      "correct_answer": 1,
       "explanation": "Single-table design with multiple entity types requires analyzing each entity type's partition key distribution separately, as different entities may have different access patterns and hot spots.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-modeling-nosql.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-modeling-nosql.html"
+      ],
+      "correct": 1
     },
     {
       "id": 211,
@@ -3165,9 +3585,11 @@
         "Neptune with property graph model for supply chain networks",
         "DocumentDB with embedded relationship documents"
       ],
-      "correct_answer": 2,
       "explanation": "Neptune's property graph model excels at representing and querying complex supply chain relationships, providing efficient traversal of supplier-product-location connections.",
-      "validation_sources": ["https://docs.aws.amazon.com/neptune/latest/userguide/graph-get-started.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/neptune/latest/userguide/graph-get-started.html"
+      ],
+      "correct": 2
     },
     {
       "id": 212,
@@ -3180,9 +3602,11 @@
         "Application-level access control with encryption",
         "VPC isolation with separate database clusters"
       ],
-      "correct_answer": 3,
       "explanation": "VPC isolation with separate database clusters provides the strongest protection by ensuring complete network and resource isolation between tenants, even if application security is compromised.",
-      "validation_sources": ["https://docs.aws.amazon.com/whitepapers/latest/saas-architecture-fundamentals/tenant-isolation.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/whitepapers/latest/saas-architecture-fundamentals/tenant-isolation.html"
+      ],
+      "correct": 3
     },
     {
       "id": 213,
@@ -3195,9 +3619,11 @@
         "Implement PostgreSQL WAL archiving optimization",
         "Use multiple DMS tasks with table-level parallelism"
       ],
-      "correct_answer": 1,
       "explanation": "Configuring DMS logical replication with optimized slot settings and WAL retention prevents replication slot conflicts in high-activity PostgreSQL environments.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.PostgreSQL.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Source.PostgreSQL.html"
+      ],
+      "correct": 1
     },
     {
       "id": 214,
@@ -3210,9 +3636,11 @@
         "Depends on ACU configuration",
         "16000 connections"
       ],
-      "correct_answer": 2,
       "explanation": "Aurora Serverless v1 connection limits depend on the ACU configuration, with each ACU supporting approximately 90 connections for Aurora MySQL and 45 for Aurora PostgreSQL.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html"
+      ],
+      "correct": 2
     },
     {
       "id": 215,
@@ -3225,9 +3653,11 @@
         "Implement collection sharding",
         "Use read preference for secondary nodes"
       ],
-      "correct_answer": 1,
       "explanation": "Optimizing aggregation pipeline stages (reordering, filtering early) and adding appropriate indexes significantly reduces CPU utilization for complex aggregations.",
-      "validation_sources": ["https://docs.aws.amazon.com/documentdb/latest/developerguide/profiling.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/documentdb/latest/developerguide/profiling.html"
+      ],
+      "correct": 1
     },
     {
       "id": 216,
@@ -3240,9 +3670,11 @@
         "DynamoDB with ElastiCache for search caching",
         "RDS MySQL with JSON columns and FULLTEXT indexes"
       ],
-      "correct_answer": 1,
       "explanation": "DocumentDB handles flexible document structures naturally, while OpenSearch provides powerful full-text search capabilities, offering the best functionality for content management.",
-      "validation_sources": ["https://docs.aws.amazon.com/documentdb/latest/developerguide/what-is.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/documentdb/latest/developerguide/what-is.html"
+      ],
+      "correct": 1
     },
     {
       "id": 217,
@@ -3255,9 +3687,11 @@
         "Custom application logging with encrypted S3 and lifecycle policies",
         "Performance Insights with extended retention and export to S3"
       ],
-      "correct_answer": 0,
       "explanation": "Aurora database activity streams provide comprehensive, tamper-resistant logging with query details and user attribution, while Kinesis Data Firehose enables long-term S3 storage with lifecycle management.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/DBActivityStreams.html"
+      ],
+      "correct": 0
     },
     {
       "id": 218,
@@ -3270,9 +3704,11 @@
         "Aggregation pipelines must be rewritten for DocumentDB",
         "DocumentDB uses a different aggregation syntax"
       ],
-      "correct_answer": 1,
       "explanation": "DocumentDB supports most MongoDB aggregation operators but not all. Applications should be tested to ensure compatibility with specific aggregation pipeline operations.",
-      "validation_sources": ["https://docs.aws.amazon.com/documentdb/latest/developerguide/mongo-apis.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/documentdb/latest/developerguide/mongo-apis.html"
+      ],
+      "correct": 1
     },
     {
       "id": 219,
@@ -3285,9 +3721,11 @@
         "Network latency between availability zones",
         "Long-running transactions that need to be rolled back"
       ],
-      "correct_answer": 3,
       "explanation": "Long-running transactions must be rolled back during failover, which can extend failover time beyond the typical 30-second window for Aurora clusters.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraHighAvailability.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraHighAvailability.html"
+      ],
+      "correct": 3
     },
     {
       "id": 220,
@@ -3300,9 +3738,11 @@
         "Use more selective vertex and edge property filters",
         "Optimize Gremlin query structure to reduce memory usage"
       ],
-      "correct_answer": 1,
       "explanation": "Graph preprocessing to materialize common traversal results (like similarity scores) eliminates the need for expensive multi-hop traversals during query time, significantly improving performance.",
-      "validation_sources": ["https://docs.aws.amazon.com/neptune/latest/userguide/best-practices-gremlin-query-tuning.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/neptune/latest/userguide/best-practices-gremlin-query-tuning.html"
+      ],
+      "correct": 1
     },
     {
       "id": 221,
@@ -3315,9 +3755,11 @@
         "Neptune with location-based graph traversals for route finding",
         "ElastiCache with geospatial data structures and route caching"
       ],
-      "correct_answer": 0,
       "explanation": "Aurora with PostGIS extensions provides comprehensive geospatial functions, routing algorithms, and real-time optimization capabilities needed for logistics route planning.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.Extensions.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.Extensions.html"
+      ],
+      "correct": 0
     },
     {
       "id": 222,
@@ -3330,9 +3772,11 @@
         "Separate tables for each user and department combination",
         "Database views with complex WHERE clauses for each user"
       ],
-      "correct_answer": 1,
       "explanation": "PostgreSQL Row Level Security with dynamic policies can enforce complex access rules based on user identity and department membership efficiently at the database level.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.RLS.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.RLS.html"
+      ],
+      "correct": 1
     },
     {
       "id": 223,
@@ -3345,9 +3789,11 @@
         "Verification of data integrity between source and target",
         "Reduced migration costs"
       ],
-      "correct_answer": 2,
       "explanation": "DMS validation compares data between source and target databases to ensure data integrity and identify any discrepancies during the migration process.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Validating.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Validating.html"
+      ],
+      "correct": 2
     },
     {
       "id": 224,
@@ -3360,9 +3806,11 @@
         "Adjust scaling timeout and force scaling parameters for faster response",
         "Use provisioned instances during predictable peak periods"
       ],
-      "correct_answer": 2,
       "explanation": "Aurora Serverless v2 scaling timeout and force scaling parameters control how aggressively the cluster scales, optimizing response time for predictable traffic patterns.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html"
+      ],
+      "correct": 2
     },
     {
       "id": 225,
@@ -3375,9 +3823,11 @@
         "Scale up the QLDB compute resources",
         "Use PartiQL query optimization and result caching"
       ],
-      "correct_answer": 0,
       "explanation": "Creating indexes on frequently queried ion attributes significantly improves QLDB query performance as the journal grows, providing the most immediate benefit.",
-      "validation_sources": ["https://docs.aws.amazon.com/qldb/latest/developerguide/working-with-indexes.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/qldb/latest/developerguide/working-with-indexes.html"
+      ],
+      "correct": 0
     },
     {
       "id": 226,
@@ -3390,9 +3840,11 @@
         "ElastiCache Redis with Lua scripts for atomic operations and persistence",
         "In-memory computing with periodic Aurora checkpointing"
       ],
-      "correct_answer": 2,
       "explanation": "ElastiCache Redis with Lua scripts provides atomic operations with microsecond latency, while Redis persistence ensures ACID guarantees for financial order matching.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Scripting.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/Scripting.html"
+      ],
+      "correct": 2
     },
     {
       "id": 227,
@@ -3405,9 +3857,11 @@
         "GuardDuty RDS Protection",
         "CloudWatch anomaly detection for database metrics"
       ],
-      "correct_answer": 2,
       "explanation": "GuardDuty RDS Protection uses machine learning to automatically detect unusual database access patterns, suspicious logins, and potential security threats.",
-      "validation_sources": ["https://docs.aws.amazon.com/guardduty/latest/ug/rds-protection.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/guardduty/latest/ug/rds-protection.html"
+      ],
+      "correct": 2
     },
     {
       "id": 228,
@@ -3420,9 +3874,11 @@
         "DynamoDB Transactions for atomic multi-item operations",
         "Optimistic locking with version control attributes"
       ],
-      "correct_answer": 2,
       "explanation": "DynamoDB Transactions provide ACID properties similar to Cassandra's lightweight transactions, enabling atomic operations across multiple items with consistency guarantees.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/transaction-apis.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/transaction-apis.html"
+      ],
+      "correct": 2
     },
     {
       "id": 229,
@@ -3435,9 +3891,11 @@
         "Use separate Aurora Serverless v2 clusters with different ACU configurations",
         "Use RDS for development and Aurora for production workloads"
       ],
-      "correct_answer": 0,
       "explanation": "Aurora Serverless v2 for development provides cost-effective scaling for occasional use, while provisioned instances ensure consistent performance for production requirements.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html"
+      ],
+      "correct": 0
     },
     {
       "id": 230,
@@ -3450,9 +3908,11 @@
         "Configure more aggressive auto-scaling policies",
         "Add jitter to request timing to distribute load"
       ],
-      "correct_answer": 0,
       "explanation": "Request rate smoothing prevents sudden traffic spikes that exhaust burst capacity before auto-scaling can respond, providing more consistent performance.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html"
+      ],
+      "correct": 0
     },
     {
       "id": 231,
@@ -3465,9 +3925,11 @@
         "DynamoDB with composite partition key using user_id and date for time-based distribution",
         "ElastiCache for real-time data with Aurora for persistent recommendation storage"
       ],
-      "correct_answer": 2,
       "explanation": "Composite partition key with user_id and date distributes writes across time-based partitions while enabling efficient queries for user history and recommendation algorithms.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-partition-key-design.html"
+      ],
+      "correct": 2
     },
     {
       "id": 232,
@@ -3480,9 +3942,11 @@
         "DynamoDB with streams and Lambda for comprehensive audit processing",
         "CloudTrail with data events enabled for all database access patterns"
       ],
-      "correct_answer": 1,
       "explanation": "QLDB provides immutable audit trails with cryptographic verification using SHA-256 and Merkle trees, while Aurora handles application data, ensuring HIPAA-compliant audit integrity.",
-      "validation_sources": ["https://docs.aws.amazon.com/qldb/latest/developerguide/what-is.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/qldb/latest/developerguide/what-is.html"
+      ],
+      "correct": 1
     },
     {
       "id": 233,
@@ -3495,9 +3959,11 @@
         "Migrates data faster than using DMS alone",
         "Eliminates the need for post-migration testing and validation"
       ],
-      "correct_answer": 1,
       "explanation": "SCT assessment reports analyze source databases and provide detailed effort estimates, compatibility issues, and conversion complexity analysis before migration begins.",
-      "validation_sources": ["https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_AssessmentReport.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_AssessmentReport.html"
+      ],
+      "correct": 1
     },
     {
       "id": 234,
@@ -3510,9 +3976,11 @@
         "Promote secondary region manually during scheduled maintenance window",
         "Use Aurora Serverless v2 for automatic regional scaling and failover"
       ],
-      "correct_answer": 0,
       "explanation": "Aurora managed planned failover with pre-warming ensures zero data loss and minimal downtime by coordinating the failover process and preparing the target region in advance.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-disaster-recovery.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-global-database-disaster-recovery.html"
+      ],
+      "correct": 0
     },
     {
       "id": 235,
@@ -3525,9 +3993,11 @@
         "Scale up Timestream compute capacity for better query performance",
         "Move all historical data to magnetic store for cost optimization"
       ],
-      "correct_answer": 1,
       "explanation": "Adding selective dimension filters significantly reduces the amount of data scanned across large time ranges, improving query performance and reducing memory utilization.",
-      "validation_sources": ["https://docs.aws.amazon.com/timestream/latest/developerguide/best-practices.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/timestream/latest/developerguide/best-practices.html"
+      ],
+      "correct": 1
     },
     {
       "id": 236,
@@ -3540,9 +4010,11 @@
         "RDS with AWS Storage Gateway for offline access capabilities",
         "ElastiCache with periodic S3 backups for data persistence"
       ],
-      "correct_answer": 0,
       "explanation": "DynamoDB with AWS AppSync provides built-in offline synchronization, automatic conflict resolution, and real-time updates optimized for mobile applications.",
-      "validation_sources": ["https://docs.aws.amazon.com/appsync/latest/devguide/conflict-detection-and-sync.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/appsync/latest/devguide/conflict-detection-and-sync.html"
+      ],
+      "correct": 0
     },
     {
       "id": 237,
@@ -3555,9 +4027,11 @@
         "DynamoDB encryption with AWS KMS integration and proxy decryption",
         "Application-level encryption with homomorphic encryption libraries"
       ],
-      "correct_answer": 1,
       "explanation": "Searchable encryption schemes with secure enclaves allow certain operations on encrypted data without full decryption, though this requires specialized cryptographic implementations.",
-      "validation_sources": ["https://docs.aws.amazon.com/encryption-sdk/latest/developer-guide/searchable-encryption.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/encryption-sdk/latest/developer-guide/searchable-encryption.html"
+      ],
+      "correct": 1
     },
     {
       "id": 238,
@@ -3570,9 +4044,11 @@
         "Use DMS table mapping rules to handle constraint dependencies automatically",
         "Migrate parent tables first, then child tables in strict dependency order"
       ],
-      "correct_answer": 1,
       "explanation": "Disabling foreign key checks during migration prevents constraint violations from circular dependencies, allowing parallel data loading, then re-enabling validates data integrity.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_BestPractices.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_BestPractices.html"
+      ],
+      "correct": 1
     },
     {
       "id": 239,
@@ -3585,9 +4061,11 @@
         "Use Aurora parallel query for all analytical workloads to improve performance",
         "Implement time-based workload scheduling to avoid conflicts"
       ],
-      "correct_answer": 1,
       "explanation": "Dedicated read replicas with larger instance types provide complete workload isolation, ensuring analytics don't impact production while optimizing resources for each use case.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html"
+      ],
+      "correct": 1
     },
     {
       "id": 240,
@@ -3600,9 +4078,11 @@
         "Use composite sort keys to better distribute high-cardinality data",
         "Move high-cardinality entities to separate dedicated tables"
       ],
-      "correct_answer": 1,
       "explanation": "GSI write sharding distributes high-cardinality entity writes across multiple logical partitions, preventing hot spots while maintaining single-table design benefits.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-gsi-overloading.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/bp-gsi-overloading.html"
+      ],
+      "correct": 1
     },
     {
       "id": 241,
@@ -3615,9 +4095,11 @@
         "OpenSearch with geospatial data types and location-based filtering",
         "Neptune with location-based graph queries and property relationships"
       ],
-      "correct_answer": 1,
       "explanation": "Aurora PostgreSQL with PostGIS provides comprehensive geospatial indexing, complex spatial queries, and efficient distance calculations optimized for real estate applications.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.Extensions.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.Extensions.html"
+      ],
+      "correct": 1
     },
     {
       "id": 242,
@@ -3630,9 +4112,11 @@
         "AWS Systems Manager Parameter Store with scheduled password updates",
         "Aurora RDS Proxy with credential management and connection pooling"
       ],
-      "correct_answer": 0,
       "explanation": "AWS Secrets Manager with Lambda rotation functions automatically rotates passwords using dual password support, updating applications seamlessly without downtime.",
-      "validation_sources": ["https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotating-secrets-rds.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/secretsmanager/latest/userguide/rotating-secrets-rds.html"
+      ],
+      "correct": 0
     },
     {
       "id": 243,
@@ -3645,9 +4129,11 @@
         "Optimize CDC lag by configuring DMS batch settings and parallelism",
         "Repair source database integrity and restart migration"
       ],
-      "correct_answer": 2,
       "explanation": "High concurrent write activity can cause CDC operations to arrive out of order. Optimizing DMS batch settings and parallelism reduces lag and prevents constraint violations.",
-      "validation_sources": ["https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.html"
+      ],
+      "correct": 2
     },
     {
       "id": 244,
@@ -3660,9 +4146,11 @@
         "Aurora distributed SSD storage with automatic scaling",
         "Magnetic storage for cost-effective large databases"
       ],
-      "correct_answer": 2,
       "explanation": "Aurora uses its own distributed SSD storage architecture that automatically scales and provides high performance without requiring manual storage type selection.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Overview.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Overview.html"
+      ],
+      "correct": 2
     },
     {
       "id": 245,
@@ -3675,9 +4163,11 @@
         "Scale up instance size to provide more I/O capacity",
         "Enable Aurora parallel query to reduce checkpoint pressure"
       ],
-      "correct_answer": 1,
       "explanation": "Optimizing checkpoint_completion_target spreads checkpoint I/O over a longer period, reducing checkpoint-related wait events during peak hours.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.BestPractices.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/AuroraPostgreSQL.BestPractices.html"
+      ],
+      "correct": 1
     },
     {
       "id": 246,
@@ -3690,9 +4180,11 @@
         "Kinesis Analytics for real-time stream processing with Neptune for graph storage",
         "ElastiCache for real-time analysis with periodic Neptune synchronization"
       ],
-      "correct_answer": 0,
       "explanation": "DynamoDB Streams with Lambda provides real-time transaction processing while updating Neptune graph database, enabling immediate fraud detection and relationship analysis.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Streams.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Streams.html"
+      ],
+      "correct": 0
     },
     {
       "id": 247,
@@ -3705,9 +4197,11 @@
         "DynamoDB Streams for change tracking",
         "Automated backup and restore capabilities"
       ],
-      "correct_answer": 1,
       "explanation": "DynamoDB deletion protection prevents accidental table deletion by requiring explicit confirmation, providing an essential safety layer for critical production data.",
-      "validation_sources": ["https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithTables.Basics.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/WorkingWithTables.Basics.html"
+      ],
+      "correct": 1
     },
     {
       "id": 248,
@@ -3720,9 +4214,11 @@
         "UUID generation functions for unique identifiers",
         "Identity columns with GENERATED ALWAYS specification"
       ],
-      "correct_answer": 1,
       "explanation": "PostgreSQL SERIAL data types automatically create and manage sequences for primary key generation, providing equivalent functionality to Oracle sequences.",
-      "validation_sources": ["https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_Converting.Oracle.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/SchemaConversionTool/latest/userguide/CHAP_Converting.Oracle.html"
+      ],
+      "correct": 1
     },
     {
       "id": 249,
@@ -3735,9 +4231,11 @@
         "Scale up the primary instance before batch processing begins",
         "Use Aurora auto-scaling with aggressive scaling policies"
       ],
-      "correct_answer": 1,
       "explanation": "Adding temporary read replicas with appropriate instance sizes for batch processing and removing them afterward provides cost-effective scaling for predictable workloads.",
-      "validation_sources": ["https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Replication.html"
+      ],
+      "correct": 1
     },
     {
       "id": 250,
@@ -3750,9 +4248,11 @@
         "Optimize time-based partitioning strategy with device-specific considerations",
         "Use highly selective dimension filters to minimize data scanning across time ranges"
       ],
-      "correct_answer": 3,
       "explanation": "Adding highly selective dimension filters (like specific device IDs or sensor types) dramatically reduces the amount of data scanned across large time ranges, providing the most significant performance improvement.",
-      "validation_sources": ["https://docs.aws.amazon.com/timestream/latest/developerguide/best-practices.html"]
+      "validation_sources": [
+        "https://docs.aws.amazon.com/timestream/latest/developerguide/best-practices.html"
+      ],
+      "correct": 3
     }
   ]
 }

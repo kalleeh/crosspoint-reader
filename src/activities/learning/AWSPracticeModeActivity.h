@@ -24,6 +24,8 @@ class AWSPracticeModeActivity final : public Activity {
   std::vector<String> domains;
   int selectedIndex = 0;
   int scrollOffset = 0;
+  int savedModeIndex = 0;  // Saves mode selection index when entering domain select
+  String statusMessage;    // Transient status shown at the bottom of the mode select screen
   
   void render();
   void renderDomainSelect();

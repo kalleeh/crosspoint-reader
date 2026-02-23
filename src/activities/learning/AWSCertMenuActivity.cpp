@@ -1,12 +1,21 @@
 #include "../../DebugConfig.h"
 #include "AWSCertMenuActivity.h"
 #include "../../fontIds.h"
-#include "../../ScreenComponents.h"
+#include "components/UITheme.h"
 #include "../../QuizStatsManager.h"
 #include <HalDisplay.h>
+#include <HalStorage.h>
+#include <I18n.h>
 #include <time.h>
 
 void AWSCertMenuActivity::onEnter() {
+  // Check once which cert JSON files are present on the SD card
+  certFileAvailable.clear();
+  for (const auto& cert : certs) {
+    char path[128];
+    snprintf(path, sizeof(path), "/aws-quiz/%s.json", cert.id);
+    certFileAvailable.push_back(Storage.exists(path));
+  }
   render();
 }
 
@@ -23,16 +32,17 @@ void AWSCertMenuActivity::render() {
   
   // Title
   int y = margin;
-  renderer.drawText(UI_12_FONT_ID, margin, y, "AWS Certifications", true);
+  renderer.drawText(UI_12_FONT_ID, margin, y, tr(STR_AWS_MENU_TITLE), true);
   y += renderer.getLineHeight(UI_12_FONT_ID) + 10;
   
   // Tab bar
   std::vector<TabInfo> tabs = {
-    {"Certifications", currentTab == Tab::Certifications},
-    {"Stats", currentTab == Tab::Stats}
+    {tr(STR_AWS_TAB_CERTS), currentTab == Tab::Certifications},
+    {tr(STR_AWS_TAB_STATS), currentTab == Tab::Stats}
   };
-  ScreenComponents::drawTabBar(renderer, y, tabs);
-  y += 40;  // Tab bar height
+  const auto& metrics = UITheme::getInstance().getMetrics();
+  GUI.drawTabBar(renderer, Rect{0, y, width, metrics.tabBarHeight}, tabs, false);
+  y += metrics.tabBarHeight;
   
   // Render current tab content
   if (currentTab == Tab::Certifications) {
@@ -69,22 +79,30 @@ void AWSCertMenuActivity::renderCertificationsTab() {
     
     // Center text vertically in the box
     int textY = y + (lineHeight - renderer.getLineHeight(UI_10_FONT_ID)) / 2;
-    renderer.drawText(UI_10_FONT_ID, margin + 10, textY, certs[i].name, !isSelected);
+    if (i < (int)certFileAvailable.size() && !certFileAvailable[i]) {
+      char labelBuf[128];
+      snprintf(labelBuf, sizeof(labelBuf), "[?] %s", certs[i].name);
+      renderer.drawText(UI_10_FONT_ID, margin + 10, textY, labelBuf, !isSelected);
+    } else {
+      renderer.drawText(UI_10_FONT_ID, margin + 10, textY, certs[i].name, !isSelected);
+    }
     y += lineHeight;
   }
   
   // Button hints
-  renderer.drawButtonHints(UI_10_FONT_ID, "Back", "Start", "Info", "");
+  GUI.drawButtonHints(renderer, "Back", "Start", "Info", "");
   
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
 
 void AWSCertMenuActivity::loop() {
   if (showingInfo) {
-    if (mappedInput.wasPressed(MappedInputManager::Button::Back) || 
-        mappedInput.wasPressed(MappedInputManager::Button::Confirm)) {
+    if (mappedInput.wasPressed(MappedInputManager::Button::Back)) {
       showingInfo = false;
       render();
+    } else if (mappedInput.wasPressed(MappedInputManager::Button::Confirm)) {
+      showingInfo = false;
+      onSelectCert(certs[selectedIndex].id);
     }
   } else if (currentTab == Tab::Stats) {
     // Stats tab - only Back button
@@ -97,7 +115,7 @@ void AWSCertMenuActivity::loop() {
       render();
     } else if (mappedInput.wasPressed(MappedInputManager::Button::Confirm)) {
       // Clear all stats
-      if (QuizStatsManager::getInstance().getTotalQuestionsAnswered() > 0) {
+      if (QuizStatsManager::getInstance().getTotalQuestionsAnswered(certs[selectedIndex].id) > 0) {
         QuizStatsManager::getInstance().clearAllStats();
         render();
       }
@@ -139,23 +157,23 @@ void AWSCertMenuActivity::renderStatsTab() {
   int y = startY;
   
   // Streak
-  int streak = stats.getStreak();
+  int streak = stats.getStreak(certs[selectedIndex].id);
   char streakText[32];
   snprintf(streakText, sizeof(streakText), "🔥 %d Day Streak", streak);
   renderer.drawText(UI_12_FONT_ID, margin, y, streakText, true);
   y += 40;
   
   // Overall Progress
-  renderer.drawText(UI_10_FONT_ID, margin, y, "Overall Progress:", true);
+  renderer.drawText(UI_10_FONT_ID, margin, y, tr(STR_AWS_OVERALL_PROGRESS), true);
   y += 25;
   
-  int totalQuestions = stats.getTotalQuestionsAnswered();
+  int totalQuestions = stats.getTotalQuestionsAnswered(certs[selectedIndex].id);
   char questionsText[64];
   snprintf(questionsText, sizeof(questionsText), "• Questions Answered: %d", totalQuestions);
   renderer.drawText(UI_10_FONT_ID, margin + 10, y, questionsText, true);
   y += 20;
-  
-  int avgScore = stats.getAverageScore();
+
+  int avgScore = stats.getAverageScore(certs[selectedIndex].id);
   char scoreText[64];
   if (totalQuestions > 0) {
     snprintf(scoreText, sizeof(scoreText), "• Average Score: %d%%", avgScore);
@@ -166,12 +184,12 @@ void AWSCertMenuActivity::renderStatsTab() {
   y += 30;
   
   // Recent History
-  renderer.drawText(UI_10_FONT_ID, margin, y, "Recent History:", true);
+  renderer.drawText(UI_10_FONT_ID, margin, y, tr(STR_AWS_RECENT_HISTORY), true);
   y += 25;
   
-  auto history = stats.getRecentHistory(5);
+  auto history = stats.getRecentHistory(5, certs[selectedIndex].id);
   if (history.empty()) {
-    renderer.drawText(UI_10_FONT_ID, margin + 10, y, "No quiz history yet", true);
+    renderer.drawText(UI_10_FONT_ID, margin + 10, y, tr(STR_AWS_NO_HISTORY), true);
     y += 20;
   } else {
     for (const auto& result : history) {
@@ -196,12 +214,12 @@ void AWSCertMenuActivity::renderStatsTab() {
   y += 10;
   
   // Weak Areas
-  renderer.drawText(UI_10_FONT_ID, margin, y, "Weak Areas:", true);
+  renderer.drawText(UI_10_FONT_ID, margin, y, tr(STR_AWS_WEAK_AREAS), true);
   y += 25;
   
-  auto weakDomains = stats.getWeakDomains(5);
+  auto weakDomains = stats.getWeakDomains(5, certs[selectedIndex].id);
   if (weakDomains.empty()) {
-    renderer.drawText(UI_10_FONT_ID, margin + 10, y, "No weak areas yet", true);
+    renderer.drawText(UI_10_FONT_ID, margin + 10, y, tr(STR_AWS_NO_WEAK_AREAS), true);
   } else {
     int count = 0;
     for (const auto& pair : weakDomains) {
@@ -216,16 +234,16 @@ void AWSCertMenuActivity::renderStatsTab() {
     }
   }
   
-  // Clear stats option (if there's data)
-  if (stats.getTotalQuestionsAnswered() > 0) {
+  // Clear stats option (if there's data for this cert)
+  if (stats.getTotalQuestionsAnswered(certs[selectedIndex].id) > 0) {
     y += 20;
     renderer.drawRect(margin, y, 150, 30);
-    renderer.drawText(UI_10_FONT_ID, margin + 10, y + 8, "Clear All Stats", true);
+    renderer.drawText(UI_10_FONT_ID, margin + 10, y + 8, tr(STR_AWS_CLEAR_STATS), true);
   }
-  
+
   // Button hints
-  const char* hint = stats.getTotalQuestionsAnswered() > 0 ? "Back | Confirm: Clear" : "Back";
-  renderer.drawButtonHints(UI_10_FONT_ID, hint, "", "", "");
+  const char* clearHint = stats.getTotalQuestionsAnswered(certs[selectedIndex].id) > 0 ? "Clear All" : "";
+  GUI.drawButtonHints(renderer, "Back", clearHint, "", "");
   
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
@@ -299,6 +317,6 @@ void AWSCertMenuActivity::renderInfo() {
   y += 20;
   renderer.drawText(UI_10_FONT_ID, margin, y, "with practice questions.", true);
   
-  renderer.drawButtonHints(UI_10_FONT_ID, "Back", "Start Quiz", "", "");
+  GUI.drawButtonHints(renderer, "Back", "Practice", "", "");
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }

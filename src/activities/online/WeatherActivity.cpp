@@ -5,11 +5,11 @@
 #include <Bitmap.h>
 #include <GfxRenderer.h>
 #include <HalDisplay.h>
-#include <SDCardManager.h>
+#include <HalStorage.h>
 #include <WiFi.h>
 
 #include "../../MappedInputManager.h"
-#include "../../ScreenComponents.h"
+#include "components/UITheme.h"
 #include "../../fontIds.h"
 #include "OnlineContentFetcher.h"
 
@@ -235,10 +235,11 @@ void WeatherActivity::render() {
   // Button hints
   const char* confirmText = state == LOADING ? "" : "Refresh";
   const auto labels = mappedInput.mapLabels("Back", confirmText, "", "");
-  renderer.drawButtonHints(UI_10_FONT_ID, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
+  GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 
   // Battery
-  ScreenComponents::drawBattery(renderer, screenWidth - 25, 10, false);
+  const auto& metrics = UITheme::getInstance().getMetrics();
+  GUI.drawBatteryRight(renderer, Rect{screenWidth - 25, 10, metrics.batteryWidth, metrics.batteryHeight}, false);
 
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
@@ -272,7 +273,7 @@ bool WeatherActivity::loadWeatherBackground(const char* cond) {
   
   // Try to open and draw the BMP
   FsFile bmpFile;
-  if (!SdMan.openFileForRead("WEATHER", filename, bmpFile)) {
+  if (!Storage.openFileForRead("WEATHER", filename, bmpFile)) {
     DEBUG_PRINTF("[Weather] Failed to open file: %s\n", filename);
     return false;
   }

@@ -96,7 +96,7 @@ void OpdsBookBrowserActivity::loop() {
     if (mappedInput.wasReleased(MappedInputManager::Button::Back)) {
       // Cancel download (not implemented, just return to browsing)
       state = BrowserState::BROWSING;
-      updateRequired = true;
+      requestUpdate();
     }
     return;
   }

@@ -14,6 +14,7 @@
 #include <cstring>
 
 #include "CrossPointSettings.h"
+#include "ForkSettings.h"
 #include "CrossPointState.h"
 #include "KOReaderCredentialStore.h"
 #include "MappedInputManager.h"
@@ -29,6 +30,7 @@
 #include "activities/settings/SettingsActivity.h"
 #include "activities/util/FullScreenMessageActivity.h"
 #include "components/UITheme.h"
+#include "customNavigation.h"
 #include "fontIds.h"
 #include "util/ButtonNavigator.h"
 #include "util/ScreenshotUtil.h"
@@ -252,150 +254,10 @@ void onGoToBrowser() {
   enterNewActivity(new OpdsBookBrowserActivity(renderer, mappedInputManager, onGoHome));
 }
 
-// Forward declarations for games
-void onGoToGames();
-void onGoToTicTacToe();
-void onGoToSnake();
-void onGoTo2048();
-void onGoToMemoryMatch();
-void onGoToChess();
-
-// Forward declarations for online
-void onGoToOnline();
-void onGoToWeather();
-void onGoToWikipedia();
-void onGoToWordOfDay();
-void onGoToHistory();
-void onGoToXKCD();
-
-// Forward declarations for learning
-void onGoToAWSCert();
-void onGoToAWSPracticeMode(const char* certId);
-void onStartAWSQuiz(const char* certId, const char* mode, const char* domain);
-
-// Forward declarations for submenus
-void onGoToBrowse();
-void onGoToApps();
-
-void onGoToBrowse() {
-  exitActivity();
-  enterNewActivity(new BrowseMenuActivity(renderer, mappedInputManager, onGoHome, onGoToBrowser, onGoToFileTransfer));
-}
-
-void onGoToApps() {
-  exitActivity();
-  enterNewActivity(new AppsMenuActivity(renderer, mappedInputManager, onGoHome, onGoToOnline, onGoToGames, onGoToAWSCert));
-}
-
-void onGoToGames() {
-  exitActivity();
-  auto* gamesMenu = new GamesMenuActivity(renderer, mappedInputManager, onGoToApps);
-
-  // Register all games
-  gamesMenu->registerGame("tictactoe", "Tic Tac Toe", onGoToTicTacToe);
-  gamesMenu->registerGame("snake", "Snake", onGoToSnake);
-  gamesMenu->registerGame("2048", "2048", onGoTo2048);
-  gamesMenu->registerGame("memory", "Memory Match", onGoToMemoryMatch);
-  gamesMenu->registerGame("chess", "Chess", onGoToChess);
-
-  enterNewActivity(gamesMenu);
-}
-
-void onGoToTicTacToe() {
-  exitActivity();
-  enterNewActivity(new TicTacToeActivity(renderer, mappedInputManager, onGoToGames));
-}
-
-void onGoToSnake() {
-  exitActivity();
-  enterNewActivity(new SnakeActivity(renderer, mappedInputManager, onGoToGames));
-}
-
-void onGoTo2048() {
-  exitActivity();
-  enterNewActivity(new Game2048Activity(renderer, mappedInputManager, onGoToGames));
-}
-
-void onGoToMemoryMatch() {
-  exitActivity();
-  enterNewActivity(new MemoryMatchActivity(renderer, mappedInputManager, onGoToGames));
-}
-
-void onGoToChess() {
-  exitActivity();
-  enterNewActivity(new ChessActivity(renderer, mappedInputManager, onGoToGames));
-}
-
-void onGoToOnline() {
-  exitActivity();
-  auto* onlineMenu = new OnlineMenuActivity(renderer, mappedInputManager, onGoToApps);
-
-  // Register online features
-  onlineMenu->registerItem("weather", "Weather", onGoToWeather);
-  onlineMenu->registerItem("wikipedia", "Wikipedia Feed", onGoToWikipedia);
-  onlineMenu->registerItem("word", "Word of the Day", onGoToWordOfDay);
-  onlineMenu->registerItem("history", "This Day in History", onGoToHistory);
-  onlineMenu->registerItem("xkcd", "XKCD Comics", onGoToXKCD);
-
-  enterNewActivity(onlineMenu);
-}
-
-void onGoToWeather() {
-  exitActivity();
-  enterNewActivity(new WeatherActivity(renderer, mappedInputManager, onGoToOnline));
-}
-
-void onGoToWikipedia() {
-  exitActivity();
-  enterNewActivity(new WikipediaRandomActivity(renderer, mappedInputManager, onGoToOnline));
-}
-
-void onGoToWordOfDay() {
-  exitActivity();
-  enterNewActivity(new WordOfTheDayActivity(renderer, mappedInputManager, onGoToOnline));
-}
-
-void onGoToHistory() {
-  exitActivity();
-  enterNewActivity(new HistoryTodayActivity(renderer, mappedInputManager, onGoToOnline));
-}
-
-void onGoToXKCD() {
-  exitActivity();
-  enterNewActivity(new XKCDViewerActivity(renderer, mappedInputManager, onGoToOnline));
-}
-
-// AWS Certification Practice
-static String awsCertId;  // Shared state for AWS navigation lambdas
-
-void onGoToAWSCert() {
-  exitActivity();
-  enterNewActivity(new AWSCertMenuActivity(renderer, mappedInputManager, onGoToApps, onGoToAWSPracticeMode));
-}
-
-void onGoToAWSPracticeMode(const char* certId) {
-  if (certId) awsCertId = certId;
-
-  exitActivity();
-  enterNewActivity(new AWSPracticeModeActivity(renderer, mappedInputManager, onGoToAWSCert,
-    [](const char* mode, const char* domain) {
-      onStartAWSQuiz(awsCertId.c_str(), mode, domain);
-    }, awsCertId.c_str()));
-}
-
-void onStartAWSQuiz(const char* certId, const char* mode, const char* domain) {
-  if (certId) awsCertId = certId;
-
-  exitActivity();
-  enterNewActivity(new AWSCertQuizActivity(renderer, mappedInputManager,
-    []() { onGoToAWSPracticeMode(awsCertId.c_str()); },
-    certId, mode, domain));
-}
-
 void onGoHome() {
   exitActivity();
   enterNewActivity(new HomeActivity(renderer, mappedInputManager, onGoToReader, onGoToMyLibrary, onGoToRecentBooks,
-                                    onGoToSettings, onGoToFileTransfer, onGoToBrowser));
+                                    onGoToSettings, onGoToFileTransfer, onGoToBrowser, onGoToApps));
 }
 
 void setupDisplayAndFonts() {
@@ -456,6 +318,7 @@ void setup() {
   }
 
   SETTINGS.loadFromFile();
+  FORK_SETTINGS.loadFromFile();
   I18N.loadSettings();
   KOREADER_STORE.loadFromFile();
   UITheme::getInstance().reload();

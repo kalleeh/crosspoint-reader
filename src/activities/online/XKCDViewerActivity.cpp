@@ -1,3 +1,4 @@
+#include "components/UITheme.h"
 #include "../../DebugConfig.h"
 #include "XKCDViewerActivity.h"
 #include <HTTPClient.h>
@@ -5,7 +6,7 @@
 #include <ArduinoJson.h>
 #include <HalDisplay.h>
 #include <GfxRenderer.h>
-#include <SDCardManager.h>
+#include <HalStorage.h>
 #include "../../MappedInputManager.h"
 #include "../../fontIds.h"
 
@@ -20,7 +21,7 @@ static int ditherWidth = 0;
 
 // PNG file callbacks
 void* pngOpen(const char *filename, int32_t *size) {
-  if (SdMan.openFileForRead("XKCD", filename, s_pngFile)) {
+  if (Storage.openFileForRead("XKCD", filename, s_pngFile)) {
     *size = s_pngFile.fileSize();
     return &s_pngFile;
   }
@@ -147,7 +148,7 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
     http.end();
     renderer.drawCenteredText(UI_10_FONT_ID, height / 2, "Failed to load image", true);
     
-    renderer.drawButtonHints(UI_10_FONT_ID, "Back", "", "Prev", "Next");
+    GUI.drawButtonHints(renderer, "Back", "", "Prev", "Next");
     
     renderer.displayBuffer(HalDisplay::FAST_REFRESH);
     return;
@@ -155,7 +156,7 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
   
   // Save to SD card temporarily
   FsFile file;
-  if (!SdMan.openFileForWrite("XKCD", "/.crosspoint/xkcd_temp.png", file)) {
+  if (!Storage.openFileForWrite("XKCD", "/.crosspoint/xkcd_temp.png", file)) {
     http.end();
     renderer.drawCenteredText(UI_10_FONT_ID, height / 2, "Failed to save image", true);
     renderer.displayBuffer(HalDisplay::FAST_REFRESH);
@@ -183,9 +184,9 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
   }
   
   // Clean up temp file
-  SdMan.remove("/.crosspoint/xkcd_temp.png");
+  Storage.remove("/.crosspoint/xkcd_temp.png");
   
-  renderer.drawButtonHints(UI_10_FONT_ID, "Back", "", "Prev", "Next");
+  GUI.drawButtonHints(renderer, "Back", "", "Prev", "Next");
   
   // Display the complete buffer (title + image + menu)
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <HardwareSerial.h>
+#include <stdarg.h>
 
 /*
 Define ENABLE_SERIAL_LOG to enable logging
@@ -61,10 +62,17 @@ class MySerialImpl : public Print {
   //   if (Serial) or while (!Serial)
   operator bool() const { return logSerial; }
 
-  __attribute__((deprecated("Use LOG_* macro instead"))) size_t printf(const char* format, ...);
-  size_t write(uint8_t b) override;
-  size_t write(const uint8_t* buffer, size_t size) override;
-  void flush() override;
+  __attribute__((deprecated("Use LOG_* macro instead"))) size_t printf(const char* format, ...) {
+    va_list args;
+    va_start(args, format);
+    char buf[256];
+    vsnprintf(buf, sizeof(buf), format, args);
+    va_end(args);
+    return logSerial.print(buf);
+  }
+  size_t write(uint8_t b) override { return logSerial.write(b); }
+  size_t write(const uint8_t* buffer, size_t size) override { return logSerial.write(buffer, size); }
+  void flush() override { logSerial.flush(); }
   static MySerialImpl instance;
 };
 

@@ -5,9 +5,10 @@
 #include <HalDisplay.h>
 
 #include "../../MappedInputManager.h"
-#include "../../ScreenComponents.h"
+#include "components/UITheme.h"
 #include "../../fontIds.h"
 #include "../../GameConstants.h"
+#include <I18n.h>
 
 using namespace GameConstants;
 
@@ -815,14 +816,14 @@ void ChessActivity::render() {
 
   // Title at top
   if (gameState == CHECKMATE) {
-    const char* winner = whiteTurn ? "Black Wins!" : "White Wins!";
+    const char* winner = whiteTurn ? tr(STR_CHESS_BLACK_WINS) : tr(STR_CHESS_WHITE_WINS);
     renderer.drawCenteredText(UI_10_FONT_ID, 15, winner);
   } else if (gameState == STALEMATE) {
-    renderer.drawCenteredText(UI_10_FONT_ID, 15, "Stalemate!");
+    renderer.drawCenteredText(UI_10_FONT_ID, 15, tr(STR_CHESS_STALEMATE));
   } else if (gameState == CHECK) {
-    renderer.drawCenteredText(UI_10_FONT_ID, 15, "Check!");
+    renderer.drawCenteredText(UI_10_FONT_ID, 15, tr(STR_CHESS_CHECK));
   } else {
-    const char* turn = whiteTurn ? "White's Turn" : "Black's Turn";
+    const char* turn = whiteTurn ? tr(STR_CHESS_WHITE_TURN) : tr(STR_CHESS_BLACK_TURN);
     renderer.drawCenteredText(UI_10_FONT_ID, 15, turn);
   }
 
@@ -861,11 +862,11 @@ void ChessActivity::render() {
 
   // Button hints at bottom
   const auto labels = mappedInput.mapLabels("Back", "Select", "Move", "Move");
-  renderer.drawButtonHints(UI_10_FONT_ID, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
+  GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 
   // Battery indicator at top right
-  const auto batteryX = screenWidth - 25;
-  ScreenComponents::drawBattery(renderer, batteryX, 10, false);
+  const auto& metrics = UITheme::getInstance().getMetrics();
+  GUI.drawBatteryRight(renderer, Rect{screenWidth - 25, 10, metrics.batteryWidth, metrics.batteryHeight}, false);
 
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }

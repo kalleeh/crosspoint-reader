@@ -7,7 +7,7 @@
 OpdsParser::OpdsParser() {
   parser = XML_ParserCreate(nullptr);
   if (!parser) {
-    errorOccured = true;
+    errorOccurred = true;
     LOG_DBG("OPDS", "Couldn't allocate memory for parser");
   }
 }
@@ -41,7 +41,7 @@ size_t OpdsParser::write(const uint8_t* xmlData, const size_t length) {
   while (remaining > 0) {
     void* const buf = XML_GetBuffer(parser, chunkSize);
     if (!buf) {
-      errorOccured = true;
+      errorOccurred = true;
       LOG_DBG("OPDS", "Couldn't allocate memory for buffer");
       XML_ParserFree(parser);
       parser = nullptr;
@@ -52,7 +52,7 @@ size_t OpdsParser::write(const uint8_t* xmlData, const size_t length) {
     memcpy(buf, currentPos, toRead);
 
     if (XML_ParseBuffer(parser, static_cast<int>(toRead), 0) == XML_STATUS_ERROR) {
-      errorOccured = true;
+      errorOccurred = true;
       LOG_DBG("OPDS", "Parse error at line %lu: %s", XML_GetCurrentLineNumber(parser),
               XML_ErrorString(XML_GetErrorCode(parser)));
       XML_ParserFree(parser);

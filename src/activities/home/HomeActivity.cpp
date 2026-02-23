@@ -27,6 +27,9 @@ int HomeActivity::getMenuItemCount() const {
   if (hasOpdsUrl) {
     count++;
   }
+  if (onGamesOpen) {
+    count++;  // Apps (Games / Online / Learning)
+  }
   return count;
 }
 
@@ -192,6 +195,7 @@ void HomeActivity::loop() {
     const int recentsIdx = idx++;
     const int opdsLibraryIdx = hasOpdsUrl ? idx++ : -1;
     const int fileTransferIdx = idx++;
+    const int appsIdx = onGamesOpen ? idx++ : -1;
     const int settingsIdx = idx;
 
     if (selectorIndex < recentBooks.size()) {
@@ -204,6 +208,8 @@ void HomeActivity::loop() {
       onOpdsBrowserOpen();
     } else if (menuSelectedIndex == fileTransferIdx) {
       onFileTransferOpen();
+    } else if (menuSelectedIndex == appsIdx) {
+      onGamesOpen();
     } else if (menuSelectedIndex == settingsIdx) {
       onSettingsOpen();
     }
@@ -233,6 +239,12 @@ void HomeActivity::render(Activity::RenderLock&&) {
     // Insert OPDS Browser after My Library
     menuItems.insert(menuItems.begin() + 2, tr(STR_OPDS_BROWSER));
     menuIcons.insert(menuIcons.begin() + 2, Library);
+  }
+
+  if (onGamesOpen) {
+    // Insert Apps before Settings (second-to-last position)
+    menuItems.insert(menuItems.end() - 1, tr(STR_APPS_MENU_TITLE));
+    menuIcons.insert(menuIcons.end() - 1, Hotspot);
   }
 
   GUI.drawButtonMenu(

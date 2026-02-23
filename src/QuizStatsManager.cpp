@@ -1,6 +1,7 @@
 #include "QuizStatsManager.h"
-#include "SDCardManager.h"
+#include <HalStorage.h>
 #include <time.h>
+#include <algorithm>
 
 QuizStatsManager& QuizStatsManager::getInstance() {
   static QuizStatsManager instance;
@@ -46,201 +47,300 @@ void QuizStatsManager::saveQuizResult(const char* certId, const char* mode, uint
   results.push_back(result);
   
   // Keep only last 50 results
-  if (results.size() > 50) {
+  while (results.size() > 50) {
     results.erase(results.begin());
   }
   
-  // Update domain stats
+  // Update domain stats (cap at 100 entries to bound memory usage)
   for (const auto& ds : domainScores) {
     String key = String(certId) + ":" + String(ds.domain);
-    if (domainStats.find(key) == domainStats.end()) {
-      domainStats[key] = ds;
-    } else {
+    if (domainStats.find(key) != domainStats.end()) {
       domainStats[key].correct += ds.correct;
       domainStats[key].total += ds.total;
+    } else if (domainStats.size() < 100) {
+      domainStats[key] = ds;
     }
   }
-  
-  updateLastPracticeDate();
+
+  updateLastPracticeDate(certId);
   saveStats();
 }
 
-int QuizStatsManager::getStreak() {
+int QuizStatsManager::getStreak(const char* certId) {
   if (!loaded) loadStats();
-  return calculateStreak();
+  return calculateStreak(certId);
 }
 
-int QuizStatsManager::getTotalQuestionsAnswered() {
+int QuizStatsManager::getTotalQuestionsAnswered(const char* certId) {
   if (!loaded) loadStats();
-  
+
+  bool filterByCert = (certId != nullptr && certId[0] != '\0');
   int total = 0;
   for (const auto& result : results) {
+    if (filterByCert && strcmp(result.certId, certId) != 0) continue;
     total += result.total;
   }
   return total;
 }
 
-int QuizStatsManager::getAverageScore() {
+int QuizStatsManager::getAverageScore(const char* certId) {
   if (!loaded) loadStats();
-  
+
   if (results.empty()) return 0;
-  
+
+  bool filterByCert = (certId != nullptr && certId[0] != '\0');
   int totalScore = 0;
   int totalQuestions = 0;
-  
+
   for (const auto& result : results) {
+    if (filterByCert && strcmp(result.certId, certId) != 0) continue;
     totalScore += result.score;
     totalQuestions += result.total;
   }
-  
-  return totalQuestions > 0 ? (totalScore * 100) / totalQuestions : 0;
+
+  return totalQuestions > 0 ? ((long)totalScore * 100) / totalQuestions : 0;
 }
 
-std::vector<QuizStatsManager::QuizResult> QuizStatsManager::getRecentHistory(int limit) {
+std::vector<QuizStatsManager::QuizResult> QuizStatsManager::getRecentHistory(int limit, const char* certId) {
   if (!loaded) loadStats();
   if (results.empty()) return {};
 
-  std::vector<QuizResult> recent;
-  int start = static_cast<int>(results.size()) > limit ? static_cast<int>(results.size()) - limit : 0;
-
-  for (int i = static_cast<int>(results.size()) - 1; i >= start; i--) {
-    recent.push_back(results[i]);
+  bool filterByCert = (certId != nullptr && certId[0] != '\0');
+  std::vector<QuizResult> history;
+  int count = 0;
+  for (int i = (int)results.size() - 1; i >= 0 && count < limit; i--) {
+    if (filterByCert && strcmp(results[i].certId, certId) != 0) continue;
+    history.push_back(results[i]);
+    count++;
   }
-
-  return recent;
+  return history;
 }
 
-std::map<String, int> QuizStatsManager::getWeakDomains(int minQuestions) {
+std::map<String, int> QuizStatsManager::getWeakDomains(int minQuestions, const char* certId) {
   if (!loaded) loadStats();
-  
+
   std::map<String, int> weak;
-  
+
+  // Build prefix filter when certId is provided
+  String prefix;
+  bool filterByCert = (certId != nullptr && certId[0] != '\0');
+  if (filterByCert) {
+    prefix = String(certId) + ":";
+  }
+
   for (const auto& pair : domainStats) {
+    if (filterByCert && !pair.first.startsWith(prefix)) {
+      continue;
+    }
     const DomainScore& ds = pair.second;
     if (ds.total >= minQuestions) {
+      if (ds.total == 0) continue;
       int percentage = (ds.correct * 100) / ds.total;
       if (percentage < 70) {  // Below 70% is weak
         weak[String(ds.domain)] = percentage;
       }
     }
   }
-  
+
   return weak;
 }
 
 void QuizStatsManager::clearAllStats() {
   results.clear();
   domainStats.clear();
-  lastPracticeDate = 0;
+  lastPracticeDateByCert.clear();
+  loaded = false;
   saveStats();
 }
 
 void QuizStatsManager::loadStats() {
   if (loaded) return;
-  
-  String path = "/.crosspoint/aws-quiz-stats.dat";
+
+  const char* path = "/.crosspoint/aws-quiz-stats.dat";
   FsFile file;
-  if (!SdMan.openFileForRead("QuizStats", path.c_str(), file)) {
+  if (!Storage.openFileForRead("QuizStats", path, file)) {
     loaded = true;
     return;
   }
-  
-  // Read last practice date
-  file.read((uint8_t*)&lastPracticeDate, sizeof(lastPracticeDate));
-  
+
+  // Read per-cert lastPracticeDate map
+  int certDateCount;
+  if (file.read((uint8_t*)&certDateCount, sizeof(certDateCount)) != sizeof(certDateCount)
+      || certDateCount < 0 || certDateCount > 200) {
+    file.close(); loaded = true; return;
+  }
+  for (int i = 0; i < certDateCount; i++) {
+    char certKey[32] = {};
+    uint32_t dateVal = 0;
+    if (file.read((uint8_t*)certKey, sizeof(certKey)) != sizeof(certKey)) {
+      file.close(); loaded = true; return;
+    }
+    certKey[31] = '\0';
+    if (file.read((uint8_t*)&dateVal, sizeof(dateVal)) != sizeof(dateVal)) {
+      file.close(); loaded = true; return;
+    }
+    lastPracticeDateByCert[String(certKey)] = dateVal;
+  }
+
   // Read results count
   int resultCount;
-  file.read((uint8_t*)&resultCount, sizeof(resultCount));
-  
+  if (file.read((uint8_t*)&resultCount, sizeof(resultCount)) != sizeof(resultCount)
+      || resultCount < 0 || resultCount > 50) {
+    file.close(); loaded = true; return;
+  }
+
   // Read results
-  for (int i = 0; i < resultCount && i < 50; i++) {
+  for (int i = 0; i < resultCount; i++) {
     QuizResult result;
-    file.read((uint8_t*)&result, sizeof(result));
+    if (file.read((uint8_t*)&result, sizeof(result)) != sizeof(result)) {
+      file.close(); loaded = true; return;
+    }
     results.push_back(result);
   }
-  
+
   // Read domain stats count
   int domainCount;
-  file.read((uint8_t*)&domainCount, sizeof(domainCount));
-  
+  if (file.read((uint8_t*)&domainCount, sizeof(domainCount)) != sizeof(domainCount)
+      || domainCount < 0 || domainCount > 100) {
+    file.close(); loaded = true; return;
+  }
+
   // Read domain stats
-  for (int i = 0; i < domainCount && i < 100; i++) {
+  for (int i = 0; i < domainCount; i++) {
     char key[96];
     DomainScore ds;
-    file.read((uint8_t*)key, sizeof(key));
-    file.read((uint8_t*)&ds, sizeof(ds));
+    if (file.read((uint8_t*)key, sizeof(key)) != sizeof(key)) {
+      file.close(); loaded = true; return;
+    }
+    key[95] = '\0';
+    if (file.read((uint8_t*)&ds, sizeof(ds)) != sizeof(ds)) {
+      file.close(); loaded = true; return;
+    }
     domainStats[String(key)] = ds;
   }
-  
+
   file.close();
   loaded = true;
 }
 
 void QuizStatsManager::saveStats() {
-  String path = "/.crosspoint/aws-quiz-stats.dat";
-  FsFile file = SdMan.open(path.c_str(), O_WRONLY | O_CREAT | O_TRUNC);
+  const char* tmpPath = "/.crosspoint/aws-quiz-stats.tmp";
+  const char* realPath = "/.crosspoint/aws-quiz-stats.dat";
+
+  // Write to temp file first — avoids corrupting the real file on power loss
+  FsFile file = Storage.open(tmpPath, O_WRONLY | O_CREAT | O_TRUNC);
   if (!file) {
-    Serial.println("[QuizStats] Failed to save stats");
+    Serial.println("[QuizStats] Failed to open tmp file for save");
     return;
   }
-  
-  // Write last practice date
-  file.write((uint8_t*)&lastPracticeDate, sizeof(lastPracticeDate));
-  
-  // Write results count
-  int resultCount = results.size();
+
+  // Write per-cert lastPracticeDate map
+  int certDateCount = (int)lastPracticeDateByCert.size();
+  file.write((uint8_t*)&certDateCount, sizeof(certDateCount));
+  for (const auto& pair : lastPracticeDateByCert) {
+    char certKey[32] = {};
+    strncpy(certKey, pair.first.c_str(), sizeof(certKey) - 1);
+    file.write((uint8_t*)certKey, sizeof(certKey));
+    file.write((uint8_t*)&pair.second, sizeof(pair.second));
+  }
+
+  // Write results count + results
+  int resultCount = (int)results.size();
   file.write((uint8_t*)&resultCount, sizeof(resultCount));
-  
-  // Write results
   for (const auto& result : results) {
     file.write((uint8_t*)&result, sizeof(result));
   }
-  
-  // Write domain stats count
-  int domainCount = domainStats.size();
+
+  // Write domain stats count + entries
+  int domainCount = (int)domainStats.size();
   file.write((uint8_t*)&domainCount, sizeof(domainCount));
-  
-  // Write domain stats
   for (const auto& pair : domainStats) {
-    char key[96];
+    char key[96] = {};
     strncpy(key, pair.first.c_str(), sizeof(key) - 1);
     file.write((uint8_t*)key, sizeof(key));
     file.write((uint8_t*)&pair.second, sizeof(pair.second));
   }
-  
+
   file.close();
+
+  // Atomic swap: rename tmp -> real.
+  // Try rename first (FAT rename may fail if destination exists).
+  // Only remove the old file if rename without it fails — this way
+  // the old .dat is never deleted before the new data is ready.
+  if (!Storage.rename(tmpPath, realPath)) {
+    Storage.remove(realPath);
+    if (!Storage.rename(tmpPath, realPath)) {
+      Serial.println("[QuizStats] rename failed, removing tmp");
+      Storage.remove(tmpPath);
+    }
+  }
 }
 
-void QuizStatsManager::updateLastPracticeDate() {
-  lastPracticeDate = time(nullptr);
-}
-
-int QuizStatsManager::calculateStreak() {
-  if (results.empty()) return 0;
-  
+void QuizStatsManager::updateLastPracticeDate(const char* certId) {
   time_t now = time(nullptr);
-  time_t lastPractice = lastPracticeDate;
-  
+  if (now == (time_t)-1) now = 0;  // Match saveQuizResult() error handling
+  lastPracticeDateByCert[String(certId)] = (uint32_t)now;
+}
+
+static int toLocalDay(time_t t) {
+  // Days since epoch (UTC). Correct across leap years, good enough for streak tracking.
+  return (int)(t / 86400);
+}
+
+int QuizStatsManager::calculateStreak(const char* certId) {
+  if (results.empty()) return 0;
+
+  bool filterByCert = (certId != nullptr && certId[0] != '\0');
+
+  // Build a filtered view of results for this cert
+  std::vector<const QuizResult*> filtered;
+  for (const auto& r : results) {
+    if (!filterByCert || strcmp(r.certId, certId) == 0) {
+      filtered.push_back(&r);
+    }
+  }
+
+  if (filtered.empty()) return 0;
+
+  // Sort oldest→newest so the streak walk is correct regardless of insertion order
+  std::sort(filtered.begin(), filtered.end(), [](const QuizResult* a, const QuizResult* b) {
+    return a->timestamp < b->timestamp;
+  });
+
+  time_t now = time(nullptr);
+
+  // Use per-cert last practice date; fall back to most recent across all certs
+  uint32_t storedDate = 0;
+  if (filterByCert) {
+    auto it = lastPracticeDateByCert.find(String(certId));
+    if (it != lastPracticeDateByCert.end()) storedDate = it->second;
+  } else {
+    for (const auto& pair : lastPracticeDateByCert) {
+      if (pair.second > storedDate) storedDate = pair.second;
+    }
+  }
+  time_t lastPractice = (time_t)storedDate;
+
   // Check if practiced today or yesterday
-  int daysSinceLastPractice = (now - lastPractice) / 86400;  // 86400 seconds in a day
-  
+  int daysSinceLastPractice = toLocalDay(now) - toLocalDay(lastPractice);
+
   if (daysSinceLastPractice > 1) {
     return 0;  // Streak broken
   }
-  
-  // Count consecutive days
+
+  // Count consecutive days — each step back must be exactly 1 day apart
   int streak = 1;
 
-  for (int i = static_cast<int>(results.size()) - 2; i >= 0; i--) {
-    int daysDiff = (lastPractice - results[i].timestamp) / 86400;
-    
-    if (daysDiff == streak) {
+  for (int i = static_cast<int>(filtered.size()) - 2; i >= 0; i--) {
+    int daysDiff = toLocalDay(lastPractice) - toLocalDay(filtered[i]->timestamp);
+
+    if (daysDiff == 1) {
       streak++;
-      lastPractice = results[i].timestamp;
-    } else if (daysDiff > streak) {
-      break;  // Gap in streak
+      lastPractice = filtered[i]->timestamp;
+    } else {
+      break;  // Any gap other than exactly 1 day breaks the streak
     }
   }
-  
+
   return streak;
 }

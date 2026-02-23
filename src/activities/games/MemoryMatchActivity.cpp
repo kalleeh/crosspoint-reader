@@ -7,8 +7,9 @@
 
 #include "../../MappedInputManager.h"
 
-#include "../../ScreenComponents.h"
+#include "components/UITheme.h"
 #include "../../fontIds.h"
+#include <I18n.h>
 
 void MemoryMatchActivity::onEnter() {
   GameActivity::onEnter();
@@ -152,7 +153,7 @@ void MemoryMatchActivity::render() {
   const int screenHeight = renderer.getScreenHeight();
 
   // Title
-  renderer.drawCenteredText(UI_12_FONT_ID, 20, "MEMORY MATCH");
+  renderer.drawCenteredText(UI_12_FONT_ID, 20, tr(STR_GAME_MEMORY_TITLE));
 
   // Moves counter
   char movesText[32];
@@ -260,22 +261,23 @@ void MemoryMatchActivity::render() {
     renderer.drawRect(boxX, boxY, boxWidth, boxHeight);
     renderer.drawRect(boxX + 1, boxY + 1, boxWidth - 2, boxHeight - 2);
 
-    renderer.drawCenteredText(UI_12_FONT_ID, boxY + 30, "YOU WIN!");
+    renderer.drawCenteredText(UI_12_FONT_ID, boxY + 30, tr(STR_GAME_YOU_WIN));
 
     char finalMoves[32];
     snprintf(finalMoves, sizeof(finalMoves), "Moves: %d", moves);
     renderer.drawCenteredText(UI_10_FONT_ID, boxY + 60, finalMoves);
 
-    renderer.drawCenteredText(UI_10_FONT_ID, boxY + 90, "Press Confirm to play again");
+    renderer.drawCenteredText(UI_10_FONT_ID, boxY + 90, tr(STR_GAME_PRESS_CONFIRM_AGAIN));
   }
 
   // Button hints
   const char* confirmText = gameState == PLAYING ? "Reveal" : "Restart";
   const auto labels = mappedInput.mapLabels("Back", confirmText, "Move", "Move");
-  renderer.drawButtonHints(UI_10_FONT_ID, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
+  GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 
   // Battery
-  ScreenComponents::drawBattery(renderer, screenWidth - 25, 10, false);
+  const auto& metrics = UITheme::getInstance().getMetrics();
+  GUI.drawBatteryRight(renderer, Rect{screenWidth - 25, 10, metrics.batteryWidth, metrics.batteryHeight}, false);
 
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }

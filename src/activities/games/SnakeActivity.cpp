@@ -6,9 +6,10 @@
 #include <HalDisplay.h>
 
 #include "../../MappedInputManager.h"
-#include "../../ScreenComponents.h"
+#include "components/UITheme.h"
 #include "../../fontIds.h"
 #include "../../GameConstants.h"
+#include <I18n.h>
 
 using namespace GameConstants;
 
@@ -159,7 +160,7 @@ void SnakeActivity::render() {
   const int screenHeight = renderer.getScreenHeight();
 
   // Title and score at top
-  renderer.drawCenteredText(UI_12_FONT_ID, 15, "SNAKE");
+  renderer.drawCenteredText(UI_12_FONT_ID, 15, tr(STR_GAME_SNAKE_TITLE));
 
   char scoreText[32];
   snprintf(scoreText, sizeof(scoreText), "Score: %d", score);
@@ -215,22 +216,23 @@ void SnakeActivity::render() {
     renderer.drawRect(boxX, boxY, boxWidth, boxHeight);
     renderer.drawRect(boxX + 1, boxY + 1, boxWidth - 2, boxHeight - 2);
 
-    renderer.drawCenteredText(UI_12_FONT_ID, boxY + 30, "GAME OVER");
+    renderer.drawCenteredText(UI_12_FONT_ID, boxY + 30, tr(STR_GAME_OVER));
 
     char finalScore[32];
     snprintf(finalScore, sizeof(finalScore), "Final Score: %d", score);
     renderer.drawCenteredText(UI_10_FONT_ID, boxY + 60, finalScore);
 
-    renderer.drawCenteredText(UI_10_FONT_ID, boxY + 90, "Press Confirm to restart");
+    renderer.drawCenteredText(UI_10_FONT_ID, boxY + 90, tr(STR_GAME_PRESS_CONFIRM_RESTART));
   }
 
   // Button hints at bottom
   const char* confirmText = gameState == PLAYING ? "" : "Restart";
   const auto labels = mappedInput.mapLabels("Back", confirmText, "Turn", "Turn");
-  renderer.drawButtonHints(UI_10_FONT_ID, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
+  GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 
   // Battery at top right
-  ScreenComponents::drawBattery(renderer, screenWidth - 25, 10, false);
+  const auto& metrics = UITheme::getInstance().getMetrics();
+  GUI.drawBatteryRight(renderer, Rect{screenWidth - 25, 10, metrics.batteryWidth, metrics.batteryHeight}, false);
 
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }

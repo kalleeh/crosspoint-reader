@@ -5,12 +5,22 @@
 #include <HTTPClient.h>
 #include <WiFi.h>
 
-#include "../../CrossPointSettings.h"
-
 namespace OnlineContentFetcher {
 
 static constexpr int HTTP_TIMEOUT_MS = 10000;
 static constexpr unsigned long WEATHER_CACHE_DURATION_SEC = 1800;  // 30 minutes
+
+// Weather data cache (persists for the session, not across reboots)
+struct WeatherCacheData {
+  unsigned long cacheTime = 0;
+  char location[64] = "";
+  float temp = 0.0f;
+  float feelsLike = 0.0f;
+  char condition[32] = "";
+  float humidity = 0.0f;
+  float windSpeed = 0.0f;
+};
+static WeatherCacheData s_weatherCache;
 
 struct WeatherData {
   bool success;
@@ -41,19 +51,18 @@ inline WeatherData fetchWeather(bool allowCache = false) {
   
   // Check cache if allowed
   if (allowCache) {
-    auto& settings = CrossPointSettings::getInstance();
     unsigned long now = millis() / 1000;
-    unsigned long cacheAge = now - settings.weatherCacheTime;
+    unsigned long cacheAge = now - s_weatherCache.cacheTime;
 
-    if (cacheAge < WEATHER_CACHE_DURATION_SEC && settings.weatherLocation[0] != '\0') {
+    if (cacheAge < WEATHER_CACHE_DURATION_SEC && s_weatherCache.location[0] != '\0') {
       Serial.printf("[Weather] Using cached data (age: %lu sec)\n", cacheAge);
       data.success = true;
-      data.location = String(settings.weatherLocation);
-      data.temperature = settings.weatherTemp;
-      data.feelsLike = settings.weatherFeelsLike;
-      data.condition = String(settings.weatherCondition);
-      data.humidity = settings.weatherHumidity;
-      data.windSpeed = settings.weatherWindSpeed;
+      data.location = String(s_weatherCache.location);
+      data.temperature = s_weatherCache.temp;
+      data.feelsLike = s_weatherCache.feelsLike;
+      data.condition = String(s_weatherCache.condition);
+      data.humidity = s_weatherCache.humidity;
+      data.windSpeed = s_weatherCache.windSpeed;
       return data;
     }
   }
@@ -103,16 +112,15 @@ inline WeatherData fetchWeather(bool allowCache = false) {
       data.success = true;
       
       // Save to cache
-      auto& settings = CrossPointSettings::getInstance();
-      settings.weatherCacheTime = millis() / 1000;
-      strncpy(settings.weatherLocation, data.location.c_str(), sizeof(settings.weatherLocation) - 1);
-      settings.weatherLocation[sizeof(settings.weatherLocation) - 1] = '\0';
-      settings.weatherTemp = data.temperature;
-      settings.weatherFeelsLike = data.feelsLike;
-      strncpy(settings.weatherCondition, data.condition.c_str(), sizeof(settings.weatherCondition) - 1);
-      settings.weatherCondition[sizeof(settings.weatherCondition) - 1] = '\0';
-      settings.weatherHumidity = data.humidity;
-      settings.weatherWindSpeed = data.windSpeed;
+      s_weatherCache.cacheTime = millis() / 1000;
+      strncpy(s_weatherCache.location, data.location.c_str(), sizeof(s_weatherCache.location) - 1);
+      s_weatherCache.location[sizeof(s_weatherCache.location) - 1] = '\0';
+      s_weatherCache.temp = data.temperature;
+      s_weatherCache.feelsLike = data.feelsLike;
+      strncpy(s_weatherCache.condition, data.condition.c_str(), sizeof(s_weatherCache.condition) - 1);
+      s_weatherCache.condition[sizeof(s_weatherCache.condition) - 1] = '\0';
+      s_weatherCache.humidity = data.humidity;
+      s_weatherCache.windSpeed = data.windSpeed;
       Serial.println("[Weather] Cached for 30 minutes");
     } else {
       Serial.println("[Weather] Validation failed");

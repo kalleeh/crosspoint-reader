@@ -7,8 +7,9 @@
 
 #include "../../MappedInputManager.h"
 #include "../../GameConstants.h"
-#include "../../ScreenComponents.h"
+#include "components/UITheme.h"
 #include "../../fontIds.h"
+#include <I18n.h>
 
 using namespace GameConstants;
 
@@ -235,14 +236,14 @@ void Game2048Activity::render() {
   const int screenHeight = renderer.getScreenHeight();
 
   // Title and score
-  renderer.drawCenteredText(UI_12_FONT_ID, 20, "2048");
+  renderer.drawCenteredText(UI_12_FONT_ID, 20, tr(STR_GAME_2048_TITLE));
 
   char scoreText[32];
   snprintf(scoreText, sizeof(scoreText), "Score: %d", score);
   renderer.drawCenteredText(UI_10_FONT_ID, 50, scoreText);
 
   // Instructions
-  renderer.drawCenteredText(UI_10_FONT_ID, 80, "Combine tiles to reach 2048!");
+  renderer.drawCenteredText(UI_10_FONT_ID, 80, tr(STR_GAME_COMBINE_TILES));
 
   // Draw tiles
   for (int i = 0; i < GRID_SIZE; i++) {
@@ -263,25 +264,26 @@ void Game2048Activity::render() {
     renderer.drawRect(boxX + 1, boxY + 1, boxWidth - 2, boxHeight - 2);
 
     if (gameState == WON) {
-      renderer.drawCenteredText(UI_12_FONT_ID, boxY + 30, "YOU WIN!");
-      renderer.drawCenteredText(UI_10_FONT_ID, boxY + 60, "You reached 2048!");
+      renderer.drawCenteredText(UI_12_FONT_ID, boxY + 30, tr(STR_GAME_YOU_WIN));
+      renderer.drawCenteredText(UI_10_FONT_ID, boxY + 60, tr(STR_GAME_2048_TITLE));
     } else {
-      renderer.drawCenteredText(UI_12_FONT_ID, boxY + 30, "GAME OVER");
+      renderer.drawCenteredText(UI_12_FONT_ID, boxY + 30, tr(STR_GAME_OVER));
       char finalScore[32];
       snprintf(finalScore, sizeof(finalScore), "Final Score: %d", score);
       renderer.drawCenteredText(UI_10_FONT_ID, boxY + 60, finalScore);
     }
 
-    renderer.drawCenteredText(UI_10_FONT_ID, boxY + 100, "Press Confirm to restart");
+    renderer.drawCenteredText(UI_10_FONT_ID, boxY + 100, tr(STR_GAME_PRESS_CONFIRM_RESTART));
   }
 
   // Button hints
   const char* confirmText = gameState == PLAYING ? "" : "Restart";
   const auto labels = mappedInput.mapLabels("Back", confirmText, "Slide", "Slide");
-  renderer.drawButtonHints(UI_10_FONT_ID, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
+  GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 
   // Battery
-  ScreenComponents::drawBattery(renderer, screenWidth - 25, 10, false);
+  const auto& metrics = UITheme::getInstance().getMetrics();
+  GUI.drawBatteryRight(renderer, Rect{screenWidth - 25, 10, metrics.batteryWidth, metrics.batteryHeight}, false);
 
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }

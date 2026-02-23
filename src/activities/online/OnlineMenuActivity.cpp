@@ -3,10 +3,10 @@
 
 #include <GfxRenderer.h>
 #include <HalDisplay.h>
+#include <I18n.h>
 
 #include "../../MappedInputManager.h"
-#include "../../ScreenComponents.h"
-#include "../../fontIds.h"
+#include "components/UITheme.h"
 
 void OnlineMenuActivity::onEnter() {
   Activity::onEnter();
@@ -62,40 +62,23 @@ void OnlineMenuActivity::render() {
   renderer.clearScreen();
 
   const int screenWidth = renderer.getScreenWidth();
+  const int screenHeight = renderer.getScreenHeight();
+  const auto& metrics = UITheme::getInstance().getMetrics();
 
-  // Title
-  renderer.drawCenteredText(UI_12_FONT_ID, 30, "ONLINE");
+  // Header
+  GUI.drawHeader(renderer, Rect{0, metrics.topPadding, screenWidth, metrics.headerHeight}, tr(STR_ONLINE_MENU_TITLE));
 
-  // Draw menu items
-  constexpr int itemHeight = 60;
-  constexpr int margin = 20;
-  constexpr int startY = 100;
-  const int itemWidth = screenWidth - 2 * margin;
-
-  for (size_t i = 0; i < menuItems.size(); i++) {
-    const int y = startY + i * (itemHeight + 10);
-    const bool selected = (i == static_cast<size_t>(selectedIndex));
-
-    if (selected) {
-      renderer.fillRect(margin, y, itemWidth, itemHeight);
-    } else {
-      renderer.drawRect(margin, y, itemWidth, itemHeight);
-    }
-
-    const char* name = menuItems[i].displayName.c_str();
-    const int textWidth = renderer.getTextWidth(UI_10_FONT_ID, name);
-    const int textX = margin + (itemWidth - textWidth) / 2;
-    const int textY = y + (itemHeight - renderer.getLineHeight(UI_10_FONT_ID)) / 2;
-
-    renderer.drawText(UI_10_FONT_ID, textX, textY, name, !selected);
-  }
+  // List
+  const int contentTop = metrics.topPadding + metrics.headerHeight + metrics.verticalSpacing;
+  const int contentHeight = screenHeight - contentTop - metrics.buttonHintsHeight - metrics.verticalSpacing;
+  GUI.drawList(
+      renderer, Rect{0, contentTop, screenWidth, contentHeight},
+      static_cast<int>(menuItems.size()), selectedIndex,
+      [this](int index) { return menuItems[index].displayName; });
 
   // Button hints
   const auto labels = mappedInput.mapLabels("Back", "Select", "Up", "Down");
-  renderer.drawButtonHints(UI_10_FONT_ID, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
-
-  // Battery
-  ScreenComponents::drawBattery(renderer, screenWidth - 25, 10, false);
+  GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }

@@ -41,8 +41,9 @@ class HomeActivity final : public Activity {
                         const std::function<void(const std::string& path)>& onSelectBook,
                         const std::function<void()>& onMyLibraryOpen, const std::function<void()>& onRecentsOpen,
                         const std::function<void()>& onSettingsOpen, const std::function<void()>& onFileTransferOpen,
-                        const std::function<void()>& onOpdsBrowserOpen, const std::function<void()>& onGamesOpen,
-                        const std::function<void()>& onOnlineOpen)
+                        const std::function<void()>& onOpdsBrowserOpen,
+                        const std::function<void()>& onGamesOpen = nullptr,
+                        const std::function<void()>& onOnlineOpen = nullptr)
       : Activity("Home", renderer, mappedInput),
         onSelectBook(onSelectBook),
         onMyLibraryOpen(onMyLibraryOpen),

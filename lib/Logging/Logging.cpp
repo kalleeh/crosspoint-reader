@@ -1,5 +1,10 @@
 #include "Logging.h"
 
+#include <stdarg.h>
+
+// Static instance definition
+MySerialImpl MySerialImpl::instance;
+
 // Since logging can take a large amount of flash, we want to make the format string as short as possible.
 // This logPrintf prepend the timestamp, level and origin to the user-provided message, so that the user only needs to
 // provide the format string for the message itself.

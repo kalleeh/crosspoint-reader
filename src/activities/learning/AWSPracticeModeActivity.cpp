@@ -1,8 +1,12 @@
+#include "components/UITheme.h"
 #include "../../DebugConfig.h"
 #include "AWSPracticeModeActivity.h"
 #include "../../fontIds.h"
 #include <HalDisplay.h>
-#include <SDCardManager.h>
+#include <HalStorage.h>
+#include <ArduinoJson.h>
+#include <I18n.h>
+#include <algorithm>
 
 void AWSPracticeModeActivity::onEnter() {
   render();
@@ -17,7 +21,7 @@ void AWSPracticeModeActivity::render() {
   
   // Title
   int y = margin;
-  renderer.drawText(UI_12_FONT_ID, margin, y, "Select Practice Mode", true);
+  renderer.drawText(UI_12_FONT_ID, margin, y, tr(STR_AWS_SELECT_MODE), true);
   y += renderer.getLineHeight(UI_12_FONT_ID) + 10;
   
   renderer.drawLine(margin, y, width - margin, y);
@@ -54,7 +58,11 @@ void AWSPracticeModeActivity::render() {
     y += itemHeight;
   }
   
-  renderer.drawButtonHints(UI_10_FONT_ID, "Back", "Start", "", "");
+  if (statusMessage.length() > 0) {
+    renderer.drawText(UI_10_FONT_ID, margin, height - 60, statusMessage.c_str(), true);
+  }
+
+  GUI.drawButtonHints(renderer, "Back", "Start", "", "");
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
 
@@ -68,7 +76,7 @@ void AWSPracticeModeActivity::renderDomainSelect() {
   
   // Title
   int y = margin;
-  renderer.drawText(UI_12_FONT_ID, margin, y, "Select Domain", true);
+  renderer.drawText(UI_12_FONT_ID, margin, y, tr(STR_AWS_SELECT_DOMAIN), true);
   y += renderer.getLineHeight(UI_12_FONT_ID) + 10;
   
   renderer.drawLine(margin, y, width - margin, y);
@@ -82,68 +90,115 @@ void AWSPracticeModeActivity::renderDomainSelect() {
     scrollOffset = selectedIndex - visibleItems + 1;
   }
   
-  // Draw domains
-  for (int i = scrollOffset; i < domains.size() && y < height - 60; i++) {
-    bool isSelected = (i == selectedIndex);
-    
-    if (isSelected) {
-      renderer.fillRect(margin, y, width - 2 * margin, lineHeight);
+  if (domains.empty()) {
+    renderer.drawText(UI_10_FONT_ID, margin + 10, y, "No domains available", true);
+  } else {
+    // Draw domains
+    for (int i = scrollOffset; i < (int)domains.size() && y < height - 60; i++) {
+      bool isSelected = (i == selectedIndex);
+
+      if (isSelected) {
+        renderer.fillRect(margin, y, width - 2 * margin, lineHeight);
+      }
+
+      int textY = y + (lineHeight - renderer.getLineHeight(UI_10_FONT_ID)) / 2;
+      renderer.drawText(UI_10_FONT_ID, margin + 10, textY, domains[i].c_str(), !isSelected);
+      y += lineHeight;
     }
-    
-    int textY = y + (lineHeight - renderer.getLineHeight(UI_10_FONT_ID)) / 2;
-    renderer.drawText(UI_10_FONT_ID, margin + 10, textY, domains[i].c_str(), !isSelected);
-    y += lineHeight;
   }
-  
-  renderer.drawButtonHints(UI_10_FONT_ID, "Back", "Start", "", "");
+
+  GUI.drawButtonHints(renderer, "Back", "Start", "", "");
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
 
 void AWSPracticeModeActivity::loadDomains() {
   domains.clear();
-  
-  // Load questions and extract unique domains
+
   char path[128];
   snprintf(path, sizeof(path), "/aws-quiz/%s.json", certId.c_str());
   FsFile file;
-  if (!SdMan.openFileForRead("AWS", path, file)) {
+  if (!Storage.openFileForRead("AWS", path, file)) {
     return;
   }
-  
-  // Simple scan for domain fields
-  String line;
-  while (file.available() && domains.size() < 20) {
+
+  // Locate the "questions" array using the same scanning approach as AWSCertQuizActivity
+  bool foundArray = false;
+  char searchBuf[32] = {0};
+  int searchPos = 0;
+
+  while (file.available() && !foundArray) {
     char c = file.read();
-    line += c;
-    
-    if (line.indexOf("\"domain\":") >= 0) {
-      // Extract domain value
-      int start = line.indexOf("\"domain\":") + 10;
-      int quoteStart = line.indexOf("\"", start);
-      int quoteEnd = line.indexOf("\"", quoteStart + 1);
-      
-      if (quoteStart >= 0 && quoteEnd > quoteStart) {
-        String domain = line.substring(quoteStart + 1, quoteEnd);
-        
-        // Add if unique
-        bool found = false;
-        for (const auto& d : domains) {
-          if (d == domain) {
-            found = true;
-            break;
+    if (searchPos < 31) {
+      searchBuf[searchPos++] = c;
+    } else {
+      memmove(searchBuf, searchBuf + 1, 30);
+      searchBuf[30] = c;
+    }
+    if (strstr(searchBuf, "\"questions\"") != NULL) {
+      while (file.available()) {
+        c = file.read();
+        if (c == '[') { foundArray = true; break; }
+        if (c == '{' || c == '}') break;
+      }
+    }
+  }
+
+  if (!foundArray) {
+    file.close();
+    return;
+  }
+
+  // Stream-parse each question object with ArduinoJson to extract "domain" field
+  static constexpr size_t DOMAIN_BUF_SIZE = 1536;
+  char* buffer = (char*)malloc(DOMAIN_BUF_SIZE);
+  if (!buffer) { file.close(); return; }
+
+  int bufferPos = 0;
+  int braceDepth = 0;
+  bool bufferTruncated = false;
+
+  while (file.available()) {
+    char c = file.read();
+
+    if (c == '{') {
+      if (braceDepth == 0) { bufferPos = 0; bufferTruncated = false; }
+      braceDepth++;
+    }
+
+    if (braceDepth > 0) {
+      if (bufferPos < (int)DOMAIN_BUF_SIZE - 1) {
+        buffer[bufferPos++] = c;
+      } else {
+        bufferTruncated = true;  // Object too large — skip parsing this entry
+      }
+    }
+
+    if (c == '}') {
+      braceDepth--;
+      if (braceDepth == 0 && bufferPos > 10 && !bufferTruncated) {
+        buffer[bufferPos] = '\0';
+        JsonDocument doc;
+        if (!deserializeJson(doc, buffer)) {
+          const char* domain = doc["domain"] | "General";
+          // Case-insensitive dedup: keep first-seen casing, skip if same name in different case
+          bool found = false;
+          for (const auto& d : domains) {
+            if (strcasecmp(d.c_str(), domain) == 0) { found = true; break; }
           }
-        }
-        if (!found) {
-          domains.push_back(domain);
+          if (!found) domains.push_back(String(domain));
         }
       }
-      line = "";
     }
-    
-    if (line.length() > 200) line = "";
+
+    if (c == ']' && braceDepth == 0) break;
   }
-  
+
+  free(buffer);
   file.close();
+
+  std::sort(domains.begin(), domains.end());
+  // Prepend "All Domains" so user can practice across all domains without going back
+  domains.insert(domains.begin(), String("All Domains"));
 }
 
 void AWSPracticeModeActivity::loop() {
@@ -167,12 +222,13 @@ void AWSPracticeModeActivity::loop() {
         // Load domains and show domain selection
         loadDomains();
         if (domains.size() > 0) {
+          savedModeIndex = selectedIndex;
           menuState = DOMAIN_SELECT;
           selectedIndex = 0;
           scrollOffset = 0;
           renderDomainSelect();
         } else {
-          // No domains found, start with "all"
+          // No domains found - show status message and start with "all"
           onSelectMode(modeId, "all");
         }
       } else {
@@ -183,7 +239,7 @@ void AWSPracticeModeActivity::loop() {
   } else if (menuState == DOMAIN_SELECT) {
     if (mappedInput.wasPressed(MappedInputManager::Button::Back)) {
       menuState = MODE_SELECT;
-      selectedIndex = 0;
+      selectedIndex = savedModeIndex;
       scrollOffset = 0;
       render();
     } else if (mappedInput.wasPressed(MappedInputManager::Button::Up)) {
@@ -197,7 +253,9 @@ void AWSPracticeModeActivity::loop() {
         renderDomainSelect();
       }
     } else if (mappedInput.wasPressed(MappedInputManager::Button::Confirm)) {
-      onSelectMode("domain", domains[selectedIndex].c_str());
+      // "All Domains" entry maps to the "all" sentinel understood by AWSCertQuizActivity
+      const char* domainArg = (domains[selectedIndex] == "All Domains") ? "all" : domains[selectedIndex].c_str();
+      onSelectMode("domain", domainArg);
     }
   }
 }

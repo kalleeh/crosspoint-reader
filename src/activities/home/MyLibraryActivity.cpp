@@ -6,6 +6,7 @@
 
 #include <algorithm>
 
+#include "ForkSettings.h"
 #include "MappedInputManager.h"
 #include "components/UITheme.h"
 #include "fontIds.h"
@@ -84,7 +85,7 @@ void MyLibraryActivity::loadFiles() {
     
     // Skip hidden files unless setting is enabled
     bool isHidden = (name[0] == '.' || strcmp(name, "System Volume Information") == 0);
-    if (isHidden && !CrossPointSettings::getInstance().showHiddenFiles) {
+    if (isHidden && !FORK_SETTINGS.showHiddenFiles) {
       file.close();
       continue;
     }

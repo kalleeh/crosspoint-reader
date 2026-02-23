@@ -9,7 +9,8 @@
 
 #include <algorithm>
 
-#include "../../ScreenComponents.h"
+#include "components/UITheme.h"
+#include <I18n.h>
 
 using namespace GameConstants;
 #include "../../fontIds.h"
@@ -227,18 +228,18 @@ void TicTacToeActivity::render() {
   const int screenWidth = renderer.getScreenWidth();
 
   // Title
-  renderer.drawCenteredText(UI_12_FONT_ID, 30, "TIC TAC TOE");
+  renderer.drawCenteredText(UI_12_FONT_ID, 30, tr(STR_GAME_TICTACTOE_TITLE));
 
   // Status
   const char* status = "";
   if (gameState == PLAYING) {
-    status = playerTurn ? "Your turn (X)" : "AI thinking...";
+    status = playerTurn ? tr(STR_TICTACTOE_YOUR_TURN) : tr(STR_TICTACTOE_AI_THINKING);
   } else if (gameState == PLAYER_WIN) {
-    status = "You Win!";
+    status = tr(STR_GAME_YOU_WIN);
   } else if (gameState == AI_WIN) {
-    status = "AI Wins!";
+    status = tr(STR_TICTACTOE_AI_WINS);
   } else if (gameState == DRAW) {
-    status = "Draw!";
+    status = tr(STR_TICTACTOE_DRAW);
   }
   renderer.drawCenteredText(UI_10_FONT_ID, 80, status);
 
@@ -257,16 +258,17 @@ void TicTacToeActivity::render() {
 
   // Instructions
   if (gameState != PLAYING) {
-    renderer.drawCenteredText(UI_10_FONT_ID, gridY + 3 * cellSize + 40, "Press Confirm to play again");
+    renderer.drawCenteredText(UI_10_FONT_ID, gridY + 3 * cellSize + 40, tr(STR_TICTACTOE_PRESS_AGAIN));
   }
 
   // Button hints
   const char* confirmText = gameState == PLAYING ? "Place" : "Restart";
-  const auto labels = mappedInput.mapLabels("Back", confirmText, "Move", "Move");
-  renderer.drawButtonHints(UI_10_FONT_ID, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
+  const auto labels = mappedInput.mapLabels("Back", confirmText, tr(STR_TICTACTOE_MOVE), tr(STR_TICTACTOE_MOVE));
+  GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 
   // Battery
-  ScreenComponents::drawBattery(renderer, screenWidth - 25, 10, false);
+  const auto& metrics = UITheme::getInstance().getMetrics();
+  GUI.drawBatteryRight(renderer, Rect{screenWidth - 25, 10, metrics.batteryWidth, metrics.batteryHeight}, false);
 
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }

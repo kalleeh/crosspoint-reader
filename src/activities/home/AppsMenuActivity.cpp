@@ -1,7 +1,9 @@
+#include "components/UITheme.h"
 #include "AppsMenuActivity.h"
 #include <GfxRenderer.h>
+#include <HalDisplay.h>
+#include <I18n.h>
 #include "../../MappedInputManager.h"
-#include "../../fontIds.h"
 
 void AppsMenuActivity::onEnter() {
   Activity::onEnter();
@@ -11,37 +13,27 @@ void AppsMenuActivity::onEnter() {
 
 void AppsMenuActivity::render() {
   renderer.clearScreen();
-  
-  const int width = renderer.getScreenWidth();
-  const int margin = 20;
-  
-  // Title
-  renderer.drawText(UI_12_FONT_ID, margin, margin, "Apps", true);
-  
-  // Menu items
-  const char* items[] = {"Online", "Games", "AWS Cert Practice"};
-  const int itemHeight = 50;
-  const int startY = 80;
-  
-  for (int i = 0; i < 3; i++) {
-    const int y = startY + i * (itemHeight + 10);
-    const bool selected = (i == selectedIndex);
-    
-    if (selected) {
-      renderer.fillRect(margin, y, width - 2 * margin, itemHeight);
-    } else {
-      renderer.drawRect(margin, y, width - 2 * margin, itemHeight);
-    }
-    
-    const int textWidth = renderer.getTextWidth(UI_10_FONT_ID, items[i]);
-    const int textX = (width - textWidth) / 2;
-    const int textY = y + (itemHeight - renderer.getLineHeight(UI_10_FONT_ID)) / 2;
-    renderer.drawText(UI_10_FONT_ID, textX, textY, items[i], !selected);
-  }
-  
+
+  const int screenWidth = renderer.getScreenWidth();
+  const int screenHeight = renderer.getScreenHeight();
+  const auto& metrics = UITheme::getInstance().getMetrics();
+
+  // Header
+  GUI.drawHeader(renderer, Rect{0, metrics.topPadding, screenWidth, metrics.headerHeight}, tr(STR_APPS_MENU_TITLE));
+
+  // List
+  const char* items[] = {tr(STR_ONLINE_MENU_TITLE), tr(STR_GAMES_MENU_TITLE), tr(STR_AWS_MENU_TITLE)};
+  constexpr int itemCount = 3;
+  const int contentTop = metrics.topPadding + metrics.headerHeight + metrics.verticalSpacing;
+  const int contentHeight = screenHeight - contentTop - metrics.buttonHintsHeight - metrics.verticalSpacing;
+  GUI.drawList(
+      renderer, Rect{0, contentTop, screenWidth, contentHeight},
+      itemCount, selectedIndex,
+      [&items](int index) { return std::string(items[index]); });
+
   const auto labels = mappedInput.mapLabels("Back", "Select", "Up", "Down");
-  renderer.drawButtonHints(UI_10_FONT_ID, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
-  
+  GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
+
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
 

@@ -874,10 +874,10 @@
         "AWS Config Rules",
         "Amazon Inspector",
         "AWS GuardDuty",
-        "AWS Lambda with CloudWatch Events"
+        "AWS Lambda with Amazon EventBridge"
       ],
       "correct": 3,
-      "explanation": "AWS Lambda functions triggered by CloudWatch Events can automatically respond to security findings and remediate configuration issues, providing automated security response capabilities.",
+      "explanation": "AWS Lambda functions triggered by Amazon EventBridge can automatically respond to security findings and remediate configuration issues, providing automated security response capabilities.",
       "domain": "Security & Compliance",
       "difficulty": "hard",
       "validated": true,
@@ -1013,7 +1013,7 @@
       ]
     },
     {
-      "question": "An e-commerce company needs a database that can handle high read traffic with microsecond latency for product recommendations. Which AWS database service should they use?",
+      "question": "An e-commerce company needs a database that can handle high read traffic with single-digit millisecond latency for product catalog lookups. The data is semi-structured. Which AWS service is MOST appropriate?",
       "options": [
         "Amazon Aurora",
         "Amazon RDS",
@@ -1021,7 +1021,7 @@
         "Amazon Redshift"
       ],
       "correct": 2,
-      "explanation": "Amazon DynamoDB is a NoSQL database service that provides single-digit millisecond latency and can handle high read traffic, making it ideal for real-time applications like product recommendations.",
+      "explanation": "Amazon DynamoDB is a NoSQL database service that provides single-digit millisecond latency at any scale, making it ideal for real-time applications like product catalog lookups with semi-structured data. Aurora and RDS are relational databases with higher latency for this use case. Redshift is a data warehouse optimized for analytics, not transactional lookups.",
       "domain": "Cloud Technology & Services",
       "difficulty": "medium",
       "validated": true,
@@ -1291,7 +1291,7 @@
         "S3 One Zone-IA"
       ],
       "correct": 0,
-      "explanation": "S3 Glacier is designed for long-term archival and backup with retrieval times of minutes to hours, offering the lowest cost for infrequently accessed data.",
+      "explanation": "S3 Glacier Flexible Retrieval is designed for long-term archival and backup with standard retrieval times of 3\u20135 hours (or 1\u20135 minutes with Expedited), offering very low cost for infrequently accessed data. Note: S3 Glacier Instant Retrieval provides millisecond access but at higher cost; S3 Glacier Deep Archive has 12-hour retrieval times. For data that can tolerate 'several hours', Flexible Retrieval is the most cost-effective choice.",
       "domain": "Cloud Technology & Services",
       "difficulty": "easy",
       "validated": true,
@@ -1561,7 +1561,7 @@
         "Dedicated Hosts"
       ],
       "correct": 0,
-      "explanation": "Reserved Instances provide up to 75% cost savings compared to On-Demand pricing for predictable workloads with 1 or 3-year commitments, making them ideal for continuous 3-year workloads.",
+      "explanation": "Reserved Instances provide up to 72% cost savings compared to On-Demand pricing for predictable workloads with 1 or 3-year commitments, making them ideal for continuous 3-year workloads.",
       "domain": "Billing, Pricing & Support",
       "difficulty": "easy",
       "validated": true,
@@ -1733,15 +1733,15 @@
       ]
     },
     {
-      "question": "A company needs detailed programmatic access to their AWS billing and cost data for custom reporting. Which AWS service provides this capability?",
+      "question": "A company needs the MOST detailed, granular AWS billing data available, including resource-level cost breakdowns, for integration with their internal financial systems via S3. Which AWS service provides this?",
       "options": [
         "AWS Cost Explorer API",
+        "AWS Cost and Usage Report (CUR)",
         "AWS Budgets",
-        "AWS Trusted Advisor",
         "AWS Pricing Calculator"
       ],
-      "correct": 0,
-      "explanation": "AWS Cost Explorer API provides programmatic access to cost and usage data, enabling custom reporting and integration with third-party tools for detailed billing analysis.",
+      "correct": 1,
+      "explanation": "AWS Cost and Usage Report (CUR) provides the most comprehensive and granular billing data available, including resource-level cost breakdowns, usage quantities, and tags. CUR delivers data to S3 in CSV or Parquet format for integration with internal financial systems, Athena, or Redshift. Cost Explorer API provides aggregated cost data but lacks the granularity and resource-level detail of CUR.",
       "domain": "Billing, Pricing & Support",
       "difficulty": "medium",
       "validated": true,
@@ -2499,15 +2499,15 @@
       ]
     },
     {
-      "question": "A company wants to implement the principle of least privilege for their AWS IAM users. What is the recommended approach?",
+      "question": "A developer needs to grant an EC2 instance permission to read from an S3 bucket without embedding credentials in the application code. What is the BEST approach?",
       "options": [
-        "Grant full access initially and remove permissions as needed",
-        "Use only AWS managed policies",
-        "Create identical permissions for all users",
-        "Start with no permissions and add only necessary permissions"
+        "Create an IAM user with S3 read permissions and store the access keys in the application",
+        "Attach an IAM role with S3 read permissions to the EC2 instance",
+        "Use the AWS root account credentials in the application configuration",
+        "Create a bucket policy that allows all EC2 instances to read from the bucket"
       ],
-      "correct": 3,
-      "explanation": "The principle of least privilege is best implemented by starting with no permissions and gradually adding only the minimum permissions necessary for users to perform their specific job functions.",
+      "correct": 1,
+      "explanation": "IAM roles attached to EC2 instances provide temporary credentials automatically rotated by AWS, eliminating the need to manage or embed long-term credentials. The application uses the instance metadata service to retrieve credentials. Storing access keys in application code is a security anti-pattern. Root account credentials should never be used for application access.",
       "domain": "Security & Compliance",
       "difficulty": "easy",
       "validated": true,
@@ -2949,15 +2949,15 @@
       ]
     },
     {
-      "question": "A company needs to establish a dedicated network connection between their data center and AWS for consistent network performance. Which AWS service provides dedicated connectivity?",
+      "question": "A company needs to connect their on-premises data center to AWS with consistent, low-latency network performance and does NOT want traffic to traverse the public internet. Which AWS service should they use?",
       "options": [
         "AWS PrivateLink",
         "Amazon VPC",
-        "AWS VPN",
+        "AWS Site-to-Site VPN",
         "AWS Direct Connect"
       ],
       "correct": 3,
-      "explanation": "AWS Direct Connect provides a dedicated network connection between on-premises data centers and AWS, offering more consistent network performance and potentially lower costs than internet-based connections.",
+      "explanation": "AWS Direct Connect provides a dedicated private network connection between on-premises data centers and AWS that bypasses the public internet, offering consistent low-latency performance. AWS Site-to-Site VPN also connects on-premises to AWS but uses the public internet with IPsec encryption. PrivateLink provides private connectivity to AWS services within the AWS network. VPC is the virtual network within AWS.",
       "domain": "Cloud Technology & Services",
       "difficulty": "easy",
       "validated": true,
@@ -3137,7 +3137,7 @@
         "Dedicated Hosts"
       ],
       "correct": 0,
-      "explanation": "Savings Plans provide up to 72% savings compared to On-Demand pricing in exchange for a commitment to a consistent amount of usage (measured in $/hour) for 1 or 3 years, offering flexibility across instance types and services.",
+      "explanation": "EC2 Instance Savings Plans provide up to 72% savings compared to On-Demand pricing in exchange for a commitment to a specific instance family in a Region for 1 or 3 years. Compute Savings Plans offer up to 66% savings with more flexibility across instance types and services. Both are more flexible than Standard Reserved Instances while offering comparable savings.",
       "domain": "Billing, Pricing & Support",
       "difficulty": "easy",
       "validated": true,
@@ -3201,15 +3201,15 @@
       ]
     },
     {
-      "question": "A development team wants access to AWS support engineers during business hours for general guidance on best practices. Which is the MOST cost-effective support plan for their needs?",
+      "question": "A company needs AWS support that includes access to the full set of AWS Trusted Advisor checks and 24/7 access to Cloud Support Engineers via phone, chat, and email. What is the MINIMUM support plan that provides this?",
       "options": [
         "Enterprise Support",
         "Developer Support",
         "Business Support",
         "Basic Support"
       ],
-      "correct": 1,
-      "explanation": "Developer Support provides access to support engineers during business hours for general guidance and best practices, making it the most cost-effective option for development teams needing technical support.",
+      "correct": 2,
+      "explanation": "Business Support is the minimum plan that provides 24/7 access to Cloud Support Engineers via phone, chat, and email, plus access to the full set of AWS Trusted Advisor checks. Developer Support only provides business-hours email access and a subset of Trusted Advisor checks. Basic Support provides no technical support engineers. Enterprise Support includes everything in Business plus a TAM.",
       "domain": "Billing, Pricing & Support",
       "difficulty": "easy",
       "validated": true,
@@ -3255,15 +3255,15 @@
       ]
     },
     {
-      "question": "A company wants to optimize their Reserved Instance purchases based on their usage patterns. Which AWS service provides RI recommendations?",
+      "question": "A company wants to receive automated recommendations on which Reserved Instances to purchase based on their past EC2 usage. Which AWS service provides these RI purchase recommendations?",
       "options": [
-        "Both AWS Cost Explorer and AWS Trusted Advisor",
+        "AWS Cost Explorer",
         "AWS Trusted Advisor",
         "AWS Budgets",
-        "AWS Cost Explorer"
+        "AWS Pricing Calculator"
       ],
       "correct": 0,
-      "explanation": "Both AWS Cost Explorer and AWS Trusted Advisor provide Reserved Instance purchase recommendations based on usage patterns, helping optimize RI investments for maximum cost savings.",
+      "explanation": "AWS Cost Explorer provides Reserved Instance purchase recommendations based on your historical EC2 usage patterns, showing potential savings and recommended RI configurations. AWS Trusted Advisor also provides some RI recommendations but Cost Explorer's recommendations are more detailed and actionable. AWS Budgets tracks spending against thresholds. AWS Pricing Calculator estimates costs before deployment.",
       "domain": "Billing, Pricing & Support",
       "difficulty": "medium",
       "validated": true,
@@ -3525,15 +3525,15 @@
       ]
     },
     {
-      "question": "A biotechnology company processes genomic data requiring 500TB storage, variable compute workloads, strict data encryption, and collaboration with research institutions globally. Which architecture optimizes costs while meeting security and collaboration requirements?",
+      "question": "A research institution needs to store 500TB of genomic sequencing data with varying access patterns \u2014 some datasets are accessed daily, others monthly, and archival data is rarely accessed. They want to minimize storage costs automatically. Which S3 storage approach is MOST cost-effective?",
       "options": [
-        "Local storage with manual backup",
-        "Single storage class with fixed compute",
-        "S3 Standard with public access for collaboration",
-        "S3 Intelligent-Tiering with KMS, Batch with Spot Instances, and PrivateLink"
+        "S3 Standard for all data to ensure consistent performance",
+        "S3 Glacier for all data to minimize costs",
+        "S3 Standard with manual lifecycle policies to Glacier after 90 days",
+        "S3 Intelligent-Tiering to automatically move data between access tiers based on usage patterns"
       ],
       "correct": 3,
-      "explanation": "S3 Intelligent-Tiering automatically optimizes storage costs for 500TB data, KMS provides encryption for sensitive genomic data, Batch with Spot Instances offers up to 90% compute savings for variable workloads, and PrivateLink enables secure collaboration.",
+      "explanation": "S3 Intelligent-Tiering automatically moves objects between access tiers (Frequent, Infrequent, Archive) based on actual access patterns, optimizing costs without manual intervention or retrieval fees. For 500TB with varying access patterns, this eliminates the need to predict access frequency. S3 Standard is expensive for rarely accessed data. S3 Glacier has retrieval delays unsuitable for daily-accessed data. Manual lifecycle policies require predicting access patterns upfront.",
       "domain": "Cloud Technology & Services",
       "difficulty": "hard",
       "validated": true,

@@ -19,10 +19,9 @@ class Epub;
 #define MAX_WORD_SIZE 200
 
 class ChapterHtmlSlimParser {
-  std::shared_ptr<Epub> epub;
+  std::shared_ptr<Epub> epub;  // For image caching
   const std::string& filepath;
   GfxRenderer& renderer;
-  std::shared_ptr<Epub> epub;  // For image caching
   std::string htmlFileDir;  // Directory of the HTML file being parsed
   std::function<void(std::unique_ptr<Page>)> completePageFn;
   std::function<void()> popupFn;  // Popup callback
@@ -91,7 +90,6 @@ class ChapterHtmlSlimParser {
       : epub(epub),
         filepath(filepath),
         renderer(renderer),
-        epub(epub),
         fontId(fontId),
         lineCompression(lineCompression),
         extraParagraphSpacing(extraParagraphSpacing),

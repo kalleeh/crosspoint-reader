@@ -15,6 +15,7 @@ struct Question {
   uint8_t correct = 0;
   std::string explanation;
   std::string domain;
+  std::string difficulty;  // "easy", "medium", "hard"
 };
 
 class AWSCertQuizActivity final : public Activity {
@@ -29,7 +30,7 @@ class AWSCertQuizActivity final : public Activity {
   int questionStartIndex = 0;
   int questionCount = 0;
   int currentIndex = 0;
-  int selectedOption = 0;
+  int selectedOption = -1;  // -1 = no selection (cursor inactive on fresh question)
   int correctCount = 0;
   
   // Custom question pack support (SD card only)
@@ -47,6 +48,7 @@ class AWSCertQuizActivity final : public Activity {
   
   // Timer (for Full Exam mode)
   unsigned long startTime = 0;
+  unsigned long endTime = 0;
   bool showTimer = false;
   
   // Review mode
@@ -56,9 +58,6 @@ class AWSCertQuizActivity final : public Activity {
   // Domain tracking
   std::map<String, int> domainCorrect;
   std::map<String, int> domainTotal;
-  
-  // UI optimization: dirty flags (zero RAM cost)
-  mutable bool needsFullRedraw = true;
   
   // Text measurement cache (80 bytes)
   struct TextCache {
@@ -124,5 +123,23 @@ class AWSCertQuizActivity final : public Activity {
     if (certId == "analytics-specialty") return 65;
     if (certId == "sap-specialty") return 65;
     return 50;  // Default fallback
+  }
+
+  int getPassingScoreForCert() const {
+    // Return passing percentage threshold per certification
+    if (certId == "cloud-practitioner") return 70;
+    if (certId == "ai-practitioner") return 70;
+    if (certId == "sa-associate") return 72;
+    if (certId == "developer-associate") return 72;
+    if (certId == "sysops-associate") return 72;
+    if (certId == "sa-professional") return 75;
+    if (certId == "devops-professional") return 75;
+    if (certId == "security-specialty") return 75;
+    if (certId == "ml-specialty") return 75;
+    if (certId == "database-specialty") return 75;
+    if (certId == "networking-specialty") return 75;
+    if (certId == "analytics-specialty") return 75;
+    if (certId == "sap-specialty") return 75;
+    return 70;  // Default fallback
   }
 };

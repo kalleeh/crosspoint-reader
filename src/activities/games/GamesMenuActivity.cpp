@@ -3,11 +3,11 @@
 
 #include <GfxRenderer.h>
 #include <HalDisplay.h>
+#include <I18n.h>
 
 #include "../../MappedInputManager.h"
 
-#include "../../ScreenComponents.h"
-#include "../../fontIds.h"
+#include "components/UITheme.h"
 
 void GamesMenuActivity::onEnter() {
   Activity::onEnter();
@@ -62,63 +62,23 @@ void GamesMenuActivity::render() {
   renderer.clearScreen();
 
   const int screenWidth = renderer.getScreenWidth();
+  const int screenHeight = renderer.getScreenHeight();
+  const auto& metrics = UITheme::getInstance().getMetrics();
 
-  // Title
-  renderer.drawCenteredText(UI_12_FONT_ID, 30, "GAMES");
+  // Header
+  GUI.drawHeader(renderer, Rect{0, metrics.topPadding, screenWidth, metrics.headerHeight}, tr(STR_GAMES_MENU_TITLE));
 
-  // Draw game list
-  constexpr int itemHeight = 50;
-  constexpr int margin = 20;
-  constexpr int startY = 80;
-  const int itemWidth = screenWidth - 2 * margin;
-
-  // Calculate visible range (show max 10 items at once)
-  constexpr int maxVisible = 10;
-  int startIdx = selectedIndex - maxVisible / 2;
-  if (startIdx < 0)
-    startIdx = 0;
-  int endIdx = startIdx + maxVisible;
-  if (endIdx > static_cast<int>(games.size()))
-    endIdx = games.size();
-  if (endIdx - startIdx < maxVisible && startIdx > 0) {
-    startIdx = endIdx - maxVisible;
-    if (startIdx < 0)
-      startIdx = 0;
-  }
-
-  for (int i = startIdx; i < endIdx; i++) {
-    const int y = startY + (i - startIdx) * (itemHeight + 5);
-    const bool selected = (i == selectedIndex);
-
-    if (selected) {
-      renderer.fillRect(margin, y, itemWidth, itemHeight);
-    } else {
-      renderer.drawRect(margin, y, itemWidth, itemHeight);
-    }
-
-    const char* name = games[i].displayName.c_str();
-    const int textWidth = renderer.getTextWidth(UI_10_FONT_ID, name);
-    const int textX = margin + (itemWidth - textWidth) / 2;
-    const int textY = y + (itemHeight - renderer.getLineHeight(UI_10_FONT_ID)) / 2;
-
-    renderer.drawText(UI_10_FONT_ID, textX, textY, name, !selected);
-  }
-
-  // Scroll indicators
-  if (startIdx > 0) {
-    renderer.drawCenteredText(UI_10_FONT_ID, startY - 20, "^");
-  }
-  if (endIdx < static_cast<int>(games.size())) {
-    renderer.drawCenteredText(UI_10_FONT_ID, startY + maxVisible * (itemHeight + 5), "v");
-  }
+  // List
+  const int contentTop = metrics.topPadding + metrics.headerHeight + metrics.verticalSpacing;
+  const int contentHeight = screenHeight - contentTop - metrics.buttonHintsHeight - metrics.verticalSpacing;
+  GUI.drawList(
+      renderer, Rect{0, contentTop, screenWidth, contentHeight},
+      static_cast<int>(games.size()), selectedIndex,
+      [this](int index) { return games[index].displayName; });
 
   // Button hints
   const auto labels = mappedInput.mapLabels("Back", "Select", "Up", "Down");
-  renderer.drawButtonHints(UI_10_FONT_ID, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
-
-  // Battery indicator
-  const auto batteryX = screenWidth - 25;
-  ScreenComponents::drawBattery(renderer, batteryX, 10, false);
+  GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }

@@ -1,3 +1,4 @@
+#include "components/UITheme.h"
 #include "../../DebugConfig.h"
 #include "WikipediaRandomActivity.h"
 #include <WiFi.h>
@@ -5,7 +6,7 @@
 #include <ArduinoJson.h>
 #include <HalDisplay.h>
 #include <GfxRenderer.h>
-#include <SDCardManager.h>
+#include <HalStorage.h>
 #include <JpegToBmpConverter.h>
 #include <Bitmap.h>
 #include "../../MappedInputManager.h"
@@ -103,7 +104,7 @@ void WikipediaRandomActivity::onExit() {
 void WikipediaRandomActivity::loadInterests() {
   const char* path = "/.crosspoint/wiki_interests.txt";
   FsFile file;
-  if (!SdMan.openFileForRead("WIKI", path, file)) return;
+  if (!Storage.openFileForRead("WIKI", path, file)) return;
   
   char line[128];
   while (file.available()) {
@@ -125,7 +126,7 @@ void WikipediaRandomActivity::loadInterests() {
 void WikipediaRandomActivity::saveInterests() {
   const char* path = "/.crosspoint/wiki_interests.txt";
   FsFile file;
-  if (!SdMan.openFileForWrite("WIKI", path, file)) return;
+  if (!Storage.openFileForWrite("WIKI", path, file)) return;
   
   for (const auto& pair : interests) {
     String line = pair.first + ":" + String(pair.second, 2) + "\n";
@@ -171,7 +172,7 @@ bool WikipediaRandomActivity::downloadAndCacheImage(WikiArticle& article) {
   }
   article.cachedImagePath = "/.crosspoint/wiki_" + String(hash) + ".bmp";
   
-  if (SdMan.exists(article.cachedImagePath.c_str())) {
+  if (Storage.exists(article.cachedImagePath.c_str())) {
     return true;
   }
   
@@ -188,7 +189,7 @@ bool WikipediaRandomActivity::downloadAndCacheImage(WikiArticle& article) {
   // Save to temp
   String tempPath = "/.crosspoint/wiki_temp.jpg";
   FsFile tempFile;
-  if (!SdMan.openFileForWrite("WIKI", tempPath.c_str(), tempFile)) {
+  if (!Storage.openFileForWrite("WIKI", tempPath.c_str(), tempFile)) {
     http.end();
     return false;
   }
@@ -205,12 +206,12 @@ bool WikipediaRandomActivity::downloadAndCacheImage(WikiArticle& article) {
   http.end();
   
   // Convert to BMP
-  if (!SdMan.openFileForRead("WIKI", tempPath.c_str(), tempFile)) {
+  if (!Storage.openFileForRead("WIKI", tempPath.c_str(), tempFile)) {
     return false;
   }
   
   FsFile bmpFile;
-  if (!SdMan.openFileForWrite("WIKI", article.cachedImagePath.c_str(), bmpFile)) {
+  if (!Storage.openFileForWrite("WIKI", article.cachedImagePath.c_str(), bmpFile)) {
     tempFile.close();
     return false;
   }
@@ -219,7 +220,7 @@ bool WikipediaRandomActivity::downloadAndCacheImage(WikiArticle& article) {
   
   tempFile.close();
   bmpFile.close();
-  SdMan.remove(tempPath.c_str());
+  Storage.remove(tempPath.c_str());
   
   return success;
 }
@@ -346,7 +347,7 @@ void WikipediaRandomActivity::render() {
       // Image (if available) - only download if cached or not fetching
       if (!article.imageUrl.isEmpty()) {
         bool hasCache = !article.cachedImagePath.isEmpty() && 
-                        SdMan.exists(article.cachedImagePath.c_str());
+                        Storage.exists(article.cachedImagePath.c_str());
         
         if (y >= -400 && y < height) {  // Render if partially visible
           // Only download if not currently fetching articles (prevents blocking)
@@ -356,7 +357,7 @@ void WikipediaRandomActivity::render() {
             if (downloadAndCacheImage(article)) {
               DEBUG_PRINTF("[WIKI] Image downloaded, rendering bitmap\n");
               FsFile bmpFile;
-              if (SdMan.openFileForRead("WIKI", article.cachedImagePath.c_str(), bmpFile)) {
+              if (Storage.openFileForRead("WIKI", article.cachedImagePath.c_str(), bmpFile)) {
                 Bitmap bitmap(bmpFile);
                 renderer.drawBitmap(bitmap, 0, y, width, 400);
                 bmpFile.close();
@@ -419,7 +420,7 @@ void WikipediaRandomActivity::render() {
     
     // Legend (show loading status)
     const char* btn2 = isFetching ? "" : "Load More";
-    renderer.drawButtonHints(UI_10_FONT_ID, "Back", btn2, "", "");
+    GUI.drawButtonHints(renderer, "Back", btn2, "", "");
   }
   
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);

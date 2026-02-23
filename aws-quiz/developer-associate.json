@@ -5223,6 +5223,136 @@
         "Step Functions checkpointing",
         "Long-running workflow patterns"
       ]
+    },
+    {
+      "question": "A developer at Company A needs to write a Lambda function that reads objects from an S3 bucket owned by Company B. Company B has created an IAM role with S3 read permissions and added Company A's AWS account to the role's trust policy. What must the developer do in the Lambda function code to access the S3 bucket?",
+      "options": [
+        "Configure the Lambda execution role with the S3 bucket ARN in its resource policy",
+        "Call sts:AssumeRole to obtain temporary credentials for Company B's IAM role, then use those credentials to call S3",
+        "Add the S3 bucket ARN directly to the Lambda function's resource-based policy",
+        "Enable cross-account access in the Lambda function's environment variables with Company B's account ID"
+      ],
+      "correct": 1,
+      "explanation": "To access resources in another AWS account, the Lambda function must call sts:AssumeRole to assume the IAM role in Company B's account. This returns temporary security credentials (access key, secret key, session token) that are then used to create an S3 client scoped to Company B's account. The Lambda execution role needs permission to call sts:AssumeRole for Company B's role ARN. Modifying a resource policy on the Lambda function (A, C) controls who can invoke the Lambda, not which S3 buckets it can access. Environment variables (D) cannot grant cross-account permissions.",
+      "domain": "Security",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A mobile application uses Amazon Cognito User Pools for user sign-in. After sign-in, the app must call an AWS API Gateway endpoint secured with IAM authorization and also write directly to a DynamoDB table. What is the correct architecture to grant the authenticated mobile users temporary AWS credentials?",
+      "options": [
+        "Use the Cognito User Pool JWT token directly as an AWS IAM credential in the SDK",
+        "Configure a Cognito Identity Pool, federate it with the User Pool, and exchange the User Pool token for temporary IAM credentials via the Identity Pool",
+        "Store permanent IAM user access keys in the mobile app and use them to call AWS services directly",
+        "Enable API Gateway Cognito User Pool authorizer on every endpoint and pass the JWT in the Authorization header"
+      ],
+      "correct": 1,
+      "explanation": "Cognito Identity Pools (Federated Identities) are designed to vend temporary AWS credentials to authenticated users. By federating the Identity Pool with the User Pool, authenticated users exchange their User Pool JWT token for temporary IAM credentials via the STS AssumeRoleWithWebIdentity flow. These credentials can then call IAM-secured API Gateway endpoints and DynamoDB directly. A User Pool JWT (A) is an OIDC token, not an AWS IAM credential. Embedding permanent IAM keys in a mobile app (C) is a severe security risk. API Gateway Cognito authorizer (D) handles authorization for API Gateway only and does not provide AWS SDK credentials for DynamoDB.",
+      "domain": "Security",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A developer must encrypt large files (up to 5 GB) before storing them in S3, using AWS KMS for key management. The developer calls KMS GenerateDataKey to get an encryption key. What is the correct envelope encryption pattern?",
+      "options": [
+        "Pass the entire file to KMS Encrypt API; KMS encrypts it directly and returns the ciphertext",
+        "Use the plaintext data key returned by GenerateDataKey to encrypt the file locally, store the encrypted file in S3 alongside the encrypted data key, then delete the plaintext key from memory",
+        "Store the plaintext data key in AWS Secrets Manager and use it to encrypt files on each request",
+        "Call KMS GenerateDataKey once per application deployment and hard-code the plaintext data key in the Lambda environment variables"
+      ],
+      "correct": 1,
+      "explanation": "Envelope encryption works as follows: GenerateDataKey returns both a plaintext data key and an encrypted copy of that key. The developer uses the plaintext data key to encrypt the file locally (e.g., using AES-256), stores the encrypted file and the encrypted data key together in S3, then immediately erases the plaintext key from memory. To decrypt, the application retrieves the encrypted data key, calls KMS Decrypt to recover the plaintext key, decrypts the file, then erases the key again. KMS Encrypt (A) has a 4 KB limit and is not suitable for large files. Storing the plaintext key in Secrets Manager (C) or environment variables (D) defeats the purpose of envelope encryption and exposes the key.",
+      "domain": "Security",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A developer is debugging an application that runs correctly on their laptop but receives 'Unable to locate credentials' errors when deployed as an ECS task. The ECS task definition has an IAM task role attached. Which explanation is MOST likely correct?",
+      "options": [
+        "The AWS SDK credential provider chain checks ~/.aws/credentials first, and since the file does not exist in the container, it fails before checking the ECS task role metadata endpoint",
+        "ECS task roles are only supported for EC2 launch type, not Fargate",
+        "The IAM task role ARN must be set in the ECS_TASK_ROLE environment variable for the SDK to discover it",
+        "The SDK credential provider chain does not support ECS task roles; the developer must use IAM instance profiles instead"
+      ],
+      "correct": 0,
+      "explanation": "The AWS SDK credential provider chain searches for credentials in a defined order: environment variables, shared credentials file (~/.aws/credentials), AWS config file, ECS container credentials (via the ECS metadata endpoint), then EC2 instance metadata. The SDK should eventually reach the ECS container credentials provider and find the task role credentials. In practice, the most common cause of this error when a task role is attached is a misconfiguration such as the task role not having the required permissions for the specific API calls, or the task role ARN being incorrect. On a developer's laptop, credentials from ~/.aws/credentials are found first, masking any such misconfiguration. ECS task roles work on both EC2 and Fargate (B is false). No special environment variable is needed (C is false). The SDK does support ECS task roles natively (D is false).",
+      "domain": "Security",
+      "difficulty": "hard"
+    },
+    {
+      "question": "A developer is writing an AWS SAM template to define a Lambda function and an API Gateway trigger. Which SAM-specific configuration is required at the top of the template and which resource type should be used for the Lambda function?",
+      "options": [
+        "Add 'Transform: AWS::Serverless-2016-10-31' in the template header and use resource type 'AWS::Serverless::Function'",
+        "Add 'Transform: AWS::Lambda-2015-10-01' in the template header and use resource type 'AWS::Lambda::Function'",
+        "No Transform is required; SAM is a standalone format separate from CloudFormation",
+        "Add 'AWSTemplateFormatVersion: SAM-2016-10-31' and use resource type 'AWS::Serverless::Function'"
+      ],
+      "correct": 0,
+      "explanation": "AWS SAM templates are an extension of CloudFormation. The 'Transform: AWS::Serverless-2016-10-31' declaration in the Globals or at the top level tells CloudFormation to process the template through the SAM transform, which expands SAM-specific resource types into standard CloudFormation resources. 'AWS::Serverless::Function' is the SAM resource type for a Lambda function; it automatically creates the function along with an IAM execution role and event source mappings. Using 'AWS::Lambda::Function' (B) is plain CloudFormation and does not take advantage of SAM's simplified syntax. SAM is built on CloudFormation and requires the Transform (C is wrong). AWSTemplateFormatVersion is a different field and does not accept SAM values (D is wrong).",
+      "domain": "Deployment",
+      "difficulty": "easy"
+    },
+    {
+      "question": "A developer is using CodeDeploy to deploy an application to EC2 instances. During the deployment, the developer needs to stop the running application process before new files are installed, and then run database migration scripts before the application is started again. In which AppSpec hooks should these scripts be placed?",
+      "options": [
+        "ApplicationStop for the shutdown script; AfterInstall for the migration script",
+        "BeforeInstall for the shutdown script; ApplicationStart for the migration script",
+        "DownloadBundle for the shutdown script; ValidateService for the migration script",
+        "ApplicationStop for the shutdown script; ApplicationStart for the migration script"
+      ],
+      "correct": 0,
+      "explanation": "In a CodeDeploy EC2/on-premises deployment lifecycle, ApplicationStop runs before the new revision is downloaded and is the correct hook to gracefully stop the existing application process. AfterInstall runs after new application files are installed but before the application is started, making it the correct place for database migrations that must complete before the new application version launches. BeforeInstall (B) runs before new files are installed, when migrations would have no new schema files available. ApplicationStart (D) runs the startup script, so placing migrations there would run them concurrently with the application starting. DownloadBundle and ValidateService (C) are not hooks available in the AppSpec hooks section for EC2 deployments.",
+      "domain": "Deployment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A developer has deployed a new version (version 2) of a Lambda function. The current production alias points to version 1. The developer wants to gradually shift 10% of production traffic to version 2 while monitoring for errors, and automatically roll back if an alarm fires. Which configuration achieves this?",
+      "options": [
+        "Update the production alias to point to version 2 and set version 1 as a fallback using Lambda destination configuration",
+        "Update the production alias routing configuration to set version 2 with weight 0.1 and version 1 with weight 0.9, then configure a CodeDeploy deployment with a CloudWatch alarm for automatic rollback",
+        "Create a new alias called 'canary' pointing to version 2 and update API Gateway stage to split traffic between the two aliases",
+        "Deploy version 2 as a separate Lambda function and use Route 53 weighted routing to split traffic at DNS level"
+      ],
+      "correct": 1,
+      "explanation": "Lambda alias routing configuration supports weighted traffic splitting between two function versions. Setting version 2 to weight 0.1 and version 1 to weight 0.9 routes 10% of invocations to version 2. Integrating with CodeDeploy (using deployment type Linear10PercentEvery1Minute or Canary10Percent5Minutes) enables automatic rollback when a specified CloudWatch alarm triggers. Lambda destinations (A) handle asynchronous invocation outcomes, not traffic routing. Creating separate aliases and splitting at API Gateway (C) is possible but adds unnecessary complexity. Route 53 weighted routing (D) operates at DNS level and cannot target individual Lambda function versions.",
+      "domain": "Deployment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A developer is using AWS CDK to define infrastructure. They have written a CDK app and want to inspect the CloudFormation template that will be deployed before making any changes to AWS. Which command should they run, and what does it produce?",
+      "options": [
+        "cdk deploy --dry-run, which simulates the deployment and reports what would change without modifying any resources",
+        "cdk synth, which executes the CDK app and outputs the synthesized CloudFormation template to the cdk.out directory",
+        "cdk diff, which generates the CloudFormation template and compares it against the currently deployed stack",
+        "cdk bootstrap, which prepares the environment and generates the CloudFormation template for review"
+      ],
+      "correct": 1,
+      "explanation": "cdk synth executes the CDK application code and synthesizes it into one or more CloudFormation templates, writing them to the cdk.out directory. This lets developers inspect the exact CloudFormation JSON or YAML that will be deployed without making any AWS API calls or changes. cdk deploy --dry-run (A) does not exist as a valid CDK command. cdk diff (C) also synthesizes the template but its primary purpose is to compare the synthesized template against the currently deployed stack and report differences \u2014 it requires AWS API calls to describe the current stack. cdk bootstrap (D) provisions CDK's prerequisite AWS resources (an S3 bucket and optionally an ECR repository) and does not generate application templates.",
+      "domain": "Deployment",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An API Gateway REST API integrated with a Lambda function starts returning HTTP 504 errors to clients under peak load. CloudWatch metrics show that the Lambda function itself is completing successfully within 25 seconds. What is the MOST likely cause?",
+      "options": [
+        "The Lambda function is hitting reserved concurrency limits, causing invocations to be throttled",
+        "API Gateway's maximum integration timeout of 29 seconds is being exceeded because the Lambda function occasionally takes longer than 29 seconds",
+        "The Lambda function's memory setting is too low, causing it to be terminated before completion",
+        "API Gateway is returning 504 because the Lambda function's IAM execution role lacks the lambda:InvokeFunction permission"
+      ],
+      "correct": 1,
+      "explanation": "API Gateway has a maximum integration timeout of 29 seconds for all integration types including Lambda. If the Lambda function takes longer than 29 seconds to respond, API Gateway returns HTTP 504 Gateway Timeout to the client \u2014 regardless of whether the Lambda function eventually completes successfully. The CloudWatch log showing completion within 25 seconds represents the average case, but under peak load some invocations may exceed 29 seconds. Throttled Lambda invocations due to reserved concurrency (A) cause API Gateway to return 429, not 504. Lambda out-of-memory errors (C) cause the function to return an error response to API Gateway, resulting in a 502. Missing lambda:InvokeFunction (D) would produce a 500 or 403, not 504, and would fail consistently, not only under peak load.",
+      "domain": "Troubleshooting & Optimization",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A developer is designing a DynamoDB table for an order management system. The table stores orders with partition key 'customerId' and sort key 'orderId'. The application frequently needs to query all orders with a specific status (e.g., 'PENDING') sorted by creation date, across all customers. What is the BEST DynamoDB design approach?",
+      "options": [
+        "Perform a full table Scan with a FilterExpression on 'status' and sort the results in application code",
+        "Create a Global Secondary Index with 'status' as the partition key and 'createdAt' as the sort key, then Query the GSI",
+        "Create a Local Secondary Index with 'status' as the sort key, replacing the existing sort key",
+        "Store a copy of each order in a separate DynamoDB table indexed by status, and keep both tables synchronized using DynamoDB Streams"
+      ],
+      "correct": 1,
+      "explanation": "A Global Secondary Index (GSI) with 'status' as the partition key and 'createdAt' as the sort key enables efficient Query operations that return all orders with a given status sorted by creation date, without scanning the entire table. GSIs can have different partition keys than the base table, which is required here since the query spans all customers. A table Scan (A) reads every item and does not scale efficiently as the table grows. A Local Secondary Index (C) cannot help because LSIs must use the same partition key as the base table (customerId), so a query on an LSI still retrieves data for one customer only. Maintaining a separate synchronized table (D) adds complexity and risks consistency issues.",
+      "domain": "Development with AWS Services",
+      "difficulty": "medium"
     }
   ]
 }

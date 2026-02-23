@@ -65,7 +65,7 @@
       ],
       "correct": 1,
       "explanation": "AWS CloudHSM provides dedicated hardware security modules under customer control, meeting the requirement for key control and compliance auditing. KMS customer-managed keys (A) provide some control but keys are still managed by AWS. AWS-managed keys (B) provide no customer control. Client-side encryption with S3 storage (D) is insecure for key management.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -82,7 +82,7 @@
       ],
       "correct": 3,
       "explanation": "AWS SSO (now IAM Identity Center) provides centralized access management with fine-grained controls including time-based and network-based access rules, supporting least privilege principles. IAM users (A) require long-term credentials which violate security best practices. IAM roles (B) are good but lack centralized management. STS (D) is a component but not a complete solution.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -99,7 +99,7 @@
       ],
       "correct": 0,
       "explanation": "EC2 Spot instances with On-Demand backup provide the best cost-performance balance for unpredictable workloads. Spot instances offer up to 90% cost savings, while On-Demand instances ensure availability during Spot interruptions. Pure On-Demand (A) is more expensive. Lambda (C) has cold start issues for sudden spikes. Reserved instances (D) are cost-effective for predictable workloads only.",
-      "domain": "Design High-Performing Architectures",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -116,7 +116,7 @@
       ],
       "correct": 2,
       "explanation": "S3 Glacier Deep Archive is the most cost-effective for long-term archival with 12-hour retrieval requirement. Standard retrieval takes 12 hours, meeting the requirement at the lowest cost. Glacier Flexible Retrieval (C) is more expensive for long-term storage. S3 Standard with lifecycle (A) and Intelligent-Tiering (B) are more expensive for 7-year retention.",
-      "domain": "Design Cost-Optimized Architectures",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -133,7 +133,7 @@
       ],
       "correct": 2,
       "explanation": "Placing the web tier in public subnets and application/database tiers in private subnets follows security best practices. The web tier needs internet access, while application and database tiers are protected from direct internet access. Option A exposes all tiers. Option C prevents web tier from receiving internet traffic. Option D exposes the application tier unnecessarily.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "easy",
       "validated": true,
       "validation_sources": [
@@ -150,7 +150,7 @@
       ],
       "correct": 3,
       "explanation": "Spot instances provide up to 90% cost savings for fault-tolerant, flexible workloads. Spot Fleet manages multiple Spot instance types and AZs for better availability. The batch jobs can tolerate interruptions, making Spot ideal. On-Demand (A) is most expensive. Reserved instances (B) require commitment. Dedicated hosts (D) are for compliance requirements, not cost optimization.",
-      "domain": "Design Cost-Optimized Architectures",
+      "domain": "Design Secure Architectures",
       "difficulty": "easy",
       "validated": true,
       "validation_sources": [
@@ -167,7 +167,7 @@
       ],
       "correct": 3,
       "explanation": "CloudFront CDN provides the best performance for global static content delivery by caching content at edge locations worldwide, reducing latency. Transfer Acceleration (A) helps uploads, not downloads. Multiple S3 buckets (B) add complexity and cost. Global Accelerator (D) is for dynamic content and doesn't cache static content.",
-      "domain": "Design High-Performing Architectures",
+      "domain": "Design Secure Architectures",
       "difficulty": "easy",
       "validated": true,
       "validation_sources": [
@@ -184,7 +184,7 @@
       ],
       "correct": 0,
       "explanation": "Provisioned IOPS SSD (io2) is designed for high IOPS requirements and provides consistent performance up to 64,000 IOPS. For 20,000 IOPS requirement, io2 is the most appropriate choice. GP3 (A) can provide up to 16,000 IOPS but io2 is better for consistent high IOPS. ST1 and SC1 (C, D) are HDD volumes unsuitable for high IOPS requirements.",
-      "domain": "Design High-Performing Architectures",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -201,7 +201,7 @@
       ],
       "correct": 0,
       "explanation": "Kinesis Data Streams with Lambda provides real-time stream processing for clickstream data with automatic scaling. Lambda processes records in near real-time as they arrive. SQS (B) is for decoupling, not real-time processing. S3 with scheduled Lambda (C) is batch processing, not real-time. RDS (D) is not designed for stream processing.",
-      "domain": "Design High-Performing Architectures",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -235,7 +235,7 @@
       ],
       "correct": 1,
       "explanation": "Customer managed KMS keys provide key rotation control and detailed audit trails through CloudTrail. Annual rotation can be configured, and all key usage is logged. AWS managed keys (A) don't provide rotation control or detailed auditing. Client-side encryption (C) adds complexity and doesn't provide centralized key management. TLS (D) only encrypts data in transit, not at rest.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -252,7 +252,7 @@
       ],
       "correct": 1,
       "explanation": "Amazon Athena provides serverless SQL queries directly on S3 data with pay-per-query pricing, ideal for monthly analysis. Data partitioning improves performance and reduces costs. Redshift (B) requires cluster management and is costly for infrequent use. EMR (C) requires cluster management and is complex for SQL queries. RDS (D) is not designed for large dataset analytics.",
-      "domain": "Design Cost-Optimized Architectures",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -303,7 +303,7 @@
       ],
       "correct": 1,
       "explanation": "S3 with Lake Formation provides the ideal data lake architecture with support for all data types, fine-grained access control, and cost-effective storage with lifecycle policies. Redshift (B) is for data warehousing, not data lakes. EMR with HDFS (C) requires cluster management and is more expensive. RDS (D) is not designed for data lake architectures.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -320,7 +320,7 @@
       ],
       "correct": 0,
       "explanation": "Amazon Cognito User Pools provide scalable user authentication with built-in social media federation, supporting millions of users with minimal operational overhead. Custom authentication (B) requires significant development and maintenance. IAM (C) is not designed for application user authentication. Active Directory (D) requires infrastructure management and doesn't scale easily.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -371,7 +371,7 @@
       ],
       "correct": 2,
       "explanation": "Separate VPCs provide the strongest network isolation with complete logical separation between application tiers. VPC peering allows controlled communication between tiers. Security groups (A) provide instance-level control but not complete isolation. NACLs (C) provide subnet-level control but within the same VPC. PrivateLink (D) is for service endpoints, not tier isolation.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -388,7 +388,7 @@
       ],
       "correct": 2,
       "explanation": "Cluster placement groups in a single AZ provide the highest network performance with low latency and high throughput by placing instances close together. Enhanced networking (A) improves performance but not as much as placement groups. Multiple AZs (B, D) increase latency due to physical distance. Dedicated tenancy (D) provides isolation but not performance benefits.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -439,7 +439,7 @@
       ],
       "correct": 1,
       "explanation": "S3 Block Public Access at the account level provides the strongest protection by preventing any public access regardless of bucket policies or ACLs. It acts as a safety net against misconfigurations. Versioning with MFA (A) protects against deletion but not unauthorized access. Bucket policies (B) can be misconfigured. Object Lock (C) prevents deletion/modification but not unauthorized access.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -456,7 +456,7 @@
       ],
       "correct": 3,
       "explanation": "AWS Global Accelerator provides the lowest latency by using AWS global network infrastructure and anycast IP addresses to route traffic to the optimal endpoint. It's specifically designed for real-time applications. CloudFront (A) is for content delivery, not real-time applications. Multiple regions with Route 53 (B) have DNS resolution delays. ElastiCache (D) is for caching, not global traffic routing.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -473,7 +473,7 @@
       ],
       "correct": 2,
       "explanation": "Kinesis Data Streams with Kinesis Analytics provides purpose-built real-time stream processing for IoT data with built-in anomaly detection capabilities. It scales automatically and processes data as it arrives. S3 with Lambda (B) is batch processing, not real-time. SQS (C) is for decoupling, not stream processing. MSK (D) requires more operational overhead than Kinesis.",
-      "domain": "Design High-Performing Architectures",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -490,7 +490,7 @@
       ],
       "correct": 3,
       "explanation": "CloudTrail with S3 Object Lock provides tamper-proof logging by preventing log file deletion or modification. Log file validation ensures integrity. Lifecycle policies can move logs to cheaper storage classes for 10-year retention. Basic S3 logging (A) isn't tamper-proof. CloudWatch Logs (B) are more expensive for long-term retention. AWS Config (D) tracks configuration changes, not all API calls.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -524,7 +524,7 @@
       ],
       "correct": 3,
       "explanation": "AWS Amplify provides a complete serverless web application framework with built-in authentication (Cognito), storage (S3), and API (API Gateway/Lambda) with minimal configuration. Custom Lambda solution (B) requires more development. Elastic Beanstalk (C) isn't serverless. ECS with Fargate (D) requires container management and isn't fully serverless.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "easy",
       "validated": true,
       "validation_sources": [
@@ -558,7 +558,7 @@
       ],
       "correct": 1,
       "explanation": "S3 Intelligent-Tiering automatically moves objects between access tiers based on usage patterns, optimizing costs without operational overhead. CloudFront provides global delivery. S3 Standard only (A) is expensive for rarely accessed content. Standard-IA with lifecycle (C) may move files too early if accessed frequently in first week. Manual migration (D) adds operational overhead.",
-      "domain": "Design Cost-Optimized Architectures",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -575,7 +575,7 @@
       ],
       "correct": 3,
       "explanation": "AWS App Mesh with mutual TLS provides the most secure service-to-service communication with encryption, authentication, and authorization between microservices. Network Policies (A) provide network segmentation but not encryption. ALB (C) exposes services externally. Security groups (D) provide network-level security but not application-level encryption and authentication.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -643,7 +643,7 @@
       ],
       "correct": 1,
       "explanation": "Amazon ECR provides integrated image scanning with vulnerability detection, and admission controllers can enforce policies to block vulnerable images from deployment. This provides comprehensive, automated security scanning within the AWS ecosystem. Third-party tools (B) add complexity and cost. Inspector (C) scans running instances, not container images. Custom scripts (D) require development and maintenance.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -728,7 +728,7 @@
       ],
       "correct": 3,
       "explanation": "AWS CloudHSM provides the highest level of key control with dedicated, single-tenant hardware security modules that meet strict compliance requirements like FIPS 140-2 Level 3. Customer-managed KMS keys (A) provide good control but keys are still managed by AWS. AWS-managed keys (C) provide no customer control. Third-party solutions (D) add complexity and may not meet compliance standards.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -762,7 +762,7 @@
       ],
       "correct": 0,
       "explanation": "CloudFront with Lambda@Edge provides optimal performance by caching static content at edge locations and running personalization logic at the edge for dynamic content, minimizing latency for both content types. Separate solutions (B, C) add complexity. Global EC2 instances (D) require significant infrastructure management and don't provide edge caching benefits.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -779,7 +779,7 @@
       ],
       "correct": 2,
       "explanation": "API Gateway provides built-in rate limiting, throttling, and usage plans with detailed analytics and automatic scaling. It's specifically designed for API management and protection. Custom Lambda logic (B) adds complexity and latency. ALB (C) doesn't provide sophisticated rate limiting. NGINX on EC2 (D) requires infrastructure management and doesn't scale automatically.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -813,7 +813,7 @@
       ],
       "correct": 3,
       "explanation": "Separate AWS accounts provide the strongest isolation with complete resource, billing, and security boundaries between tenants. Cross-account roles enable controlled access when needed. Separate databases (A) share infrastructure vulnerabilities. Row-level security (C) provides logical but not physical isolation. Separate VPCs (D) provide network isolation but share account-level resources.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -830,7 +830,7 @@
       ],
       "correct": 1,
       "explanation": "API Gateway WebSocket APIs with Lambda and DynamoDB provide a fully managed, serverless solution that scales automatically to millions of connections. Lambda handles message processing, and DynamoDB provides scalable storage for chat history. Custom EC2 servers (B) require significant scaling management. Kinesis (C) is for data streaming, not real-time chat. Socket.IO on ECS (D) requires container management and scaling.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -864,7 +864,7 @@
       ],
       "correct": 3,
       "explanation": "AWS Payment Cryptography is specifically designed for payment processing with PCI DSS compliance, providing secure key management and cryptographic operations. CloudTrail provides the required audit logging. Custom encryption (B) may not meet PCI DSS requirements. Third-party processors (C) may reduce compliance scope but don't eliminate it. Dedicated instances (D) require significant compliance management overhead.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -983,7 +983,7 @@
       ],
       "correct": 1,
       "explanation": "AWS Secrets Manager provides automatic rotation, fine-grained IAM access control, and integration with AWS services, making it the most secure and comprehensive solution. Parameter Store (B) lacks automatic rotation. HashiCorp Vault (C) requires operational overhead and custom development. Environment variables (D) are less secure and don't provide centralized management.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -1051,7 +1051,7 @@
       ],
       "correct": 3,
       "explanation": "AWS Resource Access Manager (RAM) provides secure, centralized resource sharing across accounts with fine-grained access control and audit capabilities. Cross-account roles (B) work but require more complex management. Public sharing (C) is insecure. Organizations with SCPs (D) provide governance but not resource sharing capabilities.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -1136,7 +1136,7 @@
       ],
       "correct": 3,
       "explanation": "AWS Config with Config Rules provides comprehensive configuration monitoring and automatic remediation actions for compliance drift detection. It's specifically designed for configuration compliance. Systems Manager Compliance (B) focuses on patch compliance. Security Hub (C) aggregates findings but doesn't provide configuration monitoring. Third-party tools (D) add complexity and cost.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -1187,7 +1187,7 @@
       ],
       "correct": 1,
       "explanation": "CloudFront provides global content delivery with edge caching, AWS Shield Advanced offers comprehensive DDoS protection, and WAF provides application-layer security. This combination provides the most effective global content delivery with security. Multiple ALBs (B) don't provide edge caching. Global Accelerator (C) is for dynamic content but doesn't cache static content. Third-party CDN (D) adds complexity and may not integrate well with AWS security services.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -1221,7 +1221,7 @@
       ],
       "correct": 2,
       "explanation": "S3 Glacier Deep Archive provides the most cost-effective long-term storage, Object Lock ensures immutability for compliance, and CloudTrail provides audit trails. Standard retrieval meets the 24-hour requirement. S3 Standard-IA (B) is more expensive for 10-year retention. EFS (C) is not designed for long-term archival. Tape backup (D) is complex and expensive to manage.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -1255,7 +1255,7 @@
       ],
       "correct": 1,
       "explanation": "AWS Security Hub aggregates security findings from multiple sources, EventBridge enables event-driven automation, and Lambda provides serverless remediation logic. This provides comprehensive automated incident response. Custom CloudWatch monitoring (B) requires significant development. GuardDuty alone (C) doesn't provide automation. SIEM on EC2 (D) requires operational overhead and custom development.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -1340,7 +1340,7 @@
       ],
       "correct": 2,
       "explanation": "VPC Flow Logs provide network traffic data, GuardDuty analyzes traffic for threats using machine learning, and Lambda enables automated response actions. This provides comprehensive network security monitoring. Network Firewall (B) provides filtering but limited threat detection. Inspector (C) focuses on host assessment, not network traffic. Third-party tools (D) require operational overhead.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -1374,7 +1374,7 @@
       ],
       "correct": 3,
       "explanation": "S3 with KMS encryption provides HIPAA-compliant data encryption at rest, VPC endpoints ensure data doesn't traverse the internet (encryption in transit), and CloudTrail provides required audit logging. Custom encryption (B) may not meet compliance standards. EFS (C) doesn't provide the same level of compliance features. On-premises (D) doesn't leverage AWS compliance capabilities.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -1527,7 +1527,7 @@
       ],
       "correct": 0,
       "explanation": "AWS Lake Formation provides comprehensive data lake governance with fine-grained access control, integration with Glue Data Catalog for metadata management, and compliance reporting capabilities. Custom S3 policies (B) lack fine-grained control. Macie (C) focuses on data discovery, not governance. Apache Ranger (D) requires operational overhead and EMR management.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -1680,7 +1680,7 @@
       ],
       "correct": 1,
       "explanation": "AWS Config with Config Rules provides comprehensive configuration monitoring and compliance checking, while AWS Organizations enables multi-account management and centralized compliance reporting. CloudTrail with Lambda (B) requires custom development. Security Hub (C) aggregates findings but doesn't provide configuration monitoring. Third-party tools (D) add cost and complexity.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -1782,7 +1782,7 @@
       ],
       "correct": 2,
       "explanation": "S3 Block Public Access provides account-level and bucket-level settings that override other access policies to prevent public access, acting as a safety net against misconfigurations. Bucket policies (A) and ACLs (B) can be misconfigured. IAM policies (D) control user access but don't prevent public access configurations.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "easy",
       "validated": true,
       "validation_sources": [
@@ -1799,7 +1799,7 @@
       ],
       "correct": 2,
       "explanation": "IAM roles provide temporary credentials that are automatically rotated and don't require storing long-term access keys. This follows security best practices for EC2 instances accessing AWS services. Storing access keys in code (A) or environment variables (B) is insecure. Root account credentials (D) violate security best practices.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "easy",
       "validated": true,
       "validation_sources": [
@@ -1833,7 +1833,7 @@
       ],
       "correct": 2,
       "explanation": "To access resources in a private subnet, Lambda functions must be attached to private subnets in the VPC and have appropriate security groups configured. The execution role also needs VPC permissions. Public subnets (A) don't provide access to private resources. IAM roles alone (C) don't provide VPC access. Lambda@Edge (D) is for CloudFront integration.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "easy",
       "validated": true,
       "validation_sources": [
@@ -1850,7 +1850,7 @@
       ],
       "correct": 0,
       "explanation": "S3 Glacier Deep Archive provides the lowest cost storage for long-term archival with retrieval times of 12 hours, making it ideal for data stored for years. S3 Standard (A) is most expensive. Standard-IA (B) is for infrequent access but not long-term archival. Glacier Flexible Retrieval (C) is more expensive than Deep Archive for long-term storage.",
-      "domain": "Design Cost-Optimized Architectures",
+      "domain": "Design Secure Architectures",
       "difficulty": "easy",
       "validated": true,
       "validation_sources": [
@@ -1901,7 +1901,7 @@
       ],
       "correct": 2,
       "explanation": "SSE-KMS allows customers to manage encryption keys through AWS KMS while AWS handles the encryption process. This provides key management control with operational simplicity. SSE-S3 (A) uses AWS-managed keys. SSE-C (C) requires providing keys with each request. Client-side encryption (D) requires application-level key management.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "easy",
       "validated": true,
       "validation_sources": [
@@ -1969,7 +1969,7 @@
       ],
       "correct": 0,
       "explanation": "AWS WAF (Web Application Firewall) operates at the application layer and can filter requests based on IP addresses, providing protection against common web exploits. Security Groups (A) and NACLs (B) operate at the network layer. Route 53 (D) provides DNS services.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "easy",
       "validated": true,
       "validation_sources": [
@@ -1986,7 +1986,7 @@
       ],
       "correct": 3,
       "explanation": "AWS CloudTrail records AWS API calls and provides audit trails for security analysis, compliance, and operational troubleshooting. CloudWatch (A) monitors performance metrics. AWS Config (C) tracks configuration changes. GuardDuty (D) provides threat detection.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "easy",
       "validated": true,
       "validation_sources": [
@@ -2020,7 +2020,7 @@
       ],
       "correct": 0,
       "explanation": "Private subnets allow EC2 instances to communicate with each other within the VPC but don't have direct internet access, providing the required isolation. Public subnets (A) have internet access. Internet Gateway (C) provides internet access. NAT Gateway (D) allows outbound internet access.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "easy",
       "validated": true,
       "validation_sources": [
@@ -2088,7 +2088,7 @@
       ],
       "correct": 0,
       "explanation": "Network ACLs (Access Control Lists) operate at the subnet level and control traffic entering and leaving subnets, providing an additional layer of security. Security Groups (A) operate at the instance level. Route Tables (C) control routing. Internet Gateway (D) provides internet access.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "easy",
       "validated": true,
       "validation_sources": [
@@ -2122,7 +2122,7 @@
       ],
       "correct": 3,
       "explanation": "AWS Secrets Manager is specifically designed for storing database credentials and other secrets with automatic rotation capabilities. Parameter Store (A) stores configuration data but doesn't provide automatic rotation. S3 (C) is object storage. KMS (D) manages encryption keys.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "easy",
       "validated": true,
       "validation_sources": [
@@ -2190,7 +2190,7 @@
       ],
       "correct": 1,
       "explanation": "S3 Intelligent-Tiering automatically moves objects between access tiers based on changing access patterns without performance impact or operational overhead, ideal for unpredictable access patterns. Lifecycle policies (A) require predefined rules. Storage Class Analysis (C) provides recommendations but requires manual action. Manual monitoring (D) doesn't scale.",
-      "domain": "Design Cost-Optimized Architectures",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -2207,7 +2207,7 @@
       ],
       "correct": 2,
       "explanation": "AWS App Mesh provides service mesh capabilities with mutual TLS for encryption, authentication, and authorization between services, plus automatic service discovery. ALB (A) exposes services externally. ECS Service Discovery (C) provides discovery but not encryption. NGINX proxy (D) requires manual configuration and doesn't scale automatically.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -2258,7 +2258,7 @@
       ],
       "correct": 1,
       "explanation": "Separate AWS accounts provide the strongest isolation with complete resource, network, and billing boundaries between tiers. Cross-account roles enable controlled access when needed. VPC peering (A) still shares some infrastructure. Subnets with NACLs (B) provide network isolation but share account resources. Different AZs (D) don't provide tier isolation.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -2309,7 +2309,7 @@
       ],
       "correct": 0,
       "explanation": "S3 Intelligent-Tiering automatically optimizes costs by moving files between access tiers based on usage patterns while maintaining immediate access for frequently accessed recent files. Lifecycle policies (A) may move recent files too early. Manual migration (C) adds operational overhead. EFS (D) is more expensive for large file storage.",
-      "domain": "Design Cost-Optimized Architectures",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -2326,7 +2326,7 @@
       ],
       "correct": 0,
       "explanation": "AWS Direct Connect provides dedicated network connection from on-premises to AWS that doesn't traverse the public internet, offering consistent network performance and enhanced security. Site-to-Site VPN (A) uses the internet. PrivateLink (C) is for accessing AWS services, not hybrid connectivity. Transit Gateway (D) is for connecting multiple VPCs.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -2360,7 +2360,7 @@
       ],
       "correct": 2,
       "explanation": "VPC endpoints ensure traffic doesn't leave AWS network (encrypted in transit), CloudTrail logs all API calls for auditing, and GuardDuty provides threat detection. This combination provides comprehensive security and compliance coverage. Other options miss key components for complete coverage.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -2394,7 +2394,7 @@
       ],
       "correct": 0,
       "explanation": "Separate VPCs provide strong network isolation between tenants while sharing account-level resources for cost efficiency. This balances security and cost better than separate accounts (B) which are expensive, or shared databases (A, C) which have weaker isolation.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -2445,7 +2445,7 @@
       ],
       "correct": 1,
       "explanation": "Amazon ECR provides integrated image scanning with vulnerability detection, and admission controllers can enforce policies to block vulnerable images from deployment. This provides comprehensive, automated security scanning within the AWS ecosystem. Inspector (B) scans running instances, not container images. Third-party tools (C) add complexity. Security Hub (D) aggregates findings but doesn't scan images.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -2615,7 +2615,7 @@
       ],
       "correct": 1,
       "explanation": "Separate AWS accounts provide the strongest isolation with complete resource, billing, and security boundaries between tenants. This ensures no data leakage between tenants. Separate databases (A) share infrastructure vulnerabilities. Row-level security (C) provides logical but not physical isolation. Separate VPCs (D) provide network isolation but share account-level resources.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -2678,11 +2678,11 @@
       "options": [
         "Use EC2 instances with custom ML models",
         "Use Lambda functions with pre-trained models",
-        "Use Amazon Fraud Detector with real-time API calls",
+        "Use SageMaker real-time inference endpoints with a custom fraud detection model",
         "Use SageMaker real-time inference endpoints"
       ],
       "correct": 2,
-      "explanation": "Amazon Fraud Detector is purpose-built for real-time fraud detection with sub-100ms response times and automatic scaling to handle thousands of transactions per second. SageMaker inference (B) may not meet latency requirements. Lambda (C) has cold start issues. EC2 instances (D) require operational overhead and may not achieve consistent low latency.",
+      "explanation": "Amazon SageMaker real-time inference endpoints provide sub-100ms latency for fraud detection ML models with automatic scaling to handle thousands of transactions per second. Amazon Fraud Detector was discontinued for new customers in November 2025; SageMaker is the recommended replacement for custom fraud detection models. Lambda with pre-trained models lacks the scaling and latency guarantees needed for real-time fraud detection.",
       "domain": "Design High-Performing Architectures",
       "difficulty": "hard",
       "validated": true,
@@ -2717,7 +2717,7 @@
       ],
       "correct": 1,
       "explanation": "API Gateway with Lambda functions and provisioned concurrency provides serverless API capabilities while minimizing cold starts through pre-warmed execution environments. ALB with Fargate (B) requires container management. Lambda@Edge (C) is for edge processing, not full API logic. Reserved concurrency (D) limits concurrency but doesn't eliminate cold starts.",
-      "domain": "Design High-Performing Architectures",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -2734,7 +2734,7 @@
       ],
       "correct": 0,
       "explanation": "S3 with Lake Formation provides comprehensive data lake governance with fine-grained access control, while Kinesis Analytics handles real-time processing. This combination supports both batch and streaming analytics. Redshift (B) is for data warehousing, not data lakes. EMR (C) requires operational overhead. Athena with Lambda (D) doesn't provide real-time streaming capabilities.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -2836,7 +2836,7 @@
       ],
       "correct": 1,
       "explanation": "VPC Flow Logs provide network traffic data, GuardDuty analyzes traffic for threats using machine learning, and Lambda enables automated response actions. This provides comprehensive network security monitoring and response. Network Firewall (B) provides filtering but limited threat detection. Inspector (C) focuses on host assessment. SIEM tools (D) require operational overhead.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -2904,7 +2904,7 @@
       ],
       "correct": 2,
       "explanation": "AWS Resource Access Manager provides secure, centralized resource sharing across accounts with fine-grained access control and audit capabilities. Cross-account roles (B) work but require more complex management. Public sharing (C) is insecure. Organizations with SCPs (D) provide governance but not resource sharing capabilities.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -2989,7 +2989,7 @@
       ],
       "correct": 1,
       "explanation": "AWS Config with Config Rules provides comprehensive configuration monitoring and automatic remediation actions for compliance drift detection. Systems Manager Compliance (B) focuses on patch compliance. Security Hub (C) aggregates findings but doesn't monitor configurations. CloudTrail with Lambda (D) requires custom development.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -3040,7 +3040,7 @@
       ],
       "correct": 3,
       "explanation": "CloudFront provides global content delivery with edge caching, AWS Shield Advanced offers comprehensive DDoS protection, and WAF provides application-layer security. This combination is most effective for global CDN with security. Multiple ALBs (B) don't provide edge caching. Global Accelerator (C) doesn't cache static content. Third-party CDN (D) adds complexity.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -3074,7 +3074,7 @@
       ],
       "correct": 2,
       "explanation": "S3 Glacier Deep Archive provides cost-effective long-term storage, Object Lock ensures immutability for compliance, and CloudTrail provides audit trails. Standard retrieval meets 24-hour requirement. S3 Standard-IA (B) is expensive for 10-year retention. EFS (C) isn't designed for archival. Tape backup (D) is complex to manage.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -3108,7 +3108,7 @@
       ],
       "correct": 3,
       "explanation": "AWS Security Hub aggregates security findings, EventBridge enables event-driven automation, and Lambda provides serverless remediation logic with comprehensive reporting. CloudWatch with SNS (B) lacks security-specific features. GuardDuty alone (C) doesn't provide automation. SIEM on EC2 (D) requires operational overhead.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -3193,7 +3193,7 @@
       ],
       "correct": 0,
       "explanation": "VPC Flow Logs provide network traffic data, GuardDuty analyzes for threats using ML, and Lambda enables automated responses. This provides comprehensive network security monitoring. Network Firewall (B) provides filtering but limited detection. Inspector (C) focuses on host assessment. Third-party tools (D) require operational overhead.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -3227,7 +3227,7 @@
       ],
       "correct": 1,
       "explanation": "S3 with KMS encryption provides HIPAA-compliant data encryption at rest, VPC endpoints ensure data doesn't traverse internet (encryption in transit), and CloudTrail provides required audit logging. Custom encryption (B) may not meet standards. EFS (C) doesn't provide same compliance features. On-premises (D) doesn't leverage AWS compliance capabilities.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -3380,7 +3380,7 @@
       ],
       "correct": 2,
       "explanation": "AWS Lake Formation provides comprehensive data lake governance with fine-grained access control, integration with Glue Data Catalog for metadata management, and compliance reporting. Custom S3 policies (B) lack fine-grained control. Macie (C) focuses on discovery, not governance. Apache Ranger (D) requires operational overhead.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -3533,7 +3533,7 @@
       ],
       "correct": 1,
       "explanation": "AWS Config with Config Rules provides comprehensive configuration monitoring and compliance checking, while AWS Organizations enables multi-account management and centralized compliance reporting. CloudTrail with Lambda (B) requires custom development. Security Hub (C) aggregates findings but doesn't monitor configurations. Third-party tools (D) add cost and complexity.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -3686,7 +3686,7 @@
       ],
       "correct": 2,
       "explanation": "AWS Secrets Manager provides automatic rotation, fine-grained IAM access control, audit logging through CloudTrail, and integration with AWS services. Parameter Store (B) lacks automatic rotation. HashiCorp Vault (C) requires operational overhead. Environment variables (D) are less secure and don't provide centralized management.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -3754,7 +3754,7 @@
       ],
       "correct": 2,
       "explanation": "AWS Resource Access Manager provides secure, centralized resource sharing across accounts with fine-grained access control, audit capabilities, and automated resource management. Cross-account roles (B) work but require more complex management. Public sharing (C) is insecure. Organizations with SCPs (D) provide governance but not resource sharing capabilities.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -3762,15 +3762,15 @@
       ]
     },
     {
-      "question": "A media streaming company needs video transcoding that handles variable workloads, multiple output formats, and cost optimization during low-demand periods. Which solution is MOST cost-effective?",
+      "question": "A video streaming platform needs to process user-uploaded videos into multiple resolutions (1080p, 720p, 480p) within 5 minutes of upload. The workload is unpredictable. Which solution provides the MOST scalable and cost-effective approach?",
       "options": [
-        "Use ECS Fargate with custom transcoding container images",
-        "Use EC2 Spot instances with FFmpeg and Auto Scaling groups",
-        "Use AWS Elemental MediaConvert with on-demand pricing",
-        "Use AWS Batch with GPU instances for video processing"
+        "Use EC2 instances with a custom transcoding pipeline and Auto Scaling",
+        "Use AWS Lambda with FFmpeg layer for video transcoding",
+        "Use AWS Elemental MediaConvert with S3 event triggers and SQS queue",
+        "Use ECS Fargate tasks with a custom transcoding container"
       ],
       "correct": 2,
-      "explanation": "AWS Elemental MediaConvert provides managed video transcoding with pay-per-use pricing, supporting multiple output formats without infrastructure management, making it most cost-effective for variable workloads. EC2 Spot (B) requires operational overhead. AWS Batch (C) requires more management than MediaConvert. ECS Fargate (D) is more expensive than MediaConvert for video processing.",
+      "explanation": "AWS Elemental MediaConvert is a purpose-built managed video transcoding service that handles variable workloads automatically. S3 event triggers initiate transcoding jobs, and SQS provides reliable job queuing. MediaConvert scales automatically and charges per minute of output, making it cost-effective for unpredictable workloads. Lambda has a 15-minute timeout unsuitable for long videos. EC2 requires manual scaling management.",
       "domain": "Design Cost-Optimized Architectures",
       "difficulty": "medium",
       "validated": true,
@@ -3779,15 +3779,15 @@
       ]
     },
     {
-      "question": "An IoT application collects sensor data from thousands of devices and requires real-time anomaly detection with historical analysis capabilities. Which architecture handles this scale MOST efficiently?",
+      "question": "An industrial IoT platform collects telemetry from 50,000 factory sensors and needs to detect equipment anomalies in real-time with alerts sent to maintenance teams. Which architecture is MOST appropriate?",
       "options": [
-        "Use API Gateway with Lambda functions for data ingestion",
-        "Use AWS IoT Core with Kinesis Data Streams and Lambda functions",
-        "Use AWS IoT Greengrass for edge processing and S3 storage",
-        "Use MQTT brokers on EC2 instances with Kafka for streaming"
+        "Use API Gateway with Lambda for sensor data ingestion and DynamoDB for storage",
+        "Use AWS IoT Core with Kinesis Data Streams, Lambda for anomaly detection, and SNS for alerts",
+        "Use AWS IoT Greengrass for all processing at the edge with local storage",
+        "Use MQTT brokers on EC2 with Apache Kafka and custom anomaly detection scripts"
       ],
       "correct": 1,
-      "explanation": "AWS IoT Core handles massive device connections, Kinesis Data Streams processes real-time data at scale, and Lambda provides serverless anomaly detection. This fully managed solution scales automatically for IoT workloads. MQTT on EC2 (B) requires operational overhead. IoT Greengrass (C) alone doesn't provide centralized real-time analytics. API Gateway (D) has throttling limits for this scale.",
+      "explanation": "AWS IoT Core manages device connectivity at scale, Kinesis Data Streams handles high-throughput real-time telemetry ingestion, Lambda processes the stream for anomaly detection using ML models or threshold rules, and SNS delivers immediate alerts to maintenance teams. IoT Greengrass is for edge processing only and cannot aggregate data from 50,000 sensors centrally. EC2-based MQTT brokers require significant operational overhead.",
       "domain": "Design High-Performing Architectures",
       "difficulty": "medium",
       "validated": true,
@@ -3796,15 +3796,15 @@
       ]
     },
     {
-      "question": "A company needs disaster recovery for their critical database with RTO of 4 hours and RPO of 1 hour, with primary in us-east-1 and DR in us-west-2. Which solution BEST meets these requirements cost-effectively?",
+      "question": "A company needs a disaster recovery strategy for their RDS database with an RPO of 1 hour and RTO of 2 hours. The solution must be cost-effective. Which approach BEST meets these requirements?",
       "options": [
-        "Use Aurora Global Database with managed cross-region failover",
-        "Use RDS Multi-AZ deployment with cross-region snapshot copying",
-        "Use RDS read replica in us-west-2 with manual promotion process",
-        "Use RDS automated backups with cross-region backup copying"
+        "Enable RDS Multi-AZ with automatic failover for synchronous replication",
+        "Use RDS automated backups to S3 with cross-region replication",
+        "Implement RDS read replicas in a secondary region with manual promotion",
+        "Use AWS Backup with cross-region copy and RDS point-in-time recovery"
       ],
       "correct": 2,
-      "explanation": "RDS read replica in us-west-2 with manual promotion meets the RTO (4 hours for promotion) and RPO (1 hour with continuous replication) requirements cost-effectively. Automated backups (A) may not meet RPO requirements. Aurora Global Database (C) exceeds requirements and is more expensive. Multi-AZ (D) doesn't provide cross-region DR capabilities.",
+      "explanation": "RDS read replicas in a secondary region provide near-real-time replication (meeting the 1-hour RPO) and can be manually promoted to a standalone instance within the 2-hour RTO window. This is more cost-effective than Multi-AZ (which is same-region only) for cross-region DR. RDS automated backups alone cannot meet a 2-hour RTO for large databases. AWS Backup with PITR is suitable but read replicas provide faster promotion.",
       "domain": "Design Resilient Architectures",
       "difficulty": "medium",
       "validated": true,
@@ -3813,15 +3813,15 @@
       ]
     },
     {
-      "question": "A social media application needs real-time notifications for user interactions that can handle millions of users with instant delivery capabilities. Which solution provides the MOST scalability?",
+      "question": "A ride-sharing application needs to send real-time location updates from drivers to passengers with sub-second latency. The system must support 100,000 concurrent connections. Which AWS service is MOST appropriate?",
       "options": [
-        "Use Amazon SNS with mobile push notifications and email delivery",
-        "Use SQS with Lambda functions for notification processing",
-        "Use WebSocket connections with API Gateway and Lambda functions",
-        "Use Amazon Pinpoint for comprehensive multi-channel messaging"
+        "Use Amazon SQS FIFO queues with long polling for location updates",
+        "Use Amazon SNS with mobile push notifications for each location update",
+        "Use Amazon MQ with MQTT protocol for IoT-style messaging",
+        "Use AWS AppSync with real-time subscriptions over WebSocket connections"
       ],
       "correct": 3,
-      "explanation": "Amazon Pinpoint provides comprehensive multi-channel messaging (push, SMS, email) with automatic scaling for millions of users and real-time delivery capabilities, specifically designed for user engagement. SNS (A) is good but lacks comprehensive user engagement features. WebSocket with API Gateway (B) requires more custom development. SQS with Lambda (D) adds latency for real-time notifications.",
+      "explanation": "AWS AppSync supports real-time subscriptions via WebSocket connections, enabling sub-second push updates from drivers to passengers at scale. AppSync handles 100,000+ concurrent WebSocket connections and integrates with DynamoDB for location storage. SQS is a pull-based queue not suitable for real-time push. SNS push notifications have higher latency and are not designed for continuous location streaming. Amazon MQ adds unnecessary complexity.",
       "domain": "Design High-Performing Architectures",
       "difficulty": "medium",
       "validated": true,
@@ -3830,16 +3830,16 @@
       ]
     },
     {
-      "question": "A company needs automated compliance monitoring across AWS infrastructure with configuration drift detection and automatic remediation capabilities. Which solution provides the MOST comprehensive compliance management?",
+      "question": "A financial services company must demonstrate continuous compliance with PCI DSS requirements across 50 AWS accounts. They need automated evidence collection for audits. Which combination of services BEST addresses this?",
       "options": [
-        "Use CloudTrail with Lambda functions for compliance checking",
+        "Use CloudTrail with Lambda functions for custom compliance checking",
         "Use AWS Security Hub with automated response workflows",
-        "Use AWS Config with Config Rules and automatic remediation actions",
+        "Use AWS Audit Manager with PCI DSS framework and AWS Config integration",
         "Use AWS Systems Manager Compliance with custom remediation scripts"
       ],
       "correct": 2,
-      "explanation": "AWS Config with Config Rules provides comprehensive configuration monitoring and automatic remediation actions for compliance drift detection, specifically designed for configuration compliance. Systems Manager Compliance (B) focuses on patch compliance. Security Hub (C) aggregates findings but doesn't provide configuration monitoring. CloudTrail with Lambda (D) requires custom development and maintenance.",
-      "domain": "Design Secure Applications",
+      "explanation": "AWS Audit Manager is specifically designed for automated evidence collection and audit preparation. The built-in PCI DSS framework maps controls to AWS Config rules and automatically collects evidence across all 50 accounts via AWS Organizations integration. AWS Config with Config Rules handles drift detection but lacks automated evidence collection for audits. Security Hub centralizes findings but does not generate audit-ready evidence reports.",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -3847,15 +3847,15 @@
       ]
     },
     {
-      "question": "A startup needs user analytics that tracks behavior across web and mobile applications with real-time insights and custom event tracking capabilities. Which solution is MOST suitable for their needs?",
+      "question": "A SaaS company wants to understand how users navigate their web application, identify drop-off points in their onboarding funnel, and run A/B tests on UI changes. Which AWS service is purpose-built for this use case?",
       "options": [
-        "Use CloudWatch with custom metrics and dashboard visualization",
-        "Use Amazon Kinesis Data Analytics with custom event processing",
-        "Use Amazon Pinpoint Analytics for comprehensive user behavior tracking",
+        "Use CloudWatch with custom metrics and dashboard visualizations",
+        "Use Amazon Kinesis Data Analytics with custom event processing pipelines",
+        "Use Amazon Pinpoint Analytics for user behavior tracking and campaign management",
         "Use AWS Glue with S3 data lake architecture for batch analytics"
       ],
       "correct": 2,
-      "explanation": "Amazon Pinpoint Analytics is specifically designed for user behavior tracking across web and mobile applications with real-time insights and custom event support, providing comprehensive user engagement analytics. Kinesis Data Analytics (A) requires more custom development. AWS Glue (C) is for batch processing, not real-time analytics. CloudWatch (D) is for infrastructure monitoring, not user behavior analytics.",
+      "explanation": "Amazon Pinpoint Analytics is purpose-built for tracking user behavior across web and mobile applications, with built-in funnel analysis, A/B testing, and campaign management. It provides real-time insights without requiring custom data pipelines. CloudWatch is for infrastructure metrics, not user behavior analytics. Kinesis Data Analytics requires custom processing logic. Glue/S3 is batch-oriented.",
       "domain": "Design High-Performing Architectures",
       "difficulty": "medium",
       "validated": true,
@@ -3881,7 +3881,7 @@
       ]
     },
     {
-      "question": "A content delivery network needs to serve both static and dynamic content globally with comprehensive DDoS protection and minimal latency. Which architecture provides the MOST effective solution?",
+      "question": "A global news website experiences DDoS attacks during major events and needs to protect their origin servers while maintaining availability for millions of readers. Which solution provides the BEST protection with minimal latency impact?",
       "options": [
         "Use AWS Global Accelerator with Shield Standard protection",
         "Use third-party CDN solutions with AWS service integration",
@@ -3889,8 +3889,8 @@
         "Use multiple Application Load Balancers in different regions with Route 53"
       ],
       "correct": 2,
-      "explanation": "CloudFront provides global content delivery with edge caching, AWS Shield Advanced offers comprehensive DDoS protection, and WAF provides application-layer security. This combination is most effective for global CDN with comprehensive security. Multiple ALBs (B) don't provide edge caching capabilities. Global Accelerator (C) doesn't cache static content. Third-party CDN (D) adds complexity and integration challenges.",
-      "domain": "Design Secure Applications",
+      "explanation": "CloudFront absorbs DDoS traffic at edge locations before it reaches origin servers, AWS Shield Advanced provides enhanced DDoS protection with 24/7 DRT support and cost protection, and WAF blocks malicious HTTP requests. This combination protects origin servers while serving cached content to readers with minimal latency. Global Accelerator does not cache content. Multiple ALBs expose origin servers directly to attack traffic.",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -3898,15 +3898,15 @@
       ]
     },
     {
-      "question": "A company needs application configuration management across multiple environments with feature flags, gradual rollouts, and automatic rollback capabilities. Which solution provides the MOST comprehensive configuration management?",
+      "question": "A company wants to gradually roll out a new payment feature to 5% of users, monitor error rates, and automatically roll back if errors exceed a threshold. Which AWS service provides this capability natively?",
       "options": [
-        "Use Systems Manager Parameter Store with version control",
-        "Use AWS AppConfig with deployment strategies and feature flags",
+        "Use Systems Manager Parameter Store with version control and Lambda triggers",
+        "Use AWS AppConfig with deployment strategies and CloudWatch alarm-based rollback",
         "Use environment variables with AWS Secrets Manager integration",
         "Use S3 with Lambda functions for configuration management"
       ],
       "correct": 1,
-      "explanation": "AWS AppConfig is specifically designed for application configuration management with built-in feature flags, gradual rollout strategies, and automatic rollback capabilities based on CloudWatch alarms. Parameter Store (B) provides storage but lacks deployment strategies. S3 with Lambda (C) requires custom development and maintenance. Environment variables (D) don't provide the required advanced management features.",
+      "explanation": "AWS AppConfig supports gradual deployment strategies (e.g., deploy to 5% of targets) with CloudWatch alarm integration for automatic rollback when error thresholds are exceeded. This is exactly the use case AppConfig was designed for \u2014 safe, gradual feature rollouts with automatic rollback. Parameter Store lacks built-in deployment strategies and rollback. Environment variables require redeployment to change.",
       "domain": "Design Resilient Architectures",
       "difficulty": "medium",
       "validated": true,
@@ -3924,7 +3924,7 @@
       ],
       "correct": 2,
       "explanation": "S3 Glacier Deep Archive provides the most cost-effective long-term storage, Object Lock ensures data immutability for compliance requirements, and CloudTrail provides comprehensive audit trails. Standard retrieval meets the 24-hour requirement. S3 Standard-IA (B) is more expensive for 10-year retention. EFS (C) isn't designed for long-term archival. Tape backup (D) is complex and expensive to manage.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -3958,7 +3958,7 @@
       ],
       "correct": 0,
       "explanation": "AWS Security Hub aggregates security findings from multiple sources, EventBridge enables event-driven automation workflows, and Lambda provides serverless remediation logic with comprehensive reporting capabilities. CloudWatch with SNS (B) lacks security-specific threat detection features. GuardDuty alone (C) doesn't provide automated remediation. Third-party SIEM on EC2 (D) requires significant operational overhead and custom development.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -3966,15 +3966,15 @@
       ]
     },
     {
-      "question": "A company needs data synchronization between on-premises databases and AWS with support for schema changes and minimal downtime requirements. Which migration approach is MOST suitable for ongoing synchronization?",
+      "question": "A company is migrating their Oracle database to Amazon Aurora PostgreSQL. They need to minimize downtime and keep the source database running during migration. Which AWS service handles heterogeneous database migration with schema conversion?",
       "options": [
         "Use AWS Glue ETL jobs for periodic data synchronization",
         "Use AWS DataSync for database file-level synchronization",
-        "Use AWS Database Migration Service with ongoing replication capabilities",
-        "Use custom database replication software deployed on EC2 instances"
+        "Use AWS Database Migration Service with AWS Schema Conversion Tool",
+        "Use custom replication software deployed on EC2 instances"
       ],
       "correct": 2,
-      "explanation": "AWS DMS provides ongoing replication with schema conversion capabilities and minimal downtime through continuous data replication, handling schema changes automatically during the migration process. AWS Glue (B) is for ETL batch processing, not real-time synchronization. DataSync (C) is for file synchronization, not database replication. Custom replication software (D) requires significant operational overhead and development effort.",
+      "explanation": "AWS DMS with AWS Schema Conversion Tool (SCT) is the standard approach for heterogeneous database migrations (Oracle to Aurora PostgreSQL). SCT converts the schema and stored procedures, while DMS handles ongoing replication to minimize downtime. DMS supports continuous replication so the source stays live until cutover. DataSync is for file storage, not databases. Glue is for ETL analytics pipelines, not live database migration.",
       "domain": "Design Resilient Architectures",
       "difficulty": "medium",
       "validated": true,
@@ -4043,7 +4043,7 @@
       ],
       "correct": 2,
       "explanation": "VPC Flow Logs provide comprehensive network traffic data, GuardDuty analyzes traffic patterns for threats using machine learning, and Lambda enables automated response actions. This combination provides the most comprehensive network security monitoring and response. Network Firewall (B) provides filtering but has limited threat detection capabilities. Inspector (C) focuses on host-based assessment, not network traffic analysis. Third-party tools (D) require significant operational overhead.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -4051,15 +4051,15 @@
       ]
     },
     {
-      "question": "A startup needs A/B testing for mobile application features with gradual rollouts, sophisticated user segmentation, and real-time performance metrics. Which approach provides the MOST comprehensive A/B testing solution?",
+      "question": "A mobile gaming company wants to test two different in-app purchase flows with different user segments, track conversion rates in real-time, and automatically promote the winning variant. Which AWS approach BEST supports this?",
       "options": [
-        "Use Amazon Pinpoint for advanced user segmentation and messaging",
+        "Use AWS AppConfig with feature flags and CloudWatch metrics for monitoring",
         "Use third-party A/B testing platforms with AWS service integration",
-        "Use custom feature flag implementation with DynamoDB and Lambda functions",
-        "Use AWS AppConfig with feature flags and CloudWatch metrics integration"
+        "Use custom feature flag implementation with DynamoDB and Lambda",
+        "Use Amazon Pinpoint campaigns with A/B message templates and analytics"
       ],
       "correct": 3,
-      "explanation": "AWS AppConfig provides comprehensive feature flag management with gradual rollout capabilities, sophisticated user segmentation, and CloudWatch integration for real-time metrics collection and analysis. Custom implementation (B) requires significant development effort and maintenance. Pinpoint (C) is primarily for messaging, not feature flag management. Third-party platforms (D) add external dependencies and additional costs.",
+      "explanation": "Amazon Pinpoint supports A/B testing for campaigns with built-in analytics to track conversion rates across user segments. Pinpoint can automatically promote the winning variant based on performance metrics. For in-app purchase flow testing specifically, Pinpoint's campaign management and user segmentation capabilities are purpose-built. AppConfig handles feature flags but lacks built-in A/B test analytics and automatic winner promotion.",
       "domain": "Design Resilient Architectures",
       "difficulty": "medium",
       "validated": true,
@@ -4077,7 +4077,7 @@
       ],
       "correct": 3,
       "explanation": "S3 with KMS encryption provides HIPAA-compliant data encryption at rest, VPC endpoints ensure data doesn't traverse the public internet (encryption in transit), and CloudTrail provides the required comprehensive audit logging for compliance. Custom encryption (B) may not meet strict compliance standards. EFS (C) doesn't provide the same level of compliance features. On-premises storage (D) doesn't leverage AWS's built-in compliance capabilities.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -4230,7 +4230,7 @@
       ],
       "correct": 3,
       "explanation": "AWS Lake Formation provides comprehensive data lake governance with fine-grained access control, seamless integration with Glue Data Catalog for automated metadata management, and detailed compliance reporting capabilities. Custom S3 policies (B) lack fine-grained control and require manual management. Macie (C) focuses on data discovery and classification, not comprehensive governance. Apache Ranger (D) requires significant operational overhead and EMR cluster management.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -4281,7 +4281,7 @@
       ],
       "correct": 3,
       "explanation": "Amazon Connect provides comprehensive contact center capabilities, Lex offers sophisticated chatbot functionality, and Lambda enables seamless custom integrations with existing systems, all with pay-per-use pricing. Custom system development (B) requires significant development effort and ongoing maintenance. Third-party platforms (C) add ongoing licensing costs and integration complexity. Open-source software (D) requires substantial operational overhead and maintenance effort.",
-      "domain": "Design Cost-Optimized Architectures",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -4292,12 +4292,12 @@
       "question": "A financial application requires real-time fraud detection with sophisticated machine learning models that can process 10,000 transactions per second with consistent sub-100ms latency requirements. Which architecture provides the BEST high-performance fraud detection?",
       "options": [
         "Use EC2 instances with custom ML model deployment and load balancing",
-        "Use Amazon Fraud Detector with real-time API endpoints and automatic scaling",
+        "Use SageMaker real-time inference endpoints with a custom fraud detection model",
         "Use SageMaker real-time inference endpoints with custom machine learning models",
         "Use Lambda functions with pre-trained machine learning models and caching"
       ],
       "correct": 1,
-      "explanation": "Amazon Fraud Detector is purpose-built for real-time fraud detection with consistent sub-100ms response times and automatic scaling capabilities to handle thousands of transactions per second effectively. SageMaker inference endpoints (B) may not consistently meet strict latency requirements at scale. Lambda functions (C) have cold start issues that can impact latency consistency. EC2 instances (D) require significant operational overhead and may not achieve consistent low latency performance.",
+      "explanation": "Amazon SageMaker real-time inference endpoints provide sub-100ms latency for fraud detection ML models with automatic scaling to handle thousands of transactions per second. Amazon Fraud Detector was discontinued for new customers in November 2025; SageMaker is the recommended replacement for custom fraud detection models. Lambda with pre-trained models lacks the scaling and latency guarantees needed for real-time fraud detection.",
       "domain": "Design High-Performing Architectures",
       "difficulty": "hard",
       "validated": true,
@@ -4340,15 +4340,15 @@
       ]
     },
     {
-      "question": "A data analytics platform processes large datasets using Apache Spark with predictable usage patterns and peak processing requirements during business hours. Which solution provides the BEST cost optimization for this workload?",
+      "question": "A data engineering team runs Apache Spark jobs on Amazon EMR to process 10TB of daily log data. Jobs run for 2-3 hours and are fault-tolerant. The team wants to reduce compute costs by 70% without changing their Spark code. Which approach is BEST?",
       "options": [
-        "Use Apache Spark on EKS with Fargate for serverless processing capabilities",
+        "Use Apache Spark on EKS with Fargate for serverless processing",
         "Use EMR with On-Demand instances and Auto Scaling group configuration",
-        "Use Apache Spark on EC2 Reserved instances with manual scaling procedures",
-        "Use EMR with Spot instances and scheduled cluster scaling based on usage patterns"
+        "Use Apache Spark on EC2 Reserved instances with manual scaling",
+        "Use EMR with Spot instances and instance fleets for cost optimization"
       ],
       "correct": 3,
-      "explanation": "EMR with Spot instances provides up to 90% cost savings for fault-tolerant Spark workloads, and scheduled scaling aligns perfectly with predictable usage patterns to optimize costs. Spark on EKS with Fargate (B) is more expensive for large-scale analytics workloads. EMR with On-Demand instances (C) is the most expensive option. Spark on Reserved instances (D) doesn't provide Spot pricing benefits and requires manual scaling management.",
+      "explanation": "EMR with Spot instances and instance fleets provides up to 90% cost savings compared to On-Demand pricing. Instance fleets allow EMR to use multiple instance types across multiple Availability Zones, maximizing Spot availability. Fault-tolerant Spark jobs can handle Spot interruptions through checkpointing. This achieves the 70% cost reduction target without code changes. Reserved instances require upfront commitment and manual scaling.",
       "domain": "Design Cost-Optimized Architectures",
       "difficulty": "medium",
       "validated": true,
@@ -4383,7 +4383,7 @@
       ],
       "correct": 2,
       "explanation": "AWS Config with Config Rules provides comprehensive configuration monitoring and compliance checking capabilities, while AWS Organizations enables centralized multi-account management and compliance reporting across the entire organization. CloudTrail with Lambda (B) requires significant custom development and maintenance effort. Security Hub (C) aggregates security findings but doesn't provide comprehensive configuration monitoring. Third-party tools (D) add additional cost, complexity, and integration challenges.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -4425,15 +4425,15 @@
       ]
     },
     {
-      "question": "A serverless application needs to process large files that require 20-30 minutes of processing time with variable and unpredictable workloads. Which architecture provides the MOST cost-effective serverless processing solution?",
+      "question": "A data processing pipeline needs to convert large CSV files (5-10GB each) into Parquet format. Each conversion takes 25-40 minutes. The solution must be serverless and cost-effective. Which approach BEST meets these requirements?",
       "options": [
         "Use EC2 Spot instances with SQS for job queuing and cost-effective processing",
-        "Use ECS Fargate tasks triggered by S3 events for long-running serverless processing",
-        "Use AWS Batch with Fargate compute environment for managed serverless batch processing",
-        "Use Step Functions to orchestrate multiple Lambda functions with complex workflow management"
+        "Use ECS Fargate tasks triggered by S3 events for long-running file conversion",
+        "Use AWS Batch with Fargate compute environment for managed serverless processing",
+        "Use Step Functions to orchestrate multiple Lambda functions with state management"
       ],
-      "correct": 1,
-      "explanation": "ECS Fargate tasks provide true serverless processing without the 15-minute Lambda timeout limitation, with pay-per-use pricing that's ideal for long-running tasks and variable workloads. Step Functions with Lambda (A) are still constrained by Lambda's timeout limits. EC2 Spot instances (C) require infrastructure management and aren't truly serverless. AWS Batch with Fargate (D) adds unnecessary complexity and overhead for straightforward file processing tasks.",
+      "correct": 2,
+      "explanation": "AWS Batch with Fargate provides a fully managed serverless compute environment for batch jobs without the 15-minute Lambda timeout limitation. Batch handles job queuing, dependency management, and automatic scaling. Fargate eliminates EC2 instance management. ECS Fargate tasks also work but require more manual orchestration. Lambda cannot run 25-40 minute jobs. EC2 Spot instances are not serverless.",
       "domain": "Design Cost-Optimized Architectures",
       "difficulty": "medium",
       "validated": true,
@@ -4536,7 +4536,7 @@
       ],
       "correct": 1,
       "explanation": "AWS Secrets Manager provides comprehensive automatic rotation capabilities, fine-grained IAM access control, detailed audit logging through CloudTrail, and seamless integration with AWS services for secure secrets management. Parameter Store (B) lacks automatic rotation capabilities. HashiCorp Vault (C) requires significant operational overhead and custom development. Environment variables (D) are less secure and don't provide centralized management or automatic rotation.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -4604,7 +4604,7 @@
       ],
       "correct": 2,
       "explanation": "AWS Resource Access Manager provides the most secure, centralized resource sharing across accounts with fine-grained access control, comprehensive audit capabilities, and automated resource management while maintaining security boundaries. Cross-account roles (B) work but require more complex management and coordination. Public sharing (C) is inherently insecure regardless of encryption. Organizations with SCPs (D) provide governance but don't directly enable resource sharing capabilities.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -4629,15 +4629,15 @@
       ]
     },
     {
-      "question": "An IoT application collects sensor data from thousands of devices and requires sophisticated real-time anomaly detection with comprehensive historical analysis capabilities. Which architecture handles this scale MOST efficiently and cost-effectively?",
+      "question": "A smart building management system collects data from 10,000 HVAC sensors and needs to detect temperature anomalies in real-time and trigger automated responses. The solution must handle sensor connectivity and data processing. Which architecture is BEST?",
       "options": [
-        "Use API Gateway with Lambda functions for comprehensive data ingestion and processing",
-        "Use AWS IoT Greengrass for edge processing and S3 for centralized storage",
-        "Use AWS IoT Core with Kinesis Data Streams and Lambda functions for processing",
-        "Use MQTT brokers deployed on EC2 instances with Kafka for data streaming"
+        "Use API Gateway REST API for sensor data ingestion with Lambda processing",
+        "Use AWS IoT Core with rules engine, Lambda for anomaly detection, and SNS for alerts",
+        "Use Kinesis Data Streams directly with custom MQTT client libraries on sensors",
+        "Use SQS queues with EC2 consumers for sensor data processing"
       ],
-      "correct": 2,
-      "explanation": "AWS IoT Core handles massive device connections efficiently, Kinesis Data Streams processes real-time data at scale with automatic scaling, and Lambda provides cost-effective serverless anomaly detection. This fully managed solution scales automatically for IoT workloads without operational overhead. MQTT on EC2 (B) requires significant operational overhead and manual scaling. IoT Greengrass (C) alone doesn't provide centralized real-time analytics capabilities. API Gateway (D) has throttling limits that may not handle IoT scale effectively.",
+      "correct": 1,
+      "explanation": "AWS IoT Core provides native MQTT connectivity for IoT sensors with a built-in rules engine that can trigger Lambda functions for anomaly detection. Lambda processes sensor data in real-time and SNS delivers automated alerts. IoT Core handles device authentication, message routing, and scales to millions of devices. API Gateway is not optimized for IoT protocols. Direct Kinesis integration requires custom MQTT client implementation on sensors.",
       "domain": "Design High-Performing Architectures",
       "difficulty": "medium",
       "validated": true,
@@ -4689,7 +4689,7 @@
       ],
       "correct": 2,
       "explanation": "AWS Config with Config Rules provides the most comprehensive configuration monitoring and automatic remediation actions specifically designed for compliance drift detection and automated compliance management. Systems Manager Compliance (B) focuses primarily on patch compliance rather than comprehensive configuration compliance. Security Hub (C) aggregates security findings but doesn't provide comprehensive configuration monitoring capabilities. CloudTrail with Lambda (D) requires significant custom development and ongoing maintenance effort.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -4714,15 +4714,15 @@
       ]
     },
     {
-      "question": "A legacy application requires a specific database version and configuration but needs comprehensive high availability and automated backup capabilities. Which solution provides the BEST balance of compatibility, availability, and operational efficiency?",
+      "question": "A company runs a commercial database application that requires direct OS-level access for custom monitoring agents and specific kernel parameters. They want managed backups and Multi-AZ without managing EC2 instances. Which AWS service BEST meets these requirements?",
       "options": [
-        "Use RDS Custom for specific database version with Multi-AZ deployment and automated backups",
-        "Deploy database on EC2 instances with manual clustering setup and backup procedures",
-        "Use standard RDS with the closest supported database version and standard features",
-        "Use containerized database on EKS with persistent volume storage and custom backup logic"
+        "Use RDS Custom for managed database with OS-level access and Multi-AZ deployment",
+        "Deploy database on EC2 instances with manual clustering setup and EBS snapshots",
+        "Use standard RDS with the closest supported database version available",
+        "Use containerized database on EKS with persistent volume storage"
       ],
       "correct": 0,
-      "explanation": "RDS Custom provides the optimal flexibility for specific database versions and configurations while maintaining comprehensive RDS benefits including automated backups, Multi-AZ deployment, and managed infrastructure with reduced operational overhead. EC2 deployment (B) requires significant manual management and operational complexity. Standard RDS (C) may not support the required specific version and configuration needs. Containerized database on EKS (D) requires substantial operational overhead for high availability and backup management.",
+      "explanation": "RDS Custom provides the unique combination of managed RDS features (automated backups, Multi-AZ, monitoring) with the ability to access and customize the underlying OS and database environment. This is specifically designed for commercial databases requiring OS-level access for custom agents or kernel tuning. Standard RDS does not allow OS access. EC2 requires full infrastructure management. EKS adds container orchestration complexity.",
       "domain": "Design Resilient Architectures",
       "difficulty": "medium",
       "validated": true,
@@ -4740,7 +4740,7 @@
       ],
       "correct": 1,
       "explanation": "CloudFront provides comprehensive global content delivery with sophisticated edge caching capabilities, AWS Shield Advanced offers the most comprehensive DDoS protection available, and WAF provides sophisticated application-layer security. This combination provides the most effective global CDN with comprehensive security features. Multiple ALBs (B) don't provide edge caching capabilities for static content. Global Accelerator (C) doesn't provide content caching for static assets. Third-party CDN solutions (D) add complexity and potential integration challenges.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -4774,7 +4774,7 @@
       ],
       "correct": 2,
       "explanation": "S3 Glacier Deep Archive provides the most cost-effective long-term storage solution, Object Lock ensures strict data immutability for compliance requirements, and CloudTrail provides comprehensive audit trails for all access and operations. Standard retrieval meets the 24-hour requirement effectively. S3 Standard-IA with lifecycle (B) is significantly more expensive for 10-year retention periods. EFS with backups (C) isn't designed for long-term archival and compliance. Storage Gateway with tape backup (D) is complex, expensive to manage, and has operational overhead.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -4808,7 +4808,7 @@
       ],
       "correct": 3,
       "explanation": "AWS Security Hub aggregates security findings from multiple sources across the AWS environment, EventBridge enables sophisticated event-driven automation workflows, and Lambda provides flexible serverless remediation logic with comprehensive reporting and audit capabilities. CloudWatch with SNS (B) lacks security-specific threat detection and automated response features. GuardDuty alone (C) provides threat detection but doesn't offer automated remediation capabilities. Third-party SIEM on EC2 (D) requires significant operational overhead, custom development, and ongoing maintenance effort.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -4833,15 +4833,15 @@
       ]
     },
     {
-      "question": "A high-frequency trading application requires ultra-low latency and extremely high throughput for processing millions of transactions per second with consistent performance. Which architecture provides the LOWEST possible latency and highest performance?",
+      "question": "A financial analytics platform processes market data feeds and needs to perform complex calculations with network latency under 25 microseconds between compute nodes. Which EC2 configuration provides the LOWEST inter-node latency?",
       "options": [
-        "Use Lambda functions with provisioned concurrency for serverless transaction processing",
-        "Use ECS Fargate with high-performance networking configuration and auto-scaling",
-        "Use serverless architecture with API Gateway and Lambda for scalable processing",
-        "Use EC2 instances with enhanced networking and cluster placement groups for optimal performance"
+        "Use Lambda functions with provisioned concurrency for serverless processing",
+        "Use ECS Fargate with high-performance networking configuration",
+        "Use serverless architecture with API Gateway and Lambda for scalability",
+        "Use EC2 instances with enhanced networking and cluster placement groups"
       ],
       "correct": 3,
-      "explanation": "EC2 instances with enhanced networking (SR-IOV) and cluster placement groups provide the absolute lowest latency and highest network performance for high-frequency trading applications by placing instances physically close together with optimized networking. Lambda functions (B) have invocation overhead that adds unacceptable latency for HFT. Fargate (C) has higher latency than bare metal EC2 instances due to containerization overhead. API Gateway with Lambda (D) adds significant latency that makes it unsuitable for high-frequency trading requirements.",
+      "explanation": "EC2 instances with enhanced networking (Elastic Network Adapter/SR-IOV) and cluster placement groups provide the lowest possible inter-node latency by placing instances on the same physical hardware rack with high-bandwidth, low-latency networking. Cluster placement groups can achieve sub-microsecond latency for HPC workloads. Lambda and Fargate introduce additional latency from their managed infrastructure layers. API Gateway adds HTTP overhead unsuitable for microsecond-latency requirements.",
       "domain": "Design High-Performing Architectures",
       "difficulty": "hard",
       "validated": true,
@@ -4893,7 +4893,7 @@
       ],
       "correct": 0,
       "explanation": "VPC Flow Logs provide comprehensive network traffic data for analysis, GuardDuty analyzes traffic patterns for sophisticated threats using machine learning and threat intelligence, and Lambda enables flexible automated response actions with detailed logging. This combination provides the most comprehensive network security monitoring and automated response capabilities. Network Firewall (B) provides filtering but has limited advanced threat detection capabilities. Inspector (C) focuses on host-based assessment rather than network traffic analysis. Third-party tools (D) require significant operational overhead and custom integration development.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -4927,7 +4927,7 @@
       ],
       "correct": 3,
       "explanation": "S3 with KMS encryption provides HIPAA-compliant data encryption at rest with comprehensive key management, VPC endpoints ensure data doesn't traverse the public internet (maintaining encryption in transit), and CloudTrail provides the required detailed audit logging for compliance monitoring and reporting. Custom encryption implementation (B) may not meet strict compliance standards and requires significant security expertise. EFS with encryption (C) doesn't provide the same comprehensive level of compliance features and audit capabilities. On-premises storage (D) doesn't leverage AWS's built-in compliance capabilities and adds operational complexity.",
-      "domain": "Design Secure Applications",
+      "domain": "Design Secure Architectures",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -4935,15 +4935,15 @@
       ]
     },
     {
-      "question": "A recommendation engine needs to analyze complex user behavior patterns and provide sophisticated personalized recommendations for millions of users with real-time inference capabilities and continuous learning. Which solution provides the MOST scalable and intelligent recommendation system?",
+      "question": "An e-commerce company wants to implement product recommendations that update in real-time as users browse, using their clickstream data and purchase history. The team has no ML expertise. Which AWS service provides the FASTEST path to production?",
       "options": [
-        "Use Amazon Rekognition for content-based recommendation analysis and user preference matching",
-        "Use SageMaker with custom machine learning models and Lambda integration for inference",
-        "Use collaborative filtering algorithms with DynamoDB and ElastiCache for performance optimization",
-        "Use Amazon Personalize with real-time inference endpoints and automatic model retraining"
+        "Use Amazon Rekognition for content-based recommendation analysis",
+        "Use SageMaker with custom machine learning models and Lambda serving",
+        "Use collaborative filtering algorithms with DynamoDB and ElastiCache",
+        "Use Amazon Personalize with real-time inference endpoints and event tracking"
       ],
       "correct": 3,
-      "explanation": "Amazon Personalize is purpose-built for sophisticated recommendation engines with automatic scaling, real-time inference capabilities, built-in machine learning algorithms specifically optimized for personalization, and automatic model retraining based on new data. SageMaker with custom models (B) requires significant development effort, ML expertise, and operational management. Collaborative filtering with DynamoDB (C) requires custom implementation of complex algorithms and scaling logic. Rekognition (D) is designed for image analysis rather than comprehensive recommendation systems and user behavior analysis.",
+      "explanation": "Amazon Personalize is a fully managed ML service that requires no ML expertise. It ingests clickstream events and purchase history, trains recommendation models automatically, and provides real-time inference endpoints. Event tracking enables real-time updates as users browse. SageMaker requires ML expertise to build custom models. Collaborative filtering with DynamoDB requires significant custom development. Rekognition is for image/video analysis.",
       "domain": "Design High-Performing Architectures",
       "difficulty": "medium",
       "validated": true,
@@ -4969,15 +4969,15 @@
       ]
     },
     {
-      "question": "A SaaS company requires comprehensive user subscription and billing management with multiple complex pricing tiers, detailed usage tracking, automated billing processes, and compliance reporting. Which solution provides the MOST comprehensive billing management platform?",
+      "question": "A SaaS startup wants to offer their product through AWS Marketplace with usage-based pricing. They need AWS to handle billing, metering, and subscription management. Which integration approach is MOST appropriate?",
       "options": [
-        "Use open-source billing management software deployed on EC2 instances with custom integration",
-        "Use AWS Marketplace with integrated SaaS billing and comprehensive subscription management capabilities",
-        "Use Stripe payment integration with AWS Lambda for payment processing and subscription management",
-        "Use custom billing logic implementation with DynamoDB and Lambda functions for processing"
+        "Use open-source billing software deployed on EC2 with custom payment processing",
+        "Use AWS Marketplace with the Metering Service API for usage-based billing",
+        "Use Stripe payment integration with Lambda for payment processing",
+        "Use custom billing logic with DynamoDB and Lambda for subscription management"
       ],
       "correct": 1,
-      "explanation": "AWS Marketplace provides the most comprehensive SaaS billing management platform with support for multiple complex pricing models, detailed usage tracking, automated billing integration, compliance handling, and comprehensive reporting capabilities. Custom billing logic (B) requires significant development effort, ongoing maintenance, and complex compliance considerations. Stripe integration (C) handles payments effectively but doesn't provide comprehensive subscription management and usage tracking. Open-source software (D) requires substantial operational overhead, compliance management, and ongoing maintenance effort.",
+      "explanation": "AWS Marketplace with the Metering Service API allows SaaS sellers to report usage dimensions to AWS, which handles all billing, invoicing, and subscription management. Customers are billed through their existing AWS account, reducing friction. The Marketplace handles payment collection and remittance to the seller. Custom billing solutions (Stripe, DynamoDB) require building and maintaining billing infrastructure and do not benefit from AWS Marketplace distribution and customer trust.",
       "domain": "Design Cost-Optimized Architectures",
       "difficulty": "medium",
       "validated": true,
@@ -4986,15 +4986,15 @@
       ]
     },
     {
-      "question": "A scientific computing application requires high-performance computing resources for short-duration jobs that are fault-tolerant and can tolerate interruptions with complex job dependencies. Which solution provides the BEST cost-performance optimization ratio with sophisticated job management?",
+      "question": "A genomics research company runs bioinformatics pipelines that process DNA sequencing data. Jobs take 2-8 hours, are embarrassingly parallel, and can be restarted if interrupted. Monthly compute costs are $50,000 on On-Demand. Which approach reduces costs MOST?",
       "options": [
-        "Use AWS ParallelCluster with Reserved instance commitments and custom job management",
-        "Use custom job scheduling implementation on Dedicated host infrastructure with manual coordination",
-        "Use EC2 Spot instances with AWS Batch for automated job management and dependency handling",
-        "Use dedicated HPC clusters with On-Demand instance pricing and manual job scheduling"
+        "Use AWS ParallelCluster with Reserved instance commitments and manual job scheduling",
+        "Use custom job scheduling implementation on Dedicated host instances",
+        "Use EC2 Spot instances with AWS Batch for automated job management and retry",
+        "Use dedicated HPC clusters with On-Demand instance pricing for reliability"
       ],
       "correct": 2,
-      "explanation": "EC2 Spot instances provide up to 90% cost savings for fault-tolerant workloads, and AWS Batch provides comprehensive managed job scheduling, resource allocation, dependency handling, and automatic scaling with sophisticated queue management. Dedicated HPC clusters (B) are the most expensive option without cost optimization benefits. ParallelCluster with Reserved instances (C) requires long-term commitment and doesn't provide Spot pricing benefits. Custom job scheduling on Dedicated hosts (D) is expensive, complex to manage, and doesn't provide cost optimization benefits.",
+      "explanation": "EC2 Spot instances provide up to 90% cost savings for fault-tolerant workloads, potentially reducing the $50,000 monthly bill to $5,000-$15,000. AWS Batch handles job queuing, automatic retry on Spot interruption, and resource management. Bioinformatics pipelines that can be restarted are ideal Spot candidates. Reserved instances require upfront commitment and do not provide the same level of savings as Spot for variable workloads.",
       "domain": "Design Cost-Optimized Architectures",
       "difficulty": "medium",
       "validated": true,
@@ -5020,15 +5020,15 @@
       ]
     },
     {
-      "question": "A content management system requires comprehensive version control, sophisticated approval workflows, multi-user collaboration capabilities, and detailed audit trails. Which solution provides the MOST comprehensive content management platform with enterprise features?",
+      "question": "A legal firm needs a document management system where attorneys can collaborate on contracts, track all document versions, route documents for partner approval, and access documents from mobile devices. Which AWS service is MOST appropriate?",
       "options": [
-        "Use S3 versioning with Lambda-based custom approval process implementation and workflow management",
-        "Use GitLab enterprise deployed on EC2 with custom workflow integration and user management",
-        "Use AWS CodeCommit with CodePipeline for automated approval workflows and version control",
-        "Use Amazon WorkDocs for comprehensive document collaboration and sophisticated workflow management"
+        "Use S3 versioning with Lambda-based custom approval process workflows",
+        "Use GitLab enterprise deployed on EC2 with custom workflow integration",
+        "Use AWS CodeCommit with CodePipeline for automated approval workflows",
+        "Use Amazon WorkDocs for document collaboration, versioning, and approval workflows"
       ],
       "correct": 3,
-      "explanation": "Amazon WorkDocs is specifically designed for comprehensive content management with built-in sophisticated version control, advanced approval workflows, multi-user collaboration features, detailed audit trails, and enterprise-grade document management capabilities optimized for business content. CodeCommit with CodePipeline (A) is designed for source code management rather than general business content management. S3 with Lambda (B) requires significant custom development effort for workflow features and user collaboration. GitLab on EC2 (D) requires substantial operational overhead and is primarily designed for code management rather than general business content collaboration.",
+      "explanation": "Amazon WorkDocs is a fully managed document collaboration service with built-in version control, approval workflows, commenting, and mobile access. It is specifically designed for business document management use cases like legal contract collaboration. S3 with Lambda requires significant custom development for approval workflows and mobile access. CodeCommit/CodePipeline is designed for code, not business documents. GitLab requires EC2 management and is code-focused.",
       "domain": "Design Resilient Architectures",
       "difficulty": "easy",
       "validated": true,
@@ -5037,21 +5037,60 @@
       ]
     },
     {
-      "question": "A microservices architecture requires comprehensive distributed tracing to monitor performance, troubleshoot complex issues, and provide end-to-end visibility with minimal code modification requirements and detailed performance analytics. Which approach provides the MOST effective distributed tracing solution?",
+      "question": "A company needs to implement a blue/green deployment strategy for their containerized application on ECS to achieve zero-downtime deployments with instant rollback capability. Which approach BEST achieves this?",
       "options": [
-        "Use AWS X-Ray with automatic instrumentation and comprehensive service mapping capabilities",
-        "Use APM monitoring tools deployed on EC2 instances with custom agent installation and management",
-        "Use custom logging implementation with CloudWatch and correlation ID tracking across services",
-        "Use Jaeger tracing system deployed on EKS with manual instrumentation and custom configuration"
+        "Use ECS rolling updates with minimum healthy percent configuration",
+        "Use AWS CodeDeploy with ECS blue/green deployment and traffic shifting",
+        "Use Route 53 weighted routing between two ECS services",
+        "Use Application Load Balancer with two target groups and manual traffic shifting"
       ],
-      "correct": 0,
-      "explanation": "AWS X-Ray provides the most comprehensive distributed tracing with automatic instrumentation for many AWS services, minimal code changes required, detailed service maps, end-to-end visibility across complex microservices architectures, and sophisticated performance analytics capabilities. Custom logging with CloudWatch (B) requires significant development effort, ongoing maintenance, and complex correlation logic. Jaeger on EKS (C) requires substantial operational overhead, manual instrumentation effort, and custom configuration management. APM tools on EC2 (D) require infrastructure management, licensing costs, custom agent maintenance, and ongoing operational overhead.",
+      "correct": 1,
+      "explanation": "AWS CodeDeploy with ECS blue/green deployment automates the creation of a new task set (green), shifts traffic using ALB listener rules, and provides instant rollback by redirecting traffic back to the original task set (blue). CodeDeploy supports linear and canary traffic shifting strategies. Rolling updates cannot achieve instant rollback. Route 53 weighted routing has DNS propagation delays. Manual ALB target group switching lacks automation and rollback triggers.",
       "domain": "Design Resilient Architectures",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
         "https://aws.amazon.com/blogs/training-and-certification/safe-and-sound-in-the-cloud-training/"
       ]
+    },
+    {
+      "question": "A company has a web application that serves users globally. The static assets are large image files stored in S3, and a CloudFront distribution is already in place. The operations team notices that S3 storage costs are growing rapidly because old image versions are never removed. Which solution MOST cost-effectively manages these storage costs?",
+      "options": [
+        "Enable S3 Intelligent-Tiering on the bucket to automatically move objects to cheaper storage tiers",
+        "Configure an S3 Lifecycle policy to transition non-current object versions to S3 Glacier after 30 days and expire them after 90 days",
+        "Enable S3 Versioning and manually delete old versions on a scheduled basis using a Lambda function",
+        "Move all image files to S3 Glacier Instant Retrieval immediately after upload to reduce storage costs"
+      ],
+      "correct": 1,
+      "explanation": "S3 Lifecycle policies are the most cost-effective automated solution. Transitioning non-current versions to S3 Glacier after 30 days reduces storage costs significantly, and expiring them after 90 days removes them entirely. Intelligent-Tiering (A) only moves objects based on access patterns and does not delete old versions. Manual Lambda deletion (C) adds operational overhead and risk. Moving all images to Glacier (D) would break CloudFront delivery since Glacier Instant Retrieval objects are not served directly.",
+      "domain": "Design Cost-Optimized Architectures",
+      "difficulty": "medium"
+    },
+    {
+      "question": "A company is building a multi-tier web application. The application tier on EC2 must call an external payment API over the internet, but the company's security policy requires that the EC2 instances must NOT have public IP addresses. Which VPC architecture satisfies both requirements?",
+      "options": [
+        "Place the EC2 instances in a public subnet and use a security group that blocks all inbound traffic from the internet",
+        "Place the EC2 instances in a private subnet and route outbound internet traffic through a NAT Gateway in a public subnet",
+        "Place the EC2 instances in a private subnet and use a VPC endpoint to route traffic to the payment API",
+        "Place the EC2 instances in a private subnet and attach an Elastic IP to the NAT Gateway to allow outbound connections"
+      ],
+      "correct": 1,
+      "explanation": "A NAT Gateway in a public subnet allows EC2 instances in private subnets to initiate outbound connections to the internet (such as to an external payment API) while preventing inbound connections from the internet. The EC2 instances have no public IP addresses. Option A violates the requirement since instances in a public subnet can have public IPs. Option C is incorrect because VPC endpoints only connect to AWS services, not external third-party APIs. Option D describes a NAT Gateway correctly but the framing is misleading \u2014 the Elastic IP is on the NAT Gateway, not the EC2 instances; this description is technically consistent with Option B, but Option B is the canonical correct answer that describes the architecture.",
+      "domain": "Design Secure Architectures",
+      "difficulty": "medium"
+    },
+    {
+      "question": "An e-commerce company runs a product catalog API that reads data from an RDS MySQL database. Read traffic is 20x higher than write traffic and peak load causes database CPU to exceed 90%. The company wants the most operationally simple solution to reduce read latency and database load. Which solution should a solutions architect recommend?",
+      "options": [
+        "Add an Amazon ElastiCache for Redis cluster in front of the database and implement cache-aside logic in the application",
+        "Create multiple RDS Read Replicas and configure the application to distribute read queries across them",
+        "Migrate to an Aurora MySQL cluster, which provides built-in read replicas and auto-scaling read capacity",
+        "Deploy the application on EC2 Auto Scaling and increase instance count to absorb the increased load"
+      ],
+      "correct": 0,
+      "explanation": "ElastiCache for Redis provides sub-millisecond read latency and offloads repetitive read queries entirely from the database, making it the most effective solution for a read-heavy, catalog-style workload where data changes infrequently. RDS Read Replicas (B) reduce load on the primary but still perform full database reads and require application-level load balancing. Migrating to Aurora (C) improves scalability but adds migration complexity and cost. Scaling the application tier (D) does not reduce database load at all.",
+      "domain": "Design High-Performing Architectures",
+      "difficulty": "medium"
     }
   ]
 }
