@@ -648,11 +648,6 @@ void AWSCertQuizActivity::renderQuestion() {
   if (actualIndex < 0 || actualIndex >= (int)customQuestions.size()) return;
   const Question* q = &customQuestions[actualIndex];
   
-  // If this question was already answered, show that answer
-  if (currentIndex < (int)userAnswers.size() && userAnswers[currentIndex] >= 0) {
-    selectedOption = userAnswers[currentIndex];
-  }
-  
   // ── Header ────────────────────────────────────────────────────────────────
   // Row 1 (y=8):  progress bar
   int progressBarWidth = width - 2 * margin;
@@ -660,43 +655,42 @@ void AWSCertQuizActivity::renderQuestion() {
   renderer.drawRect(margin, 8, progressBarWidth, 6);
   renderer.fillRect(margin, 8, progressFilled, 6);
 
-  // Row 2 (y=22):  Q X/Y  ·  difficulty  ·  timer (full exam)
-  {
-    char progress[24];
-    snprintf(progress, sizeof(progress), "Q %d/%d", currentIndex + 1, questionCount);
-    renderer.drawText(UI_10_FONT_ID, margin, 22, progress, true);
-    renderer.drawText(UI_10_FONT_ID, margin + 90, 22, q->difficulty.c_str(), true);
-    if (showTimer) {
-      unsigned long elapsed = (millis() - startTime) / 1000;
-      char timerText[16];
-      snprintf(timerText, sizeof(timerText), "%02d:%02d", elapsed / 60, (int)(elapsed % 60));
-      renderer.drawText(UI_10_FONT_ID, width - margin - 50, 22, timerText, true);
-    }
-  }
-
-  // Row 3 (y=38):  answered count + streak (only when non-zero)
+  // Row 2 (y=22):  "Q 5/65 · 3 ans"  left  |  difficulty  |  streak/timer  right
   {
     int answeredSoFar = 0;
     for (int i = 0; i < questionCount && i < (int)userAnswers.size(); i++) {
       if (userAnswers[i] >= 0) answeredSoFar++;
     }
+    // Build left label: "Q 5/65" or "Q 5/65 · 3 ans" when some are answered
+    char leftText[40];
     if (answeredSoFar > 0) {
-      char ansText[32];
-      snprintf(ansText, sizeof(ansText), "%d/%d answered", answeredSoFar, questionCount);
-      renderer.drawText(UI_10_FONT_ID, margin, 38, ansText, true);
+      snprintf(leftText, sizeof(leftText), "Q %d/%d  %d ans", currentIndex + 1, questionCount, answeredSoFar);
+    } else {
+      snprintf(leftText, sizeof(leftText), "Q %d/%d", currentIndex + 1, questionCount);
     }
-    if (currentStreak >= 3) {
-      char streakText[32];
-      snprintf(streakText, sizeof(streakText), "%d in a row!", currentStreak);
-      renderer.drawText(UI_10_FONT_ID, width - margin - 80, 38, streakText, true);
+    renderer.drawText(UI_10_FONT_ID, margin, 22, leftText, true);
+
+    // Difficulty centred-ish (fixed offset from left)
+    renderer.drawText(UI_10_FONT_ID, margin + 130, 22, q->difficulty.c_str(), true);
+
+    // Timer or streak on the right
+    if (showTimer) {
+      unsigned long elapsed = (millis() - startTime) / 1000;
+      char timerText[16];
+      snprintf(timerText, sizeof(timerText), "%02d:%02d", elapsed / 60, (int)(elapsed % 60));
+      renderer.drawText(UI_10_FONT_ID, width - margin - 50, 22, timerText, true);
+    } else if (currentStreak >= 3) {
+      char streakText[20];
+      snprintf(streakText, sizeof(streakText), "%d streak!", currentStreak);
+      renderer.drawText(UI_10_FONT_ID, width - margin - 70, 22, streakText, true);
     }
   }
 
-  // Separator line
-  renderer.drawLine(margin, 52, width - margin, 52);
+  // Separator line — one row tighter now
+  renderer.drawLine(margin, 36, width - margin, 36);
 
   // ── Question text ─────────────────────────────────────────────────────────
-  int y = 62;
+  int y = 46;
   int textHeight = drawWrappedText(UI_10_FONT_ID, margin, y, q->question.c_str(), width - 2 * margin);
   y += textHeight + 10;
   
