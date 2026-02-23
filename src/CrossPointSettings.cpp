@@ -1,10 +1,12 @@
 #include "CrossPointSettings.h"
 
-#include <HardwareSerial.h>
-#include <SDCardManager.h>
+#include <HalStorage.h>
+#include <JsonSettingsIO.h>
+#include <Logging.h>
 #include <Serialization.h>
 
 #include <cstring>
+#include <string>
 
 #include "fontIds.h"
 
@@ -20,63 +22,109 @@ void readAndValidate(FsFile& file, uint8_t& member, const uint8_t maxValue) {
 }
 
 namespace {
-constexpr uint8_t SETTINGS_FILE_VERSION = 2;
-// Increment this when adding new persisted settings fields
-constexpr uint8_t SETTINGS_COUNT = 23;
-constexpr char SETTINGS_FILE[] = "/.crosspoint/settings.bin";
+constexpr uint8_t SETTINGS_FILE_VERSION = 1;
+constexpr char SETTINGS_FILE_BIN[] = "/.crosspoint/settings.bin";
+constexpr char SETTINGS_FILE_JSON[] = "/.crosspoint/settings.json";
+constexpr char SETTINGS_FILE_BAK[] = "/.crosspoint/settings.bin.bak";
+
+// Convert legacy front button layout into explicit logical->hardware mapping.
+void applyLegacyFrontButtonLayout(CrossPointSettings& settings) {
+  switch (static_cast<CrossPointSettings::FRONT_BUTTON_LAYOUT>(settings.frontButtonLayout)) {
+    case CrossPointSettings::LEFT_RIGHT_BACK_CONFIRM:
+      settings.frontButtonBack = CrossPointSettings::FRONT_HW_LEFT;
+      settings.frontButtonConfirm = CrossPointSettings::FRONT_HW_RIGHT;
+      settings.frontButtonLeft = CrossPointSettings::FRONT_HW_BACK;
+      settings.frontButtonRight = CrossPointSettings::FRONT_HW_CONFIRM;
+      break;
+    case CrossPointSettings::LEFT_BACK_CONFIRM_RIGHT:
+      settings.frontButtonBack = CrossPointSettings::FRONT_HW_CONFIRM;
+      settings.frontButtonConfirm = CrossPointSettings::FRONT_HW_LEFT;
+      settings.frontButtonLeft = CrossPointSettings::FRONT_HW_BACK;
+      settings.frontButtonRight = CrossPointSettings::FRONT_HW_RIGHT;
+      break;
+    case CrossPointSettings::BACK_CONFIRM_RIGHT_LEFT:
+      settings.frontButtonBack = CrossPointSettings::FRONT_HW_BACK;
+      settings.frontButtonConfirm = CrossPointSettings::FRONT_HW_CONFIRM;
+      settings.frontButtonLeft = CrossPointSettings::FRONT_HW_RIGHT;
+      settings.frontButtonRight = CrossPointSettings::FRONT_HW_LEFT;
+      break;
+    case CrossPointSettings::BACK_CONFIRM_LEFT_RIGHT:
+    default:
+      settings.frontButtonBack = CrossPointSettings::FRONT_HW_BACK;
+      settings.frontButtonConfirm = CrossPointSettings::FRONT_HW_CONFIRM;
+      settings.frontButtonLeft = CrossPointSettings::FRONT_HW_LEFT;
+      settings.frontButtonRight = CrossPointSettings::FRONT_HW_RIGHT;
+      break;
+  }
+}
 }  // namespace
 
-bool CrossPointSettings::saveToFile() const {
-  // Make sure the directory exists
-  SdMan.mkdir("/.crosspoint");
-
-  FsFile outputFile;
-  if (!SdMan.openFileForWrite("CPS", SETTINGS_FILE, outputFile)) {
-    return false;
+void CrossPointSettings::validateFrontButtonMapping(CrossPointSettings& settings) {
+  const uint8_t mapping[] = {settings.frontButtonBack, settings.frontButtonConfirm, settings.frontButtonLeft,
+                             settings.frontButtonRight};
+  for (size_t i = 0; i < 4; i++) {
+    for (size_t j = i + 1; j < 4; j++) {
+      if (mapping[i] == mapping[j]) {
+        settings.frontButtonBack = FRONT_HW_BACK;
+        settings.frontButtonConfirm = FRONT_HW_CONFIRM;
+        settings.frontButtonLeft = FRONT_HW_LEFT;
+        settings.frontButtonRight = FRONT_HW_RIGHT;
+        return;
+      }
+    }
   }
+}
 
-  serialization::writePod(outputFile, SETTINGS_FILE_VERSION);
-  serialization::writePod(outputFile, SETTINGS_COUNT);
-  serialization::writePod(outputFile, sleepScreen);
-  serialization::writePod(outputFile, extraParagraphSpacing);
-  serialization::writePod(outputFile, shortPwrBtn);
-  serialization::writePod(outputFile, statusBar);
-  serialization::writePod(outputFile, orientation);
-  serialization::writePod(outputFile, frontButtonLayout);
-  serialization::writePod(outputFile, sideButtonLayout);
-  serialization::writePod(outputFile, fontFamily);
-  serialization::writePod(outputFile, fontSize);
-  serialization::writePod(outputFile, lineSpacing);
-  serialization::writePod(outputFile, paragraphAlignment);
-  serialization::writePod(outputFile, sleepTimeout);
-  serialization::writePod(outputFile, refreshFrequency);
-  serialization::writePod(outputFile, screenMargin);
-  serialization::writePod(outputFile, sleepScreenCoverMode);
-  serialization::writeString(outputFile, std::string(opdsServerUrl));
-  serialization::writePod(outputFile, textAntiAliasing);
-  serialization::writePod(outputFile, hideBatteryPercentage);
-  serialization::writePod(outputFile, longPressChapterSkip);
-  serialization::writePod(outputFile, hyphenationEnabled);
-  serialization::writeString(outputFile, std::string(opdsUsername));
-  serialization::writeString(outputFile, std::string(opdsPassword));
-  serialization::writePod(outputFile, sleepScreenCoverFilter);
-  // New fields added at end for backward compatibility
-  outputFile.close();
-
-  Serial.printf("[%lu] [CPS] Settings saved to file\n", millis());
-  return true;
+bool CrossPointSettings::saveToFile() const {
+  Storage.mkdir("/.crosspoint");
+  return JsonSettingsIO::saveSettings(*this, SETTINGS_FILE_JSON);
 }
 
 bool CrossPointSettings::loadFromFile() {
+  // Try JSON first
+  if (Storage.exists(SETTINGS_FILE_JSON)) {
+    String json = Storage.readFile(SETTINGS_FILE_JSON);
+    if (!json.isEmpty()) {
+      bool resave = false;
+      bool result = JsonSettingsIO::loadSettings(*this, json.c_str(), &resave);
+      if (result && resave) {
+        if (saveToFile()) {
+          LOG_DBG("CPS", "Resaved settings to update format");
+        } else {
+          LOG_ERR("CPS", "Failed to resave settings after format update");
+        }
+      }
+      return result;
+    }
+  }
+
+  // Fall back to binary migration
+  if (Storage.exists(SETTINGS_FILE_BIN)) {
+    if (loadFromBinaryFile()) {
+      if (saveToFile()) {
+        Storage.rename(SETTINGS_FILE_BIN, SETTINGS_FILE_BAK);
+        LOG_DBG("CPS", "Migrated settings.bin to settings.json");
+        return true;
+      } else {
+        LOG_ERR("CPS", "Failed to save migrated settings to JSON");
+        return false;
+      }
+    }
+  }
+
+  return false;
+}
+
+bool CrossPointSettings::loadFromBinaryFile() {
   FsFile inputFile;
-  if (!SdMan.openFileForRead("CPS", SETTINGS_FILE, inputFile)) {
+  if (!Storage.openFileForRead("CPS", SETTINGS_FILE_BIN, inputFile)) {
     return false;
   }
 
   uint8_t version;
   serialization::readPod(inputFile, version);
   if (version != SETTINGS_FILE_VERSION) {
-    Serial.printf("[%lu] [CPS] Deserialization failed: Unknown version %u\n", millis(), version);
+    LOG_ERR("CPS", "Deserialization failed: Unknown version %u", version);
     inputFile.close();
     return false;
   }
@@ -84,8 +132,8 @@ bool CrossPointSettings::loadFromFile() {
   uint8_t fileSettingsCount = 0;
   serialization::readPod(inputFile, fileSettingsCount);
 
-  // load settings that exist (support older files with fewer fields)
   uint8_t settingsRead = 0;
+  bool frontButtonMappingRead = false;
   do {
     readAndValidate(inputFile, sleepScreen, SLEEP_SCREEN_MODE_COUNT);
     if (++settingsRead >= fileSettingsCount) break;
@@ -148,11 +196,31 @@ bool CrossPointSettings::loadFromFile() {
     if (++settingsRead >= fileSettingsCount) break;
     readAndValidate(inputFile, sleepScreenCoverFilter, SLEEP_SCREEN_COVER_FILTER_COUNT);
     if (++settingsRead >= fileSettingsCount) break;
-    // New fields added at end for backward compatibility
+    serialization::readPod(inputFile, uiTheme);
+    if (++settingsRead >= fileSettingsCount) break;
+    readAndValidate(inputFile, frontButtonBack, FRONT_BUTTON_HARDWARE_COUNT);
+    if (++settingsRead >= fileSettingsCount) break;
+    readAndValidate(inputFile, frontButtonConfirm, FRONT_BUTTON_HARDWARE_COUNT);
+    if (++settingsRead >= fileSettingsCount) break;
+    readAndValidate(inputFile, frontButtonLeft, FRONT_BUTTON_HARDWARE_COUNT);
+    if (++settingsRead >= fileSettingsCount) break;
+    readAndValidate(inputFile, frontButtonRight, FRONT_BUTTON_HARDWARE_COUNT);
+    frontButtonMappingRead = true;
+    if (++settingsRead >= fileSettingsCount) break;
+    serialization::readPod(inputFile, fadingFix);
+    if (++settingsRead >= fileSettingsCount) break;
+    serialization::readPod(inputFile, embeddedStyle);
+    if (++settingsRead >= fileSettingsCount) break;
   } while (false);
 
+  if (frontButtonMappingRead) {
+    CrossPointSettings::validateFrontButtonMapping(*this);
+  } else {
+    applyLegacyFrontButtonLayout(*this);
+  }
+
   inputFile.close();
-  Serial.printf("[%lu] [CPS] Settings loaded from file\n", millis());
+  LOG_DBG("CPS", "Settings loaded from binary file");
   return true;
 }
 

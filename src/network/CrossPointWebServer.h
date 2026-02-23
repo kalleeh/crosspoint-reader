@@ -1,8 +1,9 @@
 #pragma once
 
+#include <HalStorage.h>
+#include <NetworkUdp.h>
 #include <WebServer.h>
 #include <WebSocketsServer.h>
-#include <WiFiUdp.h>
 
 #include <memory>
 #include <string>
@@ -27,6 +28,25 @@ class CrossPointWebServer {
     size_t lastCompleteSize = 0;
     unsigned long lastCompleteAt = 0;
   };
+
+  // Used by POST upload handler
+  struct UploadState {
+    FsFile file;
+    String fileName;
+    String path = "/";
+    size_t size = 0;
+    bool success = false;
+    String error = "";
+
+    // Upload write buffer - batches small writes into larger SD card operations
+    // 4KB is a good balance: large enough to reduce syscall overhead, small enough
+    // to keep individual write times short and avoid watchdog issues
+    static constexpr size_t UPLOAD_BUFFER_SIZE = 4096;  // 4KB buffer
+    std::vector<uint8_t> buffer;
+    size_t bufferPos = 0;
+
+    UploadState() { buffer.resize(UPLOAD_BUFFER_SIZE); }
+  } upload;
 
   CrossPointWebServer();
   ~CrossPointWebServer();
@@ -55,7 +75,7 @@ class CrossPointWebServer {
   bool apMode = false;  // true when running in AP mode, false for STA mode
   uint16_t port = 80;
   uint16_t wsPort = 81;  // WebSocket port
-  WiFiUDP udp;
+  NetworkUDP udp;
   bool udpActive = false;
 
   // WebSocket upload state
@@ -74,8 +94,15 @@ class CrossPointWebServer {
   void handleFileList() const;
   void handleFileListData() const;
   void handleDownload() const;
-  void handleUpload() const;
-  void handleUploadPost() const;
+  void handleUpload(UploadState& state) const;
+  void handleUploadPost(UploadState& state) const;
   void handleCreateFolder() const;
+  void handleRename() const;
+  void handleMove() const;
   void handleDelete() const;
+
+  // Settings handlers
+  void handleSettingsPage() const;
+  void handleGetSettings() const;
+  void handlePostSettings();
 };

@@ -1,17 +1,31 @@
 #pragma once
+#include <SdFat.h>
 
-#include <cstdint>
+#include <memory>
 #include <string>
 
-class ImageBlock {
- public:
-  std::string imagePath;  // Path to cached BMP image
-  int16_t x;
-  int16_t y;
-  uint16_t width;
-  uint16_t height;
+#include "Block.h"
 
-  ImageBlock(const std::string& imagePath, const int16_t x, const int16_t y, const uint16_t width,
-             const uint16_t height)
-      : imagePath(imagePath), x(x), y(y), width(width), height(height) {}
+class ImageBlock final : public Block {
+ public:
+  ImageBlock(const std::string& imagePath, int16_t width, int16_t height);
+  ~ImageBlock() override = default;
+
+  const std::string& getImagePath() const { return imagePath; }
+  int16_t getWidth() const { return width; }
+  int16_t getHeight() const { return height; }
+
+  bool imageExists() const;
+
+  BlockType getType() override { return IMAGE_BLOCK; }
+  bool isEmpty() override { return false; }
+
+  void render(GfxRenderer& renderer, const int x, const int y);
+  bool serialize(FsFile& file);
+  static std::unique_ptr<ImageBlock> deserialize(FsFile& file);
+
+ private:
+  std::string imagePath;
+  int16_t width;
+  int16_t height;
 };

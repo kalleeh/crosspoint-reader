@@ -1,12 +1,12 @@
 #pragma once
-#include <SDCardManager.h>
+#include <HalStorage.h>
 
 #include <functional>
 #include <string>
 
 /**
  * HTTP client utility for fetching content and downloading files.
- * Wraps WiFiClientSecure and HTTPClient for HTTPS requests.
+ * Wraps NetworkClientSecure and HTTPClient for HTTPS requests.
  */
 class HttpDownloader {
  public:

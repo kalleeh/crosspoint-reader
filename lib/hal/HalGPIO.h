@@ -38,17 +38,12 @@ class HalGPIO {
   bool wasAnyReleased() const;
   unsigned long getHeldTime() const;
 
-  // Setup wake up GPIO and enter deep sleep
-  void startDeepSleep();
-
-  // Get battery percentage (range 0-100)
-  int getBatteryPercentage() const;
-
   // Check if USB is connected
   bool isUsbConnected() const;
 
-  // Check if wakeup was caused by power button press
-  bool isWakeupByPowerButton() const;
+  enum class WakeupReason { PowerButton, AfterFlash, AfterUSBPower, Other };
+
+  WakeupReason getWakeupReason() const;
 
   // Button indices
   static constexpr uint8_t BTN_BACK = 0;

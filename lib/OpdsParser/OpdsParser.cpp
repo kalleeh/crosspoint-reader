@@ -1,14 +1,14 @@
 #include "OpdsParser.h"
 
-#include <HardwareSerial.h>
+#include <Logging.h>
 
 #include <cstring>
 
 OpdsParser::OpdsParser() {
   parser = XML_ParserCreate(nullptr);
   if (!parser) {
-    errorOccurred = true;
-    Serial.printf("[%lu] [OPDS] Couldn't allocate memory for parser\n", millis());
+    errorOccured = true;
+    LOG_DBG("OPDS", "Couldn't allocate memory for parser");
   }
 }
 
@@ -41,8 +41,8 @@ size_t OpdsParser::write(const uint8_t* xmlData, const size_t length) {
   while (remaining > 0) {
     void* const buf = XML_GetBuffer(parser, chunkSize);
     if (!buf) {
-      errorOccurred = true;
-      Serial.printf("[%lu] [OPDS] Couldn't allocate memory for buffer\n", millis());
+      errorOccured = true;
+      LOG_DBG("OPDS", "Couldn't allocate memory for buffer");
       XML_ParserFree(parser);
       parser = nullptr;
       return length;
@@ -52,9 +52,9 @@ size_t OpdsParser::write(const uint8_t* xmlData, const size_t length) {
     memcpy(buf, currentPos, toRead);
 
     if (XML_ParseBuffer(parser, static_cast<int>(toRead), 0) == XML_STATUS_ERROR) {
-      errorOccurred = true;
-      Serial.printf("[%lu] [OPDS] Parse error at line %lu: %s\n", millis(), XML_GetCurrentLineNumber(parser),
-                    XML_ErrorString(XML_GetErrorCode(parser)));
+      errorOccured = true;
+      LOG_DBG("OPDS", "Parse error at line %lu: %s", XML_GetCurrentLineNumber(parser),
+              XML_ErrorString(XML_GetErrorCode(parser)));
       XML_ParserFree(parser);
       parser = nullptr;
       return length;
