@@ -179,6 +179,11 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
   file.close();
   http.end();
   
+  // Show "Decoding..." before PNG decode — decode can take 2-5s on complex images
+  renderer.drawText(UI_10_FONT_ID, margin, margin + renderer.getLineHeight(UI_12_FONT_ID) + 20,
+                    tr(STR_ONLINE_LOADING), true);
+  renderer.displayBuffer(HalDisplay::FAST_REFRESH);
+
   // Decode PNG (draws directly to screen buffer via callback)
   if (png.open("/.crosspoint/xkcd_temp.png", pngOpen, pngClose, pngRead, pngSeek, pngDraw) == PNG_SUCCESS) {
     png.decode(NULL, 0);
