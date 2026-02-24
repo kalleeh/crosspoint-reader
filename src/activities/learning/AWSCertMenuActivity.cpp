@@ -171,16 +171,16 @@ void AWSCertMenuActivity::renderStatsTab() {
   
   int totalQuestions = stats.getTotalQuestionsAnswered(certs[selectedIndex].id);
   char questionsText[64];
-  snprintf(questionsText, sizeof(questionsText), "• Questions Answered: %d", totalQuestions);
+  snprintf(questionsText, sizeof(questionsText), tr(STR_AWS_QUESTIONS_ANSWERED), totalQuestions);
   renderer.drawText(UI_10_FONT_ID, margin + 10, y, questionsText, true);
   y += 20;
 
   int avgScore = stats.getAverageScore(certs[selectedIndex].id);
   char scoreText[64];
   if (totalQuestions > 0) {
-    snprintf(scoreText, sizeof(scoreText), "• Average Score: %d%%", avgScore);
+    snprintf(scoreText, sizeof(scoreText), tr(STR_AWS_AVERAGE_SCORE), avgScore);
   } else {
-    snprintf(scoreText, sizeof(scoreText), "• Average Score: --");
+    snprintf(scoreText, sizeof(scoreText), "%s", tr(STR_AWS_AVERAGE_SCORE_NA));
   }
   renderer.drawText(UI_10_FONT_ID, margin + 10, y, scoreText, true);
   y += 30;
@@ -283,17 +283,17 @@ void AWSCertMenuActivity::renderInfo() {
   y += 25;
   
   // Duration
-  renderer.drawText(UI_10_FONT_ID, margin, y, "Duration: 90-180 minutes", true);
+  renderer.drawText(UI_10_FONT_ID, margin, y, tr(STR_AWS_EXAM_DURATION), true);
   y += 30;
-  
+
   // Target audience
-  renderer.drawText(UI_10_FONT_ID, margin, y, "Target Audience:", true);
+  renderer.drawText(UI_10_FONT_ID, margin, y, tr(STR_AWS_TARGET_AUDIENCE), true);
   y += 20;
   renderer.drawText(UI_10_FONT_ID, margin + 10, y, cert.audience, true);
   y += 30;
-  
+
   // Domain breakdown
-  renderer.drawText(UI_10_FONT_ID, margin, y, "Exam Domains:", true);
+  renderer.drawText(UI_10_FONT_ID, margin, y, tr(STR_AWS_EXAM_DOMAINS), true);
   y += 20;
   
   // Parse and display domains (split by |)
@@ -315,9 +315,7 @@ void AWSCertMenuActivity::renderInfo() {
   y += 30;
   
   // Practice info
-  renderer.drawText(UI_10_FONT_ID, margin, y, "This quiz helps you prepare", true);
-  y += 20;
-  renderer.drawText(UI_10_FONT_ID, margin, y, "with practice questions.", true);
+  renderer.drawText(UI_10_FONT_ID, margin, y, tr(STR_AWS_PRACTICE_INFO), true);
   
   GUI.drawButtonHints(renderer, "Back", "Practice", "", "");
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);

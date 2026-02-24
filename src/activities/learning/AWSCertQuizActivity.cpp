@@ -389,37 +389,17 @@ uint16_t AWSCertQuizActivity::getCachedTextWidth(int fontId, const char* text) c
 }
 
 void AWSCertQuizActivity::saveQuizStats() {
-  // Calculate domain scores
-  std::map<String, QuizStatsManager::DomainScore> domainScores;
-  
-  for (int i = 0; i < questionCount; i++) {
-    int actualIdx = questionOrder[i];
-    const Question* q = &customQuestions[actualIdx];
-    const std::string& domain = q->domain;
-
-    String domainKey(domain.c_str());
-    if (domainScores.find(domainKey) == domainScores.end()) {
-      QuizStatsManager::DomainScore ds;
-      strncpy(ds.domain, domain.c_str(), sizeof(ds.domain) - 1);
-      ds.domain[sizeof(ds.domain) - 1] = '\0';  // Ensure null termination
-      ds.correct = 0;
-      ds.total = 0;
-      domainScores[domainKey] = ds;
-    }
-    
-    // Only count questions the user actually answered — unanswered (-1) skew domain totals
-    if (userAnswers[i] >= 0) {
-      domainScores[domainKey].total++;
-      if (userAnswers[i] == q->correct) {
-        domainScores[domainKey].correct++;
-      }
-    }
-  }
-
-  // Convert to vector (skip domains where user answered nothing)
+  // Re-use domainCorrect/domainTotal already computed at quiz end — no need to re-scan
   std::vector<QuizStatsManager::DomainScore> domainVec;
-  for (const auto& pair : domainScores) {
-    domainVec.push_back(pair.second);
+  for (const auto& pair : domainTotal) {
+    const String& domainKey = pair.first;
+    QuizStatsManager::DomainScore ds;
+    strncpy(ds.domain, domainKey.c_str(), sizeof(ds.domain) - 1);
+    ds.domain[sizeof(ds.domain) - 1] = '\0';
+    ds.total = pair.second;
+    auto it = domainCorrect.find(domainKey);
+    ds.correct = (it != domainCorrect.end()) ? it->second : 0;
+    domainVec.push_back(ds);
   }
   
   // Calculate total score (only answered questions)
