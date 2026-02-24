@@ -690,10 +690,10 @@ void AWSCertQuizActivity::renderQuestion() {
   }
 
   // Separator — sits 6px below text bottom (text y=20, ~14px tall → bottom ≈36, line at 42)
-  renderer.drawLine(margin, 42, width - margin, 42);
+  renderer.drawLine(margin, 48, width - margin, 48);
 
   // ── Question text ─────────────────────────────────────────────────────────
-  int y = 52;
+  int y = 58;
   int textHeight = drawWrappedText(UI_10_FONT_ID, margin, y, q->question.c_str(), width - 2 * margin);
   y += textHeight + 10;
   
