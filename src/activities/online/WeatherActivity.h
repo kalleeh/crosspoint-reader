@@ -22,7 +22,7 @@ class WeatherActivity final : public Activity {
   
   unsigned long lastUpdate;
 
-  void fetchWeather();
+  void fetchWeather(bool allowCache = false);
   void render();
   void drawWeatherIcon(int x, int y, int size, const char* condition);
   bool loadWeatherBackground(const char* condition);

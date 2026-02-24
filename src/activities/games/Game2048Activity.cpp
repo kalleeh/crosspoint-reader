@@ -71,7 +71,8 @@ void Game2048Activity::loop() {
         for (int j = 0; j < GRID_SIZE; j++) {
           if (board[i][j] == 2048) {
             hasWon = true;
-            gameState = WON;
+            // Don't stop play — keep gameState = PLAYING so user can continue
+            // The win banner is shown in render() while hasWon is true
           }
         }
       }

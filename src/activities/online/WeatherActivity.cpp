@@ -32,7 +32,7 @@ void WeatherActivity::onEnter() {
   
   // Check if connected with valid IP
   if (WiFi.status() == WL_CONNECTED && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
-    fetchWeather();
+    fetchWeather(true);  // Use cache on first load
   } else {
     state = ERROR;
     render();
@@ -60,7 +60,7 @@ void WeatherActivity::loop() {
   }
 }
 
-void WeatherActivity::fetchWeather() {
+void WeatherActivity::fetchWeather(bool allowCache) {
   if (WiFi.status() != WL_CONNECTED) {
     state = ERROR;
     render();
@@ -70,7 +70,7 @@ void WeatherActivity::fetchWeather() {
   // Retry up to 2 times on SSL failure
   OnlineContentFetcher::WeatherData data;
   for (int attempt = 0; attempt < 2; attempt++) {
-    data = OnlineContentFetcher::fetchWeather();
+    data = OnlineContentFetcher::fetchWeather(allowCache);
     if (data.success) break;
     
     if (attempt < 1) {

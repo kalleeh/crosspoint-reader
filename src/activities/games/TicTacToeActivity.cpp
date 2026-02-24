@@ -76,8 +76,10 @@ void TicTacToeActivity::loop() {
         needsRedraw = true;
 
         if (gameState == PLAYING) {
-          // AI's turn
-          delay(200);  // Small delay for better UX
+          // Render board with "AI Thinking..." BEFORE the delay so user sees feedback
+          playerTurn = false;
+          render();
+          delay(200);
           aiMove();
           gameState = checkWinner();
           playerTurn = true;

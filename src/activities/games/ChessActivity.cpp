@@ -72,12 +72,31 @@ void ChessActivity::resetGame() {
 void ChessActivity::loop() {
   if (aiThinking) {
     aiMove();
+    if (!aiThinking) {
+      // AI just finished — consume any buttons pressed during thinking to prevent
+      // them from immediately firing as player input on the next frame
+      mappedInput.wasPressed(MappedInputManager::Button::Up);
+      mappedInput.wasPressed(MappedInputManager::Button::Down);
+      mappedInput.wasPressed(MappedInputManager::Button::Left);
+      mappedInput.wasPressed(MappedInputManager::Button::Right);
+      mappedInput.wasPressed(MappedInputManager::Button::Confirm);
+      mappedInput.wasReleased(MappedInputManager::Button::Confirm);
+    }
     return;
   }
 
   if (mappedInput.wasReleased(MappedInputManager::Button::Back)) {
     if (onBack) {
       onBack();
+    }
+    return;
+  }
+
+  // After game ends, Confirm starts a new game
+  if (gameState == CHECKMATE || gameState == STALEMATE) {
+    if (mappedInput.wasReleased(MappedInputManager::Button::Confirm)) {
+      resetGame();
+      render();
     }
     return;
   }
@@ -819,8 +838,10 @@ void ChessActivity::render() {
   const int boardStartX = (screenWidth - boardSize) / 2;
   const int boardStartY = topMargin;
 
-  // Title at top
-  if (gameState == CHECKMATE) {
+  // Title at top — show AI thinking indicator when AI is computing
+  if (aiThinking) {
+    renderer.drawCenteredText(UI_10_FONT_ID, 15, tr(STR_CHESS_AI_THINKING));
+  } else if (gameState == CHECKMATE) {
     const char* winner = whiteTurn ? tr(STR_CHESS_BLACK_WINS) : tr(STR_CHESS_WHITE_WINS);
     renderer.drawCenteredText(UI_10_FONT_ID, 15, winner);
   } else if (gameState == STALEMATE) {
