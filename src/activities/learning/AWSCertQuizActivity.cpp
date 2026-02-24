@@ -407,21 +407,27 @@ void AWSCertQuizActivity::saveQuizStats() {
       domainScores[domainKey] = ds;
     }
     
-    domainScores[domainKey].total++;
-    if (userAnswers[i] == q->correct) {
-      domainScores[domainKey].correct++;
+    // Only count questions the user actually answered — unanswered (-1) skew domain totals
+    if (userAnswers[i] >= 0) {
+      domainScores[domainKey].total++;
+      if (userAnswers[i] == q->correct) {
+        domainScores[domainKey].correct++;
+      }
     }
   }
-  
-  // Convert to vector
+
+  // Convert to vector (skip domains where user answered nothing)
   std::vector<QuizStatsManager::DomainScore> domainVec;
   for (const auto& pair : domainScores) {
     domainVec.push_back(pair.second);
   }
   
-  // Calculate total score
+  // Calculate total score (only answered questions)
   int totalCorrect = 0;
+  int totalAnswered = 0;
   for (int i = 0; i < questionCount; i++) {
+    if (userAnswers[i] < 0) continue;
+    totalAnswered++;
     int actualIdx = questionOrder[i];
     if (userAnswers[i] == customQuestions[actualIdx].correct) {
       totalCorrect++;
@@ -429,15 +435,18 @@ void AWSCertQuizActivity::saveQuizStats() {
   }
 
   // Save to stats manager
+  if (totalAnswered == 0) return;  // Nothing to save if no questions were answered
+
   QuizStatsManager::getInstance().saveQuizResult(
     certId.c_str(),
     practiceMode.c_str(),
     totalCorrect,
-    questionCount,
+    totalAnswered,
     domainVec
   );
 
-  DEBUG_PRINTF("[AWS] Saved quiz stats: %d/%d correct\n", totalCorrect, questionCount);
+  DEBUG_PRINTF("[AWS] Saved quiz stats: %d/%d correct (%d unanswered)\n",
+               totalCorrect, totalAnswered, questionCount - totalAnswered);
 }
 
 void AWSCertQuizActivity::showError(const char* title, const char* message) {
@@ -665,12 +674,9 @@ void AWSCertQuizActivity::renderQuestion() {
     }
 
     // Left side
+    // Always show answered count so user knows their status at a glance
     char leftText[32];
-    if (answeredSoFar > 0) {
-      snprintf(leftText, sizeof(leftText), "Q %d/%d  %d ans", currentIndex + 1, questionCount, answeredSoFar);
-    } else {
-      snprintf(leftText, sizeof(leftText), "Q %d/%d", currentIndex + 1, questionCount);
-    }
+    snprintf(leftText, sizeof(leftText), "Q %d/%d  %d ans", currentIndex + 1, questionCount, answeredSoFar);
     renderer.drawText(UI_10_FONT_ID, margin, 20, leftText, true);
 
     // Right side: build a single string "difficulty  MM:SS" or just "difficulty"
@@ -686,6 +692,7 @@ void AWSCertQuizActivity::renderQuestion() {
       snprintf(rightText, sizeof(rightText), "%s", q->difficulty.c_str());
     }
     int rw = renderer.getTextWidth(UI_10_FONT_ID, rightText);
+    if (rw <= 0) rw = (int)strlen(rightText) * 7;  // Fallback: ~7px per char at UI_10
     renderer.drawText(UI_10_FONT_ID, width - margin - rw, 20, rightText, true);
   }
 
@@ -759,7 +766,9 @@ void AWSCertQuizActivity::renderAnswer() const {
   int actualIndex = questionOrder[currentIndex];
   if (actualIndex < 0 || actualIndex >= (int)customQuestions.size()) return;
   const Question* q = &customQuestions[actualIndex];
-  bool correct = (selectedOption == q->correct);
+  // Use the saved answer (userAnswers), not the cursor position (selectedOption)
+  int savedAnswer = (currentIndex < (int)userAnswers.size()) ? userAnswers[currentIndex] : -1;
+  bool correct = (savedAnswer >= 0) && (savedAnswer == q->correct);
   
   // Result with icon
   int iconX = margin;
@@ -969,7 +978,7 @@ void AWSCertQuizActivity::renderReview() const {
     if (i == q->correct) {
       drawCheckmark(margin, optionY, 15);
       renderer.drawText(UI_10_FONT_ID, margin + 20, optionY, tr(STR_AWS_CORRECT), true);
-    } else if (i == userAnswer) {
+    } else if (userAnswer >= 0 && i == userAnswer) {
       drawXMark(margin, optionY, 15);
       renderer.drawText(UI_10_FONT_ID, margin + 20, optionY, tr(STR_AWS_YOUR_ANSWER), true);
     }
@@ -1071,8 +1080,8 @@ void AWSCertQuizActivity::loop() {
         renderSummary();
       }
     } else if (mappedInput.wasPressed(MappedInputManager::Button::Confirm)) {
-      if (practiceMode == "study") {
-        // Study mode: show answer and explanation immediately
+      if (practiceMode == "study" && selectedOption >= 0) {
+        // Study mode: show answer — only if user has actually highlighted an option
         userAnswers[currentIndex] = selectedOption;
         saveSession();
         state = ANSWER;
@@ -1090,14 +1099,16 @@ void AWSCertQuizActivity::loop() {
       state = QUESTION;
       renderQuestion();
     } else if (mappedInput.wasPressed(MappedInputManager::Button::Left)) {
-      // Previous question
+      // Previous question — restore cursor for destination question
       if (currentIndex > 0) {
         currentIndex--;
+        selectedOption = (currentIndex < (int)userAnswers.size() && userAnswers[currentIndex] >= 0)
+                         ? userAnswers[currentIndex] : -1;
         state = QUESTION;
         renderQuestion();
       }
     } else if (mappedInput.wasPressed(MappedInputManager::Button::Right)) {
-      // Next question
+      // Next question — restore cursor for destination question
       if (currentIndex < questionCount - 1) {
         currentIndex++;
         selectedOption = (currentIndex < (int)userAnswers.size() && userAnswers[currentIndex] >= 0)
