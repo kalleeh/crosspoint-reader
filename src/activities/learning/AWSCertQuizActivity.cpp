@@ -674,7 +674,7 @@ void AWSCertQuizActivity::renderQuestion() {
     }
 
     // Left side — include domain name when in domain mode so user knows which domain they're on
-    char leftText[48];
+    char leftText[96];
     if (practiceMode == "domain" && practiceDomain != "all" && !practiceDomain.isEmpty()) {
       snprintf(leftText, sizeof(leftText), "Q %d/%d  %d ans  [%s]",
                currentIndex + 1, questionCount, answeredSoFar, practiceDomain.c_str());
@@ -691,7 +691,7 @@ void AWSCertQuizActivity::renderQuestion() {
       snprintf(rightText, sizeof(rightText), "%s  %02d:%02d",
                q->difficulty.c_str(), (int)(elapsed / 60), (int)(elapsed % 60));
     } else if (currentStreak >= 3) {
-      snprintf(rightText, sizeof(rightText), "%s  %d streak!", q->difficulty.c_str(), currentStreak);
+      snprintf(rightText, sizeof(rightText), "%s  %d correct!", q->difficulty.c_str(), currentStreak);
     } else {
       snprintf(rightText, sizeof(rightText), "%s", q->difficulty.c_str());
     }
@@ -852,15 +852,22 @@ void AWSCertQuizActivity::renderSummary() const {
   const int width = renderer.getScreenWidth();
   const int height = renderer.getScreenHeight();  // used for button positioning
 
-  // Count answered questions — unanswered ones are not penalised in the display
+  // Count answered questions
   int totalAnswered = 0;
   for (int i = 0; i < questionCount && i < (int)userAnswers.size(); i++) {
     if (userAnswers[i] >= 0) totalAnswered++;
   }
-  // Percentage over answered questions only; if nothing answered show 0
-  int percentage = totalAnswered > 0 ? (correctCount * 100) / totalAnswered : 0;
+
+  // Full exam uses total questions as denominator (skipping = wrong, like the real AWS exam).
+  // Practice/study/domain modes use answered-only so accuracy reflects what was attempted.
+  int percentage;
+  if (practiceMode == "full") {
+    percentage = (correctCount * 100) / questionCount;
+  } else {
+    percentage = totalAnswered > 0 ? (correctCount * 100) / totalAnswered : 0;
+  }
   int passingScore = getPassingScoreForCert();
-  bool passed = percentage >= passingScore;
+  bool passed = (totalAnswered > 0) && (percentage >= passingScore);
 
   // AWS Logo
   drawAWSLogo(width / 2 - 20, margin);
@@ -868,10 +875,12 @@ void AWSCertQuizActivity::renderSummary() const {
   // Title
   renderer.drawText(UI_12_FONT_ID, margin, margin + 50, tr(STR_AWS_QUIZ_COMPLETE), true);
 
-  // Pass/Fail Badge
+  // Pass/Fail Badge — skip entirely if nothing was answered
   int badgeY = margin + 90;
   int badgeX = width / 2 - 60;
-  if (passed) {
+  if (totalAnswered == 0) {
+    renderer.drawText(UI_12_FONT_ID, badgeX - 30, badgeY + 50, "No answers recorded", true);
+  } else if (passed) {
     drawPassBadge(badgeX, badgeY);
   } else {
     drawFailBadge(badgeX, badgeY);
@@ -927,7 +936,7 @@ void AWSCertQuizActivity::renderSummary() const {
   // Streak achievement
   if (longestStreak >= 3) {
     char streakText[64];
-    snprintf(streakText, sizeof(streakText), "Longest Streak: %d in a row!", longestStreak);
+    snprintf(streakText, sizeof(streakText), "Best run: %d correct in a row!", longestStreak);
     renderer.drawText(UI_10_FONT_ID, margin, y, streakText, true);
     
     // Draw fire emoji representation (simple)
