@@ -171,14 +171,14 @@ void AWSCertMenuActivity::renderStatsTab() {
   
   int totalQuestions = stats.getTotalQuestionsAnswered(certs[selectedIndex].id);
   char questionsText[64];
-  snprintf(questionsText, sizeof(questionsText), tr(STR_AWS_QUESTIONS_ANSWERED), totalQuestions);
+  snprintf(questionsText, sizeof(questionsText), "%s %d", tr(STR_AWS_QUESTIONS_ANSWERED), totalQuestions);
   renderer.drawText(UI_10_FONT_ID, margin + 10, y, questionsText, true);
   y += 20;
 
   int avgScore = stats.getAverageScore(certs[selectedIndex].id);
   char scoreText[64];
   if (totalQuestions > 0) {
-    snprintf(scoreText, sizeof(scoreText), tr(STR_AWS_AVERAGE_SCORE), avgScore);
+    snprintf(scoreText, sizeof(scoreText), "%s %d%%", tr(STR_AWS_AVERAGE_SCORE), avgScore);
   } else {
     snprintf(scoreText, sizeof(scoreText), "%s", tr(STR_AWS_AVERAGE_SCORE_NA));
   }
