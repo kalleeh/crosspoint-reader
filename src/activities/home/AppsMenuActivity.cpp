@@ -22,7 +22,7 @@ void AppsMenuActivity::render() {
   GUI.drawHeader(renderer, Rect{0, metrics.topPadding, screenWidth, metrics.headerHeight}, tr(STR_APPS_MENU_TITLE));
 
   // List
-  const char* items[] = {tr(STR_ONLINE_MENU_TITLE), tr(STR_GAMES_MENU_TITLE), tr(STR_AWS_MENU_TITLE)};
+  const char* items[] = {tr(STR_AWS_MENU_TITLE), tr(STR_ONLINE_MENU_TITLE), tr(STR_GAMES_MENU_TITLE)};
   constexpr int itemCount = 3;
   const int contentTop = metrics.topPadding + metrics.headerHeight + metrics.verticalSpacing;
   const int contentHeight = screenHeight - contentTop - metrics.buttonHintsHeight - metrics.verticalSpacing;
@@ -44,11 +44,11 @@ void AppsMenuActivity::loop() {
     onBack();
   } else if (mappedInput.wasReleased(MappedInputManager::Button::Confirm)) {
     if (selectedIndex == 0) {
-      onOnline();
-    } else if (selectedIndex == 1) {
-      onGames();
-    } else {
       onAWSCert();
+    } else if (selectedIndex == 1) {
+      onOnline();
+    } else {
+      onGames();
     }
   } else if (mappedInput.wasPressed(MappedInputManager::Button::Up) ||
              mappedInput.wasPressed(MappedInputManager::Button::Left)) {

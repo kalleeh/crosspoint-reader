@@ -655,42 +655,45 @@ void AWSCertQuizActivity::renderQuestion() {
   renderer.drawRect(margin, 8, progressBarWidth, 6);
   renderer.fillRect(margin, 8, progressFilled, 6);
 
-  // Row 2 (y=22):  "Q 5/65 · 3 ans"  left  |  difficulty  |  streak/timer  right
+  // Row 2 (y=20):  left = "Q 5/65" or "Q 5/65  3 ans"
+  //                right = "medium  03:45" (difficulty + optional timer/streak)
+  //                Right-aligned so it can never collide with the left text.
   {
     int answeredSoFar = 0;
     for (int i = 0; i < questionCount && i < (int)userAnswers.size(); i++) {
       if (userAnswers[i] >= 0) answeredSoFar++;
     }
-    // Build left label: "Q 5/65" or "Q 5/65 · 3 ans" when some are answered
-    char leftText[40];
+
+    // Left side
+    char leftText[32];
     if (answeredSoFar > 0) {
       snprintf(leftText, sizeof(leftText), "Q %d/%d  %d ans", currentIndex + 1, questionCount, answeredSoFar);
     } else {
       snprintf(leftText, sizeof(leftText), "Q %d/%d", currentIndex + 1, questionCount);
     }
-    renderer.drawText(UI_10_FONT_ID, margin, 22, leftText, true);
+    renderer.drawText(UI_10_FONT_ID, margin, 20, leftText, true);
 
-    // Difficulty centred-ish (fixed offset from left)
-    renderer.drawText(UI_10_FONT_ID, margin + 130, 22, q->difficulty.c_str(), true);
-
-    // Timer or streak on the right
+    // Right side: build a single string "difficulty  MM:SS" or just "difficulty"
+    // then draw it right-aligned by measuring its width.
+    char rightText[32];
     if (showTimer) {
       unsigned long elapsed = (millis() - startTime) / 1000;
-      char timerText[16];
-      snprintf(timerText, sizeof(timerText), "%02d:%02d", elapsed / 60, (int)(elapsed % 60));
-      renderer.drawText(UI_10_FONT_ID, width - margin - 50, 22, timerText, true);
+      snprintf(rightText, sizeof(rightText), "%s  %02d:%02d",
+               q->difficulty.c_str(), (int)(elapsed / 60), (int)(elapsed % 60));
     } else if (currentStreak >= 3) {
-      char streakText[20];
-      snprintf(streakText, sizeof(streakText), "%d streak!", currentStreak);
-      renderer.drawText(UI_10_FONT_ID, width - margin - 70, 22, streakText, true);
+      snprintf(rightText, sizeof(rightText), "%s  %d streak!", q->difficulty.c_str(), currentStreak);
+    } else {
+      snprintf(rightText, sizeof(rightText), "%s", q->difficulty.c_str());
     }
+    int rw = renderer.getTextWidth(UI_10_FONT_ID, rightText);
+    renderer.drawText(UI_10_FONT_ID, width - margin - rw, 20, rightText, true);
   }
 
-  // Separator line — one row tighter now
-  renderer.drawLine(margin, 36, width - margin, 36);
+  // Separator — sits 6px below text bottom (text y=20, ~14px tall → bottom ≈36, line at 42)
+  renderer.drawLine(margin, 42, width - margin, 42);
 
   // ── Question text ─────────────────────────────────────────────────────────
-  int y = 46;
+  int y = 52;
   int textHeight = drawWrappedText(UI_10_FONT_ID, margin, y, q->question.c_str(), width - 2 * margin);
   y += textHeight + 10;
   
