@@ -537,6 +537,11 @@ int ChessActivity::minimax(int depth, int alpha, int beta, bool maximizing) {
 
 ChessActivity::Move ChessActivity::findBestMove(int depth) {
   std::vector<Move> moves = getLegalMoves(false);  // Black's moves
+  if (moves.empty()) {
+    // Should not happen (aiThinking only set when game is not over), but guard anyway
+    aiThinking = false;
+    return Move{0, 0, 0, 0, EMPTY, false, EMPTY};
+  }
   Move bestMove = moves[0];
   int bestValue = 40000;
 

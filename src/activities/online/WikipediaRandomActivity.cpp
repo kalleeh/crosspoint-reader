@@ -178,6 +178,7 @@ bool WikipediaRandomActivity::downloadAndCacheImage(WikiArticle& article) {
   
   // Download image
   HTTPClient http;
+  http.setTimeout(15000);
   http.begin(article.imageUrl);
   int httpCode = http.GET();
   
@@ -196,8 +197,11 @@ bool WikipediaRandomActivity::downloadAndCacheImage(WikiArticle& article) {
   
   WiFiClient* stream = http.getStreamPtr();
   uint8_t buffer[512];
-  while (http.connected() && (stream->available() > 0 || http.connected())) {
-    int len = stream->readBytes(buffer, sizeof(buffer));
+  // Require both connected AND data available — avoids spinning when server stalls
+  while (http.connected() && stream->available()) {
+    size_t size = stream->available();
+    if (size > sizeof(buffer)) size = sizeof(buffer);
+    size_t len = stream->readBytes(buffer, size);
     if (len > 0) {
       tempFile.write(buffer, len);
     }
