@@ -262,7 +262,7 @@ void TicTacToeActivity::render() {
   }
 
   // Button hints
-  const char* confirmText = gameState == PLAYING ? "Place" : "Restart";
+  const char* confirmText = gameState == PLAYING ? tr(STR_GAME_PLACE) : tr(STR_GAME_RESTART);
   const auto labels = mappedInput.mapLabels("Back", confirmText, tr(STR_TICTACTOE_MOVE), tr(STR_TICTACTOE_MOVE));
   GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 

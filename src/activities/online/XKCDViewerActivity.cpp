@@ -336,9 +336,9 @@ void XKCDViewerActivity::render() {
     y += 20;
     
     // Navigation hint
-    String nav = "Left: Prev | Right: Next | Confirm: Random";
+    const char* nav = tr(STR_XKCD_NAV);
     if (y >= 0 && y < height) {
-      renderer.drawText(UI_10_FONT_ID, margin, y, nav.c_str(), true);
+      renderer.drawText(UI_10_FONT_ID, margin, y, nav, true);
     }
     y += renderer.getLineHeight(UI_10_FONT_ID);
     

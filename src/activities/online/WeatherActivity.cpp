@@ -191,7 +191,7 @@ void WeatherActivity::render() {
   }
 
   // Title
-  renderer.drawCenteredText(UI_12_FONT_ID, 20, "WEATHER");
+  renderer.drawCenteredText(UI_12_FONT_ID, 20, tr(STR_WEATHER_TITLE));
 
   if (state == LOADING) {
     renderer.drawCenteredText(UI_10_FONT_ID, screenHeight / 2, tr(STR_ONLINE_LOADING));
@@ -217,18 +217,20 @@ void WeatherActivity::render() {
 
     // Details
     char detailsStr[64];
-    snprintf(detailsStr, sizeof(detailsStr), "Feels like %d°C", feelsLike);
+    snprintf(detailsStr, sizeof(detailsStr), "%s %d°C", tr(STR_WEATHER_FEELS_LIKE), feelsLike);
     renderer.drawCenteredText(UI_10_FONT_ID, 320, detailsStr);
 
-    snprintf(detailsStr, sizeof(detailsStr), "Humidity: %d%%  Wind: %d km/h", humidity, windSpeed);
+    snprintf(detailsStr, sizeof(detailsStr), "%s %d%%  %s %d km/h",
+             tr(STR_WEATHER_HUMIDITY), humidity, tr(STR_WEATHER_WIND), windSpeed);
     renderer.drawCenteredText(UI_10_FONT_ID, 350, detailsStr);
 
     // Last update
     unsigned long mins = (millis() - lastUpdate) / 60000;
     if (mins == 0) {
-      renderer.drawCenteredText(UI_10_FONT_ID, 390, "Just updated");
+      renderer.drawCenteredText(UI_10_FONT_ID, 390, tr(STR_WEATHER_JUST_UPDATED));
     } else {
-      snprintf(detailsStr, sizeof(detailsStr), "Updated %lu min ago", mins);
+      snprintf(detailsStr, sizeof(detailsStr), "%s %lu %s",
+               tr(STR_WEATHER_UPDATED), mins, tr(STR_WEATHER_MIN_AGO));
       renderer.drawCenteredText(UI_10_FONT_ID, 390, detailsStr);
     }
   }

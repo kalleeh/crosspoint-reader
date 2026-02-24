@@ -2,6 +2,7 @@
 #include "GameActivity.h"
 
 #include <GfxRenderer.h>
+#include <I18n.h>
 #include <SDCardManager.h>
 
 #include "../../fontIds.h"
@@ -24,11 +25,11 @@ void GameActivity::drawPauseMenu() {
   renderer.drawRect(boxX + 1, boxY + 1, boxWidth - 2, boxHeight - 2);
 
   // Title
-  renderer.drawCenteredText(UI_12_FONT_ID, boxY + 30, "PAUSED");
+  renderer.drawCenteredText(UI_12_FONT_ID, boxY + 30, tr(STR_GAME_PAUSED));
 
   // Instructions
-  renderer.drawCenteredText(UI_10_FONT_ID, boxY + 70, "Press Back to resume");
-  renderer.drawCenteredText(UI_10_FONT_ID, boxY + 95, "Hold Back to quit");
+  renderer.drawCenteredText(UI_10_FONT_ID, boxY + 70, tr(STR_GAME_PRESS_BACK_RESUME));
+  renderer.drawCenteredText(UI_10_FONT_ID, boxY + 95, tr(STR_GAME_HOLD_BACK_QUIT));
 }
 
 void GameActivity::drawGrid(int gridX, int gridY, int cellSize, int rows, int cols, bool thick) {
