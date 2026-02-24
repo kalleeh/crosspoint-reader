@@ -9,6 +9,7 @@
 #include <HalStorage.h>
 #include "../../MappedInputManager.h"
 #include "../../fontIds.h"
+#include <I18n.h>
 
 // Static pointer for PNG callback
 static XKCDViewerActivity* s_instance = nullptr;
@@ -146,7 +147,7 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
   int httpCode = http.GET();
   if (httpCode != 200) {
     http.end();
-    renderer.drawCenteredText(UI_10_FONT_ID, height / 2, "Failed to load image", true);
+    renderer.drawCenteredText(UI_10_FONT_ID, height / 2, tr(STR_ONLINE_FAILED_LOAD), true);
     
     GUI.drawButtonHints(renderer, "Back", "", "Prev", "Next");
     
@@ -158,7 +159,7 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
   FsFile file;
   if (!Storage.openFileForWrite("XKCD", "/.crosspoint/xkcd_temp.png", file)) {
     http.end();
-    renderer.drawCenteredText(UI_10_FONT_ID, height / 2, "Failed to save image", true);
+    renderer.drawCenteredText(UI_10_FONT_ID, height / 2, tr(STR_ONLINE_FAILED_LOAD), true);
     renderer.displayBuffer(HalDisplay::FAST_REFRESH);
     return;
   }
@@ -277,11 +278,11 @@ void XKCDViewerActivity::render() {
   const int margin = 20;
   
   if (state == LOADING) {
-    const char* msg = "Loading...";
+    const char* msg = tr(STR_ONLINE_LOADING);
     int textWidth = renderer.getTextWidth(UI_10_FONT_ID, msg);
     renderer.drawText(UI_10_FONT_ID, (width - textWidth) / 2, height / 2, msg, true);
   } else if (state == ERROR) {
-    const char* msg = "Failed to load comic";
+    const char* msg = tr(STR_ONLINE_FAILED_LOAD);
     int textWidth = renderer.getTextWidth(UI_10_FONT_ID, msg);
     renderer.drawText(UI_10_FONT_ID, (width - textWidth) / 2, height / 2, msg, true);
   } else {
@@ -297,7 +298,7 @@ void XKCDViewerActivity::render() {
     if (imageLoaded) {
       y = height - 150; // Position alt text at bottom
     } else {
-      const char* note = "(Image loading...)";
+      const char* note = tr(STR_ONLINE_IMAGE_LOADING);
       renderer.drawText(UI_10_FONT_ID, margin, y, note, true);
       y += renderer.getLineHeight(UI_10_FONT_ID) + 15;
     }

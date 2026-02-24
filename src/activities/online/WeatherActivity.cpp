@@ -12,6 +12,7 @@
 #include "components/UITheme.h"
 #include "../../fontIds.h"
 #include "OnlineContentFetcher.h"
+#include <I18n.h>
 
 void WeatherActivity::onEnter() {
   Activity::onEnter();
@@ -193,10 +194,10 @@ void WeatherActivity::render() {
   renderer.drawCenteredText(UI_12_FONT_ID, 20, "WEATHER");
 
   if (state == LOADING) {
-    renderer.drawCenteredText(UI_10_FONT_ID, screenHeight / 2, "Loading weather...");
+    renderer.drawCenteredText(UI_10_FONT_ID, screenHeight / 2, tr(STR_ONLINE_LOADING));
   } else if (state == ERROR) {
-    renderer.drawCenteredText(UI_10_FONT_ID, screenHeight / 2 - 20, "Failed to load weather");
-    renderer.drawCenteredText(UI_10_FONT_ID, screenHeight / 2 + 10, "Check WiFi connection");
+    renderer.drawCenteredText(UI_10_FONT_ID, screenHeight / 2 - 20, tr(STR_ONLINE_FAILED_LOAD));
+    renderer.drawCenteredText(UI_10_FONT_ID, screenHeight / 2 + 10, tr(STR_ONLINE_CHECK_WIFI));
   } else {
     // Location
     renderer.drawCenteredText(UI_10_FONT_ID, 50, location.c_str());
@@ -233,7 +234,7 @@ void WeatherActivity::render() {
   }
 
   // Button hints
-  const char* confirmText = state == LOADING ? "" : "Refresh";
+  const char* confirmText = state == LOADING ? "" : tr(STR_ONLINE_REFRESH);
   const auto labels = mappedInput.mapLabels("Back", confirmText, "", "");
   GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 

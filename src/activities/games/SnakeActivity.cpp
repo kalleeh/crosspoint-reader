@@ -163,7 +163,7 @@ void SnakeActivity::render() {
   renderer.drawCenteredText(UI_12_FONT_ID, 15, tr(STR_GAME_SNAKE_TITLE));
 
   char scoreText[32];
-  snprintf(scoreText, sizeof(scoreText), "Score: %d", score);
+  snprintf(scoreText, sizeof(scoreText), "%s %d", tr(STR_GAME_SCORE), score);
   renderer.drawCenteredText(UI_10_FONT_ID, 40, scoreText);
 
   // Calculate grid to use maximum vertical space
@@ -219,14 +219,14 @@ void SnakeActivity::render() {
     renderer.drawCenteredText(UI_12_FONT_ID, boxY + 30, tr(STR_GAME_OVER));
 
     char finalScore[32];
-    snprintf(finalScore, sizeof(finalScore), "Final Score: %d", score);
+    snprintf(finalScore, sizeof(finalScore), "%s %d", tr(STR_GAME_FINAL_SCORE), score);
     renderer.drawCenteredText(UI_10_FONT_ID, boxY + 60, finalScore);
 
     renderer.drawCenteredText(UI_10_FONT_ID, boxY + 90, tr(STR_GAME_PRESS_CONFIRM_RESTART));
   }
 
   // Button hints at bottom
-  const char* confirmText = gameState == PLAYING ? "" : "Restart";
+  const char* confirmText = gameState == PLAYING ? "" : tr(STR_GAME_RESTART);
   const auto labels = mappedInput.mapLabels("Back", confirmText, "Turn", "Turn");
   GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 

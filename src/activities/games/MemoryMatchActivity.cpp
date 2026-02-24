@@ -157,7 +157,7 @@ void MemoryMatchActivity::render() {
 
   // Moves counter
   char movesText[32];
-  snprintf(movesText, sizeof(movesText), "Moves: %d", moves);
+  snprintf(movesText, sizeof(movesText), "%s %d", tr(STR_GAME_MOVES), moves);
   renderer.drawCenteredText(UI_10_FONT_ID, 50, movesText);
 
   // Calculate optimal card size
@@ -264,14 +264,14 @@ void MemoryMatchActivity::render() {
     renderer.drawCenteredText(UI_12_FONT_ID, boxY + 30, tr(STR_GAME_YOU_WIN));
 
     char finalMoves[32];
-    snprintf(finalMoves, sizeof(finalMoves), "Moves: %d", moves);
+    snprintf(finalMoves, sizeof(finalMoves), "%s %d", tr(STR_GAME_MOVES), moves);
     renderer.drawCenteredText(UI_10_FONT_ID, boxY + 60, finalMoves);
 
     renderer.drawCenteredText(UI_10_FONT_ID, boxY + 90, tr(STR_GAME_PRESS_CONFIRM_AGAIN));
   }
 
   // Button hints
-  const char* confirmText = gameState == PLAYING ? "Reveal" : "Restart";
+  const char* confirmText = gameState == PLAYING ? tr(STR_GAME_REVEAL) : tr(STR_GAME_RESTART);
   const auto labels = mappedInput.mapLabels("Back", confirmText, "Move", "Move");
   GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 
