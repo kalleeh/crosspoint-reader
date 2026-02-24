@@ -90,7 +90,7 @@ void AWSCertMenuActivity::renderCertificationsTab() {
   }
   
   // Button hints
-  GUI.drawButtonHints(renderer, "Back", "Start", "Info", "");
+  GUI.drawButtonHints(renderer, "Back", "Start", "Info", "Stats");
   
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
@@ -148,10 +148,12 @@ void AWSCertMenuActivity::loop() {
 }
 
 void AWSCertMenuActivity::renderStatsTab() {
+  if (selectedIndex < 0 || selectedIndex >= (int)certs.size()) selectedIndex = 0;
+
   const int margin = 20;
   const int width = renderer.getScreenWidth();
   const int startY = 100;  // After title + tabs
-  
+
   auto& stats = QuizStatsManager::getInstance();
   
   int y = startY;

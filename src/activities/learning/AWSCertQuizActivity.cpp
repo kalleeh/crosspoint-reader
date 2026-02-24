@@ -676,7 +676,7 @@ void AWSCertQuizActivity::renderQuestion() {
     // Left side — include domain name when in domain mode so user knows which domain they're on
     char leftText[96];
     if (practiceMode == "domain" && practiceDomain != "all" && !practiceDomain.isEmpty()) {
-      snprintf(leftText, sizeof(leftText), "Q %d/%d  %d ans  [%s]",
+      snprintf(leftText, sizeof(leftText), "Q %d/%d  %d ans  [%.28s]",
                currentIndex + 1, questionCount, answeredSoFar, practiceDomain.c_str());
     } else {
       snprintf(leftText, sizeof(leftText), "Q %d/%d  %d ans", currentIndex + 1, questionCount, answeredSoFar);
@@ -732,11 +732,15 @@ void AWSCertQuizActivity::renderQuestion() {
     y += optionHeight + 16;
   }
 
-  // "Answer: X" — shows only after explicit Select press (userAnswers holds the committed value)
-  if (currentIndex < (int)userAnswers.size() && userAnswers[currentIndex] >= 0) {
-    char selText[20];
-    snprintf(selText, sizeof(selText), "Answer: %s", optLabels[userAnswers[currentIndex]]);
-    renderer.drawText(UI_10_FONT_ID, margin, y + 6, selText, true);
+  // "Answer: X" — shows only after explicit Select press; guard against off-screen rendering
+  {
+    const int height = renderer.getScreenHeight();
+    if (currentIndex < (int)userAnswers.size() && userAnswers[currentIndex] >= 0
+        && y + 6 < height - 50) {
+      char selText[20];
+      snprintf(selText, sizeof(selText), "Answer: %s", optLabels[userAnswers[currentIndex]]);
+      renderer.drawText(UI_10_FONT_ID, margin, y + 6, selText, true);
+    }
   }
   
   // Button hints (match physical button layout)
@@ -875,11 +879,15 @@ void AWSCertQuizActivity::renderSummary() const {
   // Title
   renderer.drawText(UI_12_FONT_ID, margin, margin + 50, tr(STR_AWS_QUIZ_COMPLETE), true);
 
-  // Pass/Fail Badge — skip entirely if nothing was answered
+  // Pass/Fail Badge — bail out with a message if nothing was answered
   int badgeY = margin + 90;
   int badgeX = width / 2 - 60;
   if (totalAnswered == 0) {
-    renderer.drawText(UI_12_FONT_ID, badgeX - 30, badgeY + 50, "No answers recorded", true);
+    renderer.drawText(UI_12_FONT_ID, margin, badgeY + 50, "No answers recorded.", true);
+    renderer.drawText(UI_10_FONT_ID, margin, badgeY + 80, "Select answers and press Submit.", true);
+    GUI.drawButtonHints(renderer, "Back", "", "", "");
+    renderer.displayBuffer(HalDisplay::FAST_REFRESH);
+    return;
   } else if (passed) {
     drawPassBadge(badgeX, badgeY);
   } else {
