@@ -78,9 +78,9 @@ void Game2048Activity::loop() {
       }
     }
 
-    // Check for game over
-    if (!canMove() && gameState != WON) {
-      gameState = GAME_OVER;
+    // Check for game over — use WON if player already reached 2048, else GAME_OVER
+    if (!canMove()) {
+      gameState = hasWon ? WON : GAME_OVER;
     }
 
     render();
@@ -243,11 +243,12 @@ void Game2048Activity::render() {
   snprintf(scoreText, sizeof(scoreText), "%s %d", tr(STR_GAME_SCORE), score);
   renderer.drawCenteredText(UI_10_FONT_ID, 50, scoreText);
 
-  // Instructions — replaced with win banner once 2048 is reached
+  // Instructions — moved to Y=67 so it sits above the grid (which starts at Y=80)
+  // Replaced with win banner once 2048 is reached
   if (hasWon) {
-    renderer.drawCenteredText(UI_10_FONT_ID, 80, tr(STR_GAME_YOU_WIN));
+    renderer.drawCenteredText(UI_10_FONT_ID, 67, tr(STR_GAME_YOU_WIN));
   } else {
-    renderer.drawCenteredText(UI_10_FONT_ID, 80, tr(STR_GAME_COMBINE_TILES));
+    renderer.drawCenteredText(UI_10_FONT_ID, 67, tr(STR_GAME_COMBINE_TILES));
   }
 
   // Draw tiles

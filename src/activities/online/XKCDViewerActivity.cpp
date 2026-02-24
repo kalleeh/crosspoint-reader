@@ -149,7 +149,9 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
     http.end();
     renderer.drawCenteredText(UI_10_FONT_ID, height / 2, tr(STR_ONLINE_FAILED_LOAD), true);
     
-    GUI.drawButtonHints(renderer, "Back", "", "Prev", "Next");
+    GUI.drawButtonHints(renderer, "Back", "",
+                      currentComic > 1 ? "Prev" : "",
+                      currentComic < maxComic ? "Next" : "");
     
     renderer.displayBuffer(HalDisplay::FAST_REFRESH);
     return;
@@ -187,7 +189,9 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
   // Clean up temp file
   Storage.remove("/.crosspoint/xkcd_temp.png");
   
-  GUI.drawButtonHints(renderer, "Back", "", "Prev", "Next");
+  GUI.drawButtonHints(renderer, "Back", "",
+                      currentComic > 1 ? "Prev" : "",
+                      currentComic < maxComic ? "Next" : "");
   
   // Display the complete buffer (title + image + menu)
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
