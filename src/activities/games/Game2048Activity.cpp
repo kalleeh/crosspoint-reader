@@ -243,8 +243,12 @@ void Game2048Activity::render() {
   snprintf(scoreText, sizeof(scoreText), "%s %d", tr(STR_GAME_SCORE), score);
   renderer.drawCenteredText(UI_10_FONT_ID, 50, scoreText);
 
-  // Instructions
-  renderer.drawCenteredText(UI_10_FONT_ID, 80, tr(STR_GAME_COMBINE_TILES));
+  // Instructions — replaced with win banner once 2048 is reached
+  if (hasWon) {
+    renderer.drawCenteredText(UI_10_FONT_ID, 80, tr(STR_GAME_YOU_WIN));
+  } else {
+    renderer.drawCenteredText(UI_10_FONT_ID, 80, tr(STR_GAME_COMBINE_TILES));
+  }
 
   // Draw tiles
   for (int i = 0; i < GRID_SIZE; i++) {
