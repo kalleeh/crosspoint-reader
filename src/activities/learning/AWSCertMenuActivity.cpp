@@ -159,7 +159,7 @@ void AWSCertMenuActivity::renderStatsTab() {
   // Streak
   int streak = stats.getStreak(certs[selectedIndex].id);
   char streakText[32];
-  snprintf(streakText, sizeof(streakText), "🔥 %d Day Streak", streak);
+  snprintf(streakText, sizeof(streakText), "Streak: %d days", streak);
   renderer.drawText(UI_12_FONT_ID, margin, y, streakText, true);
   y += 40;
   

@@ -673,10 +673,14 @@ void AWSCertQuizActivity::renderQuestion() {
       if (userAnswers[i] >= 0) answeredSoFar++;
     }
 
-    // Left side
-    // Always show answered count so user knows their status at a glance
-    char leftText[32];
-    snprintf(leftText, sizeof(leftText), "Q %d/%d  %d ans", currentIndex + 1, questionCount, answeredSoFar);
+    // Left side — include domain name when in domain mode so user knows which domain they're on
+    char leftText[48];
+    if (practiceMode == "domain" && practiceDomain != "all" && !practiceDomain.isEmpty()) {
+      snprintf(leftText, sizeof(leftText), "Q %d/%d  %d ans  [%s]",
+               currentIndex + 1, questionCount, answeredSoFar, practiceDomain.c_str());
+    } else {
+      snprintf(leftText, sizeof(leftText), "Q %d/%d  %d ans", currentIndex + 1, questionCount, answeredSoFar);
+    }
     renderer.drawText(UI_10_FONT_ID, margin, 20, leftText, true);
 
     // Right side: build a single string "difficulty  MM:SS" or just "difficulty"
@@ -742,8 +746,8 @@ void AWSCertQuizActivity::renderQuestion() {
   const char* btn4;
   
   if (practiceMode == "study") {
-    // Study mode: answer shown immediately, can view explanation
-    btn2 = "Answer";
+    // Study mode: "Answer" only shown once user has highlighted an option
+    btn2 = selectedOption >= 0 ? "Answer" : "";
     btn4 = currentIndex < questionCount - 1 ? "Next" : "Finish";
   } else {
     // Exam mode: Up/Down to highlight, Select to confirm, Next/Prev to navigate freely
@@ -848,7 +852,13 @@ void AWSCertQuizActivity::renderSummary() const {
   const int width = renderer.getScreenWidth();
   const int height = renderer.getScreenHeight();  // used for button positioning
 
-  int percentage = (correctCount * 100) / questionCount;
+  // Count answered questions — unanswered ones are not penalised in the display
+  int totalAnswered = 0;
+  for (int i = 0; i < questionCount && i < (int)userAnswers.size(); i++) {
+    if (userAnswers[i] >= 0) totalAnswered++;
+  }
+  // Percentage over answered questions only; if nothing answered show 0
+  int percentage = totalAnswered > 0 ? (correctCount * 100) / totalAnswered : 0;
   int passingScore = getPassingScoreForCert();
   bool passed = percentage >= passingScore;
 
@@ -870,7 +880,12 @@ void AWSCertQuizActivity::renderSummary() const {
   // Score
   int y = badgeY + 140;
   char scoreText[64];
-  snprintf(scoreText, sizeof(scoreText), "Final Score: %d/%d", correctCount, questionCount);
+  if (totalAnswered < questionCount) {
+    snprintf(scoreText, sizeof(scoreText), "Score: %d/%d  (%d skipped)",
+             correctCount, totalAnswered, questionCount - totalAnswered);
+  } else {
+    snprintf(scoreText, sizeof(scoreText), "Score: %d/%d", correctCount, questionCount);
+  }
   renderer.drawText(UI_12_FONT_ID, margin, y, scoreText, true);
   y += 40;
 
@@ -1095,7 +1110,9 @@ void AWSCertQuizActivity::loop() {
     }
   } else if (state == ANSWER) {
     if (mappedInput.wasPressed(MappedInputManager::Button::Confirm)) {
-      // Return to question view (study mode only)
+      // Return to question view — restore cursor to saved answer for consistency
+      selectedOption = (currentIndex < (int)userAnswers.size() && userAnswers[currentIndex] >= 0)
+                       ? userAnswers[currentIndex] : -1;
       state = QUESTION;
       renderQuestion();
     } else if (mappedInput.wasPressed(MappedInputManager::Button::Left)) {

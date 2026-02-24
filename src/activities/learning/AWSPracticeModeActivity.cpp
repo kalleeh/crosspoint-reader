@@ -91,7 +91,7 @@ void AWSPracticeModeActivity::renderDomainSelect() {
   }
   
   if (domains.empty()) {
-    renderer.drawText(UI_10_FONT_ID, margin + 10, y, "No domains available", true);
+    renderer.drawText(UI_10_FONT_ID, margin + 10, y, tr(STR_AWS_NO_DOMAINS), true);
   } else {
     // Draw domains
     for (int i = scrollOffset; i < (int)domains.size() && y < height - 60; i++) {
