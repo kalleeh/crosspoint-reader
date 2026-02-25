@@ -970,6 +970,7 @@ void AWSCertQuizActivity::renderReview() const {
   if (reviewIndex < 0 || reviewIndex >= (int)incorrectQuestions.size()) return;
   int questionIdx = incorrectQuestions[reviewIndex];
   if (questionIdx < 0 || questionIdx >= (int)questionOrder.size()) return;
+  if (questionIdx >= (int)userAnswers.size()) return;
   int actualIndex = questionOrder[questionIdx];
   if (actualIndex < 0 || actualIndex >= (int)customQuestions.size()) return;
   const Question* q = &customQuestions[actualIndex];
@@ -1295,7 +1296,7 @@ void AWSCertQuizActivity::renderDomainStats() const {
 
   if (domainTotal.empty()) {
     renderer.drawText(UI_12_FONT_ID, margin, margin, tr(STR_AWS_DOMAIN_BREAKDOWN), true);
-    renderer.drawText(UI_10_FONT_ID, margin, margin + 50, "No domain data available.", true);
+    renderer.drawText(UI_10_FONT_ID, margin, margin + 50, tr(STR_AWS_NO_DOMAIN_DATA), true);
     GUI.drawButtonHints(renderer, "Back", "", "", "");
     renderer.displayBuffer(HalDisplay::FAST_REFRESH);
     return;
