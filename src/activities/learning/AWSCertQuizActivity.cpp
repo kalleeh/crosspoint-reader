@@ -1181,7 +1181,12 @@ void AWSCertQuizActivity::loop() {
       renderDomainStats();
     }
   } else if (state == DOMAIN_STATS) {
-    // Back is handled by the global handler above
+    // Back is handled by the global handler above; Confirm/Right also return to summary
+    if (mappedInput.wasPressed(MappedInputManager::Button::Confirm) ||
+        mappedInput.wasPressed(MappedInputManager::Button::Right)) {
+      state = SUMMARY;
+      renderSummary();
+    }
   } else if (state == REVIEW) {
     if (mappedInput.wasPressed(MappedInputManager::Button::Left)) {
       if (reviewIndex > 0) {
