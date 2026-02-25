@@ -302,7 +302,7 @@ bool WeatherActivity::loadWeatherBackground(const char* cond) {
   DEBUG_PRINTF("[Weather] Drawing bitmap: %dx%d\n", bitmap.getWidth(), bitmap.getHeight());
   
   // Draw the bitmap (full screen 480x800)
-  renderer.drawBitmap(bitmap, 0, 0, 480, 800);
+  renderer.drawBitmap(bitmap, 0, 0, renderer.getScreenWidth(), renderer.getScreenHeight());
   bmpFile.close();
   
   DEBUG_PRINTLN("[Weather] Background loaded successfully");
