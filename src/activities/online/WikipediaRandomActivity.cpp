@@ -37,54 +37,35 @@ void WikipediaRandomActivity::onEnter() {
     sessionStartTime = millis();
     lastFetchTime = millis();  // Initialize to prevent immediate reload
     
-    // Fetch articles one by one, rendering after each
     isFetching = true;
-    for (int i = 0; i < 5; i++) {
-      DEBUG_PRINTF("[%lu] [WIKI] Fetching article %d/5\n", millis(), i + 1);
-      
-      // Add delay between requests to avoid rate limiting
-      if (i > 0) delay(1000);
-      
-      auto data = OnlineContentFetcher::fetchWikipediaRandom();
-      DEBUG_PRINTF("[%lu] [WIKI] Fetch complete, success=%d\n", millis(), data.success);
-      
-      if (data.success) {
-        WikiArticle article;
-        article.title = data.title;
-        article.extract = data.extract;
-        article.imageUrl = data.imageUrl;
-        
-        DEBUG_PRINTF("[%lu] [WIKI] Article: %s (image: %s)\n", 
-                      millis(), article.title.c_str(), 
-                      article.imageUrl.isEmpty() ? "none" : "yes");
-        
-        String title = data.title;
-        title.toLowerCase();
-        int start = 0;
-        for (int j = 0; j <= title.length(); j++) {
-          if (j == title.length() || title[j] == ' ' || title[j] == ',' || title[j] == '-') {
-            if (j > start) {
-              String word = title.substring(start, j);
-              if (word.length() > 3) {
-                article.categories.push_back(word);
-              }
+    auto data = OnlineContentFetcher::fetchWikipediaRandom();
+    if (data.success) {
+      WikiArticle article;
+      article.title = data.title;
+      article.extract = data.extract;
+      article.imageUrl = data.imageUrl;
+
+      String title = data.title;
+      title.toLowerCase();
+      int start = 0;
+      for (int j = 0; j <= title.length(); j++) {
+        if (j == title.length() || title[j] == ' ' || title[j] == ',' || title[j] == '-') {
+          if (j > start) {
+            String word = title.substring(start, j);
+            if (word.length() > 3) {
+              article.categories.push_back(word);
             }
-            start = j + 1;
           }
+          start = j + 1;
         }
-        
-        feed.push_back(article);
-        DEBUG_PRINTF("[%lu] [WIKI] Added to feed, rendering...\n", millis());
-        render();  // Show article immediately (also computes startY/endY)
-        evictOldArticles();
-        DEBUG_PRINTF("[%lu] [WIKI] Render complete\n", millis());
       }
+
+      feed.push_back(article);
+      evictOldArticles();
     }
     isFetching = false;
-    
-    DEBUG_PRINTF("[%lu] [WIKI] Fetched %d articles, final render...\n", millis(), feed.size());
+    pendingFetches = 4;
     render();
-    DEBUG_PRINTF("[%lu] [WIKI] Final render complete\n", millis());
   } else {
     DEBUG_PRINTF("[%lu] [WIKI] WiFi failed\n", millis());
     state = ERROR;
@@ -165,30 +146,30 @@ float WikipediaRandomActivity::scoreArticle(const WikiArticle& article) {
 
 bool WikipediaRandomActivity::downloadAndCacheImage(WikiArticle& article) {
   if (article.imageUrl.isEmpty()) return false;
-  if (!article.cachedImagePath.isEmpty()) return true;
-  
-  // Create cache path
+
+  // Create cache path as a local candidate; only assigned to article on success
   uint32_t hash = 0;
   for (int i = 0; i < article.imageUrl.length(); i++) {
     hash = hash * 31 + article.imageUrl[i];
   }
-  article.cachedImagePath = "/.crosspoint/wiki_" + String(hash) + ".bmp";
-  
-  if (Storage.exists(article.cachedImagePath.c_str())) {
+  String candidatePath = "/.crosspoint/wiki_" + String(hash) + ".bmp";
+
+  if (Storage.exists(candidatePath.c_str())) {
+    article.cachedImagePath = candidatePath;
     return true;
   }
-  
+
   // Download image
   HTTPClient http;
   http.setTimeout(15000);
   http.begin(article.imageUrl);
   int httpCode = http.GET();
-  
+
   if (httpCode != 200) {
     http.end();
     return false;
   }
-  
+
   // Save to temp
   String tempPath = "/.crosspoint/wiki_temp.jpg";
   FsFile tempFile;
@@ -196,38 +177,45 @@ bool WikipediaRandomActivity::downloadAndCacheImage(WikiArticle& article) {
     http.end();
     return false;
   }
-  
+
+  int contentLength = http.getSize();
+  int downloaded = 0;
   WiFiClient* stream = http.getStreamPtr();
   uint8_t buffer[512];
-  // Require both connected AND data available — avoids spinning when server stalls
-  while (http.connected() && stream->available()) {
-    size_t size = stream->available();
-    if (size > sizeof(buffer)) size = sizeof(buffer);
-    size_t len = stream->readBytes(buffer, size);
-    if (len > 0) {
-      tempFile.write(buffer, len);
+  while (http.connected() && (contentLength < 0 || downloaded < contentLength)) {
+    int avail = stream->available();
+    if (avail > 0) {
+      if (avail > (int)sizeof(buffer)) avail = sizeof(buffer);
+      int len = stream->readBytes(buffer, avail);
+      if (len > 0) {
+        tempFile.write(buffer, len);
+        downloaded += len;
+      }
+    } else {
+      delay(1);
     }
   }
   tempFile.close();
   http.end();
-  
+
   // Convert to BMP
   if (!Storage.openFileForRead("WIKI", tempPath.c_str(), tempFile)) {
     return false;
   }
-  
+
   FsFile bmpFile;
-  if (!Storage.openFileForWrite("WIKI", article.cachedImagePath.c_str(), bmpFile)) {
+  if (!Storage.openFileForWrite("WIKI", candidatePath.c_str(), bmpFile)) {
     tempFile.close();
     return false;
   }
-  
+
   bool success = JpegToBmpConverter::jpegFileTo1BitBmpStreamWithSize(tempFile, bmpFile, 480, 400);
-  
+
   tempFile.close();
   bmpFile.close();
   Storage.remove(tempPath.c_str());
-  
+
+  if (success) { article.cachedImagePath = candidatePath; }
   return success;
 }
 
@@ -239,9 +227,9 @@ void WikipediaRandomActivity::evictOldArticles() {
     }
 
     // Adjust scroll so the visible content stays in place.
-    // startY values are screen-relative, but the *difference* between two
-    // consecutive startY values equals the virtual height of the first article
-    // (independent of scrollOffset), so subtracting it keeps the view stable.
+    // startY values are virtual (document) coordinates, so the difference
+    // between consecutive startY values equals the virtual height of the
+    // evicted article; subtracting it keeps the view stable.
     const int heightRemoved = feed[1].startY - feed[0].startY;
     scrollOffset = max(0, scrollOffset - heightRemoved);
 
@@ -249,52 +237,57 @@ void WikipediaRandomActivity::evictOldArticles() {
   }
 }
 
-void WikipediaRandomActivity::fetchNextArticles() {
-  if (WiFi.status() != WL_CONNECTED) return;
-  if (isFetching) return;  // Already fetching
-  
-  lastFetchTime = millis();
-  isFetching = true;
-  
-  // Fetch 5 articles one by one
-  for (int i = 0; i < 5; i++) {
-    DEBUG_PRINTF("[%lu] [WIKI] Fetching article %d/5\n", millis(), i + 1);
-    
-    // Add delay between requests to avoid rate limiting
-    if (i > 0) delay(1000);
-    
-    auto data = OnlineContentFetcher::fetchWikipediaRandom();
-    if (data.success) {
-      WikiArticle article;
-      article.title = data.title;
-      article.extract = data.extract;
-      article.imageUrl = data.imageUrl;
-      
-      // Extract keywords from title
-      String title = data.title;
-      title.toLowerCase();
-      int start = 0;
-      for (int j = 0; j <= title.length(); j++) {
-        if (j == title.length() || title[j] == ' ' || title[j] == ',' || title[j] == '-') {
-          if (j > start) {
-            String word = title.substring(start, j);
-            if (word.length() > 3) {
-              article.categories.push_back(word);
-            }
-          }
-          start = j + 1;
-        }
+bool WikipediaRandomActivity::downloadNextVisibleImage() {
+  for (auto& article : feed) {
+    if (!article.imageUrl.isEmpty() && article.cachedImagePath.isEmpty()) {
+      // Only download if the article is at or near the visible area
+      if (article.startY < scrollOffset + renderer.getScreenHeight() + 400 &&
+          article.endY > scrollOffset - 400) {
+        return downloadAndCacheImage(article);
       }
-      
-      feed.push_back(article);
-      render();  // Show article immediately (also computes startY/endY)
-      evictOldArticles();
     }
   }
-  
+  return false;
+}
+
+void WikipediaRandomActivity::fetchSingleArticle() {
+  if (isFetching) return;
+  isFetching = true;
+
+  auto data = OnlineContentFetcher::fetchWikipediaRandom();
+  if (data.success) {
+    WikiArticle article;
+    article.title = data.title;
+    article.extract = data.extract;
+    article.imageUrl = data.imageUrl;
+
+    String title = data.title;
+    title.toLowerCase();
+    int start = 0;
+    for (int j = 0; j <= title.length(); j++) {
+      if (j == title.length() || title[j] == ' ' || title[j] == ',' || title[j] == '-') {
+        if (j > start) {
+          String word = title.substring(start, j);
+          if (word.length() > 3) {
+            article.categories.push_back(word);
+          }
+        }
+        start = j + 1;
+      }
+    }
+
+    feed.push_back(article);
+    evictOldArticles();
+  }
+
   isFetching = false;
-  DEBUG_PRINTF("[%lu] [WIKI] Feed size: %d articles\n", millis(), feed.size());
-  render();
+}
+
+void WikipediaRandomActivity::fetchNextArticles() {
+  if (WiFi.status() != WL_CONNECTED) return;
+  if (isFetching) return;
+  pendingFetches += 5;
+  lastFetchTime = millis();
 }
 
 void WikipediaRandomActivity::render() {
@@ -310,12 +303,14 @@ void WikipediaRandomActivity::render() {
     renderer.drawText(UI_10_FONT_ID, (width - textWidth) / 2, height / 2, msg, true);
   } else {
     int y = margin - scrollOffset;
-    
+    int virtualY = margin;
+
     // Render all articles in feed
     for (auto& article : feed) {
       if (y > height) break;  // Off screen
-      
+
       int articleStartY = y;
+      int virtualArticleStartY = virtualY;
       
       // Title
       String titleText = article.title;
@@ -344,39 +339,28 @@ void WikipediaRandomActivity::render() {
         }
         
         y += renderer.getLineHeight(UI_12_FONT_ID) + 2;
+        virtualY += renderer.getLineHeight(UI_12_FONT_ID) + 2;
         remaining = remaining.substring(breakPos);
         remaining.trim();
       }
-      
+
       y += 10;
+      virtualY += 10;
       
       // Image (if available) - only download if cached or not fetching
       if (!article.imageUrl.isEmpty()) {
-        bool hasCache = !article.cachedImagePath.isEmpty() && 
-                        Storage.exists(article.cachedImagePath.c_str());
-        
-        if (y >= -400 && y < height) {  // Render if partially visible
-          // Only download if not currently fetching articles (prevents blocking)
-          if (hasCache || !isFetching) {
-            DEBUG_PRINTF("[WIKI] Downloading image for: %s (cached: %d)\n", 
-                          article.title.c_str(), hasCache);
-            if (downloadAndCacheImage(article)) {
-              DEBUG_PRINTF("[WIKI] Image downloaded, rendering bitmap\n");
-              FsFile bmpFile;
-              if (Storage.openFileForRead("WIKI", article.cachedImagePath.c_str(), bmpFile)) {
-                Bitmap bitmap(bmpFile);
-                renderer.drawBitmap(bitmap, 0, y, width, 400);
-                bmpFile.close();
-                DEBUG_PRINTF("[WIKI] Bitmap rendered\n");
-              }
-            } else {
-              DEBUG_PRINTF("[WIKI] Image download failed\n");
-            }
+        if (y >= -400 && y < height && !article.cachedImagePath.isEmpty()) {
+          FsFile bmpFile;
+          if (Storage.openFileForRead("WIKI", article.cachedImagePath.c_str(), bmpFile)) {
+            Bitmap bitmap(bmpFile);
+            renderer.drawBitmap(bitmap, 0, y, width, 400);
+            bmpFile.close();
           }
         }
         y += 410;
+        virtualY += 410;
       }
-      
+
       // Extract
       const int maxWidth = width - 2 * margin;
       remaining = article.extract;
@@ -403,26 +387,28 @@ void WikipediaRandomActivity::render() {
         }
         
         y += renderer.getLineHeight(UI_10_FONT_ID) + 3;
+        virtualY += renderer.getLineHeight(UI_10_FONT_ID) + 3;
         remaining = remaining.substring(breakPos);
         remaining.trim();
       }
-      
+
       y += 40;  // Space between articles
-      
+      virtualY += 40;
+
       // Track article position
-      article.startY = articleStartY;
-      article.endY = y;
-      
+      article.startY = virtualArticleStartY;
+      article.endY = virtualY;
+
       // Stop rendering if way off screen
       if (y > height + 1000) break;
-      
+
       // Track scroll depth for this article
-      if (scrollOffset >= articleStartY && scrollOffset < y) {
-        article.scrollDepth = max(article.scrollDepth, scrollOffset - articleStartY);
+      if (scrollOffset >= virtualArticleStartY && scrollOffset < virtualY) {
+        article.scrollDepth = max(article.scrollDepth, scrollOffset - virtualArticleStartY);
       }
     }
-    
-    maxScroll = max(0, y - height + margin);
+
+    maxScroll = max(0, virtualY - height);
     
     // Legend (show loading status)
     const char* btn2 = isFetching ? "" : fork_tr(STR_ONLINE_LOAD_MORE);
@@ -433,6 +419,13 @@ void WikipediaRandomActivity::render() {
 }
 
 void WikipediaRandomActivity::loop() {
+  if (pendingFetches > 0 && !isFetching) {
+    pendingFetches--;
+    fetchSingleArticle();
+    render();
+    return;
+  }
+
   if (mappedInput.wasPressed(MappedInputManager::Button::Back)) {
     onBack();
   } else if (mappedInput.wasPressed(MappedInputManager::Button::Up)) {
@@ -441,7 +434,8 @@ void WikipediaRandomActivity::loop() {
   } else if (mappedInput.wasPressed(MappedInputManager::Button::Down)) {
     scrollOffset += 100;
     render();
-    
+    scrollOffset = min(scrollOffset, maxScroll);
+
     // Find which article is currently visible
     int currentArticleIndex = -1;
     for (int i = 0; i < feed.size(); i++) {
@@ -450,18 +444,25 @@ void WikipediaRandomActivity::loop() {
         break;
       }
     }
-    
+
     // Load more if viewing one of the last 2 articles AND we have WiFi
     unsigned long now = millis();
-    if (currentArticleIndex >= (int)feed.size() - 2 && 
+    if (currentArticleIndex >= (int)feed.size() - 2 &&
         !isFetching &&
         WiFi.status() == WL_CONNECTED &&
         (now - lastFetchTime) > 5000) {
-      DEBUG_PRINTF("[WIKI] Auto-load: viewing article %d/%d\n", 
+      DEBUG_PRINTF("[WIKI] Auto-load: viewing article %d/%d\n",
                     currentArticleIndex + 1, feed.size());
       fetchNextArticles();
     }
   } else if (mappedInput.wasPressed(MappedInputManager::Button::Confirm)) {
     fetchNextArticles();
+  }
+
+  // Download one pending image per loop() call when not fetching articles
+  if (pendingFetches == 0 && !isFetching) {
+    if (downloadNextVisibleImage()) {
+      render();
+    }
   }
 }

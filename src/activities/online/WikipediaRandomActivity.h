@@ -26,13 +26,16 @@ class WikipediaRandomActivity final : public Activity {
   const std::function<void()> onBack;
   State state = LOADED;  // Start in LOADED state
   bool isFetching = false;  // Loading indicator
+  int pendingFetches = 0;
   std::vector<WikiArticle> feed;
   int scrollOffset = 0;  // Vertical scroll position
   int maxScroll = 0;
   unsigned long sessionStartTime = 0;
   unsigned long lastFetchTime = 0;  // Prevent rapid fetches
   std::map<String, float> interests;  // keyword -> weight
-  
+
+  void fetchSingleArticle();
+  bool downloadNextVisibleImage();
   void fetchNextArticles();
   void evictOldArticles();
   bool downloadAndCacheImage(WikiArticle& article);
