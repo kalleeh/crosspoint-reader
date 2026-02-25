@@ -10,7 +10,6 @@ struct WikiArticle {
   String imageUrl;  // Wikipedia image URL
   String cachedImagePath;  // Local cached BMP
   std::vector<String> categories;
-  unsigned long viewTime = 0;
   int scrollDepth = 0;
   bool imageDownloadFailed = false;
   int startY = 0;  // Y position where article starts
@@ -31,7 +30,6 @@ class WikipediaRandomActivity final : public Activity {
   std::vector<WikiArticle> feed;
   int scrollOffset = 0;  // Vertical scroll position
   int maxScroll = 0;
-  unsigned long sessionStartTime = 0;
   unsigned long lastFetchTime = 0;  // Prevent rapid fetches
   std::map<String, float> interests;  // keyword -> weight
 

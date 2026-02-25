@@ -37,7 +37,6 @@ void WikipediaRandomActivity::onEnter() {
   if (WiFi.status() == WL_CONNECTED && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
     DEBUG_PRINTF("[%lu] [WIKI] WiFi connected\n", millis());
     loadInterests();
-    sessionStartTime = millis();
     lastFetchTime = millis();  // Initialize to prevent immediate reload
 
     isFetching = true;
@@ -216,6 +215,7 @@ bool WikipediaRandomActivity::downloadAndCacheImage(WikiArticle& article) {
   tempFile.close();
   bmpFile.close();
   Storage.remove(tempPath.c_str());
+  if (!success) Storage.remove(candidatePath.c_str());
 
   if (success) { article.cachedImagePath = candidatePath; }
   return success;
@@ -234,6 +234,10 @@ void WikipediaRandomActivity::evictOldArticles() {
     // evicted article; subtracting it keeps the view stable.
     const int heightRemoved = feed[1].startY - feed[0].startY;
     scrollOffset = max(0, scrollOffset - heightRemoved);
+
+    if (!feed[0].cachedImagePath.isEmpty()) {
+      Storage.remove(feed[0].cachedImagePath.c_str());
+    }
 
     feed.erase(feed.begin());
   }
