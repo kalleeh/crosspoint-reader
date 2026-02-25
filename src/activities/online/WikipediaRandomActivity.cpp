@@ -17,26 +17,29 @@
 
 void WikipediaRandomActivity::onEnter() {
   DEBUG_PRINTF("[%lu] [WIKI] Activity entered\n", millis());
-  
+
+  pendingFetches = 0;
+  isFetching = false;
+
   // Show empty feed immediately
   render();
-  
+
   WiFi.mode(WIFI_STA);
   WiFi.begin();
-  
+
   DEBUG_PRINTF("[%lu] [WIKI] Waiting for WiFi...\n", millis());
   int attempts = 0;
   while (WiFi.status() != WL_CONNECTED && attempts < 50) {
     delay(100);
     attempts++;
   }
-  
+
   if (WiFi.status() == WL_CONNECTED && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
     DEBUG_PRINTF("[%lu] [WIKI] WiFi connected\n", millis());
     loadInterests();
     sessionStartTime = millis();
     lastFetchTime = millis();  // Initialize to prevent immediate reload
-    
+
     isFetching = true;
     auto data = OnlineContentFetcher::fetchWikipediaRandom();
     if (data.success) {
@@ -88,17 +91,17 @@ void WikipediaRandomActivity::loadInterests() {
   const char* path = "/.crosspoint/wiki_interests.txt";
   FsFile file;
   if (!Storage.openFileForRead("WIKI", path, file)) return;
-  
+
   char line[128];
   while (file.available()) {
     int len = file.readBytesUntil('\n', line, sizeof(line) - 1);
     if (len <= 0) continue;
     line[len] = '\0';
-    
+
     char* sep = strchr(line, ':');
     if (!sep) continue;
     *sep = '\0';
-    
+
     String keyword = String(line);
     float weight = atof(sep + 1);
     interests[keyword] = weight;
@@ -110,7 +113,7 @@ void WikipediaRandomActivity::saveInterests() {
   const char* path = "/.crosspoint/wiki_interests.txt";
   FsFile file;
   if (!Storage.openFileForWrite("WIKI", path, file)) return;
-  
+
   for (const auto& pair : interests) {
     String line = pair.first + ":" + String(pair.second, 2) + "\n";
     file.write((const uint8_t*)line.c_str(), line.length());
@@ -120,9 +123,9 @@ void WikipediaRandomActivity::saveInterests() {
 
 void WikipediaRandomActivity::updateInterests(const WikiArticle& article, int scrollDepth) {
   if (scrollDepth < 100) return;  // Didn't really read it
-  
+
   float engagement = min(1.0f, scrollDepth / 500.0f);  // Normalize scroll depth
-  
+
   for (const String& cat : article.categories) {
     String lower = cat;
     lower.toLowerCase();
@@ -138,20 +141,6 @@ void WikipediaRandomActivity::updateInterests(const WikiArticle& article, int sc
     }
     interests.erase(minIt);
   }
-}
-
-float WikipediaRandomActivity::scoreArticle(const WikiArticle& article) {
-  if (interests.empty()) return 1.0f;
-  
-  float score = 0.0f;
-  for (const String& cat : article.categories) {
-    String lower = cat;
-    lower.toLowerCase();
-    if (interests.count(lower)) {
-      score += interests[lower];
-    }
-  }
-  return score;
 }
 
 bool WikipediaRandomActivity::downloadAndCacheImage(WikiArticle& article) {
@@ -192,7 +181,9 @@ bool WikipediaRandomActivity::downloadAndCacheImage(WikiArticle& article) {
   int downloaded = 0;
   WiFiClient* stream = http.getStreamPtr();
   uint8_t buffer[512];
+  unsigned long downloadStart = millis();
   while (http.connected() && (contentLength < 0 || downloaded < contentLength)) {
+    if (millis() - downloadStart > 20000) break;  // 20-second wall-clock cap
     int avail = stream->available();
     if (avail > 0) {
       if (avail > (int)sizeof(buffer)) avail = sizeof(buffer);
@@ -311,11 +302,11 @@ void WikipediaRandomActivity::fetchNextArticles() {
 
 void WikipediaRandomActivity::render() {
   renderer.clearScreen();
-  
+
   const int width = renderer.getScreenWidth();
   const int height = renderer.getScreenHeight();
   const int margin = 20;
-  
+
   if (state == ERROR) {
     const char* msg = fork_tr(STR_ONLINE_FAILED_LOAD);
     int textWidth = renderer.getTextWidth(UI_10_FONT_ID, msg);
@@ -328,12 +319,12 @@ void WikipediaRandomActivity::render() {
     for (auto& article : feed) {
       int articleStartY = y;
       int virtualArticleStartY = virtualY;
-      
+
       // Title
       String titleText = article.title;
       const int maxTitleWidth = width - 2 * margin;
       String remaining = titleText;
-      
+
       while (remaining.length() > 0) {
         int breakPos;
         if (renderer.getTextWidth(UI_12_FONT_ID, remaining.c_str()) <= maxTitleWidth) {
@@ -357,13 +348,21 @@ void WikipediaRandomActivity::render() {
           if (lastSpace > 0) breakPos = lastSpace;
         }
 
-        if (breakPos == 0) breakPos = 1;
+        if (breakPos == 0) {
+          // Advance past the complete UTF-8 codepoint to avoid splitting multi-byte sequences
+          uint8_t firstByte = (uint8_t)remaining[0];
+          if      (firstByte < 0x80) breakPos = 1;  // ASCII
+          else if (firstByte < 0xE0) breakPos = 2;  // 2-byte lead (0xC0–0xDF)
+          else if (firstByte < 0xF0) breakPos = 3;  // 3-byte lead (0xE0–0xEF)
+          else                        breakPos = 4;  // 4-byte lead (0xF0–0xF7)
+          if (breakPos > (int)remaining.length()) breakPos = remaining.length();
+        }
 
         String line = remaining.substring(0, breakPos);
         if (y >= 0 && y < height) {
           renderer.drawText(UI_12_FONT_ID, margin, y, line.c_str(), true);
         }
-        
+
         y += renderer.getLineHeight(UI_12_FONT_ID) + 2;
         virtualY += renderer.getLineHeight(UI_12_FONT_ID) + 2;
         remaining = remaining.substring(breakPos);
@@ -372,7 +371,7 @@ void WikipediaRandomActivity::render() {
 
       y += 10;
       virtualY += 10;
-      
+
       // Image (if available) - only download if cached or not fetching
       if (!article.imageUrl.isEmpty()) {
         if (y >= -400 && y < height && !article.cachedImagePath.isEmpty()) {
@@ -390,7 +389,7 @@ void WikipediaRandomActivity::render() {
       // Extract
       const int maxWidth = width - 2 * margin;
       remaining = article.extract;
-      
+
       while (remaining.length() > 0) {
         int breakPos;
         if (renderer.getTextWidth(UI_10_FONT_ID, remaining.c_str()) <= maxWidth) {
@@ -414,13 +413,21 @@ void WikipediaRandomActivity::render() {
           if (lastSpace > 0) breakPos = lastSpace;
         }
 
-        if (breakPos == 0) breakPos = 1;
+        if (breakPos == 0) {
+          // Advance past the complete UTF-8 codepoint to avoid splitting multi-byte sequences
+          uint8_t firstByte = (uint8_t)remaining[0];
+          if      (firstByte < 0x80) breakPos = 1;  // ASCII
+          else if (firstByte < 0xE0) breakPos = 2;  // 2-byte lead (0xC0–0xDF)
+          else if (firstByte < 0xF0) breakPos = 3;  // 3-byte lead (0xE0–0xEF)
+          else                        breakPos = 4;  // 4-byte lead (0xF0–0xF7)
+          if (breakPos > (int)remaining.length()) breakPos = remaining.length();
+        }
 
         String line = remaining.substring(0, breakPos);
         if (y >= 0 && y < height) {
           renderer.drawText(UI_10_FONT_ID, margin, y, line.c_str(), true);
         }
-        
+
         y += renderer.getLineHeight(UI_10_FONT_ID) + 3;
         virtualY += renderer.getLineHeight(UI_10_FONT_ID) + 3;
         remaining = remaining.substring(breakPos);
@@ -444,12 +451,12 @@ void WikipediaRandomActivity::render() {
     }
 
     maxScroll = max(0, virtualY - height);
-    
+
     // Legend (show loading status)
-    const char* btn2 = isFetching ? "" : fork_tr(STR_ONLINE_LOAD_MORE);
+    const char* btn2 = (isFetching || pendingFetches > 0) ? "" : fork_tr(STR_ONLINE_LOAD_MORE);
     GUI.drawButtonHints(renderer, "Back", btn2, "", "");
   }
-  
+
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
 
@@ -470,7 +477,7 @@ void WikipediaRandomActivity::loop() {
     scrollOffset = max(0, scrollOffset - 100);
     render();
   } else if (mappedInput.wasPressed(MappedInputManager::Button::Down)) {
-    scrollOffset += 100;
+    scrollOffset = min(scrollOffset + 100, maxScroll);
     render();
     scrollOffset = min(scrollOffset, maxScroll);
 

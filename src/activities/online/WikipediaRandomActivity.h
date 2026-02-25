@@ -43,7 +43,6 @@ class WikipediaRandomActivity final : public Activity {
   void loadInterests();
   void saveInterests();
   void updateInterests(const WikiArticle& article, int scrollDepth);
-  float scoreArticle(const WikiArticle& article);
   void render();
   
  public:
