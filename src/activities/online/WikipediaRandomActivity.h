@@ -12,6 +12,7 @@ struct WikiArticle {
   std::vector<String> categories;
   unsigned long viewTime = 0;
   int scrollDepth = 0;
+  bool imageDownloadFailed = false;
   int startY = 0;  // Y position where article starts
   int endY = 0;    // Y position where article ends
 };

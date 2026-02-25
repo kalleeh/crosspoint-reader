@@ -128,6 +128,16 @@ void WikipediaRandomActivity::updateInterests(const WikiArticle& article, int sc
     lower.toLowerCase();
     interests[lower] = min(10.0f, interests[lower] + engagement);
   }
+
+  // Prune to prevent unbounded growth across sessions
+  static constexpr int MAX_INTERESTS = 500;
+  if ((int)interests.size() > MAX_INTERESTS) {
+    auto minIt = interests.begin();
+    for (auto it = std::next(interests.begin()); it != interests.end(); ++it) {
+      if (it->second < minIt->second) minIt = it;
+    }
+    interests.erase(minIt);
+  }
 }
 
 float WikipediaRandomActivity::scoreArticle(const WikiArticle& article) {
@@ -200,6 +210,7 @@ bool WikipediaRandomActivity::downloadAndCacheImage(WikiArticle& article) {
 
   // Convert to BMP
   if (!Storage.openFileForRead("WIKI", tempPath.c_str(), tempFile)) {
+    Storage.remove(tempPath.c_str());
     return false;
   }
 
@@ -239,11 +250,18 @@ void WikipediaRandomActivity::evictOldArticles() {
 
 bool WikipediaRandomActivity::downloadNextVisibleImage() {
   for (auto& article : feed) {
-    if (!article.imageUrl.isEmpty() && article.cachedImagePath.isEmpty()) {
-      // Only download if the article is at or near the visible area
+    if (!article.imageUrl.isEmpty() && article.cachedImagePath.isEmpty() && !article.imageDownloadFailed) {
+      // Skip articles not yet rendered (startY/endY still at default 0)
+      if (article.endY == 0) continue;
+      // Only download if near the visible area
       if (article.startY < scrollOffset + renderer.getScreenHeight() + 400 &&
           article.endY > scrollOffset - 400) {
-        return downloadAndCacheImage(article);
+        if (downloadAndCacheImage(article)) {
+          return true;   // success — caller should re-render
+        } else {
+          article.imageDownloadFailed = true;
+          return false;  // failure marked — caller should not re-render
+        }
       }
     }
   }
@@ -252,6 +270,7 @@ bool WikipediaRandomActivity::downloadNextVisibleImage() {
 
 void WikipediaRandomActivity::fetchSingleArticle() {
   if (isFetching) return;
+  if (WiFi.status() != WL_CONNECTED) return;
   isFetching = true;
 
   auto data = OnlineContentFetcher::fetchWikipediaRandom();
@@ -286,7 +305,7 @@ void WikipediaRandomActivity::fetchSingleArticle() {
 void WikipediaRandomActivity::fetchNextArticles() {
   if (WiFi.status() != WL_CONNECTED) return;
   if (isFetching) return;
-  pendingFetches += 5;
+  if (pendingFetches < 10) pendingFetches += 5;
   lastFetchTime = millis();
 }
 
@@ -307,8 +326,6 @@ void WikipediaRandomActivity::render() {
 
     // Render all articles in feed
     for (auto& article : feed) {
-      if (y > height) break;  // Off screen
-
       int articleStartY = y;
       int virtualArticleStartY = virtualY;
       
@@ -318,21 +335,30 @@ void WikipediaRandomActivity::render() {
       String remaining = titleText;
       
       while (remaining.length() > 0) {
-        int breakPos = remaining.length();
-        
-        for (int i = 1; i <= remaining.length(); i++) {
-          String test = remaining.substring(0, i);
-          if (renderer.getTextWidth(UI_12_FONT_ID, test.c_str()) > maxTitleWidth) {
-            breakPos = i - 1;
-            break;
+        int breakPos;
+        if (renderer.getTextWidth(UI_12_FONT_ID, remaining.c_str()) <= maxTitleWidth) {
+          breakPos = remaining.length();
+        } else {
+          int lo = 0, hi = (int)remaining.length() - 1;
+          while (lo < hi) {
+            int mid = lo + (hi - lo + 1) / 2;
+            String test = remaining.substring(0, mid);
+            if (renderer.getTextWidth(UI_12_FONT_ID, test.c_str()) <= maxTitleWidth) {
+              lo = mid;
+            } else {
+              hi = mid - 1;
+            }
           }
+          breakPos = lo;
         }
-        
+
         if (breakPos < remaining.length()) {
           int lastSpace = remaining.lastIndexOf(' ', breakPos);
           if (lastSpace > 0) breakPos = lastSpace;
         }
-        
+
+        if (breakPos == 0) breakPos = 1;
+
         String line = remaining.substring(0, breakPos);
         if (y >= 0 && y < height) {
           renderer.drawText(UI_12_FONT_ID, margin, y, line.c_str(), true);
@@ -366,21 +392,30 @@ void WikipediaRandomActivity::render() {
       remaining = article.extract;
       
       while (remaining.length() > 0) {
-        int breakPos = remaining.length();
-        
-        for (int i = 1; i <= remaining.length(); i++) {
-          String test = remaining.substring(0, i);
-          if (renderer.getTextWidth(UI_10_FONT_ID, test.c_str()) > maxWidth) {
-            breakPos = i - 1;
-            break;
+        int breakPos;
+        if (renderer.getTextWidth(UI_10_FONT_ID, remaining.c_str()) <= maxWidth) {
+          breakPos = remaining.length();
+        } else {
+          int lo = 0, hi = (int)remaining.length() - 1;
+          while (lo < hi) {
+            int mid = lo + (hi - lo + 1) / 2;
+            String test = remaining.substring(0, mid);
+            if (renderer.getTextWidth(UI_10_FONT_ID, test.c_str()) <= maxWidth) {
+              lo = mid;
+            } else {
+              hi = mid - 1;
+            }
           }
+          breakPos = lo;
         }
-        
+
         if (breakPos < remaining.length()) {
           int lastSpace = remaining.lastIndexOf(' ', breakPos);
           if (lastSpace > 0) breakPos = lastSpace;
         }
-        
+
+        if (breakPos == 0) breakPos = 1;
+
         String line = remaining.substring(0, breakPos);
         if (y >= 0 && y < height) {
           renderer.drawText(UI_10_FONT_ID, margin, y, line.c_str(), true);
@@ -419,6 +454,11 @@ void WikipediaRandomActivity::render() {
 }
 
 void WikipediaRandomActivity::loop() {
+  if (mappedInput.wasPressed(MappedInputManager::Button::Back)) {
+    onBack();
+    return;
+  }
+
   if (pendingFetches > 0 && !isFetching) {
     pendingFetches--;
     fetchSingleArticle();
@@ -426,9 +466,7 @@ void WikipediaRandomActivity::loop() {
     return;
   }
 
-  if (mappedInput.wasPressed(MappedInputManager::Button::Back)) {
-    onBack();
-  } else if (mappedInput.wasPressed(MappedInputManager::Button::Up)) {
+  if (mappedInput.wasPressed(MappedInputManager::Button::Up)) {
     scrollOffset = max(0, scrollOffset - 100);
     render();
   } else if (mappedInput.wasPressed(MappedInputManager::Button::Down)) {

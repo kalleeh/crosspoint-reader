@@ -237,9 +237,23 @@ inline WikipediaData fetchWikipediaRandom() {
             if (!inTag) cleaned += c;
           }
           data.extract = cleaned;
+          // Decode common HTML entities
+          data.extract.replace("&amp;", "&");
+          data.extract.replace("&lt;", "<");
+          data.extract.replace("&gt;", ">");
+          data.extract.replace("&quot;", "\"");
+          data.extract.replace("&apos;", "'");
+          data.extract.replace("&nbsp;", " ");
+          data.extract.replace("&#160;", " ");
+          data.extract.replace("&#8211;", "\xe2\x80\x93");
+          data.extract.replace("&#8212;", "\xe2\x80\x94");
+          data.extract.replace("&#8216;", "'");
+          data.extract.replace("&#8217;", "'");
+          data.extract.replace("&#8220;", "\"");
+          data.extract.replace("&#8221;", "\"");
         }
       }
-      
+
       data.success = true;
     }
   }
