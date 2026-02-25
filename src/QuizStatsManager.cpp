@@ -283,6 +283,7 @@ void QuizStatsManager::updateLastPracticeDate(const char* certId) {
 }
 
 static int toLocalDay(time_t t) {
+  if (t <= 0) return -1;  // clock not set or invalid
   // Days since epoch (UTC). Correct across leap years, good enough for streak tracking.
   return (int)(t / 86400);
 }
@@ -308,6 +309,7 @@ int QuizStatsManager::calculateStreak(const char* certId) {
   });
 
   time_t now = time(nullptr);
+  if (now <= 0) return 0;  // clock not set — don't guess streak
 
   // Use per-cert last practice date; fall back to most recent across all certs
   uint32_t storedDate = 0;
@@ -323,6 +325,7 @@ int QuizStatsManager::calculateStreak(const char* certId) {
 
   // Check if practiced today or yesterday
   int daysSinceLastPractice = toLocalDay(now) - toLocalDay(lastPractice);
+  if (daysSinceLastPractice < 0) return 0;  // clock went backward — safe reset rather than invalid streak
 
   if (daysSinceLastPractice > 1) {
     return 0;  // Streak broken

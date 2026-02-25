@@ -61,7 +61,7 @@ class AWSCertQuizActivity final : public Activity {
   
   // Text measurement cache (80 bytes)
   struct TextCache {
-    const char* text = nullptr;
+    std::string text;
     uint16_t width = 0;
   };
   mutable TextCache textWidthCache[4];  // Small LRU cache

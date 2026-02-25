@@ -318,6 +318,9 @@ void AWSCertQuizActivity::saveIncorrectHistory() {
 }
 
 bool AWSCertQuizActivity::loadIncorrectHistory() {
+  questionOrder.clear();
+  questionCount = 0;
+
   char path[PATH_BUF_SIZE];
   snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-history-%s.dat", certId.c_str());
   FsFile file;
@@ -372,7 +375,7 @@ bool AWSCertQuizActivity::openFileOrShowError(const char* path, FsFile& file, co
 uint16_t AWSCertQuizActivity::getCachedTextWidth(int fontId, const char* text) const {
   // Check cache
   for (int i = 0; i < 4; i++) {
-    if (textWidthCache[i].text && strcmp(textWidthCache[i].text, text) == 0) {
+    if (!textWidthCache[i].text.empty() && textWidthCache[i].text == text) {
       return textWidthCache[i].width;
     }
   }
@@ -382,7 +385,7 @@ uint16_t AWSCertQuizActivity::getCachedTextWidth(int fontId, const char* text) c
   for (int i = 0; i < 3; i++) {
     textWidthCache[i] = textWidthCache[i + 1];
   }
-  textWidthCache[3].text = text;
+  textWidthCache[3].text = std::string(text);
   textWidthCache[3].width = width;
   
   return width;
@@ -832,6 +835,13 @@ void AWSCertQuizActivity::renderSummary() const {
   if (questionCount == 0) return;  // Guard against division by zero
   renderer.clearScreen();
 
+  // RAII guard: ensures displayBuffer is called on every return path
+  struct DisplayFlusher {
+    GfxRenderer& r;
+    explicit DisplayFlusher(GfxRenderer& renderer) : r(renderer) {}
+    ~DisplayFlusher() { r.displayBuffer(HalDisplay::FAST_REFRESH); }
+  } flusher{renderer};
+
   const int margin = DEFAULT_MARGIN;
   const int width = renderer.getScreenWidth();
   const int height = renderer.getScreenHeight();  // used for button positioning
@@ -866,7 +876,6 @@ void AWSCertQuizActivity::renderSummary() const {
     renderer.drawText(UI_12_FONT_ID, margin, badgeY + 50, "No answers recorded.", true);
     renderer.drawText(UI_10_FONT_ID, margin, badgeY + 80, "Select answers and press Submit.", true);
     GUI.drawButtonHints(renderer, "Back", "", "", "");
-    renderer.displayBuffer(HalDisplay::FAST_REFRESH);
     return;
   } else if (passed) {
     drawPassBadge(badgeX, badgeY);
@@ -947,11 +956,9 @@ void AWSCertQuizActivity::renderSummary() const {
   renderer.drawRect(margin, y, 200, 35);
   renderer.drawText(UI_10_FONT_ID, margin + 10, y + 10, tr(STR_AWS_DOMAIN_BREAKDOWN), true);
   
-  const char* legend = incorrectQuestions.size() > 0 ? 
+  const char* legend = incorrectQuestions.size() > 0 ?
                        "Back | Confirm: Review | Down: Domains" : "Back | Down: Domains";
   renderer.drawText(UI_10_FONT_ID, margin, height - 40, legend, true);
-  
-  renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
 
 void AWSCertQuizActivity::renderReview() const {
@@ -1285,6 +1292,14 @@ void AWSCertQuizActivity::renderDomainStats() const {
   const int footerHeight = 40;
   // Reserve space for one potential "..." row plus the footer
   const int maxY = height - footerHeight - rowHeight;
+
+  if (domainTotal.empty()) {
+    renderer.drawText(UI_12_FONT_ID, margin, margin, tr(STR_AWS_DOMAIN_BREAKDOWN), true);
+    renderer.drawText(UI_10_FONT_ID, margin, margin + 50, "No domain data available.", true);
+    GUI.drawButtonHints(renderer, "Back", "", "", "");
+    renderer.displayBuffer(HalDisplay::FAST_REFRESH);
+    return;
+  }
 
   renderer.drawText(UI_12_FONT_ID, margin, margin, tr(STR_AWS_DOMAIN_BREAKDOWN), true);
 
