@@ -4,6 +4,7 @@
 #include <GfxRenderer.h>
 #include <HalDisplay.h>
 #include <I18n.h>
+#include <ForkI18n.h>
 
 #include "../../MappedInputManager.h"
 #include "components/UITheme.h"
@@ -66,7 +67,7 @@ void OnlineMenuActivity::render() {
   const auto& metrics = UITheme::getInstance().getMetrics();
 
   // Header
-  GUI.drawHeader(renderer, Rect{0, metrics.topPadding, screenWidth, metrics.headerHeight}, tr(STR_ONLINE_MENU_TITLE));
+  GUI.drawHeader(renderer, Rect{0, metrics.topPadding, screenWidth, metrics.headerHeight}, fork_tr(STR_ONLINE_MENU_TITLE));
 
   // List
   const int contentTop = metrics.topPadding + metrics.headerHeight + metrics.verticalSpacing;

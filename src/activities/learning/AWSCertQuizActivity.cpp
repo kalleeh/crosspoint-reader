@@ -7,6 +7,7 @@
 #include <HalStorage.h>
 #include <ArduinoJson.h>
 #include <I18n.h>
+#include <ForkI18n.h>
 #include <vector>
 #include <algorithm>
 #include <cstring>
@@ -766,20 +767,20 @@ void AWSCertQuizActivity::renderAnswer() const {
   int iconY = margin;
   if (correct) {
     drawCheckmark(iconX, iconY, 30);
-    renderer.drawText(UI_12_FONT_ID, iconX + 40, iconY + 5, tr(STR_AWS_ANSWER_CORRECT), true);
+    renderer.drawText(UI_12_FONT_ID, iconX + 40, iconY + 5, fork_tr(STR_AWS_ANSWER_CORRECT), true);
 
     // Encouragement for streaks
     if (currentStreak == 3) {
-      renderer.drawText(UI_10_FONT_ID, iconX + 150, iconY + 5, tr(STR_AWS_ANSWER_ON_FIRE), true);
+      renderer.drawText(UI_10_FONT_ID, iconX + 150, iconY + 5, fork_tr(STR_AWS_ANSWER_ON_FIRE), true);
     } else if (currentStreak == 5) {
-      renderer.drawText(UI_10_FONT_ID, iconX + 150, iconY + 5, tr(STR_AWS_ANSWER_UNSTOPPABLE), true);
+      renderer.drawText(UI_10_FONT_ID, iconX + 150, iconY + 5, fork_tr(STR_AWS_ANSWER_UNSTOPPABLE), true);
     } else if (currentStreak >= 7) {
-      renderer.drawText(UI_10_FONT_ID, iconX + 150, iconY + 5, tr(STR_AWS_ANSWER_PERFECT), true);
+      renderer.drawText(UI_10_FONT_ID, iconX + 150, iconY + 5, fork_tr(STR_AWS_ANSWER_PERFECT), true);
     }
   } else {
     drawXMark(iconX, iconY, 30);
-    renderer.drawText(UI_12_FONT_ID, iconX + 40, iconY + 5, tr(STR_AWS_ANSWER_INCORRECT), true);
-    renderer.drawText(UI_10_FONT_ID, iconX + 150, iconY + 5, tr(STR_AWS_ANSWER_KEEP_LEARNING), true);
+    renderer.drawText(UI_12_FONT_ID, iconX + 40, iconY + 5, fork_tr(STR_AWS_ANSWER_INCORRECT), true);
+    renderer.drawText(UI_10_FONT_ID, iconX + 150, iconY + 5, fork_tr(STR_AWS_ANSWER_KEEP_LEARNING), true);
   }
   
   // Progress bar
@@ -867,7 +868,7 @@ void AWSCertQuizActivity::renderSummary() const {
   drawAWSLogo(width / 2 - 20, margin);
 
   // Title
-  renderer.drawText(UI_12_FONT_ID, margin, margin + 50, tr(STR_AWS_QUIZ_COMPLETE), true);
+  renderer.drawText(UI_12_FONT_ID, margin, margin + 50, fork_tr(STR_AWS_QUIZ_COMPLETE), true);
 
   // Pass/Fail Badge — bail out with a message if nothing was answered
   int badgeY = margin + 90;
@@ -954,7 +955,7 @@ void AWSCertQuizActivity::renderSummary() const {
   
   // Domain stats option
   renderer.drawRect(margin, y, 200, 35);
-  renderer.drawText(UI_10_FONT_ID, margin + 10, y + 10, tr(STR_AWS_DOMAIN_BREAKDOWN), true);
+  renderer.drawText(UI_10_FONT_ID, margin + 10, y + 10, fork_tr(STR_AWS_DOMAIN_BREAKDOWN), true);
   
   const char* legend = incorrectQuestions.size() > 0 ?
                        "Back | Confirm: Review | Down: Domains" : "Back | Down: Domains";
@@ -997,10 +998,10 @@ void AWSCertQuizActivity::renderReview() const {
     // Indicator
     if (i == q->correct) {
       drawCheckmark(margin, optionY, 15);
-      renderer.drawText(UI_10_FONT_ID, margin + 20, optionY, tr(STR_AWS_CORRECT), true);
+      renderer.drawText(UI_10_FONT_ID, margin + 20, optionY, fork_tr(STR_AWS_CORRECT), true);
     } else if (userAnswer >= 0 && i == userAnswer) {
       drawXMark(margin, optionY, 15);
-      renderer.drawText(UI_10_FONT_ID, margin + 20, optionY, tr(STR_AWS_YOUR_ANSWER), true);
+      renderer.drawText(UI_10_FONT_ID, margin + 20, optionY, fork_tr(STR_AWS_YOUR_ANSWER), true);
     }
 
     y += 20;
@@ -1011,7 +1012,7 @@ void AWSCertQuizActivity::renderReview() const {
   y += 10;
 
   // Explanation
-  renderer.drawText(UI_10_FONT_ID, margin, y, tr(STR_AWS_EXPLANATION), true);
+  renderer.drawText(UI_10_FONT_ID, margin, y, fork_tr(STR_AWS_EXPLANATION), true);
   y += 20;
   y = drawWrappedText(UI_10_FONT_ID, margin, y, q->explanation.c_str(), width - 2 * margin);
   
@@ -1266,7 +1267,7 @@ void AWSCertQuizActivity::drawPassBadge(int x, int y) const {
   drawCheckmark(x + size / 2 - 20, y + size / 2 - 15, 40);
   
   // "PASS" text
-  renderer.drawText(UI_12_FONT_ID, x + size / 2 - 20, y + size + 10, tr(STR_AWS_PASS), true);
+  renderer.drawText(UI_12_FONT_ID, x + size / 2 - 20, y + size + 10, fork_tr(STR_AWS_PASS), true);
 }
 
 void AWSCertQuizActivity::drawFailBadge(int x, int y) const {
@@ -1281,7 +1282,7 @@ void AWSCertQuizActivity::drawFailBadge(int x, int y) const {
   drawXMark(x + size / 2 - 20, y + size / 2 - 20, 40);
   
   // "FAIL" text
-  renderer.drawText(UI_12_FONT_ID, x + size / 2 - 15, y + size + 10, tr(STR_AWS_FAIL), true);
+  renderer.drawText(UI_12_FONT_ID, x + size / 2 - 15, y + size + 10, fork_tr(STR_AWS_FAIL), true);
 }
 
 void AWSCertQuizActivity::renderDomainStats() const {
@@ -1295,14 +1296,14 @@ void AWSCertQuizActivity::renderDomainStats() const {
   const int maxY = height - footerHeight - rowHeight;
 
   if (domainTotal.empty()) {
-    renderer.drawText(UI_12_FONT_ID, margin, margin, tr(STR_AWS_DOMAIN_BREAKDOWN), true);
-    renderer.drawText(UI_10_FONT_ID, margin, margin + 50, tr(STR_AWS_NO_DOMAIN_DATA), true);
+    renderer.drawText(UI_12_FONT_ID, margin, margin, fork_tr(STR_AWS_DOMAIN_BREAKDOWN), true);
+    renderer.drawText(UI_10_FONT_ID, margin, margin + 50, fork_tr(STR_AWS_NO_DOMAIN_DATA), true);
     GUI.drawButtonHints(renderer, "Back", "", "", "");
     renderer.displayBuffer(HalDisplay::FAST_REFRESH);
     return;
   }
 
-  renderer.drawText(UI_12_FONT_ID, margin, margin, tr(STR_AWS_DOMAIN_BREAKDOWN), true);
+  renderer.drawText(UI_12_FONT_ID, margin, margin, fork_tr(STR_AWS_DOMAIN_BREAKDOWN), true);
 
   int y = margin + 50;
   bool truncated = false;

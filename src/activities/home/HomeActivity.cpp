@@ -1,4 +1,5 @@
 #include "HomeActivity.h"
+#include <ForkI18n.h>
 
 #include <Bitmap.h>
 #include <Epub.h>
@@ -243,7 +244,7 @@ void HomeActivity::render(Activity::RenderLock&&) {
 
   if (onGamesOpen) {
     // Insert Apps before Settings (second-to-last position)
-    menuItems.insert(menuItems.end() - 1, tr(STR_APPS_MENU_TITLE));
+    menuItems.insert(menuItems.end() - 1, fork_tr(STR_APPS_MENU_TITLE));
     menuIcons.insert(menuIcons.end() - 1, Hotspot);
   }
 

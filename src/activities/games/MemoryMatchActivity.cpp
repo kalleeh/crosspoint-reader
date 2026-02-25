@@ -10,6 +10,7 @@
 #include "components/UITheme.h"
 #include "../../fontIds.h"
 #include <I18n.h>
+#include <ForkI18n.h>
 
 void MemoryMatchActivity::onEnter() {
   GameActivity::onEnter();
@@ -153,11 +154,11 @@ void MemoryMatchActivity::render() {
   const int screenHeight = renderer.getScreenHeight();
 
   // Title
-  renderer.drawCenteredText(UI_12_FONT_ID, 20, tr(STR_GAME_MEMORY_TITLE));
+  renderer.drawCenteredText(UI_12_FONT_ID, 20, fork_tr(STR_GAME_MEMORY_TITLE));
 
   // Moves counter
   char movesText[32];
-  snprintf(movesText, sizeof(movesText), "%s %d", tr(STR_GAME_MOVES), moves);
+  snprintf(movesText, sizeof(movesText), "%s %d", fork_tr(STR_GAME_MOVES), moves);
   renderer.drawCenteredText(UI_10_FONT_ID, 50, movesText);
 
   // Calculate optimal card size
@@ -261,17 +262,17 @@ void MemoryMatchActivity::render() {
     renderer.drawRect(boxX, boxY, boxWidth, boxHeight);
     renderer.drawRect(boxX + 1, boxY + 1, boxWidth - 2, boxHeight - 2);
 
-    renderer.drawCenteredText(UI_12_FONT_ID, boxY + 30, tr(STR_GAME_YOU_WIN));
+    renderer.drawCenteredText(UI_12_FONT_ID, boxY + 30, fork_tr(STR_GAME_YOU_WIN));
 
     char finalMoves[32];
-    snprintf(finalMoves, sizeof(finalMoves), "%s %d", tr(STR_GAME_MOVES), moves);
+    snprintf(finalMoves, sizeof(finalMoves), "%s %d", fork_tr(STR_GAME_MOVES), moves);
     renderer.drawCenteredText(UI_10_FONT_ID, boxY + 60, finalMoves);
 
-    renderer.drawCenteredText(UI_10_FONT_ID, boxY + 90, tr(STR_GAME_PRESS_CONFIRM_AGAIN));
+    renderer.drawCenteredText(UI_10_FONT_ID, boxY + 90, fork_tr(STR_GAME_PRESS_CONFIRM_AGAIN));
   }
 
   // Button hints
-  const char* confirmText = gameState == PLAYING ? tr(STR_GAME_REVEAL) : tr(STR_GAME_RESTART);
+  const char* confirmText = gameState == PLAYING ? fork_tr(STR_GAME_REVEAL) : fork_tr(STR_GAME_RESTART);
   const auto labels = mappedInput.mapLabels("Back", confirmText, "Move", "Move");
   GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 

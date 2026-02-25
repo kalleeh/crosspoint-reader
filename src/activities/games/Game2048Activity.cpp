@@ -10,6 +10,7 @@
 #include "components/UITheme.h"
 #include "../../fontIds.h"
 #include <I18n.h>
+#include <ForkI18n.h>
 
 using namespace GameConstants;
 
@@ -237,18 +238,18 @@ void Game2048Activity::render() {
   const int screenHeight = renderer.getScreenHeight();
 
   // Title and score
-  renderer.drawCenteredText(UI_12_FONT_ID, 20, tr(STR_GAME_2048_TITLE));
+  renderer.drawCenteredText(UI_12_FONT_ID, 20, fork_tr(STR_GAME_2048_TITLE));
 
   char scoreText[32];
-  snprintf(scoreText, sizeof(scoreText), "%s %d", tr(STR_GAME_SCORE), score);
+  snprintf(scoreText, sizeof(scoreText), "%s %d", fork_tr(STR_GAME_SCORE), score);
   renderer.drawCenteredText(UI_10_FONT_ID, 50, scoreText);
 
   // Instructions — moved to Y=67 so it sits above the grid (which starts at Y=80)
   // Replaced with win banner once 2048 is reached
   if (hasWon) {
-    renderer.drawCenteredText(UI_10_FONT_ID, 67, tr(STR_GAME_YOU_WIN));
+    renderer.drawCenteredText(UI_10_FONT_ID, 67, fork_tr(STR_GAME_YOU_WIN));
   } else {
-    renderer.drawCenteredText(UI_10_FONT_ID, 67, tr(STR_GAME_COMBINE_TILES));
+    renderer.drawCenteredText(UI_10_FONT_ID, 67, fork_tr(STR_GAME_COMBINE_TILES));
   }
 
   // Draw tiles
@@ -270,20 +271,20 @@ void Game2048Activity::render() {
     renderer.drawRect(boxX + 1, boxY + 1, boxWidth - 2, boxHeight - 2);
 
     if (gameState == WON) {
-      renderer.drawCenteredText(UI_12_FONT_ID, boxY + 30, tr(STR_GAME_YOU_WIN));
-      renderer.drawCenteredText(UI_10_FONT_ID, boxY + 60, tr(STR_GAME_2048_TITLE));
+      renderer.drawCenteredText(UI_12_FONT_ID, boxY + 30, fork_tr(STR_GAME_YOU_WIN));
+      renderer.drawCenteredText(UI_10_FONT_ID, boxY + 60, fork_tr(STR_GAME_2048_TITLE));
     } else {
-      renderer.drawCenteredText(UI_12_FONT_ID, boxY + 30, tr(STR_GAME_OVER));
+      renderer.drawCenteredText(UI_12_FONT_ID, boxY + 30, fork_tr(STR_GAME_OVER));
       char finalScore[32];
-      snprintf(finalScore, sizeof(finalScore), "%s %d", tr(STR_GAME_FINAL_SCORE), score);
+      snprintf(finalScore, sizeof(finalScore), "%s %d", fork_tr(STR_GAME_FINAL_SCORE), score);
       renderer.drawCenteredText(UI_10_FONT_ID, boxY + 60, finalScore);
     }
 
-    renderer.drawCenteredText(UI_10_FONT_ID, boxY + 100, tr(STR_GAME_PRESS_CONFIRM_RESTART));
+    renderer.drawCenteredText(UI_10_FONT_ID, boxY + 100, fork_tr(STR_GAME_PRESS_CONFIRM_RESTART));
   }
 
   // Button hints
-  const char* confirmText = gameState == PLAYING ? "" : tr(STR_GAME_RESTART);
+  const char* confirmText = gameState == PLAYING ? "" : fork_tr(STR_GAME_RESTART);
   const auto labels = mappedInput.mapLabels("Back", confirmText, "Slide", "Slide");
   GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 

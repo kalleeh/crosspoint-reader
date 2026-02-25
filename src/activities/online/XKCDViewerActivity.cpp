@@ -10,6 +10,7 @@
 #include "../../MappedInputManager.h"
 #include "../../fontIds.h"
 #include <I18n.h>
+#include <ForkI18n.h>
 
 // Static pointer for PNG callback
 static XKCDViewerActivity* s_instance = nullptr;
@@ -147,21 +148,21 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
   int httpCode = http.GET();
   if (httpCode != 200) {
     http.end();
-    renderer.drawCenteredText(UI_10_FONT_ID, height / 2, tr(STR_ONLINE_FAILED_LOAD), true);
-    
+    renderer.drawCenteredText(UI_10_FONT_ID, height / 2, fork_tr(STR_ONLINE_FAILED_LOAD), true);
+
     GUI.drawButtonHints(renderer, "Back", "",
                       currentComic > 1 ? "Prev" : "",
                       currentComic < maxComic ? "Next" : "");
-    
+
     renderer.displayBuffer(HalDisplay::FAST_REFRESH);
     return;
   }
-  
+
   // Save to SD card temporarily
   FsFile file;
   if (!Storage.openFileForWrite("XKCD", "/.crosspoint/xkcd_temp.png", file)) {
     http.end();
-    renderer.drawCenteredText(UI_10_FONT_ID, height / 2, tr(STR_ONLINE_FAILED_LOAD), true);
+    renderer.drawCenteredText(UI_10_FONT_ID, height / 2, fork_tr(STR_ONLINE_FAILED_LOAD), true);
     renderer.displayBuffer(HalDisplay::FAST_REFRESH);
     return;
   }
@@ -181,7 +182,7 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
   
   // Show "Decoding..." before PNG decode — decode can take 2-5s on complex images
   renderer.drawText(UI_10_FONT_ID, margin, margin + renderer.getLineHeight(UI_12_FONT_ID) + 20,
-                    tr(STR_ONLINE_LOADING), true);
+                    fork_tr(STR_ONLINE_LOADING), true);
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 
   // Decode PNG (draws directly to screen buffer via callback)
@@ -287,11 +288,11 @@ void XKCDViewerActivity::render() {
   const int margin = 20;
   
   if (state == LOADING) {
-    const char* msg = tr(STR_ONLINE_LOADING);
+    const char* msg = fork_tr(STR_ONLINE_LOADING);
     int textWidth = renderer.getTextWidth(UI_10_FONT_ID, msg);
     renderer.drawText(UI_10_FONT_ID, (width - textWidth) / 2, height / 2, msg, true);
   } else if (state == ERROR) {
-    const char* msg = tr(STR_ONLINE_FAILED_LOAD);
+    const char* msg = fork_tr(STR_ONLINE_FAILED_LOAD);
     int textWidth = renderer.getTextWidth(UI_10_FONT_ID, msg);
     renderer.drawText(UI_10_FONT_ID, (width - textWidth) / 2, height / 2, msg, true);
   } else {
@@ -307,7 +308,7 @@ void XKCDViewerActivity::render() {
     if (imageLoaded) {
       y = height - 150; // Position alt text at bottom
     } else {
-      const char* note = tr(STR_ONLINE_IMAGE_LOADING);
+      const char* note = fork_tr(STR_ONLINE_IMAGE_LOADING);
       renderer.drawText(UI_10_FONT_ID, margin, y, note, true);
       y += renderer.getLineHeight(UI_10_FONT_ID) + 15;
     }
@@ -345,7 +346,7 @@ void XKCDViewerActivity::render() {
     y += 20;
     
     // Navigation hint
-    const char* nav = tr(STR_XKCD_NAV);
+    const char* nav = fork_tr(STR_XKCD_NAV);
     if (y >= 0 && y < height) {
       renderer.drawText(UI_10_FONT_ID, margin, y, nav, true);
     }

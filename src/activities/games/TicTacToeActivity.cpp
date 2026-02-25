@@ -11,6 +11,7 @@
 
 #include "components/UITheme.h"
 #include <I18n.h>
+#include <ForkI18n.h>
 
 using namespace GameConstants;
 #include "../../fontIds.h"
@@ -230,18 +231,18 @@ void TicTacToeActivity::render() {
   const int screenWidth = renderer.getScreenWidth();
 
   // Title
-  renderer.drawCenteredText(UI_12_FONT_ID, 30, tr(STR_GAME_TICTACTOE_TITLE));
+  renderer.drawCenteredText(UI_12_FONT_ID, 30, fork_tr(STR_GAME_TICTACTOE_TITLE));
 
   // Status
   const char* status = "";
   if (gameState == PLAYING) {
-    status = playerTurn ? tr(STR_TICTACTOE_YOUR_TURN) : tr(STR_TICTACTOE_AI_THINKING);
+    status = playerTurn ? fork_tr(STR_TICTACTOE_YOUR_TURN) : fork_tr(STR_TICTACTOE_AI_THINKING);
   } else if (gameState == PLAYER_WIN) {
-    status = tr(STR_GAME_YOU_WIN);
+    status = fork_tr(STR_GAME_YOU_WIN);
   } else if (gameState == AI_WIN) {
-    status = tr(STR_TICTACTOE_AI_WINS);
+    status = fork_tr(STR_TICTACTOE_AI_WINS);
   } else if (gameState == DRAW) {
-    status = tr(STR_TICTACTOE_DRAW);
+    status = fork_tr(STR_TICTACTOE_DRAW);
   }
   renderer.drawCenteredText(UI_10_FONT_ID, 80, status);
 
@@ -260,12 +261,12 @@ void TicTacToeActivity::render() {
 
   // Instructions
   if (gameState != PLAYING) {
-    renderer.drawCenteredText(UI_10_FONT_ID, gridY + 3 * cellSize + 40, tr(STR_TICTACTOE_PRESS_AGAIN));
+    renderer.drawCenteredText(UI_10_FONT_ID, gridY + 3 * cellSize + 40, fork_tr(STR_TICTACTOE_PRESS_AGAIN));
   }
 
   // Button hints
-  const char* confirmText = gameState == PLAYING ? tr(STR_GAME_PLACE) : tr(STR_GAME_RESTART);
-  const auto labels = mappedInput.mapLabels("Back", confirmText, tr(STR_TICTACTOE_MOVE), tr(STR_TICTACTOE_MOVE));
+  const char* confirmText = gameState == PLAYING ? fork_tr(STR_GAME_PLACE) : fork_tr(STR_GAME_RESTART);
+  const auto labels = mappedInput.mapLabels("Back", confirmText, fork_tr(STR_TICTACTOE_MOVE), fork_tr(STR_TICTACTOE_MOVE));
   GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 
   // Battery

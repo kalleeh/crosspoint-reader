@@ -6,6 +6,7 @@
 #include <HalStorage.h>
 #include <ArduinoJson.h>
 #include <I18n.h>
+#include <ForkI18n.h>
 #include <algorithm>
 
 void AWSPracticeModeActivity::onEnter() {
@@ -21,7 +22,7 @@ void AWSPracticeModeActivity::render() {
   
   // Title
   int y = margin;
-  renderer.drawText(UI_12_FONT_ID, margin, y, tr(STR_AWS_SELECT_MODE), true);
+  renderer.drawText(UI_12_FONT_ID, margin, y, fork_tr(STR_AWS_SELECT_MODE), true);
   y += renderer.getLineHeight(UI_12_FONT_ID) + 10;
   
   renderer.drawLine(margin, y, width - margin, y);
@@ -76,7 +77,7 @@ void AWSPracticeModeActivity::renderDomainSelect() {
   
   // Title
   int y = margin;
-  renderer.drawText(UI_12_FONT_ID, margin, y, tr(STR_AWS_SELECT_DOMAIN), true);
+  renderer.drawText(UI_12_FONT_ID, margin, y, fork_tr(STR_AWS_SELECT_DOMAIN), true);
   y += renderer.getLineHeight(UI_12_FONT_ID) + 10;
   
   renderer.drawLine(margin, y, width - margin, y);
@@ -91,7 +92,7 @@ void AWSPracticeModeActivity::renderDomainSelect() {
   }
   
   if (domains.empty()) {
-    renderer.drawText(UI_10_FONT_ID, margin + 10, y, tr(STR_AWS_NO_DOMAINS), true);
+    renderer.drawText(UI_10_FONT_ID, margin + 10, y, fork_tr(STR_AWS_NO_DOMAINS), true);
   } else {
     // Draw domains
     for (int i = scrollOffset; i < (int)domains.size() && y < height - 60; i++) {

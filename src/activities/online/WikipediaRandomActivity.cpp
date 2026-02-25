@@ -13,6 +13,7 @@
 #include "../../fontIds.h"
 #include "OnlineContentFetcher.h"
 #include <I18n.h>
+#include <ForkI18n.h>
 
 void WikipediaRandomActivity::onEnter() {
   DEBUG_PRINTF("[%lu] [WIKI] Activity entered\n", millis());
@@ -304,7 +305,7 @@ void WikipediaRandomActivity::render() {
   const int margin = 20;
   
   if (state == ERROR) {
-    const char* msg = tr(STR_ONLINE_FAILED_LOAD);
+    const char* msg = fork_tr(STR_ONLINE_FAILED_LOAD);
     int textWidth = renderer.getTextWidth(UI_10_FONT_ID, msg);
     renderer.drawText(UI_10_FONT_ID, (width - textWidth) / 2, height / 2, msg, true);
   } else {
@@ -424,7 +425,7 @@ void WikipediaRandomActivity::render() {
     maxScroll = max(0, y - height + margin);
     
     // Legend (show loading status)
-    const char* btn2 = isFetching ? "" : tr(STR_ONLINE_LOAD_MORE);
+    const char* btn2 = isFetching ? "" : fork_tr(STR_ONLINE_LOAD_MORE);
     GUI.drawButtonHints(renderer, "Back", btn2, "", "");
   }
   

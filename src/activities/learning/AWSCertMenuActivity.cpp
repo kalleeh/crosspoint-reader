@@ -6,6 +6,7 @@
 #include <HalDisplay.h>
 #include <HalStorage.h>
 #include <I18n.h>
+#include <ForkI18n.h>
 #include <time.h>
 
 void AWSCertMenuActivity::onEnter() {
@@ -32,13 +33,13 @@ void AWSCertMenuActivity::render() {
   
   // Title
   int y = margin;
-  renderer.drawText(UI_12_FONT_ID, margin, y, tr(STR_AWS_MENU_TITLE), true);
+  renderer.drawText(UI_12_FONT_ID, margin, y, fork_tr(STR_AWS_MENU_TITLE), true);
   y += renderer.getLineHeight(UI_12_FONT_ID) + 10;
-  
+
   // Tab bar
   std::vector<TabInfo> tabs = {
-    {tr(STR_AWS_TAB_CERTS), currentTab == Tab::Certifications},
-    {tr(STR_AWS_TAB_STATS), currentTab == Tab::Stats}
+    {fork_tr(STR_AWS_TAB_CERTS), currentTab == Tab::Certifications},
+    {fork_tr(STR_AWS_TAB_STATS), currentTab == Tab::Stats}
   };
   const auto& metrics = UITheme::getInstance().getMetrics();
   GUI.drawTabBar(renderer, Rect{0, y, width, metrics.tabBarHeight}, tabs, false);
@@ -166,32 +167,32 @@ void AWSCertMenuActivity::renderStatsTab() {
   y += 40;
   
   // Overall Progress
-  renderer.drawText(UI_10_FONT_ID, margin, y, tr(STR_AWS_OVERALL_PROGRESS), true);
+  renderer.drawText(UI_10_FONT_ID, margin, y, fork_tr(STR_AWS_OVERALL_PROGRESS), true);
   y += 25;
-  
+
   int totalQuestions = stats.getTotalQuestionsAnswered(certs[selectedIndex].id);
   char questionsText[64];
-  snprintf(questionsText, sizeof(questionsText), "%s %d", tr(STR_AWS_QUESTIONS_ANSWERED), totalQuestions);
+  snprintf(questionsText, sizeof(questionsText), "%s %d", fork_tr(STR_AWS_QUESTIONS_ANSWERED), totalQuestions);
   renderer.drawText(UI_10_FONT_ID, margin + 10, y, questionsText, true);
   y += 20;
 
   int avgScore = stats.getAverageScore(certs[selectedIndex].id);
   char scoreText[64];
   if (totalQuestions > 0) {
-    snprintf(scoreText, sizeof(scoreText), "%s %d%%", tr(STR_AWS_AVERAGE_SCORE), avgScore);
+    snprintf(scoreText, sizeof(scoreText), "%s %d%%", fork_tr(STR_AWS_AVERAGE_SCORE), avgScore);
   } else {
-    snprintf(scoreText, sizeof(scoreText), "%s", tr(STR_AWS_AVERAGE_SCORE_NA));
+    snprintf(scoreText, sizeof(scoreText), "%s", fork_tr(STR_AWS_AVERAGE_SCORE_NA));
   }
   renderer.drawText(UI_10_FONT_ID, margin + 10, y, scoreText, true);
   y += 30;
-  
+
   // Recent History
-  renderer.drawText(UI_10_FONT_ID, margin, y, tr(STR_AWS_RECENT_HISTORY), true);
+  renderer.drawText(UI_10_FONT_ID, margin, y, fork_tr(STR_AWS_RECENT_HISTORY), true);
   y += 25;
-  
+
   auto history = stats.getRecentHistory(5, certs[selectedIndex].id);
   if (history.empty()) {
-    renderer.drawText(UI_10_FONT_ID, margin + 10, y, tr(STR_AWS_NO_HISTORY), true);
+    renderer.drawText(UI_10_FONT_ID, margin + 10, y, fork_tr(STR_AWS_NO_HISTORY), true);
     y += 20;
   } else {
     for (const auto& result : history) {
@@ -216,12 +217,12 @@ void AWSCertMenuActivity::renderStatsTab() {
   y += 10;
   
   // Weak Areas
-  renderer.drawText(UI_10_FONT_ID, margin, y, tr(STR_AWS_WEAK_AREAS), true);
+  renderer.drawText(UI_10_FONT_ID, margin, y, fork_tr(STR_AWS_WEAK_AREAS), true);
   y += 25;
-  
+
   auto weakDomains = stats.getWeakDomains(5, certs[selectedIndex].id);
   if (weakDomains.empty()) {
-    renderer.drawText(UI_10_FONT_ID, margin + 10, y, tr(STR_AWS_NO_WEAK_AREAS), true);
+    renderer.drawText(UI_10_FONT_ID, margin + 10, y, fork_tr(STR_AWS_NO_WEAK_AREAS), true);
   } else {
     int count = 0;
     for (const auto& pair : weakDomains) {
@@ -240,7 +241,7 @@ void AWSCertMenuActivity::renderStatsTab() {
   if (stats.getTotalQuestionsAnswered(certs[selectedIndex].id) > 0) {
     y += 20;
     renderer.drawRect(margin, y, 150, 30);
-    renderer.drawText(UI_10_FONT_ID, margin + 10, y + 8, tr(STR_AWS_CLEAR_STATS), true);
+    renderer.drawText(UI_10_FONT_ID, margin + 10, y + 8, fork_tr(STR_AWS_CLEAR_STATS), true);
   }
 
   // Button hints
@@ -283,17 +284,17 @@ void AWSCertMenuActivity::renderInfo() {
   y += 25;
   
   // Duration
-  renderer.drawText(UI_10_FONT_ID, margin, y, tr(STR_AWS_EXAM_DURATION), true);
+  renderer.drawText(UI_10_FONT_ID, margin, y, fork_tr(STR_AWS_EXAM_DURATION), true);
   y += 30;
 
   // Target audience
-  renderer.drawText(UI_10_FONT_ID, margin, y, tr(STR_AWS_TARGET_AUDIENCE), true);
+  renderer.drawText(UI_10_FONT_ID, margin, y, fork_tr(STR_AWS_TARGET_AUDIENCE), true);
   y += 20;
   renderer.drawText(UI_10_FONT_ID, margin + 10, y, cert.audience, true);
   y += 30;
 
   // Domain breakdown
-  renderer.drawText(UI_10_FONT_ID, margin, y, tr(STR_AWS_EXAM_DOMAINS), true);
+  renderer.drawText(UI_10_FONT_ID, margin, y, fork_tr(STR_AWS_EXAM_DOMAINS), true);
   y += 20;
   
   // Parse and display domains (split by |)
@@ -315,7 +316,7 @@ void AWSCertMenuActivity::renderInfo() {
   y += 30;
   
   // Practice info
-  renderer.drawText(UI_10_FONT_ID, margin, y, tr(STR_AWS_PRACTICE_INFO), true);
+  renderer.drawText(UI_10_FONT_ID, margin, y, fork_tr(STR_AWS_PRACTICE_INFO), true);
   
   GUI.drawButtonHints(renderer, "Back", "Practice", "", "");
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);

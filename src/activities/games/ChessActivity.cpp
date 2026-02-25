@@ -9,6 +9,7 @@
 #include "../../fontIds.h"
 #include "../../GameConstants.h"
 #include <I18n.h>
+#include <ForkI18n.h>
 
 using namespace GameConstants;
 
@@ -840,16 +841,16 @@ void ChessActivity::render() {
 
   // Title at top — show AI thinking indicator when AI is computing
   if (aiThinking) {
-    renderer.drawCenteredText(UI_10_FONT_ID, 15, tr(STR_CHESS_AI_THINKING));
+    renderer.drawCenteredText(UI_10_FONT_ID, 15, fork_tr(STR_CHESS_AI_THINKING));
   } else if (gameState == CHECKMATE) {
-    const char* winner = whiteTurn ? tr(STR_CHESS_BLACK_WINS) : tr(STR_CHESS_WHITE_WINS);
+    const char* winner = whiteTurn ? fork_tr(STR_CHESS_BLACK_WINS) : fork_tr(STR_CHESS_WHITE_WINS);
     renderer.drawCenteredText(UI_10_FONT_ID, 15, winner);
   } else if (gameState == STALEMATE) {
-    renderer.drawCenteredText(UI_10_FONT_ID, 15, tr(STR_CHESS_STALEMATE));
+    renderer.drawCenteredText(UI_10_FONT_ID, 15, fork_tr(STR_CHESS_STALEMATE));
   } else if (gameState == CHECK) {
-    renderer.drawCenteredText(UI_10_FONT_ID, 15, tr(STR_CHESS_CHECK));
+    renderer.drawCenteredText(UI_10_FONT_ID, 15, fork_tr(STR_CHESS_CHECK));
   } else {
-    const char* turn = whiteTurn ? tr(STR_CHESS_WHITE_TURN) : tr(STR_CHESS_BLACK_TURN);
+    const char* turn = whiteTurn ? fork_tr(STR_CHESS_WHITE_TURN) : fork_tr(STR_CHESS_BLACK_TURN);
     renderer.drawCenteredText(UI_10_FONT_ID, 15, turn);
   }
 
@@ -889,7 +890,7 @@ void ChessActivity::render() {
   // Button hints — show restart option when game is over
   const bool gameOver = (gameState == CHECKMATE || gameState == STALEMATE);
   const auto labels = gameOver
-    ? mappedInput.mapLabels("Back", tr(STR_GAME_RESTART), "", "")
+    ? mappedInput.mapLabels("Back", fork_tr(STR_GAME_RESTART), "", "")
     : mappedInput.mapLabels("Back", "Select", "Move", "Move");
   GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 

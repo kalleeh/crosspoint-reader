@@ -10,6 +10,7 @@
 #include "../../fontIds.h"
 #include "../../GameConstants.h"
 #include <I18n.h>
+#include <ForkI18n.h>
 
 using namespace GameConstants;
 
@@ -160,10 +161,10 @@ void SnakeActivity::render() {
   const int screenHeight = renderer.getScreenHeight();
 
   // Title and score at top
-  renderer.drawCenteredText(UI_12_FONT_ID, 15, tr(STR_GAME_SNAKE_TITLE));
+  renderer.drawCenteredText(UI_12_FONT_ID, 15, fork_tr(STR_GAME_SNAKE_TITLE));
 
   char scoreText[32];
-  snprintf(scoreText, sizeof(scoreText), "%s %d", tr(STR_GAME_SCORE), score);
+  snprintf(scoreText, sizeof(scoreText), "%s %d", fork_tr(STR_GAME_SCORE), score);
   renderer.drawCenteredText(UI_10_FONT_ID, 40, scoreText);
 
   // Calculate grid to use maximum vertical space
@@ -216,17 +217,17 @@ void SnakeActivity::render() {
     renderer.drawRect(boxX, boxY, boxWidth, boxHeight);
     renderer.drawRect(boxX + 1, boxY + 1, boxWidth - 2, boxHeight - 2);
 
-    renderer.drawCenteredText(UI_12_FONT_ID, boxY + 30, tr(STR_GAME_OVER));
+    renderer.drawCenteredText(UI_12_FONT_ID, boxY + 30, fork_tr(STR_GAME_OVER));
 
     char finalScore[32];
-    snprintf(finalScore, sizeof(finalScore), "%s %d", tr(STR_GAME_FINAL_SCORE), score);
+    snprintf(finalScore, sizeof(finalScore), "%s %d", fork_tr(STR_GAME_FINAL_SCORE), score);
     renderer.drawCenteredText(UI_10_FONT_ID, boxY + 60, finalScore);
 
-    renderer.drawCenteredText(UI_10_FONT_ID, boxY + 90, tr(STR_GAME_PRESS_CONFIRM_RESTART));
+    renderer.drawCenteredText(UI_10_FONT_ID, boxY + 90, fork_tr(STR_GAME_PRESS_CONFIRM_RESTART));
   }
 
   // Button hints at bottom
-  const char* confirmText = gameState == PLAYING ? "" : tr(STR_GAME_RESTART);
+  const char* confirmText = gameState == PLAYING ? "" : fork_tr(STR_GAME_RESTART);
   const auto labels = mappedInput.mapLabels("Back", confirmText, "Turn", "Turn");
   GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 

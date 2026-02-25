@@ -3,6 +3,7 @@
 #include <GfxRenderer.h>
 #include <HalDisplay.h>
 #include <I18n.h>
+#include <ForkI18n.h>
 #include "../../MappedInputManager.h"
 
 void AppsMenuActivity::onEnter() {
@@ -19,10 +20,10 @@ void AppsMenuActivity::render() {
   const auto& metrics = UITheme::getInstance().getMetrics();
 
   // Header
-  GUI.drawHeader(renderer, Rect{0, metrics.topPadding, screenWidth, metrics.headerHeight}, tr(STR_APPS_MENU_TITLE));
+  GUI.drawHeader(renderer, Rect{0, metrics.topPadding, screenWidth, metrics.headerHeight}, fork_tr(STR_APPS_MENU_TITLE));
 
   // List
-  const char* items[] = {tr(STR_AWS_MENU_TITLE), tr(STR_ONLINE_MENU_TITLE), tr(STR_GAMES_MENU_TITLE)};
+  const char* items[] = {fork_tr(STR_AWS_MENU_TITLE), fork_tr(STR_ONLINE_MENU_TITLE), fork_tr(STR_GAMES_MENU_TITLE)};
   constexpr int itemCount = 3;
   const int contentTop = metrics.topPadding + metrics.headerHeight + metrics.verticalSpacing;
   const int contentHeight = screenHeight - contentTop - metrics.buttonHintsHeight - metrics.verticalSpacing;
