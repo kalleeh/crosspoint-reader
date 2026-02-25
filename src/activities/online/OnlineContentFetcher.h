@@ -83,9 +83,13 @@ inline WeatherData fetchWeather(bool allowCache = false) {
     DeserializationError error = deserializeJson(doc, payload);
     Serial.printf("[Weather] JSON parse: %s\n", error.c_str());
     
-    if (!error && 
+    if (!error &&
         doc["current_condition"].size() > 0 &&
         doc["current_condition"][0]["weatherDesc"].size() > 0 &&
+        !doc["current_condition"][0]["temp_C"].isNull() &&
+        !doc["current_condition"][0]["FeelsLikeC"].isNull() &&
+        !doc["current_condition"][0]["humidity"].isNull() &&
+        !doc["current_condition"][0]["windspeedKmph"].isNull() &&
         doc["nearest_area"].size() > 0 &&
         doc["nearest_area"][0]["areaName"].size() > 0) {
       
