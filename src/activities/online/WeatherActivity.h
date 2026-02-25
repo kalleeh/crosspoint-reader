@@ -31,6 +31,7 @@ class WeatherActivity final : public Activity {
   explicit WeatherActivity(GfxRenderer& renderer, MappedInputManager& mappedInput,
                            const std::function<void()>& onBack)
       : Activity("Weather", renderer, mappedInput), onBack(onBack), state(LOADING),
+        location(), condition(),
         temperature(0), feelsLike(0), humidity(0), windSpeed(0), lastUpdate(0) {}
 
   void onEnter() override;

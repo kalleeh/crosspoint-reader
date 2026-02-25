@@ -68,17 +68,7 @@ void WeatherActivity::fetchWeather(bool allowCache) {
     return;
   }
   
-  // Retry up to 2 times on SSL failure
-  OnlineContentFetcher::WeatherData data;
-  for (int attempt = 0; attempt < 2; attempt++) {
-    data = OnlineContentFetcher::fetchWeather(allowCache);
-    if (data.success) break;
-    
-    if (attempt < 1) {
-      DEBUG_PRINTF("[Weather] Fetch failed (attempt %d), retrying...\n", attempt + 1);
-      delay(1000);  // Wait 1 second before retry
-    }
-  }
+  OnlineContentFetcher::WeatherData data = OnlineContentFetcher::fetchWeather(allowCache);
   
   if (data.success) {
     temperature = data.temperature;
@@ -149,6 +139,23 @@ void WeatherActivity::drawWeatherIcon(int x, int y, int size, const char* cond) 
       int rx = x - size/3 + i * size/5;
       renderer.drawLine(rx, y, rx, y + size/3);
     }
+  }
+  // Storm / Thunder
+  else if (condition.indexOf("storm") >= 0 || condition.indexOf("thunder") >= 0) {
+    // Cloud
+    int r = size / 6;
+    for (int i = 0; i < 3; i++) {
+      int cx = x - size/4 + i * size/4;
+      int cy = y - size/4;
+      for (int dy = -r; dy <= r; dy++) {
+        int dx = (int)sqrt(r*r - dy*dy);
+        renderer.drawLine(cx - dx, cy + dy, cx + dx, cy + dy);
+      }
+    }
+    // Lightning bolt
+    renderer.drawLine(x,           y - size/8,  x - size/8, y + size/8);
+    renderer.drawLine(x - size/8,  y + size/8,  x + size/16, y + size/16);
+    renderer.drawLine(x + size/16, y + size/16, x - size/8, y + size/2);
   }
   // Snow
   else if (condition.indexOf("snow") >= 0) {

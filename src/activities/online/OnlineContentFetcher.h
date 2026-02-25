@@ -20,7 +20,7 @@ struct WeatherCacheData {
   float humidity = 0.0f;
   float windSpeed = 0.0f;
 };
-static WeatherCacheData s_weatherCache;
+inline WeatherCacheData s_weatherCache{};
 
 struct WeatherData {
   bool success;
