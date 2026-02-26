@@ -6,6 +6,7 @@
 #include "../../MappedInputManager.h"
 #include "../../fontIds.h"
 #include "OnlineContentFetcher.h"
+#include <ForkI18n.h>
 
 void WordOfTheDayActivity::onEnter() {
   WiFi.mode(WIFI_STA);
@@ -62,11 +63,11 @@ void WordOfTheDayActivity::render() {
   const int height = renderer.getScreenHeight();
   
   if (state == LOADING) {
-    const char* msg = "Loading...";
+    const char* msg = fork_tr(STR_ONLINE_LOADING);
     int textWidth = renderer.getTextWidth(UI_10_FONT_ID, msg);
     renderer.drawText(UI_10_FONT_ID, (width - textWidth) / 2, height / 2, msg, true);
   } else if (state == ERROR) {
-    const char* msg = "Failed to load word";
+    const char* msg = fork_tr(STR_ONLINE_FAILED_LOAD);
     int textWidth = renderer.getTextWidth(UI_10_FONT_ID, msg);
     renderer.drawText(UI_10_FONT_ID, (width - textWidth) / 2, height / 2, msg, true);
   } else {
@@ -83,19 +84,35 @@ void WordOfTheDayActivity::render() {
     String remaining = definition;
     
     while (remaining.length() > 0 && y < height + scrollOffset) {
-      int breakPos = remaining.length();
-      
-      for (int i = 1; i <= remaining.length(); i++) {
-        String test = remaining.substring(0, i);
-        if (renderer.getTextWidth(UI_10_FONT_ID, test.c_str()) > contentWidth) {
-          breakPos = i - 1;
-          break;
+      int breakPos;
+      if (renderer.getTextWidth(UI_10_FONT_ID, remaining.c_str()) <= contentWidth) {
+        breakPos = remaining.length();
+      } else {
+        int lo = 0, hi = (int)remaining.length() - 1;
+        while (lo < hi) {
+          int mid = lo + (hi - lo + 1) / 2;
+          String test = remaining.substring(0, mid);
+          if (renderer.getTextWidth(UI_10_FONT_ID, test.c_str()) <= contentWidth) {
+            lo = mid;
+          } else {
+            hi = mid - 1;
+          }
         }
+        breakPos = lo;
       }
-      
+
       if (breakPos < remaining.length()) {
         int lastSpace = remaining.lastIndexOf(' ', breakPos);
         if (lastSpace > 0) breakPos = lastSpace;
+      }
+
+      if (breakPos == 0) {
+        uint8_t firstByte = (uint8_t)remaining[0];
+        if      (firstByte < 0x80) breakPos = 1;
+        else if (firstByte < 0xE0) breakPos = 2;
+        else if (firstByte < 0xF0) breakPos = 3;
+        else                        breakPos = 4;
+        if (breakPos > (int)remaining.length()) breakPos = remaining.length();
       }
       
       String line = remaining.substring(0, breakPos);
@@ -115,19 +132,35 @@ void WordOfTheDayActivity::render() {
       
       remaining = example;
       while (remaining.length() > 0 && y < height + scrollOffset) {
-        int breakPos = remaining.length();
-        
-        for (int i = 1; i <= remaining.length(); i++) {
-          String test = remaining.substring(0, i);
-          if (renderer.getTextWidth(UI_10_FONT_ID, test.c_str()) > contentWidth) {
-            breakPos = i - 1;
-            break;
+        int breakPos;
+        if (renderer.getTextWidth(UI_10_FONT_ID, remaining.c_str()) <= contentWidth) {
+          breakPos = remaining.length();
+        } else {
+          int lo = 0, hi = (int)remaining.length() - 1;
+          while (lo < hi) {
+            int mid = lo + (hi - lo + 1) / 2;
+            String test = remaining.substring(0, mid);
+            if (renderer.getTextWidth(UI_10_FONT_ID, test.c_str()) <= contentWidth) {
+              lo = mid;
+            } else {
+              hi = mid - 1;
+            }
           }
+          breakPos = lo;
         }
-        
+
         if (breakPos < remaining.length()) {
           int lastSpace = remaining.lastIndexOf(' ', breakPos);
           if (lastSpace > 0) breakPos = lastSpace;
+        }
+
+        if (breakPos == 0) {
+          uint8_t firstByte = (uint8_t)remaining[0];
+          if      (firstByte < 0x80) breakPos = 1;
+          else if (firstByte < 0xE0) breakPos = 2;
+          else if (firstByte < 0xF0) breakPos = 3;
+          else                        breakPos = 4;
+          if (breakPos > (int)remaining.length()) breakPos = remaining.length();
         }
         
         String line = remaining.substring(0, breakPos);

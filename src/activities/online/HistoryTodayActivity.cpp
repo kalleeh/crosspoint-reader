@@ -8,6 +8,7 @@
 #include <GfxRenderer.h>
 #include "../../MappedInputManager.h"
 #include "../../fontIds.h"
+#include <ForkI18n.h>
 
 void HistoryTodayActivity::onEnter() {
   WiFi.mode(WIFI_STA);
@@ -41,7 +42,15 @@ void HistoryTodayActivity::fetchEvents() {
     render();
     return;
   }
-  
+
+  // Sync time via NTP so we have the correct calendar date
+  configTime(0, 0, "pool.ntp.org", "time.nist.gov");
+  int timeAttempts = 0;
+  while (time(nullptr) < 1000000000L && timeAttempts < 20) {
+    delay(100);
+    timeAttempts++;
+  }
+
   // Get current date
   time_t now = time(nullptr);
   struct tm* timeinfo = localtime(&now);
@@ -121,11 +130,11 @@ void HistoryTodayActivity::render() {
   const int margin = 20;
   
   if (state == LOADING) {
-    const char* msg = "Loading...";
+    const char* msg = fork_tr(STR_ONLINE_LOADING);
     int textWidth = renderer.getTextWidth(UI_10_FONT_ID, msg);
     renderer.drawText(UI_10_FONT_ID, (width - textWidth) / 2, height / 2, msg, true);
   } else if (state == ERROR) {
-    const char* msg = "Failed to load events";
+    const char* msg = fork_tr(STR_ONLINE_FAILED_LOAD);
     int textWidth = renderer.getTextWidth(UI_10_FONT_ID, msg);
     renderer.drawText(UI_10_FONT_ID, (width - textWidth) / 2, height / 2, msg, true);
   } else {
@@ -154,19 +163,35 @@ void HistoryTodayActivity::render() {
       String remaining = event;
       
       while (remaining.length() > 0 && y < height + scrollOffset) {
-        int breakPos = remaining.length();
-        
-        for (int i = 1; i <= remaining.length(); i++) {
-          String test = remaining.substring(0, i);
-          if (renderer.getTextWidth(UI_10_FONT_ID, test.c_str()) > maxWidth) {
-            breakPos = i - 1;
-            break;
+        int breakPos;
+        if (renderer.getTextWidth(UI_10_FONT_ID, remaining.c_str()) <= maxWidth) {
+          breakPos = remaining.length();
+        } else {
+          int lo = 0, hi = (int)remaining.length() - 1;
+          while (lo < hi) {
+            int mid = lo + (hi - lo + 1) / 2;
+            String test = remaining.substring(0, mid);
+            if (renderer.getTextWidth(UI_10_FONT_ID, test.c_str()) <= maxWidth) {
+              lo = mid;
+            } else {
+              hi = mid - 1;
+            }
           }
+          breakPos = lo;
         }
-        
+
         if (breakPos < remaining.length()) {
           int lastSpace = remaining.lastIndexOf(' ', breakPos);
           if (lastSpace > 0) breakPos = lastSpace;
+        }
+
+        if (breakPos == 0) {
+          uint8_t firstByte = (uint8_t)remaining[0];
+          if      (firstByte < 0x80) breakPos = 1;
+          else if (firstByte < 0xE0) breakPos = 2;
+          else if (firstByte < 0xF0) breakPos = 3;
+          else                        breakPos = 4;
+          if (breakPos > (int)remaining.length()) breakPos = remaining.length();
         }
         
         String line = remaining.substring(0, breakPos);
