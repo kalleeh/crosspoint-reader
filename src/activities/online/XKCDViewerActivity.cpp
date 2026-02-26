@@ -24,6 +24,7 @@ static uint16_t* s_lineBuffer = nullptr;
 
 // PNG file callbacks
 void* pngOpen(const char *filename, int32_t *size) {
+  if (s_pngFile) s_pngFile.close();
   if (Storage.openFileForRead("XKCD", filename, s_pngFile)) {
     *size = s_pngFile.fileSize();
     return &s_pngFile;
@@ -49,14 +50,14 @@ void XKCDViewerActivity::onEnter() {
   s_instance = this;
   WiFi.mode(WIFI_STA);
   WiFi.begin();  // Auto-reconnect to saved network
-  
+
   // Wait up to 5 seconds for connection
   int attempts = 0;
   while (WiFi.status() != WL_CONNECTED && attempts < 50) {
     delay(100);
     attempts++;
   }
-  
+
   if (WiFi.status() == WL_CONNECTED && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
     fetchComic(); // Fetch latest
   } else {
@@ -67,7 +68,7 @@ void XKCDViewerActivity::onEnter() {
 
 void XKCDViewerActivity::onExit() {
   s_instance = nullptr;
-  
+
   // Clean up dithering buffers
   if (errorBuffer) {
     delete[] errorBuffer;
@@ -88,24 +89,24 @@ void XKCDViewerActivity::onExit() {
 void XKCDViewerActivity::fetchComic(int num) {
   state = LOADING;
   render();
-  
+
   if (WiFi.status() != WL_CONNECTED) {
     state = ERROR;
     render();
     return;
   }
-  
+
   HTTPClient http;
   String url = num == 0 ? "https://xkcd.com/info.0.json" : "https://xkcd.com/" + String(num) + "/info.0.json";
   http.begin(url);
   http.setTimeout(10000);  // 10 second timeout
   http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
-  
+
   int httpCode = http.GET();
   if (httpCode == 200) {
     String payload = http.getString();
     JsonDocument doc;
-    
+
     if (deserializeJson(doc, payload) == DeserializationError::Ok &&
         !doc["num"].isNull() &&
         !doc["img"].isNull()) {
@@ -113,15 +114,15 @@ void XKCDViewerActivity::fetchComic(int num) {
       title = doc["title"].as<String>();
       alt = doc["alt"].as<String>();
       imageUrl = doc["img"].as<String>();
-      
+
       if (num == 0) {
         maxComic = currentComic;
       }
-      
+
       state = LOADED;
       scrollOffset = 0;
       imageLoaded = false;
-      
+
       // Download and display image
       downloadAndDisplayImage();
     } else {
@@ -130,7 +131,7 @@ void XKCDViewerActivity::fetchComic(int num) {
   } else {
     state = ERROR;
   }
-  
+
   http.end();
   if (state == ERROR) render();
 }
@@ -138,21 +139,21 @@ void XKCDViewerActivity::fetchComic(int num) {
 void XKCDViewerActivity::downloadAndDisplayImage() {
   // Clear screen and draw title first
   renderer.clearScreen();
-  
+
   const int width = renderer.getScreenWidth();
   const int height = renderer.getScreenHeight();
   const int margin = 20;
-  
+
   // Comic number and title at top
   String header = "#" + String(currentComic) + ": " + title;
   renderer.drawText(UI_12_FONT_ID, margin, margin, header.c_str(), true);
-  
+
   // Download PNG to temporary file
   HTTPClient http;
   http.begin(imageUrl);
   http.setTimeout(15000);  // 15 second timeout for images
   http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
-  
+
   int httpCode = http.GET();
   if (httpCode != 200) {
     http.end();
@@ -174,9 +175,10 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
     renderer.displayBuffer(HalDisplay::FAST_REFRESH);
     return;
   }
-  
+
   int contentLength = http.getSize();
   int downloaded = 0;
+  bool writeFailed = false;
   WiFiClient* stream = http.getStreamPtr();
   uint8_t buffer[512];
   unsigned long downloadStart = millis();
@@ -187,17 +189,30 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
       if (avail > (int)sizeof(buffer)) avail = sizeof(buffer);
       int len = stream->readBytes(buffer, avail);
       if (len > 0) {
-        file.write(buffer, len);
+        if (file.write(buffer, len) != (size_t)len) {
+          writeFailed = true;
+          break;
+        }
         downloaded += len;
       }
     } else {
       delay(1);
     }
   }
-  
+
   file.close();
   http.end();
-  
+
+  if (writeFailed) {
+    Storage.remove("/.crosspoint/xkcd_temp.png");
+    renderer.drawCenteredText(UI_10_FONT_ID, height / 2, fork_tr(STR_ONLINE_FAILED_LOAD), true);
+    GUI.drawButtonHints(renderer, "Back", "",
+                        currentComic > 1 ? "Prev" : "",
+                        currentComic < maxComic ? "Next" : "");
+    renderer.displayBuffer(HalDisplay::FAST_REFRESH);
+    return;
+  }
+
   // Show "Decoding..." before PNG decode — decode can take 2-5s on complex images
   renderer.drawText(UI_10_FONT_ID, margin, margin + renderer.getLineHeight(UI_12_FONT_ID) + 20,
                     fork_tr(STR_ONLINE_LOADING), true);
@@ -209,37 +224,37 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
     png.close();
     imageLoaded = true;
   }
-  
+
   // Clean up temp file
   Storage.remove("/.crosspoint/xkcd_temp.png");
-  
+
   GUI.drawButtonHints(renderer, "Back", "",
                       currentComic > 1 ? "Prev" : "",
                       currentComic < maxComic ? "Next" : "");
-  
+
   // Display the complete buffer (title + image + menu)
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
 
 int XKCDViewerActivity::pngDraw(PNGDRAW *pDraw) {
   if (!s_instance) return 1;
-  
+
   const int screenWidth = s_instance->renderer.getScreenWidth();
   const int screenHeight = s_instance->renderer.getScreenHeight();
   const int topMargin = 60;
   const int bottomMargin = 40;
   const int maxImageWidth = screenWidth - 40;
-  
+
   // Calculate scale factor
   float scale = 1.0;
   if (pDraw->iWidth > maxImageWidth) {
     scale = (float)maxImageWidth / pDraw->iWidth;
   }
-  
+
   int scaledWidth = pDraw->iWidth * scale;
   int xOffset = (screenWidth - scaledWidth) / 2;
   int yOffset = topMargin;
-  
+
   // Initialize dithering buffers on first line
   if (pDraw->y == 0) {
     ditherWidth = scaledWidth;
@@ -247,10 +262,15 @@ int XKCDViewerActivity::pngDraw(PNGDRAW *pDraw) {
     if (nextErrorBuffer) delete[] nextErrorBuffer;
     errorBuffer = new int16_t[ditherWidth + 2]();
     nextErrorBuffer = new int16_t[ditherWidth + 2]();
+    if (!errorBuffer || !nextErrorBuffer) {
+      if (errorBuffer)    { delete[] errorBuffer;    errorBuffer    = nullptr; }
+      if (nextErrorBuffer) { delete[] nextErrorBuffer; nextErrorBuffer = nullptr; }
+      return 1;
+    }
     if (s_lineBuffer) delete[] s_lineBuffer;
     s_lineBuffer = new uint16_t[pDraw->iWidth];
   }
-  
+
   // Convert PNG line to RGB565
   if (!s_lineBuffer) return 1;
   s_instance->png.getLineAsRGB565(pDraw, s_lineBuffer, PNG_RGB565_BIG_ENDIAN, 0xffffffff);
@@ -265,48 +285,51 @@ int XKCDViewerActivity::pngDraw(PNGDRAW *pDraw) {
     uint8_t r = (pixel >> 11) & 0x1F;
     uint8_t g = (pixel >> 5) & 0x3F;
     uint8_t b = pixel & 0x1F;
-    int gray = (r * 8 + g * 4 + b * 8) / 3;
-    
+    uint8_t r8 = (r << 3) | (r >> 2);
+    uint8_t g8 = (g << 2) | (g >> 4);
+    uint8_t b8 = (b << 3) | (b >> 2);
+    int gray = (r8 + g8 + b8) / 3;
+
     // Add accumulated error
     gray += errorBuffer[x + 1];
     gray = constrain(gray, 0, 255);
-    
+
     // Determine output pixel
     bool isBlack = gray < 128;
     int error = gray - (isBlack ? 0 : 255);
-    
+
     // Distribute error (80% diffusion to prevent pepper noise)
     error = (error * 4) / 5;
     errorBuffer[x + 2] += (error * 7) >> 4;      // Right: 7/16
     nextErrorBuffer[x] += (error * 3) >> 4;      // Bottom-left: 3/16
     nextErrorBuffer[x + 1] += (error * 5) >> 4;  // Bottom: 5/16
     nextErrorBuffer[x + 2] += error >> 4;        // Bottom-right: 1/16
-    
+
     // Draw pixel
     int screenX = xOffset + x;
     int screenY = yOffset + (pDraw->y * scale);
-    
+
     if (screenX >= 0 && screenX < screenWidth && screenY >= 0 && screenY < screenHeight - bottomMargin) {
       s_instance->renderer.drawPixel(screenX, screenY, isBlack);
     }
   }
-  
+
   // Swap error buffers for next line
   int16_t* temp = errorBuffer;
   errorBuffer = nextErrorBuffer;
   nextErrorBuffer = temp;
   memset(nextErrorBuffer, 0, (ditherWidth + 2) * sizeof(int16_t));
-  
+
   return 1;
 }
 
 void XKCDViewerActivity::render() {
   renderer.clearScreen();
-  
+
   const int width = renderer.getScreenWidth();
   const int height = renderer.getScreenHeight();
   const int margin = 20;
-  
+
   if (state == LOADING) {
     const char* msg = fork_tr(STR_ONLINE_LOADING);
     int textWidth = renderer.getTextWidth(UI_10_FONT_ID, msg);
@@ -317,12 +340,12 @@ void XKCDViewerActivity::render() {
     renderer.drawText(UI_10_FONT_ID, (width - textWidth) / 2, height / 2, msg, true);
   } else {
     int y = margin - scrollOffset;
-    
+
     // Comic number and title
     String header = "#" + String(currentComic) + ": " + title;
     renderer.drawText(UI_12_FONT_ID, margin, y, header.c_str(), true);
     y += renderer.getLineHeight(UI_12_FONT_ID) + 15;
-    
+
     // Image is drawn during PNG decode (via callback)
     // Skip space for image if loaded
     if (imageLoaded) {
@@ -332,11 +355,11 @@ void XKCDViewerActivity::render() {
       renderer.drawText(UI_10_FONT_ID, margin, y, note, true);
       y += renderer.getLineHeight(UI_10_FONT_ID) + 15;
     }
-    
+
     // Alt text with wrapping
     const int maxWidth = width - 2 * margin;
     String remaining = alt;
-    
+
     while (remaining.length() > 0 && y < height + scrollOffset) {
       int breakPos;
       if (renderer.getTextWidth(UI_10_FONT_ID, remaining.c_str()) <= maxWidth) {
@@ -369,29 +392,33 @@ void XKCDViewerActivity::render() {
         else                        breakPos = 4;  // 4-byte lead
         if (breakPos > (int)remaining.length()) breakPos = remaining.length();
       }
-      
+
       String line = remaining.substring(0, breakPos);
       if (y >= 0 && y < height) {
         renderer.drawText(UI_10_FONT_ID, margin, y, line.c_str(), true);
       }
-      
+
       y += renderer.getLineHeight(UI_10_FONT_ID) + 2;
       remaining = remaining.substring(breakPos);
       remaining.trim();
     }
-    
+
     y += 20;
-    
+
     // Navigation hint
     const char* nav = fork_tr(STR_XKCD_NAV);
     if (y >= 0 && y < height) {
       renderer.drawText(UI_10_FONT_ID, margin, y, nav, true);
     }
     y += renderer.getLineHeight(UI_10_FONT_ID);
-    
+
     maxScroll = max(0, y - height + margin);
+
+    GUI.drawButtonHints(renderer, "Back", "",
+                        currentComic > 1 ? "Prev" : "",
+                        currentComic < maxComic ? "Next" : "");
   }
-  
+
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
 
