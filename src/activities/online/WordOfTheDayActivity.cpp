@@ -7,6 +7,7 @@
 #include "../../fontIds.h"
 #include "OnlineContentFetcher.h"
 #include <ForkI18n.h>
+#include "components/UITheme.h"
 
 void WordOfTheDayActivity::onEnter() {
   WiFi.mode(WIFI_STA);
@@ -178,6 +179,7 @@ void WordOfTheDayActivity::render() {
     maxScroll = max(0, y - height + 40);
   }
   
+  GUI.drawButtonHints(renderer, "Back", state == LOADING ? "" : fork_tr(STR_ONLINE_REFRESH), "", "");
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
 

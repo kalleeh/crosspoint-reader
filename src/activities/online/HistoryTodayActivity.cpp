@@ -9,6 +9,7 @@
 #include "../../MappedInputManager.h"
 #include "../../fontIds.h"
 #include <ForkI18n.h>
+#include "components/UITheme.h"
 
 void HistoryTodayActivity::onEnter() {
   WiFi.mode(WIFI_STA);
@@ -148,7 +149,7 @@ void HistoryTodayActivity::render() {
     int y = margin - scrollOffset;
     
     // Title with date - centered
-    String title = "On This Day";
+    String title = String(fork_tr(STR_HISTORY_TITLE));
     int titleWidth = renderer.getTextWidth(UI_12_FONT_ID, title.c_str());
     renderer.drawText(UI_12_FONT_ID, (width - titleWidth) / 2, y, title.c_str(), true);
     y += renderer.getLineHeight(UI_12_FONT_ID) + 5;
@@ -218,6 +219,7 @@ void HistoryTodayActivity::render() {
     maxScroll = max(0, y - height + margin);
   }
   
+  GUI.drawButtonHints(renderer, "Back", state == LOADING ? "" : fork_tr(STR_ONLINE_REFRESH), "", "");
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
 
