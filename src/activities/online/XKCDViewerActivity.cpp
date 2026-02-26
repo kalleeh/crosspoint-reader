@@ -20,6 +20,7 @@ static FsFile s_pngFile;
 static int16_t* errorBuffer = nullptr;
 static int16_t* nextErrorBuffer = nullptr;
 static int ditherWidth = 0;
+static uint16_t* s_lineBuffer = nullptr;
 
 // PNG file callbacks
 void* pngOpen(const char *filename, int32_t *size) {
@@ -76,7 +77,11 @@ void XKCDViewerActivity::onExit() {
     delete[] nextErrorBuffer;
     nextErrorBuffer = nullptr;
   }
-  
+  if (s_lineBuffer) {
+    delete[] s_lineBuffer;
+    s_lineBuffer = nullptr;
+  }
+
   WiFi.mode(WIFI_OFF);
 }
 
@@ -101,7 +106,9 @@ void XKCDViewerActivity::fetchComic(int num) {
     String payload = http.getString();
     JsonDocument doc;
     
-    if (deserializeJson(doc, payload) == DeserializationError::Ok) {
+    if (deserializeJson(doc, payload) == DeserializationError::Ok &&
+        !doc["num"].isNull() &&
+        !doc["img"].isNull()) {
       currentComic = doc["num"].as<int>();
       title = doc["title"].as<String>();
       alt = doc["alt"].as<String>();
@@ -125,6 +132,7 @@ void XKCDViewerActivity::fetchComic(int num) {
   }
   
   http.end();
+  if (state == ERROR) render();
 }
 
 void XKCDViewerActivity::downloadAndDisplayImage() {
@@ -167,14 +175,24 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
     return;
   }
   
+  int contentLength = http.getSize();
+  int downloaded = 0;
   WiFiClient* stream = http.getStreamPtr();
   uint8_t buffer[512];
-  
-  while (http.connected() && stream->available()) {
-    size_t size = stream->available();
-    if (size > sizeof(buffer)) size = sizeof(buffer);
-    size_t bytesRead = stream->readBytes(buffer, size);
-    file.write(buffer, bytesRead);
+  unsigned long downloadStart = millis();
+  while (http.connected() && (contentLength < 0 || downloaded < contentLength)) {
+    if (millis() - downloadStart > 20000) break;  // 20-second wall-clock cap
+    int avail = stream->available();
+    if (avail > 0) {
+      if (avail > (int)sizeof(buffer)) avail = sizeof(buffer);
+      int len = stream->readBytes(buffer, avail);
+      if (len > 0) {
+        file.write(buffer, len);
+        downloaded += len;
+      }
+    } else {
+      delay(1);
+    }
   }
   
   file.close();
@@ -229,19 +247,21 @@ int XKCDViewerActivity::pngDraw(PNGDRAW *pDraw) {
     if (nextErrorBuffer) delete[] nextErrorBuffer;
     errorBuffer = new int16_t[ditherWidth + 2]();
     nextErrorBuffer = new int16_t[ditherWidth + 2]();
+    if (s_lineBuffer) delete[] s_lineBuffer;
+    s_lineBuffer = new uint16_t[pDraw->iWidth];
   }
   
   // Convert PNG line to RGB565
-  uint16_t lineBuffer[800];
-  s_instance->png.getLineAsRGB565(pDraw, lineBuffer, PNG_RGB565_BIG_ENDIAN, 0xffffffff);
-  
+  if (!s_lineBuffer) return 1;
+  s_instance->png.getLineAsRGB565(pDraw, s_lineBuffer, PNG_RGB565_BIG_ENDIAN, 0xffffffff);
+
   // Process line with Floyd-Steinberg dithering
   for (int x = 0; x < scaledWidth; x++) {
     int sourceX = x / scale;
     if (sourceX >= pDraw->iWidth) sourceX = pDraw->iWidth - 1;
-    
+
     // Convert to grayscale with gamma correction (simplified)
-    uint16_t pixel = lineBuffer[sourceX];
+    uint16_t pixel = s_lineBuffer[sourceX];
     uint8_t r = (pixel >> 11) & 0x1F;
     uint8_t g = (pixel >> 5) & 0x3F;
     uint8_t b = pixel & 0x1F;
@@ -318,19 +338,36 @@ void XKCDViewerActivity::render() {
     String remaining = alt;
     
     while (remaining.length() > 0 && y < height + scrollOffset) {
-      int breakPos = remaining.length();
-      
-      for (int i = 1; i <= remaining.length(); i++) {
-        String test = remaining.substring(0, i);
-        if (renderer.getTextWidth(UI_10_FONT_ID, test.c_str()) > maxWidth) {
-          breakPos = i - 1;
-          break;
+      int breakPos;
+      if (renderer.getTextWidth(UI_10_FONT_ID, remaining.c_str()) <= maxWidth) {
+        breakPos = remaining.length();
+      } else {
+        int lo = 0, hi = (int)remaining.length() - 1;
+        while (lo < hi) {
+          int mid = lo + (hi - lo + 1) / 2;
+          String test = remaining.substring(0, mid);
+          if (renderer.getTextWidth(UI_10_FONT_ID, test.c_str()) <= maxWidth) {
+            lo = mid;
+          } else {
+            hi = mid - 1;
+          }
         }
+        breakPos = lo;
       }
-      
+
       if (breakPos < remaining.length()) {
         int lastSpace = remaining.lastIndexOf(' ', breakPos);
         if (lastSpace > 0) breakPos = lastSpace;
+      }
+
+      if (breakPos == 0) {
+        // Advance past the complete UTF-8 codepoint to avoid splitting multi-byte sequences
+        uint8_t firstByte = (uint8_t)remaining[0];
+        if      (firstByte < 0x80) breakPos = 1;  // ASCII
+        else if (firstByte < 0xE0) breakPos = 2;  // 2-byte lead
+        else if (firstByte < 0xF0) breakPos = 3;  // 3-byte lead
+        else                        breakPos = 4;  // 4-byte lead
+        if (breakPos > (int)remaining.length()) breakPos = remaining.length();
       }
       
       String line = remaining.substring(0, breakPos);
