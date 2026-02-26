@@ -51,6 +51,13 @@ void HistoryTodayActivity::fetchEvents() {
     timeAttempts++;
   }
 
+  if (time(nullptr) < 1000000000L) {
+    // NTP sync failed — cannot determine today's date
+    state = ERROR;
+    render();
+    return;
+  }
+
   // Get current date
   time_t now = time(nullptr);
   struct tm* timeinfo = localtime(&now);

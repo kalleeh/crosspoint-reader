@@ -14,7 +14,7 @@ void WordOfTheDayActivity::onEnter() {
   
   // Wait briefly for connection
   int attempts = 0;
-  while (WiFi.status() != WL_CONNECTED && attempts < 20) {
+  while (WiFi.status() != WL_CONNECTED && attempts < 50) {
     delay(100);
     attempts++;
   }
