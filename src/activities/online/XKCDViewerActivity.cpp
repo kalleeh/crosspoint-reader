@@ -87,6 +87,7 @@ void XKCDViewerActivity::onExit() {
 }
 
 void XKCDViewerActivity::fetchComic(int num) {
+  if (num > 0) currentComic = num;  // update immediately so navigation advances past failed comics
   state = LOADING;
   render();
 
@@ -223,6 +224,12 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
     png.decode(NULL, 0);
     png.close();
     imageLoaded = true;
+  } else {
+    // Redraw cleanly with failure message instead of leaving "Decoding..." on screen
+    renderer.clearScreen();
+    String header = "#" + String(currentComic) + ": " + title;
+    renderer.drawText(UI_12_FONT_ID, margin, margin, header.c_str(), true);
+    renderer.drawCenteredText(UI_10_FONT_ID, height / 2, fork_tr(STR_ONLINE_FAILED_LOAD), true);
   }
 
   // Clean up temp file
