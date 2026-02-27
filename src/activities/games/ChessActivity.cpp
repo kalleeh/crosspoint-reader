@@ -147,13 +147,13 @@ void ChessActivity::loop() {
           whiteTurn = !whiteTurn;
 
           // Check game state
-          if (isInCheck(!whiteTurn)) {
-            if (isCheckmate(!whiteTurn)) {
+          if (isInCheck(whiteTurn)) {
+            if (isCheckmate(whiteTurn)) {
               gameState = CHECKMATE;
             } else {
               gameState = CHECK;
             }
-          } else if (!hasLegalMoves(!whiteTurn)) {
+          } else if (!hasLegalMoves(whiteTurn)) {
             gameState = STALEMATE;
           } else {
             gameState = PLAYING;
@@ -762,13 +762,13 @@ void ChessActivity::aiMove() {
   whiteTurn = !whiteTurn;
 
   // Check game state
-  if (isInCheck(!whiteTurn)) {
-    if (isCheckmate(!whiteTurn)) {
+  if (isInCheck(whiteTurn)) {
+    if (isCheckmate(whiteTurn)) {
       gameState = CHECKMATE;
     } else {
       gameState = CHECK;
     }
-  } else if (!hasLegalMoves(!whiteTurn)) {
+  } else if (!hasLegalMoves(whiteTurn)) {
     gameState = STALEMATE;
   } else {
     gameState = PLAYING;

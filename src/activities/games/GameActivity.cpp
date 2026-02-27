@@ -14,25 +14,6 @@ void GameActivity::drawCenteredMessage(const char* message, int y) {
   renderer.drawCenteredText(UI_12_FONT_ID, y, message);
 }
 
-void GameActivity::drawPauseMenu() {
-  const int boxWidth = 300;
-  const int boxHeight = 150;
-  const int boxX = (renderer.getScreenWidth() - boxWidth) / 2;
-  const int boxY = (renderer.getScreenHeight() - boxHeight) / 2;
-
-  // Draw dialog box
-  renderer.fillRect(boxX, boxY, boxWidth, boxHeight, false);
-  renderer.drawRect(boxX, boxY, boxWidth, boxHeight);
-  renderer.drawRect(boxX + 1, boxY + 1, boxWidth - 2, boxHeight - 2);
-
-  // Title
-  renderer.drawCenteredText(UI_12_FONT_ID, boxY + 30, fork_tr(STR_GAME_PAUSED));
-
-  // Instructions
-  renderer.drawCenteredText(UI_10_FONT_ID, boxY + 70, fork_tr(STR_GAME_PRESS_BACK_RESUME));
-  renderer.drawCenteredText(UI_10_FONT_ID, boxY + 95, fork_tr(STR_GAME_HOLD_BACK_QUIT));
-}
-
 void GameActivity::drawGrid(int gridX, int gridY, int cellSize, int rows, int cols, bool thick) {
   // Draw grid lines
   for (int i = 0; i <= rows; i++) {
