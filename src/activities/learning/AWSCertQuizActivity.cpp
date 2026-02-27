@@ -194,7 +194,7 @@ void AWSCertQuizActivity::saveSession() {
 
   char safeDomain[48];
   sanitizeFilenameComponent(practiceDomain.c_str(), safeDomain, sizeof(safeDomain));
-  char path[PATH_BUF_SIZE];
+  char path[256];
   snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-session-%s-%s-%s.dat", certId.c_str(), practiceMode.c_str(), safeDomain);
   FsFile file = Storage.open(path, O_WRONLY | O_CREAT | O_TRUNC);
   if (!file) return;
@@ -229,7 +229,7 @@ void AWSCertQuizActivity::saveSession() {
 bool AWSCertQuizActivity::loadSession() {
   char safeDomain[48];
   sanitizeFilenameComponent(practiceDomain.c_str(), safeDomain, sizeof(safeDomain));
-  char path[PATH_BUF_SIZE];
+  char path[256];
   snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-session-%s-%s-%s.dat", certId.c_str(), practiceMode.c_str(), safeDomain);
   FsFile file;
   if (!openFileOrShowError(path, file, "Session Load Error")) {
@@ -291,7 +291,7 @@ bool AWSCertQuizActivity::loadSession() {
 void AWSCertQuizActivity::clearSession() {
   char safeDomain[48];
   sanitizeFilenameComponent(practiceDomain.c_str(), safeDomain, sizeof(safeDomain));
-  char path[PATH_BUF_SIZE];
+  char path[256];
   snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-session-%s-%s-%s.dat", certId.c_str(), practiceMode.c_str(), safeDomain);
   Storage.remove(path);
 }
@@ -644,7 +644,7 @@ void AWSCertQuizActivity::renderQuestion() {
   // ── Header ────────────────────────────────────────────────────────────────
   // Row 1 (y=8):  progress bar
   int progressBarWidth = width - 2 * margin;
-  int progressFilled = (progressBarWidth * (currentIndex + 1)) / questionCount;
+  int progressFilled = questionCount > 0 ? (progressBarWidth * (currentIndex + 1)) / questionCount : 0;
   renderer.drawRect(margin, 8, progressBarWidth, 6);
   renderer.fillRect(margin, 8, progressFilled, 6);
 
@@ -720,6 +720,7 @@ void AWSCertQuizActivity::renderQuestion() {
   {
     const int height = renderer.getScreenHeight();
     if (currentIndex < (int)userAnswers.size() && userAnswers[currentIndex] >= 0
+        && userAnswers[currentIndex] < 4
         && y + 6 < height - 50) {
       char selText[20];
       snprintf(selText, sizeof(selText), "Answer: %s", optLabels[userAnswers[currentIndex]]);
@@ -1371,9 +1372,10 @@ int AWSCertQuizActivity::drawWrappedText(int fontId, int x, int y, const char* t
     
     // Measure current line + next char
     int len = ptr - lineStart + 1;
-    if (len < 256) {
-      memcpy(lineBuf, lineStart, len);
-      lineBuf[len] = '\0';
+    {
+      int copyLen = (len < 256) ? len : 255;
+      memcpy(lineBuf, lineStart, copyLen);
+      lineBuf[copyLen] = '\0';
       int testWidth = renderer.getTextWidth(fontId, lineBuf);
       
       if (testWidth > maxWidth && ptr > lineStart) {

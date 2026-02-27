@@ -234,31 +234,40 @@ void QuizStatsManager::saveStats() {
     return;
   }
 
+  bool writeOk = true;
+
   // Write per-cert lastPracticeDate map
   int certDateCount = (int)lastPracticeDateByCert.size();
-  file.write((uint8_t*)&certDateCount, sizeof(certDateCount));
+  writeOk &= (file.write((uint8_t*)&certDateCount, sizeof(certDateCount)) == sizeof(certDateCount));
   for (const auto& pair : lastPracticeDateByCert) {
     char certKey[32] = {};
     strncpy(certKey, pair.first.c_str(), sizeof(certKey) - 1);
-    file.write((uint8_t*)certKey, sizeof(certKey));
-    file.write((uint8_t*)&pair.second, sizeof(pair.second));
+    writeOk &= (file.write((uint8_t*)certKey, sizeof(certKey)) == sizeof(certKey));
+    writeOk &= (file.write((uint8_t*)&pair.second, sizeof(pair.second)) == sizeof(pair.second));
   }
 
   // Write results count + results
   int resultCount = (int)results.size();
-  file.write((uint8_t*)&resultCount, sizeof(resultCount));
+  writeOk &= (file.write((uint8_t*)&resultCount, sizeof(resultCount)) == sizeof(resultCount));
   for (const auto& result : results) {
-    file.write((uint8_t*)&result, sizeof(result));
+    writeOk &= (file.write((uint8_t*)&result, sizeof(result)) == sizeof(result));
   }
 
   // Write domain stats count + entries
   int domainCount = (int)domainStats.size();
-  file.write((uint8_t*)&domainCount, sizeof(domainCount));
+  writeOk &= (file.write((uint8_t*)&domainCount, sizeof(domainCount)) == sizeof(domainCount));
   for (const auto& pair : domainStats) {
     char key[96] = {};
     strncpy(key, pair.first.c_str(), sizeof(key) - 1);
-    file.write((uint8_t*)key, sizeof(key));
-    file.write((uint8_t*)&pair.second, sizeof(pair.second));
+    writeOk &= (file.write((uint8_t*)key, sizeof(key)) == sizeof(key));
+    writeOk &= (file.write((uint8_t*)&pair.second, sizeof(pair.second)) == sizeof(pair.second));
+  }
+
+  if (!writeOk) {
+    Serial.println("[QuizStats] Write failed, aborting save");
+    file.close();
+    Storage.remove(tmpPath);
+    return;
   }
 
   file.close();
