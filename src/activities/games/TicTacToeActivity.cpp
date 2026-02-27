@@ -39,19 +39,19 @@ void TicTacToeActivity::resetGame() {
 }
 
 void TicTacToeActivity::loop() {
+  if (mappedInput.wasReleased(MappedInputManager::Button::Back)) {
+    if (onBack) {
+      onBack();
+    }
+    return;
+  }
+
   if (aiWaiting && millis() - aiThinkStart >= 200) {
     aiWaiting = false;
     aiMove();
     gameState = checkWinner();
     playerTurn = true;
     render();
-    return;
-  }
-
-  if (mappedInput.wasReleased(MappedInputManager::Button::Back)) {
-    if (onBack) {
-      onBack();
-    }
     return;
   }
 

@@ -624,8 +624,39 @@ int ChessActivity::minimax(int depth, int alpha, int beta, bool maximizing) {
       board[move.toX][move.toY] = piece;
       board[move.fromX][move.fromY] = EMPTY;
 
+      // Promotion: upgrade pawn to queen so evaluation sees the right piece value
+      if (abs(piece) == 1 && (move.toY == 0 || move.toY == 7)) {
+        board[move.toX][move.toY] = (piece > 0) ? W_QUEEN : B_QUEEN;
+      }
+
+      // En passant: remove the captured pawn at the side
+      Piece epPawn = EMPTY;
+      if (move.isEnPassant) {
+        epPawn = board[move.toX][move.fromY];
+        board[move.toX][move.fromY] = EMPTY;
+      }
+
+      // Castling: reposition the rook
+      int castleRookFrom = -1, castleRookTo = -1;
+      Piece castleRook = EMPTY;
+      if (abs(piece) == W_KING && abs(move.toX - move.fromX) == 2) {
+        castleRookFrom = (move.toX > move.fromX) ? 7 : 0;
+        castleRookTo   = (move.toX > move.fromX) ? 5 : 3;
+        castleRook = board[castleRookFrom][move.fromY];
+        board[castleRookTo][move.fromY]   = castleRook;
+        board[castleRookFrom][move.fromY] = EMPTY;
+      }
+
       int eval = minimax(depth - 1, alpha, beta, false);
 
+      // Restore in reverse order
+      if (castleRookFrom != -1) {
+        board[castleRookFrom][move.fromY] = castleRook;
+        board[castleRookTo][move.fromY]   = EMPTY;
+      }
+      if (move.isEnPassant) {
+        board[move.toX][move.fromY] = epPawn;
+      }
       board[move.fromX][move.fromY] = piece;
       board[move.toX][move.toY] = originalTarget;
 
@@ -643,8 +674,39 @@ int ChessActivity::minimax(int depth, int alpha, int beta, bool maximizing) {
       board[move.toX][move.toY] = piece;
       board[move.fromX][move.fromY] = EMPTY;
 
+      // Promotion: upgrade pawn to queen so evaluation sees the right piece value
+      if (abs(piece) == 1 && (move.toY == 0 || move.toY == 7)) {
+        board[move.toX][move.toY] = (piece > 0) ? W_QUEEN : B_QUEEN;
+      }
+
+      // En passant: remove the captured pawn at the side
+      Piece epPawn = EMPTY;
+      if (move.isEnPassant) {
+        epPawn = board[move.toX][move.fromY];
+        board[move.toX][move.fromY] = EMPTY;
+      }
+
+      // Castling: reposition the rook
+      int castleRookFrom = -1, castleRookTo = -1;
+      Piece castleRook = EMPTY;
+      if (abs(piece) == W_KING && abs(move.toX - move.fromX) == 2) {
+        castleRookFrom = (move.toX > move.fromX) ? 7 : 0;
+        castleRookTo   = (move.toX > move.fromX) ? 5 : 3;
+        castleRook = board[castleRookFrom][move.fromY];
+        board[castleRookTo][move.fromY]   = castleRook;
+        board[castleRookFrom][move.fromY] = EMPTY;
+      }
+
       int eval = minimax(depth - 1, alpha, beta, true);
 
+      // Restore in reverse order
+      if (castleRookFrom != -1) {
+        board[castleRookFrom][move.fromY] = castleRook;
+        board[castleRookTo][move.fromY]   = EMPTY;
+      }
+      if (move.isEnPassant) {
+        board[move.toX][move.fromY] = epPawn;
+      }
       board[move.fromX][move.fromY] = piece;
       board[move.toX][move.toY] = originalTarget;
 
