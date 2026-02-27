@@ -29,8 +29,8 @@ void MemoryMatchActivity::resetGame() {
   }
 
   // Shuffle
-  for (int i = 0; i < NUM_PAIRS * 2; i++) {
-    int j = random(0, NUM_PAIRS * 2);
+  for (int i = NUM_PAIRS * 2 - 1; i > 0; i--) {
+    int j = random(0, i + 1);
     int temp = values[i];
     values[i] = values[j];
     values[j] = temp;

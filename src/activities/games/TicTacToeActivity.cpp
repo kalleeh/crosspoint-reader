@@ -34,9 +34,20 @@ void TicTacToeActivity::resetGame() {
   cursorY = 1;
   gameState = PLAYING;
   playerTurn = true;
+  aiWaiting = false;
+  aiThinkStart = 0;
 }
 
 void TicTacToeActivity::loop() {
+  if (aiWaiting && millis() - aiThinkStart >= 200) {
+    aiWaiting = false;
+    aiMove();
+    gameState = checkWinner();
+    playerTurn = true;
+    render();
+    return;
+  }
+
   if (mappedInput.wasReleased(MappedInputManager::Button::Back)) {
     if (onBack) {
       onBack();
@@ -77,13 +88,9 @@ void TicTacToeActivity::loop() {
         needsRedraw = true;
 
         if (gameState == PLAYING) {
-          // Render board with "AI Thinking..." BEFORE the delay so user sees feedback
           playerTurn = false;
-          render();
-          delay(200);
-          aiMove();
-          gameState = checkWinner();
-          playerTurn = true;
+          aiWaiting = true;
+          aiThinkStart = millis();
           needsRedraw = true;
         }
       }

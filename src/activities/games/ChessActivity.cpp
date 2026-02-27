@@ -67,6 +67,8 @@ void ChessActivity::resetGame() {
   whiteKingMoved = blackKingMoved = false;
   whiteRookLeftMoved = whiteRookRightMoved = false;
   blackRookLeftMoved = blackRookRightMoved = false;
+  enPassantX = -1;
+  enPassantY = -1;
   aiThinking = false;
 }
 
@@ -222,6 +224,11 @@ bool ChessActivity::isValidMove(int fromX, int fromY, int toX, int toY, bool che
       else if (absDx == 1 && dy == direction && target != EMPTY) {
         validMove = true;
       }
+      // En passant capture
+      else if (absDx == 1 && dy == direction && target == EMPTY &&
+               toX == enPassantX && toY == enPassantY) {
+        validMove = true;
+      }
       break;
     }
 
@@ -292,6 +299,36 @@ bool ChessActivity::isValidMove(int fromX, int fromY, int toX, int toY, bool che
       if (absDx <= 1 && absDy <= 1) {
         validMove = true;
       }
+      // Castling: king moves exactly 2 squares horizontally from starting position
+      else if (absDy == 0 && absDx == 2) {
+        bool kMoved = isWhite ? whiteKingMoved : blackKingMoved;
+        int row = isWhite ? 7 : 0;
+        if (!kMoved && fromY == row && fromX == 4 && !isInCheck(isWhite)) {
+          if (dx == 2) {  // Kingside
+            bool rMoved = isWhite ? whiteRookRightMoved : blackRookRightMoved;
+            if (!rMoved && board[5][row] == EMPTY && board[6][row] == EMPTY) {
+              // Check king doesn't pass through f-file
+              board[5][row] = piece;
+              board[4][row] = EMPTY;
+              bool passThroughCheck = isInCheck(isWhite);
+              board[5][row] = EMPTY;
+              board[4][row] = piece;
+              if (!passThroughCheck) validMove = true;
+            }
+          } else {  // Queenside (dx == -2)
+            bool rMoved = isWhite ? whiteRookLeftMoved : blackRookLeftMoved;
+            if (!rMoved && board[1][row] == EMPTY && board[2][row] == EMPTY && board[3][row] == EMPTY) {
+              // Check king doesn't pass through d-file
+              board[3][row] = piece;
+              board[4][row] = EMPTY;
+              bool passThroughCheck = isInCheck(isWhite);
+              board[3][row] = EMPTY;
+              board[4][row] = piece;
+              if (!passThroughCheck) validMove = true;
+            }
+          }
+        }
+      }
       break;
   }
 
@@ -300,14 +337,22 @@ bool ChessActivity::isValidMove(int fromX, int fromY, int toX, int toY, bool che
 
   // Check if move leaves king in check
   if (checkKingSafety) {
+    // For en passant, also temporarily remove the captured pawn
+    bool isEP = (abs(piece) == 1 && toX == enPassantX && toY == enPassantY && board[toX][toY] == EMPTY);
+    Piece epCaptured = EMPTY;
+    if (isEP) {
+      epCaptured = board[toX][fromY];
+      board[toX][fromY] = EMPTY;
+    }
     Piece originalTarget = board[toX][toY];
     board[toX][toY] = piece;
     board[fromX][fromY] = EMPTY;
 
     bool kingInCheck = isInCheck(isWhite);
 
-    board[fromX][fromY] = piece;
     board[toX][toY] = originalTarget;
+    board[fromX][fromY] = piece;
+    if (isEP) board[toX][fromY] = epCaptured;
 
     if (kingInCheck)
       return false;
@@ -357,8 +402,36 @@ void ChessActivity::makeMove(int fromX, int fromY, int toX, int toY) {
     }
   }
 
+  // En passant: remove the captured pawn (it sits at (toX, fromY))
+  bool wasEnPassant = (abs(piece) == 1 && toX == enPassantX && toY == enPassantY);
+  if (wasEnPassant) {
+    board[toX][fromY] = EMPTY;
+  }
+
   board[toX][toY] = piece;
   board[fromX][fromY] = EMPTY;
+
+  // Update en passant target for next move
+  if (abs(board[toX][toY]) == 1 && abs(toY - fromY) == 2) {
+    enPassantX = toX;
+    enPassantY = (fromY + toY) / 2;  // Midpoint = passed-over square
+  } else {
+    enPassantX = -1;
+    enPassantY = -1;
+  }
+
+  // Castling: also move the rook
+  if (abs(piece) == 6 && abs(toX - fromX) == 2) {
+    bool isWhiteP = piece > 0;
+    int row = isWhiteP ? 7 : 0;
+    if (toX == 6) {  // Kingside: rook h→f
+      board[5][row] = isWhiteP ? W_ROOK : B_ROOK;
+      board[7][row] = EMPTY;
+    } else {  // Queenside: rook a→d
+      board[3][row] = isWhiteP ? W_ROOK : B_ROOK;
+      board[0][row] = EMPTY;
+    }
+  }
 
   moveHistory.push_back(move);
 }

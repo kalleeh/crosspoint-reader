@@ -43,6 +43,8 @@ class ChessActivity final : public GameActivity {
   bool whiteKingMoved, blackKingMoved;
   bool whiteRookLeftMoved, whiteRookRightMoved;
   bool blackRookLeftMoved, blackRookRightMoved;
+  int enPassantX = -1;  // file of en passant target square (-1 = none)
+  int enPassantY = -1;  // rank of en passant target square
   const std::function<void()> onBack;
 
   // AI variables

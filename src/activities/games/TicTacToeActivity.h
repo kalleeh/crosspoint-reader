@@ -13,6 +13,8 @@ class TicTacToeActivity final : public GameActivity {
   int cursorX, cursorY;
   GameState gameState;
   bool playerTurn;
+  bool aiWaiting = false;
+  unsigned long aiThinkStart = 0;
   const std::function<void()> onBack;
 
   void resetGame();
