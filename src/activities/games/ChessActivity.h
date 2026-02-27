@@ -31,6 +31,7 @@ class ChessActivity final : public GameActivity {
     Piece capturedPiece;
     bool isPromotion;
     Piece promotionPiece;
+    bool isEnPassant = false;
   };
 
   Piece board[8][8];

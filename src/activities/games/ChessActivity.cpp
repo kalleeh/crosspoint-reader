@@ -344,6 +344,24 @@ bool ChessActivity::isValidMove(int fromX, int fromY, int toX, int toY, bool che
       epCaptured = board[toX][fromY];
       board[toX][fromY] = EMPTY;
     }
+    // For castling, also reposition the rook in the simulation
+    bool isCastling = (abs(piece) == W_KING && abs(toX - fromX) == 2);
+    Piece castleRook = EMPTY;
+    int castleRookFromX = -1, castleRookToX = -1;
+    if (isCastling) {
+      int row = fromY;
+      if (toX > fromX) {  // Kingside
+        castleRookFromX = 7;
+        castleRookToX = 5;
+      } else {  // Queenside
+        castleRookFromX = 0;
+        castleRookToX = 3;
+      }
+      castleRook = board[castleRookFromX][row];
+      board[castleRookToX][row] = castleRook;
+      board[castleRookFromX][row] = EMPTY;
+    }
+
     Piece originalTarget = board[toX][toY];
     board[toX][toY] = piece;
     board[fromX][fromY] = EMPTY;
@@ -352,6 +370,11 @@ bool ChessActivity::isValidMove(int fromX, int fromY, int toX, int toY, bool che
 
     board[toX][toY] = originalTarget;
     board[fromX][fromY] = piece;
+
+    if (isCastling) {
+      board[castleRookFromX][fromY] = castleRook;
+      board[castleRookToX][fromY] = EMPTY;
+    }
     if (isEP) board[toX][fromY] = epCaptured;
 
     if (kingInCheck)
@@ -407,6 +430,7 @@ void ChessActivity::makeMove(int fromX, int fromY, int toX, int toY) {
   if (wasEnPassant) {
     board[toX][fromY] = EMPTY;
   }
+  move.isEnPassant = wasEnPassant;
 
   board[toX][toY] = piece;
   board[fromX][fromY] = EMPTY;
@@ -450,6 +474,11 @@ void ChessActivity::undoMove() {
 
   board[move.fromX][move.fromY] = piece;
   board[move.toX][move.toY] = move.capturedPiece;
+  // Restore the pawn captured by en passant (it was at the side, not the destination)
+  if (move.isEnPassant) {
+    Piece capturedPawn = (piece > 0) ? B_PAWN : W_PAWN;
+    board[move.toX][move.fromY] = capturedPawn;
+  }
 }
 
 bool ChessActivity::isInCheck(bool white) {
