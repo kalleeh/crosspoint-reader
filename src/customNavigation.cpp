@@ -35,8 +35,10 @@ void onGoHome();
 void onGoToBrowser();
 void onGoToFileTransfer();
 
-// Fork-local state
+// Fork-local state — copies made before exitActivity() deletes their owners
 static String awsCertId;
+static String awsMode;
+static String awsDomain;
 
 void onGoToApps() {
   exitActivity();
@@ -138,10 +140,13 @@ void onGoToAWSPracticeMode(const char* certId) {
 }
 
 void onStartAWSQuiz(const char* certId, const char* mode, const char* domain) {
+  // Copy all three strings before exitActivity() deletes the activity that owns them
   if (certId) awsCertId = certId;
+  if (mode)   awsMode   = mode;
+  if (domain) awsDomain = domain;
 
   exitActivity();
   enterNewActivity(new AWSCertQuizActivity(renderer, mappedInputManager,
     []() { onGoToAWSPracticeMode(awsCertId.c_str()); },
-    certId, mode, domain));
+    awsCertId.c_str(), awsMode.c_str(), awsDomain.c_str()));
 }
