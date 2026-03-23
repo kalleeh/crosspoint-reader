@@ -33,7 +33,7 @@ static void sanitizeFilenameComponent(const char* src, char* dst, size_t dstSize
 
 // Constants
 static constexpr int MAX_QUESTIONS_FROM_FILE = 200;  // Maximum questions to load from a single JSON file
-static constexpr size_t JSON_PARSE_BUF_SIZE = 1536;
+static constexpr size_t JSON_PARSE_BUF_SIZE = 2200;
 static constexpr size_t PATH_BUF_SIZE = 128;
 static constexpr int DEFAULT_MARGIN = 20;
 static constexpr int MIN_OPTION_HEIGHT = 30;
@@ -56,8 +56,71 @@ void AWSCertQuizActivity::onEnter() {
   renderer.drawText(UI_12_FONT_ID, DEFAULT_MARGIN, renderer.getScreenHeight() / 2 - 10, "Loading questions...", true);
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 
-  // Load questions from SD card
-  hasCustomPack = loadCustomQuestions();
+  // ------------------------------------------------------------------
+  // Phase 1: Determine which file-sequential question indices to load.
+  // This happens BEFORE any file parsing so we only pull the questions
+  // we actually need into RAM, preventing OOM crashes on large banks.
+  // ------------------------------------------------------------------
+  std::vector<uint16_t> fileIndices;
+
+  if (practiceMode == "review") {
+    // Review mode: load only the questions that were previously wrong.
+    if (!loadIncorrectHistory(fileIndices) || fileIndices.empty()) {
+      showError("No Review History",
+                "No incorrect questions found.\n\n"
+                "Complete a quiz first to build your review history.");
+      return;
+    }
+    std::sort(fileIndices.begin(), fileIndices.end());
+
+  } else if (practiceMode != "quickstart" && peekSessionFileIndices(fileIndices)) {
+    // Resuming an interrupted session — reload the exact same question set.
+    DEBUG_PRINTLN("[AWS] Found saved session, reloading its question set");
+
+  } else {
+    // Fresh start: decide how many questions we need.
+    int neededCount;
+    if      (practiceMode == "quick")      neededCount = 15;
+    else if (practiceMode == "quickstart") neededCount = 5;
+    else if (practiceMode == "study")      neededCount = 20;
+    else                                   neededCount = getMaxQuestionsForCert();
+
+    if (practiceMode == "domain" && practiceDomain != "all") {
+      // Cheap domain scan: only the matching file positions.
+      if (!cheapDomainScan(practiceDomain.c_str(), fileIndices) || fileIndices.empty()) {
+        showError("No Questions Found",
+                  "No questions found for this domain.\n\n"
+                  "Try selecting a different domain or use 'All Domains' mode.");
+        return;
+      }
+      // If more domain questions exist than we need, random-sub-select.
+      if ((int)fileIndices.size() > neededCount) {
+        std::vector<uint16_t> sub;
+        randomSelectIndices(fileIndices.size(), neededCount, sub);
+        std::vector<uint16_t> filtered;
+        filtered.reserve(sub.size());
+        for (uint16_t idx : sub) filtered.push_back(fileIndices[idx]);
+        std::sort(filtered.begin(), filtered.end());
+        fileIndices = std::move(filtered);
+      }
+    } else {
+      // Random selection from the whole bank.
+      int total = countQuestionsInFile();
+      if (total <= 0) {
+        showError("No Questions Found",
+                  "Question bank files not found on SD card.\n\n"
+                  "Please add question files to:\n/aws-quiz/\n\n"
+                  "Format: JSON files with questions array");
+        return;
+      }
+      randomSelectIndices(total, neededCount, fileIndices);
+    }
+  }
+
+  // ------------------------------------------------------------------
+  // Phase 2: Load only the selected questions from the SD card.
+  // ------------------------------------------------------------------
+  hasCustomPack = loadCustomQuestions(&fileIndices);
 
   if (!hasCustomPack || customQuestions.empty()) {
     state = LOADING;
@@ -68,38 +131,27 @@ void AWSCertQuizActivity::onEnter() {
     return;
   }
 
-
   // Set max questions based on mode
   if (practiceMode == "quick") {
     maxQuestions = 15;
   } else if (practiceMode == "study") {
     maxQuestions = 20;
   } else if (practiceMode == "quickstart") {
-    maxQuestions = 5;  // Just 5 questions
+    maxQuestions = 5;
   } else if (practiceMode == "review") {
-    // Load incorrect questions from history
-    if (!loadIncorrectHistory()) {
-      showError("No Review History", 
-                "No incorrect questions found.\n\n"
-                "Complete a quiz first to build your review history.");
-      return;
-    }
-    maxQuestions = questionCount;  // Use all incorrect questions
+    maxQuestions = (int)customQuestions.size();
   } else {
-    maxQuestions = getMaxQuestionsForCert();  // Full exam
+    maxQuestions = getMaxQuestionsForCert();
   }
-  
+
   // Enable timer for Full Exam mode
   showTimer = (practiceMode == "full");
   if (showTimer) {
     startTime = millis();
   }
-  
-  // Try to resume an interrupted session (full, quick, study, domain).
-  // Each mode has its own session file so they never collide.
-  // Review and quickstart are excluded: review uses history files; quickstart is too short.
+
+  // Try to resume an interrupted session.
   if (practiceMode != "review" && practiceMode != "quickstart" && loadSession()) {
-    // Recalculate correctCount from saved answers so ANSWER state shows accurate score
     for (int i = 0; i < currentIndex && i < (int)userAnswers.size(); i++) {
       if (userAnswers[i] >= 0) {
         int aIdx = questionOrder[i];
@@ -113,9 +165,17 @@ void AWSCertQuizActivity::onEnter() {
     renderQuestion();
     return;
   }
-  
-  // Start new session (review mode already has questionOrder from loadIncorrectHistory)
-  if (practiceMode != "review") {
+
+  // Start new session.
+  if (practiceMode == "review") {
+    // Build a sequential questionOrder over the densely-loaded customQuestions.
+    questionOrder.clear();
+    questionCount = (int)customQuestions.size();
+    questionOrder.reserve(questionCount);
+    for (int i = 0; i < questionCount; i++) questionOrder.push_back((uint16_t)i);
+    userAnswers.clear();
+    userAnswers.resize(questionCount, -1);
+  } else {
     loadQuestions();
     shuffleQuestions();
     if (questionOrder.empty() || questionCount == 0) {
@@ -125,10 +185,6 @@ void AWSCertQuizActivity::onEnter() {
                 "Try selecting a different domain or use 'All Domains' mode.");
       return;
     }
-  } else {
-    // Review mode: initialize userAnswers for the loaded questionOrder
-    userAnswers.clear();
-    userAnswers.resize(questionCount, -1);
   }
   state = QUESTION;
   renderQuestion();
@@ -201,9 +257,18 @@ void AWSCertQuizActivity::saveSession() {
 
   bool ok = true;
 
-  // Write session data
+  // Write session data (v2 format):
+  //   [currentIndex: int32][questionCount: int32]
+  //   [fileIndices: uint16 × N][questionOrder: uint16 × N][userAnswers: int8 × N]
   ok = ok && file.write((uint8_t*)&currentIndex, sizeof(currentIndex)) == sizeof(currentIndex);
   ok = ok && file.write((uint8_t*)&questionCount, sizeof(questionCount)) == sizeof(questionCount);
+
+  // Write fileIndices so the same question set can be re-loaded on resume
+  for (int i = 0; ok && i < questionCount; i++) {
+    uint16_t fi = (questionOrder[i] < customQuestions.size())
+                  ? customQuestions[questionOrder[i]].fileIndex : 0;
+    ok = ok && file.write((uint8_t*)&fi, sizeof(fi)) == sizeof(fi);
+  }
 
   // Write questionOrder (native uint16_t, no widening)
   for (int i = 0; ok && i < questionCount; i++) {
@@ -248,6 +313,21 @@ bool AWSCertQuizActivity::loadSession() {
       currentIndex < 0 || currentIndex >= questionCount) {
     file.close();
     return false;
+  }
+
+  // v2 format: skip the fileIndices section (already used during pre-load phase)
+  // Expected remaining bytes: fileIndices(N×2) + questionOrder(N×2) + userAnswers(N×1)
+  size_t expectedRemaining = (size_t)questionCount * (sizeof(uint16_t) + sizeof(uint16_t) + sizeof(int8_t));
+  if (file.size() < (size_t)(8 + expectedRemaining)) {
+    // Old format session (no fileIndices) — discard so we start fresh
+    file.close();
+    return false;
+  }
+  for (int i = 0; i < questionCount; i++) {
+    uint16_t dummy;
+    if (file.read((uint8_t*)&dummy, sizeof(dummy)) != sizeof(dummy)) {
+      file.close(); return false;
+    }
   }
 
   // Read questionOrder (stored as uint16_t)
@@ -303,24 +383,26 @@ void AWSCertQuizActivity::saveIncorrectHistory() {
   snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-history-%s.dat", certId.c_str());
   FsFile file = Storage.open(path, O_WRONLY | O_CREAT | O_TRUNC);
   if (!file) return;
-  
-  // Write count
-  int count = incorrectQuestions.size();
+
+  // v2 format: [magic: 0xAB 0x02][count: uint16][fileIndex: uint16 × count]
+  uint8_t magic[2] = {0xAB, 0x02};
+  file.write(magic, 2);
+  uint16_t count = (uint16_t)incorrectQuestions.size();
   file.write((uint8_t*)&count, sizeof(count));
-  
-  // Write incorrect question indices
+
   for (int idx : incorrectQuestions) {
     int actualIdx = questionOrder[idx];
-    file.write((uint8_t*)&actualIdx, sizeof(actualIdx));
+    uint16_t fi = (actualIdx >= 0 && actualIdx < (int)customQuestions.size())
+                  ? customQuestions[actualIdx].fileIndex : 0;
+    file.write((uint8_t*)&fi, sizeof(fi));
   }
-  
+
   file.close();
   DEBUG_PRINTF("[AWS] Saved %d incorrect questions to history\n", count);
 }
 
-bool AWSCertQuizActivity::loadIncorrectHistory() {
-  questionOrder.clear();
-  questionCount = 0;
+bool AWSCertQuizActivity::loadIncorrectHistory(std::vector<uint16_t>& outFileIndices) {
+  outFileIndices.clear();
 
   char path[PATH_BUF_SIZE];
   snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-history-%s.dat", certId.c_str());
@@ -329,39 +411,39 @@ bool AWSCertQuizActivity::loadIncorrectHistory() {
     DEBUG_PRINTLN("[AWS] No incorrect question history found");
     return false;
   }
-  
-  // Read count
-  int count;
+
+  // Detect v2 format via magic bytes
+  uint8_t magic[2];
+  if (file.read(magic, 2) != 2 || magic[0] != 0xAB || magic[1] != 0x02) {
+    DEBUG_PRINTLN("[AWS] History file is old format — discarding");
+    file.close();
+    return false;
+  }
+
+  uint16_t count;
   if (file.read((uint8_t*)&count, sizeof(count)) != sizeof(count)) {
     file.close();
     return false;
   }
-
-  if (count <= 0 || count > 100) {
+  if (count == 0 || count > 200) {
     file.close();
     return false;
   }
 
-  // Read incorrect question indices
-  questionOrder.clear();
-  questionOrder.reserve(count);
-  for (int i = 0; i < count; i++) {
-    int idx;
-    if (file.read((uint8_t*)&idx, sizeof(idx)) != sizeof(idx)) {
+  outFileIndices.reserve(count);
+  for (int i = 0; i < (int)count; i++) {
+    uint16_t fi;
+    if (file.read((uint8_t*)&fi, sizeof(fi)) != sizeof(fi)) {
       file.close();
-      questionOrder.clear();
+      outFileIndices.clear();
       return false;
     }
-    if (idx >= 0 && idx < (int)customQuestions.size()) {
-      questionOrder.push_back(idx);
-    }
+    outFileIndices.push_back(fi);
   }
-  
+
   file.close();
-  
-  questionCount = questionOrder.size();
-  DEBUG_PRINTF("[AWS] Loaded %d incorrect questions from history\n", questionCount);
-  return questionCount > 0;
+  DEBUG_PRINTF("[AWS] Loaded %d incorrect question file indices from history\n", count);
+  return true;
 }
 
 bool AWSCertQuizActivity::openFileOrShowError(const char* path, FsFile& file, const char* errorTitle) {
@@ -452,7 +534,211 @@ void AWSCertQuizActivity::showError(const char* title, const char* message) {
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
 
-bool AWSCertQuizActivity::loadCustomQuestions() {
+// ---------------------------------------------------------------------------
+// Seek past the file header to the first '[' of the "questions" array.
+// Returns true on success, false if the array marker was not found.
+// ---------------------------------------------------------------------------
+static bool seekToQuestionsArray(FsFile& file) {
+  char searchBuf[32] = {0};
+  int searchPos = 0;
+
+  while (file.available()) {
+    char c = file.read();
+
+    if (searchPos < 31) {
+      searchBuf[searchPos++] = c;
+    } else {
+      memmove(searchBuf, searchBuf + 1, 30);
+      searchBuf[30] = c;
+    }
+
+    if (strstr(searchBuf, "\"questions\"") != NULL) {
+      while (file.available()) {
+        c = file.read();
+        if (c == '[') return true;
+        if (c == '{' || c == '}') return false;
+      }
+    }
+  }
+  return false;
+}
+
+// ---------------------------------------------------------------------------
+// countQuestionsInFile()
+// Fast: reads the "total_questions": N field from the file header (first
+// ~256 bytes). Returns 0 if not found.
+// ---------------------------------------------------------------------------
+int AWSCertQuizActivity::countQuestionsInFile() {
+  char path[PATH_BUF_SIZE];
+  snprintf(path, sizeof(path), "/aws-quiz/%s.json", certId.c_str());
+  FsFile file;
+  if (!Storage.openFileForRead("AWS", path, file)) return 0;
+
+  char header[256] = {0};
+  int bytesRead = file.read(header, sizeof(header) - 1);
+  file.close();
+  if (bytesRead <= 0) return 0;
+  header[bytesRead] = '\0';
+
+  const char* tag = strstr(header, "\"total_questions\"");
+  if (!tag) return 0;
+  const char* colon = strchr(tag, ':');
+  if (!colon) return 0;
+  return atoi(colon + 1);
+}
+
+// ---------------------------------------------------------------------------
+// randomSelectIndices()
+// Picks `needed` unique random indices from [0, total-1], returned sorted.
+// ---------------------------------------------------------------------------
+void AWSCertQuizActivity::randomSelectIndices(int total, int needed, std::vector<uint16_t>& outIndices) {
+  outIndices.clear();
+  if (total <= 0) return;
+  if (needed >= total) {
+    outIndices.resize(total);
+    for (int i = 0; i < total; i++) outIndices[i] = (uint16_t)i;
+    return;
+  }
+  // Fisher-Yates on a pool of [0..total-1], take first `needed`.
+  // Pool fits on stack for files up to ~300 questions (600 bytes).
+  std::vector<uint16_t> pool(total);
+  for (int i = 0; i < total; i++) pool[i] = (uint16_t)i;
+
+  std::seed_seq seed{esp_random(), esp_random(), esp_random()};
+  std::mt19937 g(seed);
+  std::shuffle(pool.begin(), pool.end(), g);
+
+  outIndices.assign(pool.begin(), pool.begin() + needed);
+  std::sort(outIndices.begin(), outIndices.end());  // sorted for sequential file access
+}
+
+// ---------------------------------------------------------------------------
+// cheapDomainScan()
+// Scans the file and returns the sequential file indices of questions whose
+// "domain" field matches `domain` (case-insensitive). Uses the same
+// brace-depth buffer as loadCustomQuestions but skips full JSON parsing.
+// If domain is "all", returns indices for every question.
+// ---------------------------------------------------------------------------
+bool AWSCertQuizActivity::cheapDomainScan(const char* domain, std::vector<uint16_t>& outIndices) {
+  outIndices.clear();
+  char path[PATH_BUF_SIZE];
+  snprintf(path, sizeof(path), "/aws-quiz/%s.json", certId.c_str());
+
+  FsFile file;
+  if (!Storage.openFileForRead("AWS", path, file)) return false;
+  if (!seekToQuestionsArray(file)) { file.close(); return false; }
+
+  const bool matchAll = (strcmp(domain, "all") == 0);
+  char* buf = (char*)malloc(JSON_PARSE_BUF_SIZE);
+  if (!buf) { file.close(); return false; }
+
+  int seqIndex = 0;
+  int braceDepth = 0;
+  int bufPos = 0;
+
+  while (file.available()) {
+    char c = file.read();
+
+    if (c == '{') {
+      if (braceDepth == 0) bufPos = 0;
+      braceDepth++;
+    }
+    if (braceDepth > 0 && bufPos < (int)JSON_PARSE_BUF_SIZE - 1) {
+      buf[bufPos++] = c;
+    }
+    if (c == '}') {
+      braceDepth--;
+      if (braceDepth == 0 && bufPos > 10) {
+        buf[bufPos] = '\0';
+        bool matches = matchAll;
+        if (!matches) {
+          const char* domainStart = strstr(buf, "\"domain\":");
+          if (domainStart) {
+            const char* valStart = strchr(domainStart + 9, '"');
+            if (valStart) {
+              valStart++;
+              const char* valEnd = strchr(valStart, '"');
+              if (valEnd && (valEnd - valStart) < 63) {
+                char domainVal[64];
+                int len = valEnd - valStart;
+                memcpy(domainVal, valStart, len);
+                domainVal[len] = '\0';
+                matches = (strcasecmp(domainVal, domain) == 0);
+              }
+            }
+          }
+        }
+        if (matches) outIndices.push_back((uint16_t)seqIndex);
+        seqIndex++;
+      }
+    }
+    if (c == ']' && braceDepth == 0) break;
+  }
+
+  free(buf);
+  file.close();
+  return true;
+}
+
+// ---------------------------------------------------------------------------
+// peekSessionFileIndices()
+// Opens the session file for the current cert/mode/domain and reads just the
+// file-index array (the third section of the v2 session format). Returns true
+// and populates outIndices if a valid v2 session exists.
+// ---------------------------------------------------------------------------
+bool AWSCertQuizActivity::peekSessionFileIndices(std::vector<uint16_t>& outIndices) {
+  outIndices.clear();
+  if (practiceMode == "review" || practiceMode == "quickstart") return false;
+
+  char safeDomain[48];
+  sanitizeFilenameComponent(practiceDomain.c_str(), safeDomain, sizeof(safeDomain));
+  char path[256];
+  snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-session-%s-%s-%s.dat",
+           certId.c_str(), practiceMode.c_str(), safeDomain);
+
+  FsFile file;
+  if (!Storage.openFileForRead("AWS", path, file)) return false;
+
+  int savedCurrentIndex, savedQuestionCount;
+  if (file.read((uint8_t*)&savedCurrentIndex, sizeof(savedCurrentIndex)) != sizeof(savedCurrentIndex) ||
+      file.read((uint8_t*)&savedQuestionCount, sizeof(savedQuestionCount)) != sizeof(savedQuestionCount)) {
+    file.close(); return false;
+  }
+  if (savedQuestionCount <= 0 || savedQuestionCount > MAX_QUESTIONS_FROM_FILE) {
+    file.close(); return false;
+  }
+
+  // v2 session: next section is fileIndices (uint16_t × N)
+  // Verify there are enough bytes remaining for fileIndices + questionOrder + userAnswers
+  size_t expectedRemaining = (size_t)savedQuestionCount * (sizeof(uint16_t) + sizeof(uint16_t) + sizeof(int8_t));
+  if (file.size() < (size_t)(8 + expectedRemaining)) {
+    // Old format (no fileIndices section) — discard
+    file.close(); return false;
+  }
+
+  outIndices.clear();
+  outIndices.reserve(savedQuestionCount);
+  for (int i = 0; i < savedQuestionCount; i++) {
+    uint16_t val;
+    if (file.read((uint8_t*)&val, sizeof(val)) != sizeof(val)) {
+      file.close(); outIndices.clear(); return false;
+    }
+    outIndices.push_back(val);
+  }
+
+  file.close();
+  return true;
+}
+
+// ---------------------------------------------------------------------------
+// loadCustomQuestions()
+// Parses the JSON file one question at a time.
+// If onlyFileIndices is provided (sorted), only questions at those sequential
+// positions are stored — all others are skipped cheaply (brace-counted but
+// not deserialized). If nullptr, loads all questions up to
+// MAX_QUESTIONS_FROM_FILE with a heap guard to prevent OOM crashes.
+// ---------------------------------------------------------------------------
+bool AWSCertQuizActivity::loadCustomQuestions(const std::vector<uint16_t>* onlyFileIndices) {
   char path[PATH_BUF_SIZE];
   snprintf(path, sizeof(path), "/aws-quiz/%s.json", certId.c_str());
   DEBUG_PRINTF("[AWS] Trying to load: %s\n", path);
@@ -464,48 +750,26 @@ bool AWSCertQuizActivity::loadCustomQuestions() {
   }
 
   DEBUG_PRINTF("[AWS] File opened, size: %d bytes\n", file.size());
-
   customQuestions.clear();
 
-  // Find "questions" array by looking for the pattern
-  bool foundArray = false;
-  char searchBuf[32] = {0};
-  int searchPos = 0;
-
-  while (file.available() && !foundArray) {
-    char c = file.read();
-
-    // Shift buffer and add new char
-    if (searchPos < 31) {
-      searchBuf[searchPos++] = c;
-    } else {
-      memmove(searchBuf, searchBuf + 1, 30);
-      searchBuf[30] = c;
-    }
-
-    // Look for "questions":[
-    if (strstr(searchBuf, "\"questions\"") != NULL) {
-      // Found "questions", now find the [
-      while (file.available()) {
-        c = file.read();
-        if (c == '[') {
-          foundArray = true;
-          DEBUG_PRINTLN("[AWS] Found questions array");
-          break;
-        }
-        if (c == '{' || c == '}') break;  // Wrong structure
-      }
-    }
-  }
-
-  if (!foundArray) {
+  if (!seekToQuestionsArray(file)) {
     DEBUG_PRINTLN("[AWS] Could not find questions array");
     file.close();
     return false;
   }
+  DEBUG_PRINTLN("[AWS] Found questions array");
 
-  // Parse questions one at a time
+  // Pre-size the vector if we know exactly how many questions we'll load
+  if (onlyFileIndices && !onlyFileIndices->empty()) {
+    customQuestions.reserve(onlyFileIndices->size());
+  }
+
+  // Index into onlyFileIndices for efficient forward scanning
+  int targetCursor = 0;
+  const int targetCount = onlyFileIndices ? (int)onlyFileIndices->size() : INT_MAX;
+
   int parsedCount = 0;
+  int seqIndex = 0;       // sequential question index in the file (0-based)
   int braceDepth = 0;
 
   char* buffer = (char*)malloc(JSON_PARSE_BUF_SIZE);
@@ -514,12 +778,21 @@ bool AWSCertQuizActivity::loadCustomQuestions() {
     file.close();
     return false;
   }
-
   int bufferPos = 0;
 
   DEBUG_PRINTF("[AWS] Free memory before parsing: %d bytes\n", ESP.getFreeHeap());
 
-  while (file.available() && parsedCount < MAX_QUESTIONS_FROM_FILE) {
+  while (file.available() && targetCursor < targetCount) {
+    // Safety caps for the unfiltered fallback path (onlyFileIndices == nullptr)
+    if (!onlyFileIndices) {
+      if (parsedCount >= MAX_QUESTIONS_FROM_FILE) break;
+      if (parsedCount > 0 && parsedCount % 10 == 0 && ESP.getFreeHeap() < 60000) {
+        DEBUG_PRINTF("[AWS] Heap guard triggered after %d questions (%d bytes free)\n",
+                     parsedCount, ESP.getFreeHeap());
+        break;
+      }
+    }
+
     char c = file.read();
 
     if (c == '{') {
@@ -527,7 +800,15 @@ bool AWSCertQuizActivity::loadCustomQuestions() {
       braceDepth++;
     }
 
-    if (braceDepth > 0 && bufferPos < (int)JSON_PARSE_BUF_SIZE - 1) {
+    // Determine whether we want to capture this question's content
+    bool capture = true;
+    if (onlyFileIndices && braceDepth >= 1) {
+      // Only buffer if this seqIndex is in our target list
+      capture = (targetCursor < targetCount &&
+                 (*onlyFileIndices)[targetCursor] == (uint16_t)seqIndex);
+    }
+
+    if (braceDepth > 0 && capture && bufferPos < (int)JSON_PARSE_BUF_SIZE - 1) {
       buffer[bufferPos++] = c;
     }
 
@@ -536,86 +817,87 @@ bool AWSCertQuizActivity::loadCustomQuestions() {
       if (braceDepth == 0 && bufferPos > 10) {
         buffer[bufferPos] = '\0';
 
-        // Heap-allocated JSON document to avoid stack overflow
-        JsonDocument doc;
-        DeserializationError error = deserializeJson(doc, buffer);
+        // Only deserialize if this seqIndex was a target (or we're in fallback mode)
+        bool shouldDeserialize = !onlyFileIndices ||
+                                 (targetCursor < targetCount &&
+                                  (*onlyFileIndices)[targetCursor] == (uint16_t)seqIndex);
 
-        if (!error) {
-          JsonObject q = doc.as<JsonObject>();
+        if (shouldDeserialize) {
+          JsonDocument doc;
+          DeserializationError error = deserializeJson(doc, buffer);
 
-          // Validate required fields exist and are strings
-          // Support schema A: "options" array + "correct" integer
-          // Support schema B: "options" array or object + "correct_answer" integer or letter string
-          bool questionValid = q["question"].is<const char*>() && !q["options"].isNull();
-          if (questionValid) {
-            // Resolve options: array (schema A/B) or object with keys A/B/C/D (schema B)
-            const char* optA = nullptr;
-            const char* optB = nullptr;
-            const char* optC = nullptr;
-            const char* optD = nullptr;
+          if (!error) {
+            JsonObject q = doc.as<JsonObject>();
+            bool questionValid = q["question"].is<const char*>() && !q["options"].isNull();
+            if (questionValid) {
+              const char* optA = nullptr; const char* optB = nullptr;
+              const char* optC = nullptr; const char* optD = nullptr;
 
-            if (q["options"].is<JsonArray>() && q["options"].size() >= 4 &&
-                q["options"][0].is<const char*>() && q["options"][1].is<const char*>() &&
-                q["options"][2].is<const char*>() && q["options"][3].is<const char*>()) {
-              optA = q["options"][0].as<const char*>();
-              optB = q["options"][1].as<const char*>();
-              optC = q["options"][2].as<const char*>();
-              optD = q["options"][3].as<const char*>();
-            } else if (q["options"].is<JsonObject>()) {
-              JsonObject opts = q["options"].as<JsonObject>();
-              if (opts["A"].is<const char*>() && opts["B"].is<const char*>() &&
-                  opts["C"].is<const char*>() && opts["D"].is<const char*>()) {
-                optA = opts["A"].as<const char*>();
-                optB = opts["B"].as<const char*>();
-                optC = opts["C"].as<const char*>();
-                optD = opts["D"].as<const char*>();
-              }
-            }
-
-            if (optA && optB && optC && optD) {
-              // Resolve correct answer index: try "correct" first, then "correct_answer"
-              uint8_t correctIdx = 0;
-              JsonVariant correctField = q["correct"];
-              if (correctField.isNull()) {
-                correctField = q["correct_answer"];
-              }
-              if (correctField.is<int>()) {
-                correctIdx = std::min(static_cast<uint8_t>(correctField.as<int>()), static_cast<uint8_t>(3));
-              } else if (correctField.is<const char*>()) {
-                const char* letter = correctField.as<const char*>();
-                if (letter && letter[0] >= 'A' && letter[0] <= 'D') {
-                  correctIdx = static_cast<uint8_t>(letter[0] - 'A');
+              if (q["options"].is<JsonArray>() && q["options"].size() >= 4 &&
+                  q["options"][0].is<const char*>() && q["options"][1].is<const char*>() &&
+                  q["options"][2].is<const char*>() && q["options"][3].is<const char*>()) {
+                optA = q["options"][0].as<const char*>();
+                optB = q["options"][1].as<const char*>();
+                optC = q["options"][2].as<const char*>();
+                optD = q["options"][3].as<const char*>();
+              } else if (q["options"].is<JsonObject>()) {
+                JsonObject opts = q["options"].as<JsonObject>();
+                if (opts["A"].is<const char*>() && opts["B"].is<const char*>() &&
+                    opts["C"].is<const char*>() && opts["D"].is<const char*>()) {
+                  optA = opts["A"].as<const char*>();
+                  optB = opts["B"].as<const char*>();
+                  optC = opts["C"].as<const char*>();
+                  optD = opts["D"].as<const char*>();
                 }
               }
 
-              Question question;
-              question.certId = certId.c_str();
-              question.question = q["question"].as<const char*>();
-              question.options[0] = optA;
-              question.options[1] = optB;
-              question.options[2] = optC;
-              question.options[3] = optD;
-              question.correct = correctIdx;
-              question.explanation = q["explanation"] | "No explanation available";
-              question.domain = q["domain"] | "General";
-              if (question.domain.empty()) question.domain = "General";
-              question.difficulty = q["difficulty"] | "medium";
-              customQuestions.push_back(std::move(question));
-              parsedCount++;
-            } else {
-              DEBUG_PRINTF("[AWS] Skipped invalid question at position %d\n", parsedCount);
+              if (optA && optB && optC && optD) {
+                uint8_t correctIdx = 0;
+                JsonVariant correctField = q["correct"];
+                if (correctField.isNull()) correctField = q["correct_answer"];
+                if (correctField.is<int>()) {
+                  correctIdx = std::min(static_cast<uint8_t>(correctField.as<int>()), static_cast<uint8_t>(3));
+                } else if (correctField.is<const char*>()) {
+                  const char* letter = correctField.as<const char*>();
+                  if (letter && letter[0] >= 'A' && letter[0] <= 'D')
+                    correctIdx = static_cast<uint8_t>(letter[0] - 'A');
+                }
+
+                Question question;
+                question.certId = certId.c_str();
+                question.fileIndex = (uint16_t)seqIndex;
+                question.question = q["question"].as<const char*>();
+                question.options[0] = optA;
+                question.options[1] = optB;
+                question.options[2] = optC;
+                question.options[3] = optD;
+                question.correct = correctIdx;
+                question.explanation = q["explanation"] | "No explanation available";
+                question.domain = q["domain"] | "General";
+                if (question.domain.empty()) question.domain = "General";
+                question.difficulty = q["difficulty"] | "medium";
+                customQuestions.push_back(std::move(question));
+                parsedCount++;
+              } else {
+                DEBUG_PRINTF("[AWS] Skipped invalid question at seq %d\n", seqIndex);
+              }
             }
           } else {
-            DEBUG_PRINTF("[AWS] Skipped invalid question at position %d\n", parsedCount);
+            DEBUG_PRINTF("[AWS] JSON parse error at seq %d: %s\n", seqIndex, error.c_str());
           }
-        } else {
-          DEBUG_PRINTF("[AWS] JSON parse error at question %d: %s\n", parsedCount, error.c_str());
+          targetCursor++;  // Advance whether parse succeeded or not
         }
 
-        // Check memory every 10 questions
+        seqIndex++;
+        bufferPos = 0;  // Reset for next question
+
         if (parsedCount % 10 == 0) {
           DEBUG_PRINTF("[AWS] Free memory after %d questions: %d bytes\n", parsedCount, ESP.getFreeHeap());
         }
+      } else if (braceDepth == 0) {
+        // Question block completed without buffer content (was skipped) — advance seqIndex
+        seqIndex++;
+        bufferPos = 0;
       }
     }
 
@@ -989,7 +1271,7 @@ void AWSCertQuizActivity::renderReview() const {
   y += 20;
   
   // Question
-  y = drawWrappedText(UI_10_FONT_ID, margin, y, q->question.c_str(), width - 2 * margin);
+  y += drawWrappedText(UI_10_FONT_ID, margin, y, q->question.c_str(), width - 2 * margin);
   y += 20;
 
   // Show all options with indicators
@@ -1006,7 +1288,7 @@ void AWSCertQuizActivity::renderReview() const {
     }
 
     y += 20;
-    y = drawWrappedText(UI_10_FONT_ID, margin + 20, y, q->options[i].c_str(), width - 2 * margin - 20);
+    y += drawWrappedText(UI_10_FONT_ID, margin + 20, y, q->options[i].c_str(), width - 2 * margin - 20);
     y += 10;
   }
 
@@ -1015,7 +1297,7 @@ void AWSCertQuizActivity::renderReview() const {
   // Explanation
   renderer.drawText(UI_10_FONT_ID, margin, y, fork_tr(STR_AWS_EXPLANATION), true);
   y += 20;
-  y = drawWrappedText(UI_10_FONT_ID, margin, y, q->explanation.c_str(), width - 2 * margin);
+  y += drawWrappedText(UI_10_FONT_ID, margin, y, q->explanation.c_str(), width - 2 * margin);
   
   // btn2=Confirm(Next/Done), btn3=Left(Prev), btn4=Right also works but not labelled
   const char* btn2 = reviewIndex < (int)incorrectQuestions.size() - 1 ? "Next" : "Done";

@@ -10,6 +10,7 @@
 
 struct Question {
   const char* certId = nullptr;  // Non-owning pointer (lifetime managed by AWSCertQuizActivity::certId)
+  uint16_t fileIndex = 0;        // 0-based sequential position of this question in the JSON file
   std::string question;
   std::string options[4];
   uint8_t correct = 0;
@@ -69,13 +70,17 @@ class AWSCertQuizActivity final : public Activity {
   uint16_t getCachedTextWidth(int fontId, const char* text) const;
   
   void loadQuestions();
-  bool loadCustomQuestions();
+  bool loadCustomQuestions(const std::vector<uint16_t>* onlyFileIndices = nullptr);
   void shuffleQuestions();
+  int  countQuestionsInFile();
+  void randomSelectIndices(int total, int needed, std::vector<uint16_t>& outIndices);
+  bool cheapDomainScan(const char* domain, std::vector<uint16_t>& outIndices);
+  bool peekSessionFileIndices(std::vector<uint16_t>& outIndices);
   void saveSession();
   bool loadSession();
   void clearSession();
   void saveIncorrectHistory();
-  bool loadIncorrectHistory();
+  bool loadIncorrectHistory(std::vector<uint16_t>& outFileIndices);
   void saveQuizStats();
   void showError(const char* title, const char* message);
   bool openFileOrShowError(const char* path, FsFile& file, const char* errorTitle);

@@ -1285,7 +1285,7 @@
     {
       "question": "A company needs to store backup data that will be accessed infrequently and can tolerate retrieval times of several hours. Which S3 storage class is MOST cost-effective?",
       "options": [
-        "S3 Glacier",
+        "S3 Glacier Flexible Retrieval",
         "S3 Infrequent Access",
         "S3 Standard",
         "S3 One Zone-IA"
@@ -3605,7 +3605,7 @@
         "CloudFront with Lambda@Edge, S3 Intelligent-Tiering, and regional optimization"
       ],
       "correct": 3,
-      "explanation": "CloudFront reduces data transfer costs by up to 85% through edge caching, Lambda@Edge enables geographic restrictions without additional infrastructure, S3 Intelligent-Tiering optimizes storage costs, and regional optimization minimizes cross-region transfer charges.",
+      "explanation": "CloudFront significantly reduces data transfer costs through edge caching, as content served from edge locations is charged at a lower rate than standard origin data transfer. Lambda@Edge enables geographic restrictions without additional infrastructure, S3 Intelligent-Tiering optimizes storage costs, and regional optimization minimizes cross-region transfer charges.",
       "domain": "Billing, Pricing & Support",
       "difficulty": "hard",
       "validated": true,
