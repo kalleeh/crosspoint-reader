@@ -680,7 +680,7 @@
       ],
       "correct": 1,
       "explanation": "Amazon VPC Security Groups act as virtual firewalls that control inbound and outbound traffic at the instance level, providing network-level security controls for application tier isolation.",
-      "domain": "Security & Compliance",
+      "domain": "Cloud Technology & Services",
       "difficulty": "easy",
       "validated": true,
       "validation_sources": [
@@ -806,7 +806,7 @@
       ],
       "correct": 1,
       "explanation": "VPC Security Groups act as virtual firewalls that can be configured to allow database access only from specific sources, ensuring only authorized applications can connect to RDS.",
-      "domain": "Security & Compliance",
+      "domain": "Cloud Technology & Services",
       "difficulty": "easy",
       "validated": true,
       "validation_sources": [
@@ -1274,7 +1274,7 @@
       ],
       "correct": 2,
       "explanation": "Spot Instances offer significant cost savings (up to 90%) for fault-tolerant workloads that can handle interruptions, making them ideal for batch processing jobs.",
-      "domain": "Cloud Technology & Services",
+      "domain": "Billing, Pricing & Support",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -1291,7 +1291,7 @@
         "S3 One Zone-IA"
       ],
       "correct": 0,
-      "explanation": "S3 Glacier Flexible Retrieval is designed for long-term archival and backup with standard retrieval times of 3\u20135 hours (or 1\u20135 minutes with Expedited), offering very low cost for infrequently accessed data. Note: S3 Glacier Instant Retrieval provides millisecond access but at higher cost; S3 Glacier Deep Archive has 12-hour retrieval times. For data that can tolerate 'several hours', Flexible Retrieval is the most cost-effective choice.",
+      "explanation": "S3 Glacier Flexible Retrieval is designed for long-term archival and backup with standard retrieval times of 3–5 hours (or 1–5 minutes with Expedited), offering very low cost for infrequently accessed data. Note: S3 Glacier Instant Retrieval provides millisecond access but at higher cost; S3 Glacier Deep Archive has 12-hour retrieval times. For data that can tolerate 'several hours', Flexible Retrieval is the most cost-effective choice.",
       "domain": "Cloud Technology & Services",
       "difficulty": "easy",
       "validated": true,
@@ -1697,24 +1697,6 @@
       ]
     },
     {
-      "question": "A company has variable workloads that can tolerate interruptions and wants to minimize compute costs. Which pricing model should they consider?",
-      "options": [
-        "On-Demand Instances",
-        "Reserved Instances",
-        "Savings Plans",
-        "Spot Instances"
-      ],
-      "correct": 3,
-      "explanation": "Spot Instances can provide up to 90% cost savings compared to On-Demand prices for fault-tolerant workloads that can handle interruptions when AWS needs the capacity back.",
-      "domain": "Billing, Pricing & Support",
-      "difficulty": "easy",
-      "validated": true,
-      "validation_sources": [
-        "Amazon EC2 Spot Instances pricing",
-        "AWS cost optimization strategies"
-      ]
-    },
-    {
       "question": "A company wants to consolidate billing across multiple AWS accounts. Which AWS service should they use?",
       "options": [
         "AWS Trusted Advisor",
@@ -1824,44 +1806,6 @@
       ]
     },
     {
-      "question": "A healthcare organization is implementing a HIPAA-compliant data analytics platform on AWS. They need to process PHI from multiple sources, ensure data encryption at rest and in transit, implement fine-grained access controls, and maintain detailed audit logs. The solution must support both batch processing of historical data and real-time analytics. Which architectural approach BEST meets these requirements while maintaining cost efficiency?",
-      "options": [
-        "Implement Amazon Redshift with encryption, AWS Lambda for processing, Amazon DynamoDB for real-time data, and Amazon CloudWatch for monitoring",
-        "Use Amazon S3 with SSE-KMS, Amazon EMR for batch processing, Amazon Kinesis for streaming, AWS Glue for ETL, and Amazon QuickSight for visualization",
-        "Use Amazon EFS with encryption, Amazon EC2 with custom applications, Amazon RDS with encryption, and AWS CloudTrail for auditing",
-        "Deploy Amazon S3 with SSE-KMS and bucket policies, AWS Glue with job bookmarks, Amazon Kinesis Data Analytics, Amazon Athena for queries, and AWS Lake Formation for governance"
-      ],
-      "correct": 3,
-      "explanation": "For HIPAA-compliant healthcare analytics, this solution provides: S3 with SSE-KMS for encrypted data lake storage meeting HIPAA encryption requirements, AWS Glue with job bookmarks for cost-efficient batch ETL processing, Kinesis Data Analytics for real-time stream processing, Athena for serverless querying reducing costs, and AWS Lake Formation for comprehensive data governance including fine-grained access controls and audit logging. This serverless approach minimizes operational overhead while ensuring HIPAA compliance through encryption, access controls, and comprehensive auditing.",
-      "domain": "Security & Compliance",
-      "difficulty": "hard",
-      "validated": true,
-      "validation_sources": [
-        "AWS HIPAA compliance architecture",
-        "AWS healthcare data analytics",
-        "AWS Lake Formation security"
-      ]
-    },
-    {
-      "question": "A global e-commerce company experiences seasonal traffic spikes of 10x normal load during holiday periods. They need a solution that automatically scales compute resources, optimizes costs during low-traffic periods, maintains sub-100ms response times globally, and handles payment processing with PCI DSS compliance. Which combination of services and pricing models provides the MOST cost-effective solution?",
-      "options": [
-        "Use Auto Scaling Groups with mixed instance types, Compute Savings Plans for baseline, On-Demand for peaks, Global Accelerator for performance, and AWS Config for PCI compliance monitoring",
-        "Deploy ECS Fargate with Application Load Balancer, Savings Plans for predictable workloads, Spot Instances for burst capacity, CloudFront for content delivery, and separate PCI-compliant account",
-        "Implement AWS Lambda with API Gateway, DynamoDB with on-demand billing, CloudFront with edge locations, and AWS Payment Cryptography for PCI compliance",
-        "Use Application Load Balancer with Auto Scaling Groups, Reserved Instances for baseline capacity, Spot Instances for peak scaling, CloudFront for global distribution, and dedicated PCI-compliant VPC"
-      ],
-      "correct": 1,
-      "explanation": "This solution optimally addresses all constraints: ECS Fargate provides serverless container orchestration that automatically scales without managing infrastructure, Savings Plans offer up to 72% savings for predictable baseline workloads, Spot Instances provide up to 90% savings for fault-tolerant burst capacity during seasonal spikes, CloudFront ensures global sub-100ms response times through edge caching, and a separate PCI-compliant account provides proper isolation for payment processing while maintaining compliance. This combination maximizes cost efficiency through optimal pricing model selection while meeting performance and compliance requirements.",
-      "domain": "Cloud Technology & Services",
-      "difficulty": "hard",
-      "validated": true,
-      "validation_sources": [
-        "AWS auto scaling best practices",
-        "AWS cost optimization strategies",
-        "AWS PCI DSS compliance"
-      ]
-    },
-    {
       "question": "A manufacturing company is migrating their ERP system to AWS. The system requires 99.99% availability, processes 1PB of data monthly, needs integration with 50+ legacy systems, and must maintain data consistency across multiple databases. They want to minimize vendor lock-in while optimizing for cost and performance. Which migration strategy and architecture BEST addresses these requirements?",
       "options": [
         "Use re-platforming approach with Aurora PostgreSQL, Amazon MQ for messaging, AWS Database Migration Service, and AWS Application Migration Service with open-source tools",
@@ -1871,32 +1815,13 @@
       ],
       "correct": 0,
       "explanation": "This approach minimizes vendor lock-in through open-source technologies: Aurora PostgreSQL is compatible with open-source PostgreSQL, Amazon MQ supports open-source Apache ActiveMQ and RabbitMQ, AWS Database Migration Service supports heterogeneous migrations to open-source databases, and AWS Application Migration Service facilitates migration while maintaining flexibility. This combination achieves 99.99% availability through Aurora's multi-AZ deployment, handles 1PB monthly data processing through Aurora's scalability, integrates with legacy systems through MQ's messaging capabilities, and maintains data consistency through Aurora's ACID compliance and transaction support.",
-      "domain": "Cloud Technology & Services",
+      "domain": "Security & Compliance",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
         "AWS migration strategies",
         "AWS open-source database options",
         "AWS enterprise integration patterns"
-      ]
-    },
-    {
-      "question": "A media company streams video content globally and faces challenges with data transfer costs, which represent 40% of their AWS bill. They serve 100TB daily to users across 6 continents, need to comply with content licensing restrictions by geography, and require real-time analytics on viewing patterns. Which optimization strategy provides the GREATEST cost reduction while maintaining compliance and analytics capabilities?",
-      "options": [
-        "Implement AWS Global Accelerator, use S3 with lifecycle policies, and Amazon OpenSearch for analytics",
-        "Implement CloudFront with geographic restrictions, use S3 Transfer Acceleration, and CloudWatch for analytics",
-        "Use CloudFront with Lambda@Edge for geo-blocking, S3 Intelligent-Tiering for storage optimization, and Kinesis Data Analytics for real-time insights",
-        "Deploy regional S3 buckets with Cross-Region Replication, use VPC endpoints, and Kinesis for analytics"
-      ],
-      "correct": 2,
-      "explanation": "This solution maximizes cost reduction: CloudFront reduces data transfer costs by up to 85% through edge caching and eliminates cross-region transfer charges, Lambda@Edge enables real-time geo-blocking for licensing compliance without additional infrastructure, S3 Intelligent-Tiering automatically optimizes storage costs by moving data between access tiers (up to 68% savings), and Kinesis Data Analytics provides real-time viewing pattern analysis without managing infrastructure. This combination addresses the primary cost driver (data transfer) while maintaining compliance and analytics requirements through serverless, managed services.",
-      "domain": "Billing, Pricing & Support",
-      "difficulty": "hard",
-      "validated": true,
-      "validation_sources": [
-        "AWS data transfer cost optimization",
-        "CloudFront pricing benefits",
-        "AWS media streaming architecture"
       ]
     },
     {
@@ -1928,51 +1853,13 @@
       ],
       "correct": 3,
       "explanation": "This serverless architecture optimally handles the requirements: API Gateway with Lambda automatically scales from 100 to 100,000 requests with pay-per-use pricing, S3 event triggers enable efficient image processing workflows, DynamoDB on-demand billing eliminates idle costs during low traffic periods, Amazon Rekognition provides managed ML content analysis without infrastructure costs, and EventBridge orchestrates the workflow with sub-second latency. This combination minimizes costs during normal operations through serverless pay-per-use models while automatically scaling to handle traffic spikes without performance degradation.",
-      "domain": "Cloud Technology & Services",
+      "domain": "Security & Compliance",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
         "AWS serverless architecture patterns",
         "AWS cost optimization for startups",
         "AWS Lambda scaling limits"
-      ]
-    },
-    {
-      "question": "A government agency needs to migrate sensitive data to AWS while maintaining air-gapped security for classified information, ensuring FIPS 140-2 Level 3 compliance, implementing zero-trust architecture, and providing disaster recovery across geographically separated regions. Which AWS deployment model and security approach BEST addresses these stringent requirements?",
-      "options": [
-        "Use AWS GovCloud with dedicated tenancy, AWS CloudHSM, VPC with private subnets, and cross-region replication",
-        "Deploy AWS Secret Region with AWS Nitro Enclaves, dedicated hosts, AWS Certificate Manager Private CA, and AWS Backup",
-        "Use on-premises AWS Outposts with AWS CloudHSM, dedicated networking, and manual backup procedures",
-        "Implement AWS GovCloud with AWS CloudHSM FIPS 140-2 Level 3, AWS PrivateLink, AWS Nitro Enclaves, and AWS Backup across multiple GovCloud regions"
-      ],
-      "correct": 3,
-      "explanation": "This solution addresses all stringent requirements: AWS GovCloud provides FedRAMP High authorized environment for sensitive government data, AWS CloudHSM FIPS 140-2 Level 3 provides hardware-based key management meeting the highest security standards, AWS PrivateLink enables zero-trust networking by eliminating internet exposure, AWS Nitro Enclaves provides air-gapped compute environments for processing classified data, and AWS Backup across multiple GovCloud regions ensures geographically separated disaster recovery. This combination provides the highest level of security and compliance available on AWS for government workloads.",
-      "domain": "Security & Compliance",
-      "difficulty": "hard",
-      "validated": true,
-      "validation_sources": [
-        "AWS GovCloud compliance",
-        "AWS FIPS 140-2 Level 3 capabilities",
-        "AWS zero-trust architecture"
-      ]
-    },
-    {
-      "question": "A large enterprise has a complex billing scenario with 200+ AWS accounts, multiple Reserved Instance purchases across different teams, Savings Plans commitments, and significant data transfer costs between regions. They need to optimize costs while maintaining current performance levels and implementing chargeback to business units. Which comprehensive cost optimization strategy provides the MAXIMUM savings?",
-      "options": [
-        "Use AWS Organizations consolidated billing, AWS Cost Categories for chargeback, Compute Savings Plans conversion, data transfer optimization through VPC endpoints and CloudFront, and automated RI management",
-        "Deploy AWS Control Tower for governance, AWS Cost and Usage Reports with custom analytics, RI Exchange for optimization, and third-party cost management tools",
-        "Implement AWS Organizations with cost allocation tags, AWS Cost Anomaly Detection, Reserved Instance recommendations, and AWS Budgets for chargeback",
-        "Use AWS Organizations consolidated billing, Cost Explorer for analysis, and manual chargeback allocation"
-      ],
-      "correct": 0,
-      "explanation": "This comprehensive approach maximizes savings: AWS Organizations consolidated billing enables volume discounts across all 200+ accounts, AWS Cost Categories provide automated chargeback allocation to business units, converting Reserved Instances to Compute Savings Plans offers greater flexibility and potentially higher savings (up to 72%), optimizing data transfer through VPC endpoints eliminates NAT Gateway costs and CloudFront reduces cross-region transfer costs by up to 85%, and automated RI management ensures optimal utilization and exchanges. This strategy addresses all cost components while maintaining performance and enabling accurate chargeback.",
-      "domain": "Billing, Pricing & Support",
-      "difficulty": "hard",
-      "validated": true,
-      "validation_sources": [
-        "AWS enterprise cost optimization",
-        "AWS Savings Plans vs Reserved Instances",
-        "AWS data transfer cost optimization"
       ]
     },
     {
@@ -1985,7 +1872,7 @@
       ],
       "correct": 2,
       "explanation": "This architecture optimally addresses all requirements: S3 Intelligent-Tiering automatically optimizes storage costs for 500TB of genomic data (up to 68% savings) while KMS encryption ensures data security, AWS Batch with Spot Instances provides up to 90% cost savings for the variable compute workload (10,000 CPU hours in bursts), CloudTrail provides comprehensive audit trails for FDA compliance requirements, and AWS PrivateLink enables secure collaboration with research institutions without exposing data to the internet. This combination maximizes cost efficiency for the bursty workload pattern while maintaining security and compliance.",
-      "domain": "Cloud Technology & Services",
+      "domain": "Security & Compliance",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -2337,24 +2224,6 @@
       ]
     },
     {
-      "question": "A retail company wants to protect their web application from SQL injection attacks and cross-site scripting. Which AWS service provides application-layer protection?",
-      "options": [
-        "AWS WAF",
-        "AWS Shield",
-        "Amazon GuardDuty",
-        "VPC Security Groups"
-      ],
-      "correct": 0,
-      "explanation": "AWS WAF (Web Application Firewall) provides application-layer protection against common web exploits like SQL injection, cross-site scripting, and other OWASP Top 10 vulnerabilities.",
-      "domain": "Security & Compliance",
-      "difficulty": "easy",
-      "validated": true,
-      "validation_sources": [
-        "AWS WAF documentation",
-        "AWS application security"
-      ]
-    },
-    {
       "question": "A company needs to rotate database passwords automatically every 30 days for compliance requirements. Which AWS service is specifically designed for this use case?",
       "options": [
         "AWS Systems Manager Parameter Store",
@@ -2400,7 +2269,7 @@
       ],
       "correct": 1,
       "explanation": "VPC Security Groups and Network Access Control Lists (NACLs) provide network-level access control and segmentation, allowing isolation of different environments like production and development.",
-      "domain": "Security & Compliance",
+      "domain": "Cloud Technology & Services",
       "difficulty": "easy",
       "validated": true,
       "validation_sources": [
@@ -2436,7 +2305,7 @@
       ],
       "correct": 0,
       "explanation": "VPC Security Groups can be configured with specific IP address ranges to control which sources can access RDS databases, providing network-level access control based on IP addresses.",
-      "domain": "Security & Compliance",
+      "domain": "Cloud Technology & Services",
       "difficulty": "easy",
       "validated": true,
       "validation_sources": [
@@ -2514,24 +2383,6 @@
       "validation_sources": [
         "AWS IAM best practices",
         "AWS least privilege principle"
-      ]
-    },
-    {
-      "question": "A company needs to protect their AWS infrastructure from large-scale DDoS attacks. Which AWS service provides automatic DDoS protection?",
-      "options": [
-        "Amazon GuardDuty",
-        "AWS Shield Standard",
-        "AWS WAF",
-        "VPC Security Groups"
-      ],
-      "correct": 1,
-      "explanation": "AWS Shield Standard provides automatic DDoS protection for all AWS customers at no additional charge, protecting against common network and transport layer DDoS attacks.",
-      "domain": "Security & Compliance",
-      "difficulty": "easy",
-      "validated": true,
-      "validation_sources": [
-        "AWS Shield documentation",
-        "AWS DDoS protection"
       ]
     },
     {
@@ -2616,7 +2467,7 @@
       ],
       "correct": 0,
       "explanation": "Amazon Cognito provides managed user authentication and authorization for mobile and web applications, including support for social media identity providers like Facebook, Google, and Amazon.",
-      "domain": "Cloud Technology & Services",
+      "domain": "Security & Compliance",
       "difficulty": "easy",
       "validated": true,
       "validation_sources": [
@@ -2661,24 +2512,6 @@
       ]
     },
     {
-      "question": "A company needs to run containerized applications without managing the underlying infrastructure. Which AWS service provides serverless container hosting?",
-      "options": [
-        "Amazon ECS with EC2",
-        "AWS Lambda",
-        "AWS Fargate",
-        "Amazon EKS"
-      ],
-      "correct": 2,
-      "explanation": "AWS Fargate is a serverless compute engine for containers that allows you to run containerized applications without managing servers or clusters, handling all infrastructure management automatically.",
-      "domain": "Cloud Technology & Services",
-      "difficulty": "easy",
-      "validated": true,
-      "validation_sources": [
-        "AWS Fargate documentation",
-        "AWS serverless containers"
-      ]
-    },
-    {
       "question": "A company wants to implement a data warehouse for business intelligence and reporting on large datasets. Which AWS service is specifically designed for data warehousing?",
       "options": [
         "Amazon DynamoDB",
@@ -2694,24 +2527,6 @@
       "validation_sources": [
         "Amazon Redshift documentation",
         "AWS data warehousing"
-      ]
-    },
-    {
-      "question": "A company needs to send automated email notifications from their application when certain events occur. Which AWS service is designed for sending emails?",
-      "options": [
-        "Amazon SES",
-        "Amazon SNS",
-        "Amazon SQS",
-        "AWS Lambda"
-      ],
-      "correct": 0,
-      "explanation": "Amazon SES (Simple Email Service) is specifically designed for sending transactional and marketing emails from applications, providing high deliverability and email management features.",
-      "domain": "Cloud Technology & Services",
-      "difficulty": "easy",
-      "validated": true,
-      "validation_sources": [
-        "Amazon SES documentation",
-        "AWS email services"
       ]
     },
     {
@@ -2748,24 +2563,6 @@
       "validation_sources": [
         "AWS Glue documentation",
         "AWS serverless ETL"
-      ]
-    },
-    {
-      "question": "A company wants to implement search functionality for their e-commerce website with features like faceted search and auto-complete. Which AWS service provides managed search capabilities?",
-      "options": [
-        "Amazon DynamoDB",
-        "Amazon RDS",
-        "Amazon OpenSearch Service",
-        "Amazon CloudSearch"
-      ],
-      "correct": 2,
-      "explanation": "Amazon OpenSearch Service (formerly Amazon Elasticsearch Service) provides managed search and analytics capabilities with features like faceted search, auto-complete, and full-text search for e-commerce applications.",
-      "domain": "Cloud Technology & Services",
-      "difficulty": "medium",
-      "validated": true,
-      "validation_sources": [
-        "Amazon OpenSearch Service documentation",
-        "AWS search services"
       ]
     },
     {
@@ -2910,24 +2707,6 @@
       "validation_sources": [
         "Amazon ElastiCache documentation",
         "AWS caching solutions"
-      ]
-    },
-    {
-      "question": "A company needs to create a virtual private network in AWS with complete control over IP addressing and routing. Which AWS service provides this capability?",
-      "options": [
-        "Amazon Route 53",
-        "AWS PrivateLink",
-        "Amazon VPC",
-        "AWS Direct Connect"
-      ],
-      "correct": 2,
-      "explanation": "Amazon VPC (Virtual Private Cloud) allows you to create a virtual network in AWS with complete control over IP address ranges, subnets, routing tables, and network gateways.",
-      "domain": "Cloud Technology & Services",
-      "difficulty": "easy",
-      "validated": true,
-      "validation_sources": [
-        "Amazon VPC documentation",
-        "AWS networking fundamentals"
       ]
     },
     {
@@ -3147,24 +2926,6 @@
       ]
     },
     {
-      "question": "A company wants to set up automated alerts when their monthly AWS costs exceed specific thresholds. Which AWS service should they configure?",
-      "options": [
-        "AWS Pricing Calculator",
-        "AWS Cost Explorer",
-        "AWS Trusted Advisor",
-        "AWS Budgets"
-      ],
-      "correct": 3,
-      "explanation": "AWS Budgets allows you to set custom cost and usage budgets with automated alerts via email or SNS when actual or forecasted costs exceed defined thresholds.",
-      "domain": "Billing, Pricing & Support",
-      "difficulty": "easy",
-      "validated": true,
-      "validation_sources": [
-        "AWS Budgets documentation",
-        "AWS cost alerting"
-      ]
-    },
-    {
       "question": "A large enterprise with multiple AWS accounts wants to consolidate billing and take advantage of volume discounts. Which AWS service enables consolidated billing?",
       "options": [
         "AWS Budgets",
@@ -3183,24 +2944,6 @@
       ]
     },
     {
-      "question": "A company needs 24/7 technical support with a 15-minute response time for production system outages. Which AWS Support plan provides this level of support?",
-      "options": [
-        "Enterprise Support",
-        "Developer Support",
-        "Business Support",
-        "Basic Support"
-      ],
-      "correct": 0,
-      "explanation": "Enterprise Support provides 24/7 technical support with a 15-minute response time for production system down cases, along with a designated Technical Account Manager and other premium support features.",
-      "domain": "Billing, Pricing & Support",
-      "difficulty": "medium",
-      "validated": true,
-      "validation_sources": [
-        "AWS Support plans documentation",
-        "AWS Enterprise Support features"
-      ]
-    },
-    {
       "question": "A company needs AWS support that includes access to the full set of AWS Trusted Advisor checks and 24/7 access to Cloud Support Engineers via phone, chat, and email. What is the MINIMUM support plan that provides this?",
       "options": [
         "Enterprise Support",
@@ -3216,24 +2959,6 @@
       "validation_sources": [
         "AWS Support plans comparison",
         "AWS Developer Support features"
-      ]
-    },
-    {
-      "question": "A company wants to analyze their AWS spending patterns and identify opportunities for cost optimization. Which AWS tool provides detailed cost analysis and recommendations?",
-      "options": [
-        "AWS Cost Explorer",
-        "AWS Pricing Calculator",
-        "AWS Cost and Usage Report",
-        "AWS Budgets"
-      ],
-      "correct": 0,
-      "explanation": "AWS Cost Explorer provides detailed cost analysis, visualization of spending patterns, and built-in recommendations for cost optimization including Reserved Instance and Savings Plans recommendations.",
-      "domain": "Billing, Pricing & Support",
-      "difficulty": "easy",
-      "validated": true,
-      "validation_sources": [
-        "AWS Cost Explorer documentation",
-        "AWS cost analysis tools"
       ]
     },
     {
@@ -3336,7 +3061,7 @@
       ],
       "correct": 1,
       "explanation": "Business Support and Enterprise Support plans provide access to the full set of AWS Trusted Advisor checks, including all cost optimization, security, fault tolerance, and performance recommendations.",
-      "domain": "Billing, Pricing & Support",
+      "domain": "Security & Compliance",
       "difficulty": "medium",
       "validated": true,
       "validation_sources": [
@@ -3426,7 +3151,7 @@
       ],
       "correct": 3,
       "explanation": "AWS Batch automatically manages compute resources for batch workloads, Spot Instances provide up to 90% cost savings for fault-tolerant simulations, private VPC ensures security isolation, and encryption meets pharmaceutical compliance requirements.",
-      "domain": "Cloud Technology & Services",
+      "domain": "Security & Compliance",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -3444,7 +3169,7 @@
       ],
       "correct": 2,
       "explanation": "AWS Organizations enables multi-account management, Control Tower provides governance and compliance guardrails, consolidated billing offers volume discounts and centralized cost management, and Security Hub provides centralized security posture across all accounts.",
-      "domain": "Billing, Pricing & Support",
+      "domain": "Security & Compliance",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -3516,7 +3241,7 @@
       ],
       "correct": 1,
       "explanation": "AWS Organizations enables consolidated billing across 200+ accounts, Cost Categories provide automated chargeback allocation to business units, Savings Plans offer flexible discounts, and automated RI management optimizes Reserved Instance utilization and exchanges.",
-      "domain": "Billing, Pricing & Support",
+      "domain": "Security & Compliance",
       "difficulty": "hard",
       "validated": true,
       "validation_sources": [
@@ -3525,7 +3250,7 @@
       ]
     },
     {
-      "question": "A research institution needs to store 500TB of genomic sequencing data with varying access patterns \u2014 some datasets are accessed daily, others monthly, and archival data is rarely accessed. They want to minimize storage costs automatically. Which S3 storage approach is MOST cost-effective?",
+      "question": "A research institution needs to store 500TB of genomic sequencing data with varying access patterns — some datasets are accessed daily, others monthly, and archival data is rarely accessed. They want to minimize storage costs automatically. Which S3 storage approach is MOST cost-effective?",
       "options": [
         "S3 Standard for all data to ensure consistent performance",
         "S3 Glacier for all data to minimize costs",
@@ -3612,6 +3337,268 @@
       "validation_sources": [
         "AWS data transfer cost optimization",
         "CloudFront cost benefits"
+      ]
+    },
+    {
+      "question": "A development team wants to improve their ability to run and monitor systems to deliver business value and continuously improve processes. Which AWS Well-Architected Framework pillar directly addresses this goal?",
+      "options": [
+        "Operational Excellence",
+        "Reliability",
+        "Performance Efficiency",
+        "Security"
+      ],
+      "correct": 0,
+      "explanation": "The Operational Excellence pillar of the AWS Well-Architected Framework focuses on running and monitoring systems to deliver business value and continually improving supporting processes and procedures. It includes the ability to support development, run workloads effectively, gain insight into operations, and continuously improve. Reliability focuses on workload recovery; Performance Efficiency on using computing resources efficiently; Security on protecting systems and data.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Well-Architected Framework - Operational Excellence Pillar"
+      ]
+    },
+    {
+      "question": "A company needs to ensure their e-commerce platform can automatically recover from infrastructure failures and dynamically acquire computing resources to meet demand. Which AWS Well-Architected Framework pillar guides these capabilities?",
+      "options": [
+        "Reliability",
+        "Operational Excellence",
+        "Performance Efficiency",
+        "Cost Optimization"
+      ],
+      "correct": 0,
+      "explanation": "The Reliability pillar focuses on ensuring a workload performs its intended function correctly and consistently when expected. It includes the ability to automatically recover from infrastructure or service disruptions, dynamically acquire computing resources to meet demand, and mitigate disruptions. Operational Excellence focuses on running and monitoring systems; Performance Efficiency on using resources efficiently; Cost Optimization on avoiding unnecessary costs.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Well-Architected Framework - Reliability Pillar"
+      ]
+    },
+    {
+      "question": "An organization wants to minimize the environmental impact of their cloud workloads by reducing energy consumption and improving resource utilization. Which AWS Well-Architected Framework pillar should guide their efforts?",
+      "options": [
+        "Sustainability",
+        "Cost Optimization",
+        "Operational Excellence",
+        "Performance Efficiency"
+      ],
+      "correct": 0,
+      "explanation": "The Sustainability pillar focuses on minimizing the environmental impacts of running cloud workloads. It covers understanding the impact of workloads, maximizing resource utilization, minimizing required infrastructure, and reducing downstream environmental impacts. Although Cost Optimization also reduces resource usage, its goal is financial savings — not environmental impact. Sustainability is the pillar specifically dedicated to environmental responsibility.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Well-Architected Framework - Sustainability Pillar"
+      ]
+    },
+    {
+      "question": "A company wants to migrate their on-premises application to AWS as quickly as possible with minimal changes to take advantage of cloud infrastructure. They have no budget for code refactoring. Which migration strategy should they use?",
+      "options": [
+        "Rehost (lift and shift)",
+        "Replatform (lift, tinker, and shift)",
+        "Refactor (re-architect)",
+        "Repurchase (replace)"
+      ],
+      "correct": 0,
+      "explanation": "Rehost (lift and shift) involves moving applications to the cloud with no changes to the application code or architecture. It is the fastest migration strategy and requires minimal effort. Replatform involves making a few cloud optimizations without changing core architecture. Refactor involves redesigning the application to fully leverage cloud-native features, which requires significant development effort. Repurchase involves moving to a different product entirely, such as a SaaS solution.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Cloud Migration Strategies - 6 Rs",
+        "AWS CAF documentation"
+      ]
+    },
+    {
+      "question": "A company's HR department needs to understand how cloud adoption will affect employee roles, organizational structure, and training requirements. Which AWS Cloud Adoption Framework (CAF) perspective addresses these concerns?",
+      "options": [
+        "People perspective",
+        "Business perspective",
+        "Governance perspective",
+        "Platform perspective"
+      ],
+      "correct": 0,
+      "explanation": "The AWS CAF People perspective focuses on culture, organizational structure, leadership, and workforce skills needed for cloud adoption. It helps organizations identify capability gaps and how roles will evolve with cloud adoption. The Business perspective aligns IT with business needs; the Governance perspective focuses on portfolio management and risk; the Platform perspective covers architecture and infrastructure. HR concerns about roles, training, and organizational impact fall squarely in the People perspective.",
+      "domain": "Cloud Concepts",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Cloud Adoption Framework documentation"
+      ]
+    },
+    {
+      "question": "A company currently spends $500,000 per year on data center hardware, cooling, and facilities staff. They are evaluating AWS migration. Which cloud economic benefit would MOST directly reduce these specific costs?",
+      "options": [
+        "Eliminating capital expenditure on data center infrastructure",
+        "Paying lower per-unit prices due to AWS economies of scale",
+        "Using Reserved Instances for predictable workloads",
+        "Enabling global deployment for new revenue opportunities"
+      ],
+      "correct": 0,
+      "explanation": "Moving to AWS eliminates the need to invest in and maintain physical data center infrastructure — hardware, cooling systems, and facilities staff. This directly converts fixed capital expenditures (CapEx) into variable operating expenses (OpEx). Economies of scale refers to AWS passing cost savings to customers through lower pricing. Reserved Instances reduce compute costs but don't address facilities costs. Global deployment creates business opportunities but doesn't reduce existing data center costs.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Cloud Economics - Total Cost of Ownership",
+        "AWS Well-Architected Framework Cost Optimization pillar"
+      ]
+    },
+    {
+      "question": "A developer wants to experiment with Amazon EC2 and Amazon S3 for the first time without incurring charges. Which AWS Free Tier offering provides 750 hours of EC2 t2.micro usage per month for 12 months?",
+      "options": [
+        "12-month free tier",
+        "Always free tier",
+        "Free trial tier",
+        "AWS Educate tier"
+      ],
+      "correct": 0,
+      "explanation": "The AWS 12-month free tier provides new AWS customers with free usage of certain services for 12 months from account creation. This includes 750 hours/month of EC2 t2.micro or t3.micro instances and 5 GB of S3 standard storage. The Always Free tier covers services like AWS Lambda (1M requests/month) and DynamoDB (25 GB storage) with no time limit. Free trials are short-term offers for specific services. There is no 'AWS Educate tier' as a standard Free Tier category.",
+      "domain": "Cloud Concepts",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Free Tier documentation"
+      ]
+    },
+    {
+      "question": "A company has 50 developers who all need the same read-only access to Amazon S3. What is the MOST efficient IAM approach to manage their permissions?",
+      "options": [
+        "Create an IAM group with the S3 read-only policy and add all developers as members",
+        "Create an IAM role with the S3 read-only policy and assign it to each developer",
+        "Attach the S3 read-only policy directly to each developer's IAM user",
+        "Create one shared IAM user with S3 read-only access for all developers"
+      ],
+      "correct": 0,
+      "explanation": "IAM groups allow you to attach policies to multiple users at once. By creating a group with the S3 read-only policy and adding all 50 developers as members, permissions are centrally managed — if the policy needs updating, you change it once on the group. Assigning a role to each developer is incorrect because roles are assumed temporarily, not assigned to users. Attaching policies directly to each user requires 50 separate policy attachments and 50 updates if permissions change. Sharing one IAM user violates the security best practice of individual accountability.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS IAM Best Practices",
+        "AWS IAM Groups documentation"
+      ]
+    },
+    {
+      "question": "A company is running an application on an Amazon EC2 instance that needs to read objects from an S3 bucket. What is the AWS BEST PRACTICE for granting this access?",
+      "options": [
+        "Assign an IAM role with S3 read permissions to the EC2 instance",
+        "Create an IAM user, generate access keys, and store them in the application code",
+        "Create an IAM user, generate access keys, and store them as environment variables on the EC2 instance",
+        "Enable public access on the S3 bucket so the EC2 instance can read without credentials"
+      ],
+      "correct": 0,
+      "explanation": "The best practice is to use IAM roles for applications running on EC2. An IAM role provides temporary security credentials automatically rotated by AWS — no long-term credentials need to be stored or managed. Storing access keys in application code is a critical security risk because keys could be exposed if the code is shared. Storing keys as environment variables is safer than code but still uses long-term credentials that require manual rotation. Making an S3 bucket public exposes it to everyone on the internet.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS IAM Best Practices - Use roles for applications",
+        "AWS Security Best Practices"
+      ]
+    },
+    {
+      "question": "A healthcare company is preparing for a HIPAA audit and needs to provide auditors with AWS compliance reports and AWS agreements such as the Business Associate Addendum (BAA). Where can they download these documents?",
+      "options": [
+        "AWS Artifact",
+        "AWS Security Hub",
+        "AWS Config",
+        "AWS Trusted Advisor"
+      ],
+      "correct": 0,
+      "explanation": "AWS Artifact is a self-service portal for accessing AWS compliance documentation and AWS agreements. It provides on-demand access to AWS security and compliance reports such as SOC reports, PCI DSS, ISO certifications, and the ability to review and accept AWS agreements like the Business Associate Addendum (BAA) required for HIPAA workloads. AWS Security Hub aggregates security findings but does not provide compliance documents. AWS Config tracks resource configuration changes. AWS Trusted Advisor provides best practice recommendations.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS Artifact documentation",
+        "AWS HIPAA compliance documentation"
+      ]
+    },
+    {
+      "question": "A company is running a serverless application using AWS Lambda. According to the AWS Shared Responsibility Model, which of the following is the CUSTOMER's responsibility?",
+      "options": [
+        "Writing secure application code and managing IAM permissions for Lambda functions",
+        "Patching and maintaining the underlying server infrastructure that runs Lambda",
+        "Managing the operating system on which Lambda functions execute",
+        "Ensuring physical security of the data centers where Lambda runs"
+      ],
+      "correct": 0,
+      "explanation": "In the Shared Responsibility Model, AWS manages the infrastructure 'of' the cloud (hardware, networking, hypervisor, and for Lambda — the underlying servers, OS, and runtime environment). Customers are responsible for security 'in' the cloud — this includes writing secure application code, managing IAM permissions and execution roles, protecting environment variables/secrets, and controlling what data is processed. With serverless services like Lambda, the customer's infrastructure responsibility is reduced but code-level and access security remain entirely the customer's responsibility.",
+      "domain": "Security & Compliance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Shared Responsibility Model documentation",
+        "AWS Lambda Security documentation"
+      ]
+    },
+    {
+      "question": "A financial services company needs to continuously collect evidence of their AWS resource configurations and user activities to simplify the process of preparing for regulatory audits. Which AWS service automates evidence collection for compliance audits?",
+      "options": [
+        "AWS Audit Manager",
+        "AWS Config",
+        "AWS CloudTrail",
+        "AWS Security Hub"
+      ],
+      "correct": 0,
+      "explanation": "AWS Audit Manager continuously collects evidence from AWS services and maps it to compliance framework controls (such as PCI DSS, HIPAA, SOC 2, and FedRAMP) to help simplify audit preparation. It automates evidence gathering from AWS CloudTrail, AWS Config, Security Hub, and other sources. AWS Config tracks configuration changes but doesn't map them to compliance frameworks or generate audit-ready reports. AWS CloudTrail records API activity but requires manual analysis for audits. AWS Security Hub aggregates security findings but is not specifically designed for audit evidence collection.",
+      "domain": "Security & Compliance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Audit Manager documentation"
+      ]
+    },
+    {
+      "question": "A company with 20 AWS accounts in an AWS Organization needs to enforce a standard set of AWS WAF rules across all accounts and automatically apply them to new accounts as they are created. Which AWS service enables this centralized security management?",
+      "options": [
+        "AWS Firewall Manager",
+        "AWS WAF",
+        "AWS Shield",
+        "Amazon GuardDuty"
+      ],
+      "correct": 0,
+      "explanation": "AWS Firewall Manager is a security management service that allows you to centrally configure and manage firewall rules — including AWS WAF rules, AWS Shield Advanced protections, and VPC security groups — across all accounts in an AWS Organization. It automatically applies policies to new accounts and resources as they are created. AWS WAF is the underlying service that blocks web traffic, but it must be configured account by account without Firewall Manager. AWS Shield provides DDoS protection. Amazon GuardDuty is a threat detection service, not a centralized firewall management tool.",
+      "domain": "Security & Compliance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS Firewall Manager documentation"
+      ]
+    },
+    {
+      "question": "A company has just created a new AWS account. Which task requires the use of the AWS account root user and CANNOT be performed by an IAM administrator user?",
+      "options": [
+        "Closing the AWS account",
+        "Creating IAM users and groups",
+        "Attaching IAM policies to users",
+        "Enabling multi-factor authentication on IAM users"
+      ],
+      "correct": 0,
+      "explanation": "Closing an AWS account is one of the tasks that requires the root user — it cannot be delegated to IAM users or roles. Other root-user-only tasks include changing the account's email address, changing the AWS support plan, enabling IAM access to billing, restoring IAM user permissions, and registering as a seller in AWS Marketplace. Creating IAM users and groups, attaching IAM policies, and enabling MFA on IAM users are all tasks that can be performed by an IAM user with the appropriate administrative permissions.",
+      "domain": "Security & Compliance",
+      "difficulty": "medium",
+      "validated": true,
+      "validation_sources": [
+        "AWS IAM documentation - Tasks that require root user credentials"
+      ]
+    },
+    {
+      "question": "A security team wants to ensure that all IAM users in their AWS account use strong passwords and that their passwords expire after 90 days. Which AWS feature should they configure?",
+      "options": [
+        "IAM account password policy",
+        "AWS Secrets Manager rotation policy",
+        "AWS Config password compliance rule",
+        "AWS Shield password enforcement"
+      ],
+      "correct": 0,
+      "explanation": "IAM account password policy allows administrators to define password requirements for all IAM users in the account, including minimum length, required character types, password expiration period (e.g., 90 days), password reuse prevention, and whether users can change their own passwords. This policy applies to all IAM users. AWS Secrets Manager rotates application secrets and API keys, not IAM user passwords. AWS Config can check compliance but does not enforce password policies directly. AWS Shield is a DDoS protection service, not related to password management.",
+      "domain": "Security & Compliance",
+      "difficulty": "easy",
+      "validated": true,
+      "validation_sources": [
+        "AWS IAM Password Policy documentation",
+        "AWS Security Best Practices"
       ]
     }
   ]
