@@ -63,6 +63,14 @@ void AWSCertQuizActivity::onEnter() {
   // ------------------------------------------------------------------
   std::vector<uint16_t> fileIndices;
 
+  // How many questions this mode expects (used both to validate a resumable
+  // session and to size a fresh start).
+  int neededCount;
+  if      (practiceMode == "quick")      neededCount = 15;
+  else if (practiceMode == "quickstart") neededCount = 5;
+  else if (practiceMode == "study")      neededCount = 20;
+  else                                   neededCount = getMaxQuestionsForCert();
+
   if (practiceMode == "review") {
     // Review mode: load only the questions that were previously wrong.
     if (!loadIncorrectHistory(fileIndices) || fileIndices.empty()) {
@@ -73,17 +81,20 @@ void AWSCertQuizActivity::onEnter() {
     }
     std::sort(fileIndices.begin(), fileIndices.end());
 
-  } else if (practiceMode != "quickstart" && peekSessionFileIndices(fileIndices)) {
+  } else if (practiceMode != "quickstart" && peekSessionFileIndices(fileIndices) &&
+             (int)fileIndices.size() == neededCount) {
     // Resuming an interrupted session — reload the exact same question set.
-    DEBUG_PRINTLN("[AWS] Found saved session, reloading its question set");
+    // Only resume if the saved session has the number of questions this mode
+    // expects. A mismatch means the session is stale/degenerate (e.g. a leftover
+    // 2-question file for a 65-question Full exam), so fall through to a fresh
+    // start instead of resuming into a broken quiz.
+    // loadCustomQuestions() requires a sorted index list (forward-only cursor);
+    // peekSessionFileIndices returns them in shuffled questionOrder sequence.
+    std::sort(fileIndices.begin(), fileIndices.end());
 
   } else {
-    // Fresh start: decide how many questions we need.
-    int neededCount;
-    if      (practiceMode == "quick")      neededCount = 15;
-    else if (practiceMode == "quickstart") neededCount = 5;
-    else if (practiceMode == "study")      neededCount = 20;
-    else                                   neededCount = getMaxQuestionsForCert();
+    // Fresh start.
+    fileIndices.clear();
 
     if (practiceMode == "domain" && practiceDomain != "all") {
       // Cheap domain scan: only the matching file positions.
