@@ -3,19 +3,22 @@
 #include <functional>
 #include <string>
 
-#include "../Activity.h"
 #include "MappedInputManager.h"
+#include "activities/Activity.h"
 
 class BmpViewerActivity final : public Activity {
  public:
-  BmpViewerActivity(GfxRenderer& renderer, MappedInputManager& mappedInput, std::string filePath,
-                    std::function<void()> onGoBack);
+  BmpViewerActivity(GfxRenderer& renderer, MappedInputManager& mappedInput, std::string filePath);
 
   void onEnter() override;
   void onExit() override;
   void loop() override;
 
  private:
+  void loadSiblingImages();
+  void doSetSleepCover();
+
   std::string filePath;
-  std::function<void()> onGoBack;
+  std::vector<std::string> siblingImages;
+  int currentImageIndex = -1;
 };

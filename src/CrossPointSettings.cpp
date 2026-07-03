@@ -8,12 +8,13 @@
 #include <cstring>
 #include <string>
 
+#include "I18nKeys.h"
 #include "fontIds.h"
 
 // Initialize the static instance
 CrossPointSettings CrossPointSettings::instance;
 
-void readAndValidate(FsFile& file, uint8_t& member, const uint8_t maxValue) {
+void readAndValidate(HalFile& file, uint8_t& member, const uint8_t maxValue) {
   uint8_t tempValue;
   serialization::readPod(file, tempValue);
   if (tempValue < maxValue) {
@@ -26,6 +27,8 @@ constexpr uint8_t SETTINGS_FILE_VERSION = 1;
 constexpr char SETTINGS_FILE_BIN[] = "/.crosspoint/settings.bin";
 constexpr char SETTINGS_FILE_JSON[] = "/.crosspoint/settings.json";
 constexpr char SETTINGS_FILE_BAK[] = "/.crosspoint/settings.bin.bak";
+constexpr char LANG_FILE_BIN[] = "/.crosspoint/language.bin";
+constexpr char LANG_FILE_BAK[] = "/.crosspoint/language.bin.bak";
 
 // Convert legacy front button layout into explicit logical->hardware mapping.
 void applyLegacyFrontButtonLayout(CrossPointSettings& settings) {
@@ -57,6 +60,7 @@ void applyLegacyFrontButtonLayout(CrossPointSettings& settings) {
       break;
   }
 }
+
 }  // namespace
 
 void CrossPointSettings::validateFrontButtonMapping(CrossPointSettings& settings) {
@@ -72,6 +76,22 @@ void CrossPointSettings::validateFrontButtonMapping(CrossPointSettings& settings
         return;
       }
     }
+  }
+}
+
+uint8_t CrossPointSettings::sleepTimeoutEnumToMinutes(const uint8_t legacyValue) {
+  switch (legacyValue) {
+    case SLEEP_1_MIN:
+      return 1;
+    case SLEEP_5_MIN:
+      return 5;
+    case SLEEP_15_MIN:
+      return 15;
+    case SLEEP_30_MIN:
+      return 30;
+    case SLEEP_10_MIN:
+    default:
+      return 10;
   }
 }
 
@@ -94,6 +114,7 @@ bool CrossPointSettings::loadFromFile() {
           LOG_ERR("CPS", "Failed to resave settings after format update");
         }
       }
+      migrateLanguageBinaryFile();
       return result;
     }
   }
@@ -101,6 +122,7 @@ bool CrossPointSettings::loadFromFile() {
   // Fall back to binary migration
   if (Storage.exists(SETTINGS_FILE_BIN)) {
     if (loadFromBinaryFile()) {
+      migrateLanguageBinaryFile();
       if (saveToFile()) {
         Storage.rename(SETTINGS_FILE_BIN, SETTINGS_FILE_BAK);
         LOG_DBG("CPS", "Migrated settings.bin to settings.json");
@@ -112,11 +134,35 @@ bool CrossPointSettings::loadFromFile() {
     }
   }
 
-  return false;
+  // No settings files at all -- check for standalone language.bin
+  return migrateLanguageBinaryFile();
+}
+
+bool CrossPointSettings::migrateLanguageBinaryFile() {
+  // V1_LANGUAGES / V1_LANGUAGE_COUNT are emitted by gen_i18n.py with the
+  // frozen enum order from 2f969a9.
+  if (!Storage.exists(LANG_FILE_BIN)) return false;
+
+  HalFile f;
+  if (Storage.openFileForRead("CPS", LANG_FILE_BIN, f)) {
+    uint8_t version;
+    serialization::readPod(f, version);
+    if (version == 1) {
+      uint8_t oldIndex;
+      serialization::readPod(f, oldIndex);
+      if (oldIndex < V1_LANGUAGE_COUNT) {
+        language = static_cast<uint8_t>(V1_LANGUAGES[oldIndex]);
+      }
+    }
+  }
+  Storage.rename(LANG_FILE_BIN, LANG_FILE_BAK);
+  saveToFile();
+  LOG_DBG("CPS", "Migrated language.bin into settings.json");
+  return true;
 }
 
 bool CrossPointSettings::loadFromBinaryFile() {
-  FsFile inputFile;
+  HalFile inputFile;
   if (!Storage.openFileForRead("CPS", SETTINGS_FILE_BIN, inputFile)) {
     return false;
   }
@@ -125,7 +171,6 @@ bool CrossPointSettings::loadFromBinaryFile() {
   serialization::readPod(inputFile, version);
   if (version != SETTINGS_FILE_VERSION) {
     LOG_ERR("CPS", "Deserialization failed: Unknown version %u", version);
-    inputFile.close();
     return false;
   }
 
@@ -141,7 +186,7 @@ bool CrossPointSettings::loadFromBinaryFile() {
     if (++settingsRead >= fileSettingsCount) break;
     readAndValidate(inputFile, shortPwrBtn, SHORT_PWRBTN_COUNT);
     if (++settingsRead >= fileSettingsCount) break;
-    readAndValidate(inputFile, statusBar, STATUS_BAR_MODE_COUNT);
+    readAndValidate(inputFile, statusBar, STATUS_BAR_MODE_COUNT);  // legacy
     if (++settingsRead >= fileSettingsCount) break;
     readAndValidate(inputFile, orientation, ORIENTATION_COUNT);
     if (++settingsRead >= fileSettingsCount) break;
@@ -149,7 +194,17 @@ bool CrossPointSettings::loadFromBinaryFile() {
     if (++settingsRead >= fileSettingsCount) break;
     readAndValidate(inputFile, sideButtonLayout, SIDE_BUTTON_LAYOUT_COUNT);
     if (++settingsRead >= fileSettingsCount) break;
-    readAndValidate(inputFile, fontFamily, FONT_FAMILY_COUNT);
+    {
+      uint8_t legacyFontFamily;
+      serialization::readPod(inputFile, legacyFontFamily);
+      if (legacyFontFamily < BUILTIN_FONT_COUNT) {
+        fontFamily = legacyFontFamily;
+      } else if (legacyFontFamily == LEGACY_OPENDYSLEXIC) {
+        fontFamily = NOTOSERIF;
+        strncpy(sdFontFamilyName, "OpenDyslexic", sizeof(sdFontFamilyName) - 1);
+        sdFontFamilyName[sizeof(sdFontFamilyName) - 1] = '\0';
+      }
+    }
     if (++settingsRead >= fileSettingsCount) break;
     readAndValidate(inputFile, fontSize, FONT_SIZE_COUNT);
     if (++settingsRead >= fileSettingsCount) break;
@@ -157,7 +212,9 @@ bool CrossPointSettings::loadFromBinaryFile() {
     if (++settingsRead >= fileSettingsCount) break;
     readAndValidate(inputFile, paragraphAlignment, PARAGRAPH_ALIGNMENT_COUNT);
     if (++settingsRead >= fileSettingsCount) break;
-    readAndValidate(inputFile, sleepTimeout, SLEEP_TIMEOUT_COUNT);
+    uint8_t legacySleepTimeout = SLEEP_10_MIN;
+    readAndValidate(inputFile, legacySleepTimeout, SLEEP_TIMEOUT_COUNT);
+    sleepTimeoutMinutes = sleepTimeoutEnumToMinutes(legacySleepTimeout);
     if (++settingsRead >= fileSettingsCount) break;
     readAndValidate(inputFile, refreshFrequency, REFRESH_FREQUENCY_COUNT);
     if (++settingsRead >= fileSettingsCount) break;
@@ -176,7 +233,7 @@ bool CrossPointSettings::loadFromBinaryFile() {
     if (++settingsRead >= fileSettingsCount) break;
     readAndValidate(inputFile, hideBatteryPercentage, HIDE_BATTERY_PERCENTAGE_COUNT);
     if (++settingsRead >= fileSettingsCount) break;
-    serialization::readPod(inputFile, longPressChapterSkip);
+    readAndValidate(inputFile, longPressButtonBehavior, LONG_PRESS_BUTTON_BEHAVIOR_COUNT);
     if (++settingsRead >= fileSettingsCount) break;
     serialization::readPod(inputFile, hyphenationEnabled);
     if (++settingsRead >= fileSettingsCount) break;
@@ -211,6 +268,8 @@ bool CrossPointSettings::loadFromBinaryFile() {
     if (++settingsRead >= fileSettingsCount) break;
     serialization::readPod(inputFile, embeddedStyle);
     if (++settingsRead >= fileSettingsCount) break;
+    serialization::readPod(inputFile, frontButtonFollowOrientation);
+    if (++settingsRead >= fileSettingsCount) break;
   } while (false);
 
   if (frontButtonMappingRead) {
@@ -219,14 +278,26 @@ bool CrossPointSettings::loadFromBinaryFile() {
     applyLegacyFrontButtonLayout(*this);
   }
 
-  inputFile.close();
   LOG_DBG("CPS", "Settings loaded from binary file");
   return true;
 }
 
 float CrossPointSettings::getReaderLineCompression() const {
+  // SD card fonts use same compression as Bookerly (the most neutral values)
+  if (sdFontFamilyName[0] != '\0') {
+    switch (lineSpacing) {
+      case TIGHT:
+        return 0.95f;
+      case NORMAL:
+      default:
+        return 1.0f;
+      case WIDE:
+        return 1.1f;
+    }
+  }
+
   switch (fontFamily) {
-    case BOOKERLY:
+    case NOTOSERIF:
     default:
       switch (lineSpacing) {
         case TIGHT:
@@ -247,33 +318,14 @@ float CrossPointSettings::getReaderLineCompression() const {
         case WIDE:
           return 1.0f;
       }
-    case OPENDYSLEXIC:
-      switch (lineSpacing) {
-        case TIGHT:
-          return 0.90f;
-        case NORMAL:
-        default:
-          return 0.95f;
-        case WIDE:
-          return 1.0f;
-      }
   }
 }
 
 unsigned long CrossPointSettings::getSleepTimeoutMs() const {
-  switch (sleepTimeout) {
-    case SLEEP_1_MIN:
-      return 1UL * 60 * 1000;
-    case SLEEP_5_MIN:
-      return 5UL * 60 * 1000;
-    case SLEEP_10_MIN:
-    default:
-      return 10UL * 60 * 1000;
-    case SLEEP_15_MIN:
-      return 15UL * 60 * 1000;
-    case SLEEP_30_MIN:
-      return 30UL * 60 * 1000;
-  }
+  if (sleepTimeoutMinutes >= SLEEP_TIMEOUT_NEVER_MINUTES) return 0UL;
+  const uint8_t minutes =
+      std::clamp(sleepTimeoutMinutes, MIN_SLEEP_TIMEOUT_MINUTES, static_cast<uint8_t>(SLEEP_TIMEOUT_NEVER_MINUTES - 1));
+  return static_cast<unsigned long>(minutes) * 60UL * 1000UL;
 }
 
 int CrossPointSettings::getRefreshFrequency() const {
@@ -293,19 +345,26 @@ int CrossPointSettings::getRefreshFrequency() const {
 }
 
 int CrossPointSettings::getReaderFontId() const {
+  // Check SD card font first
+  if (sdFontFamilyName[0] != '\0' && sdFontIdResolver) {
+    int id = sdFontIdResolver(sdFontResolverCtx, sdFontFamilyName, fontSize);
+    if (id != 0) return id;
+    // Fall through to built-in if SD font not found
+  }
+
   switch (fontFamily) {
-    case BOOKERLY:
+    case NOTOSERIF:
     default:
       switch (fontSize) {
         case SMALL:
-          return BOOKERLY_12_FONT_ID;
+          return NOTOSERIF_12_FONT_ID;
         case MEDIUM:
         default:
-          return BOOKERLY_14_FONT_ID;
+          return NOTOSERIF_14_FONT_ID;
         case LARGE:
-          return BOOKERLY_16_FONT_ID;
+          return NOTOSERIF_16_FONT_ID;
         case EXTRA_LARGE:
-          return BOOKERLY_18_FONT_ID;
+          return NOTOSERIF_18_FONT_ID;
       }
     case NOTOSANS:
       switch (fontSize) {
@@ -318,18 +377,6 @@ int CrossPointSettings::getReaderFontId() const {
           return NOTOSANS_16_FONT_ID;
         case EXTRA_LARGE:
           return NOTOSANS_18_FONT_ID;
-      }
-    case OPENDYSLEXIC:
-      switch (fontSize) {
-        case SMALL:
-          return OPENDYSLEXIC_8_FONT_ID;
-        case MEDIUM:
-        default:
-          return OPENDYSLEXIC_10_FONT_ID;
-        case LARGE:
-          return OPENDYSLEXIC_12_FONT_ID;
-        case EXTRA_LARGE:
-          return OPENDYSLEXIC_14_FONT_ID;
       }
   }
 }

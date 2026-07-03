@@ -252,7 +252,7 @@ void AWSCertQuizActivity::saveSession() {
   sanitizeFilenameComponent(practiceDomain.c_str(), safeDomain, sizeof(safeDomain));
   char path[256];
   snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-session-%s-%s-%s.dat", certId.c_str(), practiceMode.c_str(), safeDomain);
-  FsFile file = Storage.open(path, O_WRONLY | O_CREAT | O_TRUNC);
+  HalFile file = Storage.open(path, O_WRONLY | O_CREAT | O_TRUNC);
   if (!file) return;
 
   bool ok = true;
@@ -296,7 +296,7 @@ bool AWSCertQuizActivity::loadSession() {
   sanitizeFilenameComponent(practiceDomain.c_str(), safeDomain, sizeof(safeDomain));
   char path[256];
   snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-session-%s-%s-%s.dat", certId.c_str(), practiceMode.c_str(), safeDomain);
-  FsFile file;
+  HalFile file;
   if (!openFileOrShowError(path, file, "Session Load Error")) {
     return false;
   }
@@ -381,7 +381,7 @@ void AWSCertQuizActivity::saveIncorrectHistory() {
 
   char path[PATH_BUF_SIZE];
   snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-history-%s.dat", certId.c_str());
-  FsFile file = Storage.open(path, O_WRONLY | O_CREAT | O_TRUNC);
+  HalFile file = Storage.open(path, O_WRONLY | O_CREAT | O_TRUNC);
   if (!file) return;
 
   // v2 format: [magic: 0xAB 0x02][count: uint16][fileIndex: uint16 × count]
@@ -406,7 +406,7 @@ bool AWSCertQuizActivity::loadIncorrectHistory(std::vector<uint16_t>& outFileInd
 
   char path[PATH_BUF_SIZE];
   snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-history-%s.dat", certId.c_str());
-  FsFile file;
+  HalFile file;
   if (!Storage.openFileForRead("AWS", path, file)) {
     DEBUG_PRINTLN("[AWS] No incorrect question history found");
     return false;
@@ -446,7 +446,7 @@ bool AWSCertQuizActivity::loadIncorrectHistory(std::vector<uint16_t>& outFileInd
   return true;
 }
 
-bool AWSCertQuizActivity::openFileOrShowError(const char* path, FsFile& file, const char* errorTitle) {
+bool AWSCertQuizActivity::openFileOrShowError(const char* path, HalFile& file, const char* errorTitle) {
   if (!Storage.openFileForRead("AWS", path, file)) {
     DEBUG_PRINTF("[AWS] Failed to open: %s\n", path);
     showError(errorTitle, "Could not open file.\n\nCheck SD card and file path.");
@@ -538,7 +538,7 @@ void AWSCertQuizActivity::showError(const char* title, const char* message) {
 // Seek past the file header to the first '[' of the "questions" array.
 // Returns true on success, false if the array marker was not found.
 // ---------------------------------------------------------------------------
-static bool seekToQuestionsArray(FsFile& file) {
+static bool seekToQuestionsArray(HalFile& file) {
   char searchBuf[32] = {0};
   int searchPos = 0;
 
@@ -571,7 +571,7 @@ static bool seekToQuestionsArray(FsFile& file) {
 int AWSCertQuizActivity::countQuestionsInFile() {
   char path[PATH_BUF_SIZE];
   snprintf(path, sizeof(path), "/aws-quiz/%s.json", certId.c_str());
-  FsFile file;
+  HalFile file;
   if (!Storage.openFileForRead("AWS", path, file)) return 0;
 
   char header[256] = {0};
@@ -624,7 +624,7 @@ bool AWSCertQuizActivity::cheapDomainScan(const char* domain, std::vector<uint16
   char path[PATH_BUF_SIZE];
   snprintf(path, sizeof(path), "/aws-quiz/%s.json", certId.c_str());
 
-  FsFile file;
+  HalFile file;
   if (!Storage.openFileForRead("AWS", path, file)) return false;
   if (!seekToQuestionsArray(file)) { file.close(); return false; }
 
@@ -696,7 +696,7 @@ bool AWSCertQuizActivity::peekSessionFileIndices(std::vector<uint16_t>& outIndic
   snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-session-%s-%s-%s.dat",
            certId.c_str(), practiceMode.c_str(), safeDomain);
 
-  FsFile file;
+  HalFile file;
   if (!Storage.openFileForRead("AWS", path, file)) return false;
 
   int savedCurrentIndex, savedQuestionCount;
@@ -743,7 +743,7 @@ bool AWSCertQuizActivity::loadCustomQuestions(const std::vector<uint16_t>* onlyF
   snprintf(path, sizeof(path), "/aws-quiz/%s.json", certId.c_str());
   DEBUG_PRINTF("[AWS] Trying to load: %s\n", path);
 
-  FsFile file;
+  HalFile file;
   if (!Storage.openFileForRead("AWS", path, file)) {
     DEBUG_PRINTF("[AWS] Failed to open file: %s\n", path);
     return false;

@@ -6,8 +6,11 @@
 #include <string>
 #include <vector>
 
-#include "activities/ActivityWithSubactivity.h"
+#include "activities/Activity.h"
 #include "util/ButtonNavigator.h"
+
+struct Rect;
+struct ThemeMetrics;
 
 // Structure to hold WiFi network information
 struct WifiNetworkInfo {
@@ -41,13 +44,12 @@ enum class WifiSelectionState {
  *
  * The onComplete callback receives true if connected successfully, false if cancelled.
  */
-class WifiSelectionActivity final : public ActivityWithSubactivity {
+class WifiSelectionActivity final : public Activity {
   ButtonNavigator buttonNavigator;
 
   WifiSelectionState state = WifiSelectionState::SCANNING;
   size_t selectedNetworkIndex = 0;
   std::vector<WifiNetworkInfo> networks;
-  const std::function<void(bool connected)> onComplete;
 
   // Selected network for connection
   std::string selectedSSID;
@@ -80,13 +82,13 @@ class WifiSelectionActivity final : public ActivityWithSubactivity {
   static constexpr unsigned long CONNECTION_TIMEOUT_MS = 15000;
   unsigned long connectionStartTime = 0;
 
-  void renderNetworkList() const;
-  void renderPasswordEntry() const;
-  void renderConnecting() const;
-  void renderConnected() const;
-  void renderSavePrompt() const;
-  void renderConnectionFailed() const;
-  void renderForgetPrompt() const;
+  void renderNetworkList(const Rect* screen, const ThemeMetrics* metrics) const;
+  void renderPasswordEntry(const Rect* screen, const ThemeMetrics* metrics) const;
+  void renderConnecting(const Rect* screen, const ThemeMetrics* metrics) const;
+  void renderConnected(const Rect* screen, const ThemeMetrics* metrics) const;
+  void renderSavePrompt(const Rect* screen, const ThemeMetrics* metrics) const;
+  void renderConnectionFailed(const Rect* screen, const ThemeMetrics* metrics) const;
+  void renderForgetPrompt(const Rect* screen, const ThemeMetrics* metrics) const;
 
   void startWifiScan();
   void processWifiScanResults();
@@ -95,17 +97,13 @@ class WifiSelectionActivity final : public ActivityWithSubactivity {
   void checkConnectionStatus();
   std::string getSignalStrengthIndicator(int32_t rssi) const;
 
+  void onComplete(bool connected);
+
  public:
-  explicit WifiSelectionActivity(GfxRenderer& renderer, MappedInputManager& mappedInput,
-                                 const std::function<void(bool connected)>& onComplete, bool autoConnect = true)
-      : ActivityWithSubactivity("WifiSelection", renderer, mappedInput),
-        onComplete(onComplete),
-        allowAutoConnect(autoConnect) {}
+  explicit WifiSelectionActivity(GfxRenderer& renderer, MappedInputManager& mappedInput, bool autoConnect = true)
+      : Activity("WifiSelection", renderer, mappedInput), allowAutoConnect(autoConnect) {}
   void onEnter() override;
   void onExit() override;
   void loop() override;
-  void render(Activity::RenderLock&&) override;
-
-  // Get the IP address after successful connection
-  const std::string& getConnectedIP() const { return connectedIP; }
+  void render(RenderLock&&) override;
 };

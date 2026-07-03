@@ -14,7 +14,7 @@
 
 // Static pointer for PNG callback
 static XKCDViewerActivity* s_instance = nullptr;
-static FsFile s_pngFile;
+static HalFile s_pngFile;
 
 // Floyd-Steinberg dithering buffers
 static int16_t* errorBuffer = nullptr;
@@ -169,7 +169,7 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
   }
 
   // Save to SD card temporarily
-  FsFile file;
+  HalFile file;
   if (!Storage.openFileForWrite("XKCD", "/.crosspoint/xkcd_temp.png", file)) {
     http.end();
     renderer.drawCenteredText(UI_10_FONT_ID, height / 2, fork_tr(STR_ONLINE_FAILED_LOAD), true);

@@ -1,7 +1,8 @@
 #pragma once
 
 #include <HardwareSerial.h>
-#include <stdarg.h>
+
+#include <string>
 
 /*
 Define ENABLE_SERIAL_LOG to enable logging
@@ -32,19 +33,19 @@ void logPrintf(const char* level, const char* origin, const char* format, ...);
 
 #ifdef ENABLE_SERIAL_LOG
 #if LOG_LEVEL >= 0
-#define LOG_ERR(origin, format, ...) logPrintf("[ERR]", origin, format "\n", ##__VA_ARGS__)
+#define LOG_ERR(origin, format, ...) logPrintf("ERR", origin, format "\n", ##__VA_ARGS__)
 #else
 #define LOG_ERR(origin, format, ...)
 #endif
 
 #if LOG_LEVEL >= 1
-#define LOG_INF(origin, format, ...) logPrintf("[INF]", origin, format "\n", ##__VA_ARGS__)
+#define LOG_INF(origin, format, ...) logPrintf("INF", origin, format "\n", ##__VA_ARGS__)
 #else
 #define LOG_INF(origin, format, ...)
 #endif
 
 #if LOG_LEVEL >= 2
-#define LOG_DBG(origin, format, ...) logPrintf("[DBG]", origin, format "\n", ##__VA_ARGS__)
+#define LOG_DBG(origin, format, ...) logPrintf("DBG", origin, format "\n", ##__VA_ARGS__)
 #else
 #define LOG_DBG(origin, format, ...)
 #endif
@@ -53,6 +54,14 @@ void logPrintf(const char* level, const char* origin, const char* format, ...);
 #define LOG_ERR(origin, format, ...)
 #define LOG_INF(origin, format, ...)
 #endif
+
+std::string getLastLogs();
+void clearLastLogs();
+// Validates the RTC log state (magic word + logHead range). Returns true if
+// corruption was detected (magic mismatch or logHead out of range), meaning
+// logMessages is untrusted garbage. Callers should call clearLastLogs() when
+// this returns true so getLastLogs() does not dump corrupt data into crash reports.
+bool sanitizeLogHead();
 
 class MySerialImpl : public Print {
  public:
@@ -62,17 +71,10 @@ class MySerialImpl : public Print {
   //   if (Serial) or while (!Serial)
   operator bool() const { return logSerial; }
 
-  __attribute__((deprecated("Use LOG_* macro instead"))) size_t printf(const char* format, ...) {
-    va_list args;
-    va_start(args, format);
-    char buf[256];
-    vsnprintf(buf, sizeof(buf), format, args);
-    va_end(args);
-    return logSerial.print(buf);
-  }
-  size_t write(uint8_t b) override { return logSerial.write(b); }
-  size_t write(const uint8_t* buffer, size_t size) override { return logSerial.write(buffer, size); }
-  void flush() override { logSerial.flush(); }
+  __attribute__((deprecated("Use LOG_* macro instead"))) size_t printf(const char* format, ...);
+  size_t write(uint8_t b) override;
+  size_t write(const uint8_t* buffer, size_t size) override;
+  void flush() override;
   static MySerialImpl instance;
 };
 

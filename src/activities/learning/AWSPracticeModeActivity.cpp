@@ -117,7 +117,7 @@ void AWSPracticeModeActivity::loadDomains() {
 
   char path[128];
   snprintf(path, sizeof(path), "/aws-quiz/%s.json", certId.c_str());
-  FsFile file;
+  HalFile file;
   if (!Storage.openFileForRead("AWS", path, file)) {
     return;
   }

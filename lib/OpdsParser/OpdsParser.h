@@ -49,6 +49,9 @@ class OpdsParser final : public Print {
   ~OpdsParser();
 
   // Disable copy
+  const std::string& getSearchTemplate() const { return searchTemplate; }
+  const std::string& getNextPageUrl() const { return nextPageUrl; }
+  const std::string& getPrevPageUrl() const { return prevPageUrl; }
   OpdsParser(const OpdsParser&) = delete;
   OpdsParser& operator=(const OpdsParser&) = delete;
 
@@ -59,7 +62,7 @@ class OpdsParser final : public Print {
 
   bool error() const;
 
-  explicit operator bool() { return !error(); }
+  operator bool() { return !error(); }
 
   /**
    * Get the parsed entries (both navigation and book entries).
@@ -85,6 +88,9 @@ class OpdsParser final : public Print {
   static void XMLCALL endElement(void* userData, const XML_Char* name);
   static void XMLCALL characterData(void* userData, const XML_Char* s, int len);
 
+  std::string searchTemplate;
+  std::string nextPageUrl;
+  std::string prevPageUrl;
   // Helper to find attribute value
   static const char* findAttribute(const XML_Char** atts, const char* name);
 
@@ -100,5 +106,5 @@ class OpdsParser final : public Print {
   bool inAuthorName = false;
   bool inId = false;
 
-  bool errorOccurred = false;
+  bool errorOccured = false;
 };

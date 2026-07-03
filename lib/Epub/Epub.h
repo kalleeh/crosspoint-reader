@@ -4,9 +4,13 @@
 
 #include <memory>
 #include <string>
+#include <unordered_map>
+#include <vector>
 
 #include "Epub/BookMetadataCache.h"
 #include "Epub/css/CssParser.h"
+
+class ZipFile;
 
 class Epub {
   // the ncx file (EPUB 2)
@@ -27,9 +31,10 @@ class Epub {
   std::vector<std::string> cssFiles;
 
   bool findContentOpfFile(std::string* contentOpfFile) const;
-  bool parseContentOpf(BookMetadataCache::BookMetadata& bookMetadata);
+  bool parseContentOpf(BookMetadataCache::BookMetadata& bookMetadata, bool writeSpineEntries = true);
   bool parseTocNcxFile() const;
   bool parseTocNavFile() const;
+  void discoverCssFilesFromZip();
   void parseCssFiles() const;
 
  public:
@@ -68,4 +73,5 @@ class Epub {
   size_t getBookSize() const;
   float calculateProgress(int currentSpineIndex, float currentSpineRead) const;
   CssParser* getCssParser() const { return cssParser.get(); }
+  int resolveHrefToSpineIndex(const std::string& href) const;
 };

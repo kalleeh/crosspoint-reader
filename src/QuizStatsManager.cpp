@@ -157,7 +157,7 @@ void QuizStatsManager::loadStats() {
   if (loaded) return;
 
   const char* path = "/.crosspoint/aws-quiz-stats.dat";
-  FsFile file;
+  HalFile file;
   if (!Storage.openFileForRead("QuizStats", path, file)) {
     loaded = true;
     return;
@@ -228,7 +228,7 @@ void QuizStatsManager::saveStats() {
   const char* realPath = "/.crosspoint/aws-quiz-stats.dat";
 
   // Write to temp file first — avoids corrupting the real file on power loss
-  FsFile file = Storage.open(tmpPath, O_WRONLY | O_CREAT | O_TRUNC);
+  HalFile file = Storage.open(tmpPath, O_WRONLY | O_CREAT | O_TRUNC);
   if (!file) {
     Serial.println("[QuizStats] Failed to open tmp file for save");
     return;

@@ -88,12 +88,18 @@ void WikipediaRandomActivity::onExit() {
 
 void WikipediaRandomActivity::loadInterests() {
   const char* path = "/.crosspoint/wiki_interests.txt";
-  FsFile file;
+  HalFile file;
   if (!Storage.openFileForRead("WIKI", path, file)) return;
 
   char line[128];
   while (file.available()) {
-    int len = file.readBytesUntil('\n', line, sizeof(line) - 1);
+    // HalFile has no readBytesUntil(); read a line one byte at a time.
+    int len = 0;
+    int c;
+    while (len < static_cast<int>(sizeof(line) - 1) && (c = file.read()) >= 0) {
+      if (c == '\n') break;
+      line[len++] = static_cast<char>(c);
+    }
     if (len <= 0) continue;
     line[len] = '\0';
 
@@ -110,7 +116,7 @@ void WikipediaRandomActivity::loadInterests() {
 
 void WikipediaRandomActivity::saveInterests() {
   const char* path = "/.crosspoint/wiki_interests.txt";
-  FsFile file;
+  HalFile file;
   if (!Storage.openFileForWrite("WIKI", path, file)) return;
 
   for (const auto& pair : interests) {
@@ -170,7 +176,7 @@ bool WikipediaRandomActivity::downloadAndCacheImage(WikiArticle& article) {
 
   // Save to temp
   String tempPath = "/.crosspoint/wiki_temp.jpg";
-  FsFile tempFile;
+  HalFile tempFile;
   if (!Storage.openFileForWrite("WIKI", tempPath.c_str(), tempFile)) {
     http.end();
     return false;
@@ -204,7 +210,7 @@ bool WikipediaRandomActivity::downloadAndCacheImage(WikiArticle& article) {
     return false;
   }
 
-  FsFile bmpFile;
+  HalFile bmpFile;
   if (!Storage.openFileForWrite("WIKI", candidatePath.c_str(), bmpFile)) {
     tempFile.close();
     return false;
@@ -379,7 +385,7 @@ void WikipediaRandomActivity::render() {
       // Image (if available) - only download if cached or not fetching
       if (!article.imageUrl.isEmpty()) {
         if (y >= -400 && y < height && !article.cachedImagePath.isEmpty()) {
-          FsFile bmpFile;
+          HalFile bmpFile;
           if (Storage.openFileForRead("WIKI", article.cachedImagePath.c_str(), bmpFile)) {
             Bitmap bitmap(bmpFile);
             renderer.drawBitmap(bitmap, 0, y, width, 400);

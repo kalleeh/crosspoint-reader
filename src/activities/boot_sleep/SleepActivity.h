@@ -1,12 +1,12 @@
 #pragma once
-#include "../Activity.h"
+#include "activities/Activity.h"
 
 class Bitmap;
 
 class SleepActivity final : public Activity {
  public:
-  explicit SleepActivity(GfxRenderer& renderer, MappedInputManager& mappedInput)
-      : Activity("Sleep", renderer, mappedInput) {}
+  explicit SleepActivity(GfxRenderer& renderer, MappedInputManager& mappedInput, bool fromTimeout = false)
+      : Activity("Sleep", renderer, mappedInput), fromTimeout(fromTimeout) {}
   void onEnter() override;
 
  private:
@@ -14,8 +14,12 @@ class SleepActivity final : public Activity {
   void renderCustomSleepScreen() const;
   void renderCoverSleepScreen() const;
   void renderBitmapSleepScreen(const Bitmap& bitmap) const;
+  void renderLastScreenSleepScreen() const;
   void renderBlankSleepScreen() const;
+  // FORK: online-content sleep screens
   void renderWeatherSleepScreen() const;
   void renderWordOfDaySleepScreen() const;
   void renderWikipediaSleepScreen() const;
+
+  bool fromTimeout = false;
 };

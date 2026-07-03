@@ -8,6 +8,8 @@
 #include <vector>
 #include <string>
 
+class HalFile;  // forward decl (defined in HalStorage.h)
+
 struct Question {
   const char* certId = nullptr;  // Non-owning pointer (lifetime managed by AWSCertQuizActivity::certId)
   uint16_t fileIndex = 0;        // 0-based sequential position of this question in the JSON file
@@ -83,7 +85,7 @@ class AWSCertQuizActivity final : public Activity {
   bool loadIncorrectHistory(std::vector<uint16_t>& outFileIndices);
   void saveQuizStats();
   void showError(const char* title, const char* message);
-  bool openFileOrShowError(const char* path, FsFile& file, const char* errorTitle);
+  bool openFileOrShowError(const char* path, HalFile& file, const char* errorTitle);
   void renderQuestion();
   void renderAnswer() const;
   void renderSummary() const;

@@ -6,16 +6,17 @@
 #include <I18n.h>
 #include <WiFi.h>
 #include <esp_task_wdt.h>
-#include <qrcode.h>
 
 #include <cstddef>
 
 #include "MappedInputManager.h"
 #include "NetworkModeSelectionActivity.h"
+#include "SilentRestart.h"
 #include "WifiSelectionActivity.h"
 #include "activities/network/CalibreConnectActivity.h"
 #include "components/UITheme.h"
 #include "fontIds.h"
+#include "util/QrUtils.h"
 
 namespace {
 // AP Mode configuration
@@ -24,16 +25,43 @@ constexpr const char* AP_PASSWORD = nullptr;  // Open network for ease of use
 constexpr const char* AP_HOSTNAME = "crosspoint";
 constexpr uint8_t AP_CHANNEL = 1;
 constexpr uint8_t AP_MAX_CONNECTIONS = 4;
-constexpr int QR_CODE_WIDTH = 6 * 33;
-constexpr int QR_CODE_HEIGHT = 200;
+constexpr int QR_CODE_WIDTH = 198;
+constexpr int QR_CODE_HEIGHT = 198;
 
 // DNS server for captive portal (redirects all DNS queries to our IP)
 DNSServer* dnsServer = nullptr;
 constexpr uint16_t DNS_PORT = 53;
+
+void stopDnsServer() {
+  if (!dnsServer) return;
+
+  dnsServer->stop();
+  delete dnsServer;
+  dnsServer = nullptr;
+}
+
+void restartMdns(const char* hostname, const char* tag) {
+  MDNS.end();
+  if (MDNS.begin(hostname)) {
+    LOG_DBG(tag, "mDNS started: http://%s.local/", hostname);
+  } else {
+    LOG_DBG(tag, "WARNING: mDNS failed to start");
+  }
+}
+
+// 0..4 bars from RSSI (dBm), with 3 dBm hysteresis on currentBars to suppress flicker.
+int barsForRssi(int rssi, int currentBars) {
+  static constexpr int RISE_DBM[] = {-85, -75, -65, -55};
+  static constexpr int FALL_DBM[] = {-88, -78, -68, -58};
+  int bars = std::clamp(currentBars, 0, 4);
+  while (bars < 4 && rssi >= RISE_DBM[bars]) bars++;
+  while (bars > 0 && rssi < FALL_DBM[bars - 1]) bars--;
+  return bars;
+}
 }  // namespace
 
 void CrossPointWebServerActivity::onEnter() {
-  ActivityWithSubactivity::onEnter();
+  Activity::onEnter();
 
   LOG_DBG("WEBACT", "Free heap at onEnter: %d bytes", ESP.getFreeHeap());
 
@@ -48,49 +76,35 @@ void CrossPointWebServerActivity::onEnter() {
 
   // Launch network mode selection subactivity
   LOG_DBG("WEBACT", "Launching NetworkModeSelectionActivity...");
-  enterNewActivity(new NetworkModeSelectionActivity(
-      renderer, mappedInput, [this](const NetworkMode mode) { onNetworkModeSelected(mode); },
-      [this]() { onGoBack(); }  // Cancel goes back to home
-      ));
+  startActivityForResult(std::make_unique<NetworkModeSelectionActivity>(renderer, mappedInput),
+                         [this](const ActivityResult& result) {
+                           if (result.isCancelled) {
+                             onGoHome();
+                           } else {
+                             onNetworkModeSelected(std::get<NetworkModeResult>(result.data).mode);
+                           }
+                         });
 }
 
 void CrossPointWebServerActivity::onExit() {
-  ActivityWithSubactivity::onExit();
+  Activity::onExit();
 
   LOG_DBG("WEBACT", "Free heap at onExit start: %d bytes", ESP.getFreeHeap());
 
   state = WebServerActivityState::SHUTTING_DOWN;
-
-  // Stop the web server first (before disconnecting WiFi)
-  stopWebServer();
-
-  // Stop mDNS
+  stopDnsServer();
   MDNS.end();
 
-  // Stop DNS server if running (AP mode)
-  if (dnsServer) {
-    LOG_DBG("WEBACT", "Stopping DNS server...");
-    dnsServer->stop();
-    delete dnsServer;
-    dnsServer = nullptr;
+  // Skip reboot if WiFi was never activated (e.g. user backed out of mode selection).
+  if (WiFi.getMode() != WIFI_MODE_NULL) {
+    if (isApMode) {
+      WiFi.softAPdisconnect(true);
+    } else {
+      WiFi.disconnect(false);
+    }
+    delay(30);
+    silentRestart();
   }
-
-  // Brief wait for LWIP stack to flush pending packets
-  delay(50);
-
-  // Disconnect WiFi gracefully
-  if (isApMode) {
-    LOG_DBG("WEBACT", "Stopping WiFi AP...");
-    WiFi.softAPdisconnect(true);
-  } else {
-    LOG_DBG("WEBACT", "Disconnecting WiFi (graceful)...");
-    WiFi.disconnect(false);  // false = don't erase credentials, send disconnect frame
-  }
-  delay(30);  // Allow disconnect frame to be sent
-
-  LOG_DBG("WEBACT", "Setting WiFi mode OFF...");
-  WiFi.mode(WIFI_OFF);
-  delay(30);  // Allow WiFi hardware to power down
 
   LOG_DBG("WEBACT", "Free heap at onExit end: %d bytes", ESP.getFreeHeap());
 }
@@ -107,18 +121,20 @@ void CrossPointWebServerActivity::onNetworkModeSelected(const NetworkMode mode) 
   networkMode = mode;
   isApMode = (mode == NetworkMode::CREATE_HOTSPOT);
 
-  // Exit mode selection subactivity
-  exitActivity();
-
   if (mode == NetworkMode::CONNECT_CALIBRE) {
-    exitActivity();
-    enterNewActivity(new CalibreConnectActivity(renderer, mappedInput, [this] {
-      exitActivity();
-      state = WebServerActivityState::MODE_SELECTION;
-      enterNewActivity(new NetworkModeSelectionActivity(
-          renderer, mappedInput, [this](const NetworkMode nextMode) { onNetworkModeSelected(nextMode); },
-          [this]() { onGoBack(); }));
-    }));
+    startActivityForResult(
+        std::make_unique<CalibreConnectActivity>(renderer, mappedInput), [this](const ActivityResult& result) {
+          state = WebServerActivityState::MODE_SELECTION;
+
+          startActivityForResult(std::make_unique<NetworkModeSelectionActivity>(renderer, mappedInput),
+                                 [this](const ActivityResult& result) {
+                                   if (result.isCancelled) {
+                                     onGoHome();
+                                   } else {
+                                     onNetworkModeSelected(std::get<NetworkModeResult>(result.data).mode);
+                                   }
+                                 });
+        });
     return;
   }
 
@@ -129,8 +145,15 @@ void CrossPointWebServerActivity::onNetworkModeSelected(const NetworkMode mode) 
 
     state = WebServerActivityState::WIFI_SELECTION;
     LOG_DBG("WEBACT", "Launching WifiSelectionActivity...");
-    enterNewActivity(new WifiSelectionActivity(renderer, mappedInput,
-                                               [this](const bool connected) { onWifiSelectionComplete(connected); }));
+    startActivityForResult(std::make_unique<WifiSelectionActivity>(renderer, mappedInput),
+                           [this](const ActivityResult& result) {
+                             if (!result.isCancelled) {
+                               const auto& wifi = std::get<WifiResult>(result.data);
+                               connectedIP = wifi.ip;
+                               connectedSSID = wifi.ssid;
+                             }
+                             onWifiSelectionComplete(!result.isCancelled);
+                           });
   } else {
     // AP mode - start access point
     state = WebServerActivityState::AP_STARTING;
@@ -144,26 +167,25 @@ void CrossPointWebServerActivity::onWifiSelectionComplete(const bool connected) 
 
   if (connected) {
     // Get connection info before exiting subactivity
-    connectedIP = static_cast<WifiSelectionActivity*>(subActivity.get())->getConnectedIP();
-    connectedSSID = WiFi.SSID().c_str();
     isApMode = false;
 
-    exitActivity();
-
     // Start mDNS for hostname resolution
-    if (MDNS.begin(AP_HOSTNAME)) {
-      LOG_DBG("WEBACT", "mDNS started: http://%s.local/", AP_HOSTNAME);
-    }
+    restartMdns(AP_HOSTNAME, "WEBACT");
 
     // Start the web server
     startWebServer();
   } else {
     // User cancelled - go back to mode selection
-    exitActivity();
     state = WebServerActivityState::MODE_SELECTION;
-    enterNewActivity(new NetworkModeSelectionActivity(
-        renderer, mappedInput, [this](const NetworkMode mode) { onNetworkModeSelected(mode); },
-        [this]() { onGoBack(); }));
+
+    startActivityForResult(std::make_unique<NetworkModeSelectionActivity>(renderer, mappedInput),
+                           [this](const ActivityResult& result) {
+                             if (result.isCancelled) {
+                               onGoHome();
+                             } else {
+                               onNetworkModeSelected(std::get<NetworkModeResult>(result.data).mode);
+                             }
+                           });
   }
 }
 
@@ -186,7 +208,7 @@ void CrossPointWebServerActivity::startAccessPoint() {
 
   if (!apStarted) {
     LOG_ERR("WEBACT", "ERROR: Failed to start Access Point!");
-    onGoBack();
+    onGoHome();
     return;
   }
 
@@ -204,14 +226,11 @@ void CrossPointWebServerActivity::startAccessPoint() {
   LOG_DBG("WEBACT", "IP: %s", connectedIP.c_str());
 
   // Start mDNS for hostname resolution
-  if (MDNS.begin(AP_HOSTNAME)) {
-    LOG_DBG("WEBACT", "mDNS started: http://%s.local/", AP_HOSTNAME);
-  } else {
-    LOG_DBG("WEBACT", "WARNING: mDNS failed to start");
-  }
+  restartMdns(AP_HOSTNAME, "WEBACT");
 
   // Start DNS server for captive portal behavior
   // This redirects all DNS queries to our IP, making any domain typed resolve to us
+  stopDnsServer();
   dnsServer = new DNSServer();
   dnsServer->setErrorReplyCode(DNSReplyCode::NoError);
   dnsServer->start(DNS_PORT, "*", apIP);
@@ -233,38 +252,20 @@ void CrossPointWebServerActivity::startWebServer() {
   if (webServer->isRunning()) {
     state = WebServerActivityState::SERVER_RUNNING;
     LOG_DBG("WEBACT", "Web server started successfully");
+    lastWifiBars = isApMode ? 0 : barsForRssi(WiFi.RSSI(), 0);
 
     // Force an immediate render since we're transitioning from a subactivity
     // that had its own rendering task. We need to make sure our display is shown.
-    {
-      RenderLock lock(*this);
-      render(std::move(lock));
-    }
-    LOG_DBG("WEBACT", "Rendered File Transfer screen");
+    requestUpdate();
   } else {
     LOG_ERR("WEBACT", "ERROR: Failed to start web server!");
     webServer.reset();
     // Go back on error
-    onGoBack();
+    onGoHome();
   }
-}
-
-void CrossPointWebServerActivity::stopWebServer() {
-  if (webServer && webServer->isRunning()) {
-    LOG_DBG("WEBACT", "Stopping web server...");
-    webServer->stop();
-    LOG_DBG("WEBACT", "Web server stopped");
-  }
-  webServer.reset();
 }
 
 void CrossPointWebServerActivity::loop() {
-  if (subActivity) {
-    // Forward loop to subactivity
-    subActivity->loop();
-    return;
-  }
-
   // Handle different states
   if (state == WebServerActivityState::SERVER_RUNNING) {
     // Handle DNS requests for captive portal (AP mode only)
@@ -278,18 +279,42 @@ void CrossPointWebServerActivity::loop() {
       if (millis() - lastWifiCheck > 2000) {  // Check every 2 seconds
         lastWifiCheck = millis();
         const wl_status_t wifiStatus = WiFi.status();
+        // Driver auto-reconnect handles retries; abandon (via onGoHome) only
+        // after WIFI_ABANDON_MS, otherwise the activity freezes on a blip.
+        bool repaint = false;
         if (wifiStatus != WL_CONNECTED) {
-          LOG_DBG("WEBACT", "WiFi disconnected! Status: %d", wifiStatus);
-          // Show error and exit gracefully
-          state = WebServerActivityState::SHUTTING_DOWN;
-          requestUpdate();
-          return;
+          if (consecutiveDisconnects == 0) {
+            firstDisconnectAt = millis();
+            repaint = true;
+          }
+          consecutiveDisconnects++;
+          LOG_DBG("WEBACT", "WiFi not connected (status=%d, consecutive=%d, total=%lu ms)", wifiStatus,
+                  consecutiveDisconnects, millis() - firstDisconnectAt);
+          if (millis() - firstDisconnectAt > WIFI_ABANDON_MS) {
+            LOG_DBG("WEBACT", "WiFi unavailable for >%lu s; returning to network selection", WIFI_ABANDON_MS / 1000UL);
+            state = WebServerActivityState::SHUTTING_DOWN;
+            onGoHome();
+            return;
+          }
+        } else {
+          if (consecutiveDisconnects > 0) {
+            LOG_DBG("WEBACT", "WiFi recovered after %d failed checks (%lu ms)", consecutiveDisconnects,
+                    millis() - firstDisconnectAt);
+            repaint = true;
+          }
+          consecutiveDisconnects = 0;
+          firstDisconnectAt = 0;
+          const int rssi = WiFi.RSSI();
+          if (rssi < -75) {
+            LOG_DBG("WEBACT", "Warning: Weak WiFi signal: %d dBm", rssi);
+          }
+          const int bars = barsForRssi(rssi, lastWifiBars);
+          if (bars != lastWifiBars) {
+            lastWifiBars = bars;
+            repaint = true;
+          }
         }
-        // Log weak signal warnings
-        const int rssi = WiFi.RSSI();
-        if (rssi < -75) {
-          LOG_DBG("WEBACT", "Warning: Weak WiFi signal: %d dBm", rssi);
-        }
+        if (repaint) requestUpdate();
       }
     }
 
@@ -322,7 +347,7 @@ void CrossPointWebServerActivity::loop() {
           mappedInput.update();
           // Check for exit button inside loop for responsiveness
           if (mappedInput.wasPressed(MappedInputManager::Button::Back)) {
-            onGoBack();
+            onGoHome();
             return;
           }
         }
@@ -332,13 +357,13 @@ void CrossPointWebServerActivity::loop() {
 
     // Handle exit on Back button (also check outside loop)
     if (mappedInput.wasPressed(MappedInputManager::Button::Back)) {
-      onGoBack();
+      onGoHome();
       return;
     }
   }
 }
 
-void CrossPointWebServerActivity::render(Activity::RenderLock&&) {
+void CrossPointWebServerActivity::render(RenderLock&&) {
   // Only render our own UI when server is running
   // Subactivities handle their own rendering
   if (state == WebServerActivityState::SERVER_RUNNING || state == WebServerActivityState::AP_STARTING) {
@@ -363,28 +388,6 @@ void CrossPointWebServerActivity::render(Activity::RenderLock&&) {
   }
 }
 
-void drawQRCode(const GfxRenderer& renderer, const int x, const int y, const std::string& data) {
-  // Implementation of QR code calculation
-  // The structure to manage the QR code
-  QRCode qrcode;
-  uint8_t qrcodeBytes[qrcode_getBufferSize(4)];
-  LOG_DBG("WEBACT", "QR Code (%lu): %s", data.length(), data.c_str());
-
-  qrcode_initText(&qrcode, qrcodeBytes, 4, ECC_LOW, data.c_str());
-  const uint8_t px = 6;  // pixels per module
-  for (uint8_t cy = 0; cy < qrcode.size; cy++) {
-    for (uint8_t cx = 0; cx < qrcode.size; cx++) {
-      if (qrcode_getModule(&qrcode, cx, cy)) {
-        // Serial.print("**");
-        renderer.fillRect(x + px * cx, y + px * cy, px, px, true);
-      } else {
-        // Serial.print("  ");
-      }
-    }
-    // Serial.print("\n");
-  }
-}
-
 void CrossPointWebServerActivity::renderServerRunning() const {
   const auto& metrics = UITheme::getInstance().getMetrics();
   const auto pageWidth = renderer.getScreenWidth();
@@ -393,6 +396,10 @@ void CrossPointWebServerActivity::renderServerRunning() const {
                  isApMode ? tr(STR_HOTSPOT_MODE) : tr(STR_FILE_TRANSFER), nullptr);
   GUI.drawSubHeader(renderer, Rect{0, metrics.topPadding + metrics.headerHeight, pageWidth, metrics.tabBarHeight},
                     connectedSSID.c_str());
+
+  if (!isApMode) {
+    renderWifiIndicator(metrics.topPadding + metrics.headerHeight);
+  }
 
   int startY = metrics.topPadding + metrics.headerHeight + metrics.tabBarHeight + metrics.verticalSpacing * 2;
   int height10 = renderer.getLineHeight(UI_10_FONT_ID);
@@ -404,7 +411,8 @@ void CrossPointWebServerActivity::renderServerRunning() const {
 
     // Show QR code for Wifi
     const std::string wifiConfig = std::string("WIFI:S:") + connectedSSID + ";;";
-    drawQRCode(renderer, metrics.contentSidePadding, startY, wifiConfig);
+    const Rect qrBoundsWifi(metrics.contentSidePadding, startY, QR_CODE_WIDTH, QR_CODE_HEIGHT);
+    QrUtils::drawQrCode(renderer, qrBoundsWifi, wifiConfig);
 
     // Show network name
     renderer.drawText(UI_10_FONT_ID, metrics.contentSidePadding + QR_CODE_WIDTH + metrics.verticalSpacing, startY + 80,
@@ -421,7 +429,8 @@ void CrossPointWebServerActivity::renderServerRunning() const {
     std::string ipUrl = tr(STR_OR_HTTP_PREFIX) + connectedIP + "/";
 
     // Show QR code for URL
-    drawQRCode(renderer, metrics.contentSidePadding, startY, hostnameUrl);
+    const Rect qrBoundsUrl(metrics.contentSidePadding, startY, QR_CODE_WIDTH, QR_CODE_HEIGHT);
+    QrUtils::drawQrCode(renderer, qrBoundsUrl, hostnameUrl);
 
     // Show IP address as fallback
     renderer.drawText(UI_10_FONT_ID, metrics.contentSidePadding + QR_CODE_WIDTH + metrics.verticalSpacing, startY + 80,
@@ -440,7 +449,8 @@ void CrossPointWebServerActivity::renderServerRunning() const {
 
     // Show QR code for URL
     std::string webInfo = "http://" + connectedIP + "/";
-    drawQRCode(renderer, (pageWidth - QR_CODE_WIDTH) / 2, startY, webInfo);
+    const Rect qrBounds((pageWidth - QR_CODE_WIDTH) / 2, startY, QR_CODE_WIDTH, QR_CODE_HEIGHT);
+    QrUtils::drawQrCode(renderer, qrBounds, webInfo);
     startY += QR_CODE_HEIGHT + metrics.verticalSpacing * 2;
 
     // Show web server URL prominently
@@ -454,4 +464,36 @@ void CrossPointWebServerActivity::renderServerRunning() const {
 
   const auto labels = mappedInput.mapLabels(tr(STR_EXIT), "", "", "");
   GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
+}
+
+void CrossPointWebServerActivity::renderWifiIndicator(int subHeaderTop) const {
+  constexpr int BAR_COUNT = 4;
+  constexpr int BAR_WIDTH = 4;
+  constexpr int BAR_GAP = 2;
+  constexpr int ICON_HEIGHT = 14;
+  const auto& metrics = UITheme::getInstance().getMetrics();
+  const int iconWidth = BAR_COUNT * BAR_WIDTH + (BAR_COUNT - 1) * BAR_GAP;
+  const int iconRight = renderer.getScreenWidth() - metrics.contentSidePadding;
+  const int iconLeft = iconRight - iconWidth;
+  const int iconBottom = subHeaderTop + metrics.tabBarHeight - metrics.verticalSpacing;
+
+  const bool wifiUp = (WiFi.status() == WL_CONNECTED) && (consecutiveDisconnects == 0);
+  if (wifiUp) {
+    for (int i = 0; i < BAR_COUNT; i++) {
+      const int barHeight = (i + 1) * ICON_HEIGHT / BAR_COUNT;
+      const int x = iconLeft + i * (BAR_WIDTH + BAR_GAP);
+      const int y = iconBottom - barHeight;
+      if (i < lastWifiBars) {
+        renderer.fillRect(x, y, BAR_WIDTH, barHeight, true);
+      } else {
+        renderer.drawRect(x, y, BAR_WIDTH, barHeight, true);
+      }
+    }
+  } else {
+    const int xSize = ICON_HEIGHT;
+    const int x0 = iconRight - xSize;
+    const int y0 = iconBottom - xSize;
+    renderer.drawLine(x0, y0, x0 + xSize, y0 + xSize, 2, true);
+    renderer.drawLine(x0, y0 + xSize, x0 + xSize, y0, 2, true);
+  }
 }

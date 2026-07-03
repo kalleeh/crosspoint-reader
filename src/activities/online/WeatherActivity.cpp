@@ -283,7 +283,7 @@ bool WeatherActivity::loadWeatherBackground(const char* cond) {
   DEBUG_PRINTF("[Weather] Trying to load: %s\n", filename);
   
   // Try to open and draw the BMP
-  FsFile bmpFile;
+  HalFile bmpFile;
   if (!Storage.openFileForRead("WEATHER", filename, bmpFile)) {
     DEBUG_PRINTF("[Weather] Failed to open file: %s\n", filename);
     return false;

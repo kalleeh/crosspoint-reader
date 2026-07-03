@@ -3,7 +3,10 @@
 #include <Arduino.h>
 #include <GfxRenderer.h>
 
+#include <memory>
+
 #include "MappedInputManager.h"
+#include "activities/ActivityManager.h"
 #include "activities/home/AppsMenuActivity.h"
 #include "activities/games/ChessActivity.h"
 #include "activities/games/Game2048Activity.h"
@@ -25,29 +28,22 @@
 extern GfxRenderer renderer;
 extern MappedInputManager mappedInputManager;
 
-// Free functions defined in main.cpp
-void exitActivity();
-void enterNewActivity(Activity* activity);
+// Navigation is driven through the ActivityManager singleton (upstream model).
+// onGoHome() is provided by Activity::onGoHome via activityManager.goHome().
+static void onGoHome() { activityManager.goHome(); }
 
-// Forward declarations for callbacks used by the browse/apps submenu
-// (these are also in main.cpp but used here as callbacks)
-void onGoHome();
-void onGoToBrowser();
-void onGoToFileTransfer();
-
-// Fork-local state — copies made before exitActivity() deletes their owners
+// Fork-local state — copies made before the owning activity is replaced/deleted
 static String awsCertId;
 static String awsMode;
 static String awsDomain;
 
 void onGoToApps() {
-  exitActivity();
-  enterNewActivity(new AppsMenuActivity(renderer, mappedInputManager, onGoHome, onGoToOnline, onGoToGames, onGoToAWSCert));
+  activityManager.replaceActivity(
+      std::make_unique<AppsMenuActivity>(renderer, mappedInputManager, onGoHome, onGoToOnline, onGoToGames, onGoToAWSCert));
 }
 
 void onGoToGames() {
-  exitActivity();
-  auto* gamesMenu = new GamesMenuActivity(renderer, mappedInputManager, onGoToApps);
+  auto gamesMenu = std::make_unique<GamesMenuActivity>(renderer, mappedInputManager, onGoToApps);
 
   // Register all games
   gamesMenu->registerGame("tictactoe", "Tic Tac Toe", onGoToTicTacToe);
@@ -56,37 +52,31 @@ void onGoToGames() {
   gamesMenu->registerGame("memory", "Memory Match", onGoToMemoryMatch);
   gamesMenu->registerGame("chess", "Chess", onGoToChess);
 
-  enterNewActivity(gamesMenu);
+  activityManager.replaceActivity(std::move(gamesMenu));
 }
 
 void onGoToTicTacToe() {
-  exitActivity();
-  enterNewActivity(new TicTacToeActivity(renderer, mappedInputManager, onGoToGames));
+  activityManager.replaceActivity(std::make_unique<TicTacToeActivity>(renderer, mappedInputManager, onGoToGames));
 }
 
 void onGoToSnake() {
-  exitActivity();
-  enterNewActivity(new SnakeActivity(renderer, mappedInputManager, onGoToGames));
+  activityManager.replaceActivity(std::make_unique<SnakeActivity>(renderer, mappedInputManager, onGoToGames));
 }
 
 void onGoTo2048() {
-  exitActivity();
-  enterNewActivity(new Game2048Activity(renderer, mappedInputManager, onGoToGames));
+  activityManager.replaceActivity(std::make_unique<Game2048Activity>(renderer, mappedInputManager, onGoToGames));
 }
 
 void onGoToMemoryMatch() {
-  exitActivity();
-  enterNewActivity(new MemoryMatchActivity(renderer, mappedInputManager, onGoToGames));
+  activityManager.replaceActivity(std::make_unique<MemoryMatchActivity>(renderer, mappedInputManager, onGoToGames));
 }
 
 void onGoToChess() {
-  exitActivity();
-  enterNewActivity(new ChessActivity(renderer, mappedInputManager, onGoToGames));
+  activityManager.replaceActivity(std::make_unique<ChessActivity>(renderer, mappedInputManager, onGoToGames));
 }
 
 void onGoToOnline() {
-  exitActivity();
-  auto* onlineMenu = new OnlineMenuActivity(renderer, mappedInputManager, onGoToApps);
+  auto onlineMenu = std::make_unique<OnlineMenuActivity>(renderer, mappedInputManager, onGoToApps);
 
   // Register online features
   onlineMenu->registerItem("weather", "Weather", onGoToWeather);
@@ -95,58 +85,50 @@ void onGoToOnline() {
   onlineMenu->registerItem("history", "This Day in History", onGoToHistory);
   onlineMenu->registerItem("xkcd", "XKCD Comics", onGoToXKCD);
 
-  enterNewActivity(onlineMenu);
+  activityManager.replaceActivity(std::move(onlineMenu));
 }
 
 void onGoToWeather() {
-  exitActivity();
-  enterNewActivity(new WeatherActivity(renderer, mappedInputManager, onGoToOnline));
+  activityManager.replaceActivity(std::make_unique<WeatherActivity>(renderer, mappedInputManager, onGoToOnline));
 }
 
 void onGoToWikipedia() {
-  exitActivity();
-  enterNewActivity(new WikipediaRandomActivity(renderer, mappedInputManager, onGoToOnline));
+  activityManager.replaceActivity(std::make_unique<WikipediaRandomActivity>(renderer, mappedInputManager, onGoToOnline));
 }
 
 void onGoToWordOfDay() {
-  exitActivity();
-  enterNewActivity(new WordOfTheDayActivity(renderer, mappedInputManager, onGoToOnline));
+  activityManager.replaceActivity(std::make_unique<WordOfTheDayActivity>(renderer, mappedInputManager, onGoToOnline));
 }
 
 void onGoToHistory() {
-  exitActivity();
-  enterNewActivity(new HistoryTodayActivity(renderer, mappedInputManager, onGoToOnline));
+  activityManager.replaceActivity(std::make_unique<HistoryTodayActivity>(renderer, mappedInputManager, onGoToOnline));
 }
 
 void onGoToXKCD() {
-  exitActivity();
-  enterNewActivity(new XKCDViewerActivity(renderer, mappedInputManager, onGoToOnline));
+  activityManager.replaceActivity(std::make_unique<XKCDViewerActivity>(renderer, mappedInputManager, onGoToOnline));
 }
 
 // AWS Certification Practice
 void onGoToAWSCert() {
-  exitActivity();
-  enterNewActivity(new AWSCertMenuActivity(renderer, mappedInputManager, onGoToApps, onGoToAWSPracticeMode));
+  activityManager.replaceActivity(
+      std::make_unique<AWSCertMenuActivity>(renderer, mappedInputManager, onGoToApps, onGoToAWSPracticeMode));
 }
 
 void onGoToAWSPracticeMode(const char* certId) {
   if (certId) awsCertId = certId;
 
-  exitActivity();
-  enterNewActivity(new AWSPracticeModeActivity(renderer, mappedInputManager, onGoToAWSCert,
-    [](const char* mode, const char* domain) {
-      onStartAWSQuiz(awsCertId.c_str(), mode, domain);
-    }, awsCertId.c_str()));
+  activityManager.replaceActivity(std::make_unique<AWSPracticeModeActivity>(
+      renderer, mappedInputManager, onGoToAWSCert,
+      [](const char* mode, const char* domain) { onStartAWSQuiz(awsCertId.c_str(), mode, domain); }, awsCertId.c_str()));
 }
 
 void onStartAWSQuiz(const char* certId, const char* mode, const char* domain) {
-  // Copy all three strings before exitActivity() deletes the activity that owns them
+  // Copy all three strings before the owning activity is replaced/deleted
   if (certId) awsCertId = certId;
   if (mode)   awsMode   = mode;
   if (domain) awsDomain = domain;
 
-  exitActivity();
-  enterNewActivity(new AWSCertQuizActivity(renderer, mappedInputManager,
-    []() { onGoToAWSPracticeMode(awsCertId.c_str()); },
-    awsCertId.c_str(), awsMode.c_str(), awsDomain.c_str()));
+  activityManager.replaceActivity(std::make_unique<AWSCertQuizActivity>(
+      renderer, mappedInputManager, []() { onGoToAWSPracticeMode(awsCertId.c_str()); }, awsCertId.c_str(),
+      awsMode.c_str(), awsDomain.c_str()));
 }

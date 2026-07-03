@@ -2,8 +2,8 @@
 #include <functional>
 #include <vector>
 
-#include "../Activity.h"
-#include "./MyLibraryActivity.h"
+#include "./FileBrowserActivity.h"
+#include "activities/Activity.h"
 #include "util/ButtonNavigator.h"
 
 struct RecentBook;
@@ -15,19 +15,56 @@ class HomeActivity final : public Activity {
   bool recentsLoading = false;
   bool recentsLoaded = false;
   bool firstRenderDone = false;
-  bool hasOpdsUrl = false;
+  bool hasOpdsServers = false;
   bool coverRendered = false;      // Track if cover has been rendered once
   bool coverBufferStored = false;  // Track if cover buffer is stored
   uint8_t* coverBuffer = nullptr;  // HomeActivity's own buffer for cover image
+  size_t coverBufferSize = 0;      // Bytes allocated to coverBuffer
+  // Logical rect last passed to drawRecentBookCover. The cover snapshot only
+  // needs to cover this region, not the entire framebuffer, so we cache the
+  // tile instead of all 48 KB. Set in render() before the call.
+  int coverRectX = 0;
+  int coverRectY = 0;
+  int coverRectW = 0;
+  int coverRectH = 0;
   std::vector<RecentBook> recentBooks;
-  const std::function<void(const std::string& path)> onSelectBook;
-  const std::function<void()> onMyLibraryOpen;
-  const std::function<void()> onRecentsOpen;
-  const std::function<void()> onSettingsOpen;
-  const std::function<void()> onFileTransferOpen;
-  const std::function<void()> onOpdsBrowserOpen;
-  const std::function<void()> onGamesOpen;
-  const std::function<void()> onOnlineOpen;
+  const HomeMenuItem initialMenuItem;
+
+  // Convert HomeMenuItem to menu index (used in onEnter)
+  static int menuItemToIndex(HomeMenuItem item, bool hasOpdsUrl) {
+    int i = 0;
+    if (item == HomeMenuItem::FILE_BROWSER) return i;
+    ++i;
+    if (item == HomeMenuItem::RECENTS) return i;
+    ++i;
+    if (item == HomeMenuItem::OPDS_BROWSER) return hasOpdsUrl ? i : 0;
+    if (hasOpdsUrl) ++i;
+    if (item == HomeMenuItem::FILE_TRANSFER) return i;
+    ++i;
+    if (item == HomeMenuItem::APPS) return i;  // FORK: Apps menu entry
+    ++i;                                       // FORK
+    if (item == HomeMenuItem::SETTINGS_MENU) return i;
+    return 0;
+  }
+
+  // Convert menu index to HomeMenuItem (used in loop)
+  static HomeMenuItem indexToMenuItem(int idx, bool hasOpdsUrl) {
+    int i = 0;
+    if (idx == i++) return HomeMenuItem::FILE_BROWSER;
+    if (idx == i++) return HomeMenuItem::RECENTS;
+    if (hasOpdsUrl && idx == i++) return HomeMenuItem::OPDS_BROWSER;
+    if (idx == i++) return HomeMenuItem::FILE_TRANSFER;
+    if (idx == i++) return HomeMenuItem::APPS;  // FORK: Apps menu entry
+    if (idx == i) return HomeMenuItem::SETTINGS_MENU;
+    return HomeMenuItem::NONE;
+  }
+  void onSelectBook(const std::string& path);
+  void onFileBrowserOpen();
+  void onRecentsOpen();
+  void onSettingsOpen();
+  void onFileTransferOpen();
+  void onOpdsBrowserOpen();
+  void onAppsOpen();  // FORK: open the Apps (games / online / learning) hub
 
   int getMenuItemCount() const;
   bool storeCoverBuffer();    // Store frame buffer for cover image
@@ -38,23 +75,10 @@ class HomeActivity final : public Activity {
 
  public:
   explicit HomeActivity(GfxRenderer& renderer, MappedInputManager& mappedInput,
-                        const std::function<void(const std::string& path)>& onSelectBook,
-                        const std::function<void()>& onMyLibraryOpen, const std::function<void()>& onRecentsOpen,
-                        const std::function<void()>& onSettingsOpen, const std::function<void()>& onFileTransferOpen,
-                        const std::function<void()>& onOpdsBrowserOpen,
-                        const std::function<void()>& onGamesOpen = nullptr,
-                        const std::function<void()>& onOnlineOpen = nullptr)
-      : Activity("Home", renderer, mappedInput),
-        onSelectBook(onSelectBook),
-        onMyLibraryOpen(onMyLibraryOpen),
-        onRecentsOpen(onRecentsOpen),
-        onSettingsOpen(onSettingsOpen),
-        onFileTransferOpen(onFileTransferOpen),
-        onOpdsBrowserOpen(onOpdsBrowserOpen),
-        onGamesOpen(onGamesOpen),
-        onOnlineOpen(onOnlineOpen) {}
+                        HomeMenuItem initialMenuItemValue = HomeMenuItem::NONE)
+      : Activity("Home", renderer, mappedInput), initialMenuItem(initialMenuItemValue) {}
   void onEnter() override;
   void onExit() override;
   void loop() override;
-  void render(Activity::RenderLock&&) override;
+  void render(RenderLock&&) override;
 };
