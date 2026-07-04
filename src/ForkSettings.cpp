@@ -29,6 +29,7 @@ bool ForkSettings::loadFromFile() {
   }
 
   showHiddenFiles = doc["showHiddenFiles"] | (uint8_t)0;
+  sleepInfoOverlay = doc["sleepInfoOverlay"] | (uint8_t)1;
 
   LOG_DBG("FST", "Fork settings loaded from file");
   return true;
@@ -39,6 +40,7 @@ bool ForkSettings::saveToFile() const {
 
   JsonDocument doc;
   doc["showHiddenFiles"] = showHiddenFiles;
+  doc["sleepInfoOverlay"] = sleepInfoOverlay;
 
   String json;
   serializeJson(doc, json);

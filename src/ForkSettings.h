@@ -13,6 +13,9 @@ class ForkSettings {
   // Show hidden files (starting with '.') in the file browser
   uint8_t showHiddenFiles = 0;
 
+  // Overlay cached weather/word-of-day on the sleep screen (default on)
+  uint8_t sleepInfoOverlay = 1;
+
   bool loadFromFile();
   bool saveToFile() const;
 

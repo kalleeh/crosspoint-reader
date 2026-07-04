@@ -7,6 +7,7 @@
 
 #include "../../MappedInputManager.h"
 #include "../../WifiCredentialStore.h"
+#include "OnlineCache.h"
 
 namespace OnlineContentFetcher {
 
@@ -172,6 +173,8 @@ inline WeatherData fetchWeather(bool allowCache = false, MappedInputManager* can
       s_weatherCache.humidity = data.humidity;
       s_weatherCache.windSpeed = data.windSpeed;
       Serial.println("[Weather] Cached for 30 minutes");
+      // Persist for the sleep-screen overlay (survives deep sleep)
+      OnlineCache::saveWeather(data.location.c_str(), data.condition.c_str(), data.temperature);
     } else {
       Serial.println("[Weather] Validation failed");
     }
@@ -230,7 +233,12 @@ inline WordData fetchWordOfDay(MappedInputManager* cancelInput = nullptr) {
     data.success = true;
   }
   http.end();
-  
+
+  if (data.success) {
+    // Persist for the sleep-screen overlay (survives deep sleep)
+    OnlineCache::saveWord(data.word.c_str());
+  }
+
   return data;
 }
 

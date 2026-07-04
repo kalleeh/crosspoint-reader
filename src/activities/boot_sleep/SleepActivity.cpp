@@ -6,12 +6,12 @@
 #include <HalStorage.h>
 #include <I18n.h>
 #include <Txt.h>
-#include <WiFi.h>
 #include <Xtc.h>
 
-#include "../online/OnlineContentFetcher.h"
+#include "../online/OnlineCache.h"
 #include "CrossPointSettings.h"
 #include "CrossPointState.h"
+#include "ForkSettings.h"
 #include "activities/reader/ReaderUtils.h"
 #include "components/UITheme.h"
 #include "fontIds.h"
@@ -41,20 +41,73 @@ void SleepActivity::onEnter() {
 
   switch (SETTINGS.sleepScreen) {
     case (CrossPointSettings::SLEEP_SCREEN_MODE::BLANK):
-      return renderBlankSleepScreen();
+      renderBlankSleepScreen();
+      break;
     case (CrossPointSettings::SLEEP_SCREEN_MODE::CUSTOM):
-      return renderCustomSleepScreen();
+      renderCustomSleepScreen();
+      break;
     case (CrossPointSettings::SLEEP_SCREEN_MODE::COVER):
-      return renderCoverSleepScreen();
+      renderCoverSleepScreen();
+      break;
     case (CrossPointSettings::SLEEP_SCREEN_MODE::COVER_CUSTOM):
       if (APP_STATE.lastSleepFromReader) {
-        return renderCoverSleepScreen();
+        renderCoverSleepScreen();
       } else {
-        return renderCustomSleepScreen();
+        renderCustomSleepScreen();
       }
+      break;
     default:
-      return renderDefaultSleepScreen();
+      renderDefaultSleepScreen();
+      break;
   }
+
+  // FORK: overlay cached weather/word-of-day on the rendered sleep screen.
+  // The framebuffer persists after displayBuffer (single-buffer mode), so we
+  // draw the band on top and push one extra refresh — only when cached data
+  // exists and the fork setting is on.
+  renderInfoOverlay();
+}
+
+void SleepActivity::renderInfoOverlay() const {
+  if (!FORK_SETTINGS.sleepInfoOverlay) return;
+
+  const auto weather = OnlineCache::loadWeather();
+  const auto word = OnlineCache::loadWord();
+  if (!weather.valid && !word.valid) return;
+
+  const int pageWidth = renderer.getScreenWidth();
+  const int pageHeight = renderer.getScreenHeight();
+  const int lineHeight = renderer.getLineHeight(SMALL_FONT_ID);
+  const int bandHeight = lineHeight + 12;
+  const int bandY = pageHeight - bandHeight;
+
+  // One line: "18°C Norrmalm · Cloudy  |  petrichor  (14:32)"
+  char line[160];
+  int len = 0;
+  if (weather.valid) {
+    len += snprintf(line + len, sizeof(line) - len, "%d\xC2\xB0"
+                    "C %s \xC2\xB7 %s",
+                    weather.temperature, weather.location, weather.condition);
+  }
+  if (word.valid && len < (int)sizeof(line) - 8) {
+    len += snprintf(line + len, sizeof(line) - len, "%s%s", weather.valid ? "  |  " : "", word.word);
+  }
+  // Timestamp of the most recent fetch, when the wall clock was synced
+  const uint32_t newest =
+      weather.fetchedAtEpoch > word.fetchedAtEpoch ? weather.fetchedAtEpoch : word.fetchedAtEpoch;
+  if (newest > 0 && len < (int)sizeof(line) - 12) {
+    time_t ts = newest;
+    struct tm* timeinfo = localtime(&ts);
+    if (timeinfo) {
+      len += snprintf(line + len, sizeof(line) - len, "  (%02d:%02d)", timeinfo->tm_hour, timeinfo->tm_min);
+    }
+  }
+
+  // Black band with white text reads correctly on dark and light screens alike
+  renderer.fillRect(0, bandY, pageWidth, bandHeight);
+  const int textWidth = renderer.getTextWidth(SMALL_FONT_ID, line);
+  renderer.drawText(SMALL_FONT_ID, (pageWidth - textWidth) / 2, bandY + 6, line, false);
+  renderer.displayBuffer(HalDisplay::HALF_REFRESH);
 }
 
 void SleepActivity::renderCustomSleepScreen() const {

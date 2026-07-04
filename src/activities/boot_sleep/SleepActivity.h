@@ -16,10 +16,9 @@ class SleepActivity final : public Activity {
   void renderBitmapSleepScreen(const Bitmap& bitmap) const;
   void renderLastScreenSleepScreen() const;
   void renderBlankSleepScreen() const;
-  // FORK: online-content sleep screens
-  void renderWeatherSleepScreen() const;
-  void renderWordOfDaySleepScreen() const;
-  void renderWikipediaSleepScreen() const;
+  // FORK: draw cached weather/word-of-day band at the bottom of the sleep
+  // screen (reads /.crosspoint/online-cache.json; no network access here)
+  void renderInfoOverlay() const;
 
   bool fromTimeout = false;
 };
