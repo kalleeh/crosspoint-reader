@@ -23,3 +23,9 @@ lib/EpdFont/scripts/output/
 # (worktrees, scheduled-task locks, settings.local, scout CLEANUP.md) out.
 .claude/*
 !.claude/skills/
+
+# Fork: large runtime assets — belong on the SD card, not in git
+/firmware.bin
+/books/
+/weather-images/*
+!/weather-images/README.md
