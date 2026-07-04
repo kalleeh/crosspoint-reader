@@ -89,6 +89,7 @@ enum class ForkStrId : uint16_t {
   STR_AWS_ANSWER_UNSTOPPABLE,
   STR_AWS_ANSWER_PERFECT,
   STR_AWS_ANSWER_KEEP_LEARNING,
+  STR_AWS_CLEAR_CONFIRM,
   // Sentinel - must be last
   _COUNT
 };

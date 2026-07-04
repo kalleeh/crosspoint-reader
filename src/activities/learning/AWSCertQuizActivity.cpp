@@ -1350,9 +1350,9 @@ void AWSCertQuizActivity::loop() {
       selectedOption = (selectedOption < 0) ? 0 : (selectedOption + 1) % 4;
       renderQuestion();
     } else if (mappedInput.wasPressed(MappedInputManager::Button::Left)) {
-      // Navigate to previous question — does NOT save/change the answer
+      // Navigate to previous question — no session write: the session is saved
+      // on every answer confirm, so a crash here only loses the cursor position
       if (currentIndex > 0) {
-        saveSession();
         currentIndex--;
         // Restore cursor to saved answer for that question (or -1 if unanswered)
         selectedOption = (currentIndex < (int)userAnswers.size() && userAnswers[currentIndex] >= 0)
@@ -1360,9 +1360,7 @@ void AWSCertQuizActivity::loop() {
         renderQuestion();
       }
     } else if (mappedInput.wasPressed(MappedInputManager::Button::Right)) {
-      // Navigate to next question — does NOT auto-save the answer
-      saveSession();
-
+      // Navigate to next question — no session write (see Left handler above)
       if (currentIndex < questionCount - 1) {
         currentIndex++;
         // Restore cursor to saved answer for the next question (or -1 if unanswered)

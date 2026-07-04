@@ -106,18 +106,29 @@ void AWSCertMenuActivity::loop() {
       onSelectCert(certs[selectedIndex].id);
     }
   } else if (currentTab == Tab::Stats) {
-    // Stats tab - only Back button
     if (mappedInput.wasPressed(MappedInputManager::Button::Back)) {
-      onBack();
+      if (confirmingClear) {
+        // Cancel the pending clear instead of leaving the tab
+        confirmingClear = false;
+        render();
+      } else {
+        onBack();
+      }
     } else if (mappedInput.wasPressed(MappedInputManager::Button::Left) ||
                mappedInput.wasPressed(MappedInputManager::Button::Right)) {
-      // Switch to Certifications tab
+      // Switch to Certifications tab (also cancels any pending clear)
+      confirmingClear = false;
       currentTab = Tab::Certifications;
       render();
     } else if (mappedInput.wasPressed(MappedInputManager::Button::Confirm)) {
-      // Clear all stats
+      // Clearing wipes stats for ALL certs — require a second Confirm
       if (QuizStatsManager::getInstance().getTotalQuestionsAnswered(certs[selectedIndex].id) > 0) {
-        QuizStatsManager::getInstance().clearAllStats();
+        if (confirmingClear) {
+          confirmingClear = false;
+          QuizStatsManager::getInstance().clearAllStats();
+        } else {
+          confirmingClear = true;
+        }
         render();
       }
     }
@@ -243,8 +254,14 @@ void AWSCertMenuActivity::renderStatsTab() {
   // Clear stats option (if there's data for this cert)
   if (stats.getTotalQuestionsAnswered(certs[selectedIndex].id) > 0) {
     y += 20;
-    renderer.drawRect(margin, y, 150, 30);
-    renderer.drawText(UI_10_FONT_ID, margin + 10, y + 8, fork_tr(STR_AWS_CLEAR_STATS), true);
+    if (confirmingClear) {
+      // Destructive action pending — show the warning where the button was
+      renderer.fillRect(margin, y, 300, 30);
+      renderer.drawText(UI_10_FONT_ID, margin + 10, y + 8, fork_tr(STR_AWS_CLEAR_CONFIRM), false);
+    } else {
+      renderer.drawRect(margin, y, 150, 30);
+      renderer.drawText(UI_10_FONT_ID, margin + 10, y + 8, fork_tr(STR_AWS_CLEAR_STATS), true);
+    }
   }
 
   // Button hints

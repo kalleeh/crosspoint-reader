@@ -31,6 +31,7 @@ class AWSCertMenuActivity final : public Activity {
   int selectedIndex = 0;
   int scrollOffset = 0;
   bool showingInfo = false;
+  bool confirmingClear = false;
   std::vector<bool> certFileAvailable;
   
   void render();

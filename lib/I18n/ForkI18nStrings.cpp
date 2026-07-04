@@ -86,7 +86,8 @@ const char* const FORK_STRINGS_EN[] = {
   "On fire!",
   "Unstoppable!",
   "Perfect!",
-  "Keep learning!"
+  "Keep learning!",
+  "Confirm again to clear ALL stats"
 };
 
 const char* const FORK_STRINGS_ES[] = {
@@ -173,7 +174,8 @@ const char* const FORK_STRINGS_ES[] = {
   "On fire!",
   "Unstoppable!",
   "Perfect!",
-  "Keep learning!"
+  "Keep learning!",
+  "Confirm again to clear ALL stats"
 };
 
 const char* const FORK_STRINGS_FR[] = {
@@ -260,7 +262,8 @@ const char* const FORK_STRINGS_FR[] = {
   "On fire!",
   "Unstoppable!",
   "Perfect!",
-  "Keep learning!"
+  "Keep learning!",
+  "Confirm again to clear ALL stats"
 };
 
 const char* const FORK_STRINGS_DE[] = {
@@ -347,7 +350,8 @@ const char* const FORK_STRINGS_DE[] = {
   "On fire!",
   "Unstoppable!",
   "Perfect!",
-  "Keep learning!"
+  "Keep learning!",
+  "Confirm again to clear ALL stats"
 };
 
 const char* const FORK_STRINGS_CZ[] = {
@@ -434,7 +438,8 @@ const char* const FORK_STRINGS_CZ[] = {
   "On fire!",
   "Unstoppable!",
   "Perfect!",
-  "Keep learning!"
+  "Keep learning!",
+  "Confirm again to clear ALL stats"
 };
 
 const char* const FORK_STRINGS_PO[] = {
@@ -521,7 +526,8 @@ const char* const FORK_STRINGS_PO[] = {
   "On fire!",
   "Unstoppable!",
   "Perfect!",
-  "Keep learning!"
+  "Keep learning!",
+  "Confirm again to clear ALL stats"
 };
 
 const char* const FORK_STRINGS_RU[] = {
@@ -608,7 +614,8 @@ const char* const FORK_STRINGS_RU[] = {
   "On fire!",
   "Unstoppable!",
   "Perfect!",
-  "Keep learning!"
+  "Keep learning!",
+  "Confirm again to clear ALL stats"
 };
 
 const char* const FORK_STRINGS_SV[] = {
@@ -695,7 +702,8 @@ const char* const FORK_STRINGS_SV[] = {
   "On fire!",
   "Unstoppable!",
   "Perfect!",
-  "Keep learning!"
+  "Keep learning!",
+  "Confirm again to clear ALL stats"
 };
 
 const char* const FORK_STRINGS_RO[] = {
@@ -782,7 +790,8 @@ const char* const FORK_STRINGS_RO[] = {
   "On fire!",
   "Unstoppable!",
   "Perfect!",
-  "Keep learning!"
+  "Keep learning!",
+  "Confirm again to clear ALL stats"
 };
 
 const char* const FORK_STRINGS_CA[] = {
@@ -869,7 +878,8 @@ const char* const FORK_STRINGS_CA[] = {
   "On fire!",
   "Unstoppable!",
   "Perfect!",
-  "Keep learning!"
+  "Keep learning!",
+  "Confirm again to clear ALL stats"
 };
 
 const char* const FORK_STRINGS_UK[] = {
@@ -956,7 +966,8 @@ const char* const FORK_STRINGS_UK[] = {
   "On fire!",
   "Unstoppable!",
   "Perfect!",
-  "Keep learning!"
+  "Keep learning!",
+  "Confirm again to clear ALL stats"
 };
 
 const char* const FORK_STRINGS_BE[] = {
@@ -1043,7 +1054,8 @@ const char* const FORK_STRINGS_BE[] = {
   "On fire!",
   "Unstoppable!",
   "Perfect!",
-  "Keep learning!"
+  "Keep learning!",
+  "Confirm again to clear ALL stats"
 };
 
 }  // namespace fork_i18n_strings
