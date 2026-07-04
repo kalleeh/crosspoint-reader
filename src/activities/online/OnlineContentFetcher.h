@@ -5,6 +5,7 @@
 #include <HTTPClient.h>
 #include <WiFi.h>
 
+#include "../../MappedInputManager.h"
 #include "../../WifiCredentialStore.h"
 
 namespace OnlineContentFetcher {
@@ -26,6 +27,7 @@ inline WeatherCacheData s_weatherCache{};
 
 struct WeatherData {
   bool success;
+  bool cancelled = false;
   String location;
   int temperature;
   int feelsLike;
@@ -36,6 +38,7 @@ struct WeatherData {
 
 struct WordData {
   bool success;
+  bool cancelled = false;
   String word;
   String definition;
   String example;
@@ -43,13 +46,24 @@ struct WordData {
 
 struct WikipediaData {
   bool success;
+  bool cancelled = false;
   String title;
   String extract;
   String imageUrl;
 };
 
-inline WeatherData fetchWeather(bool allowCache = false) {
-  WeatherData data = {false, "", 0, 0, "", 0, 0};
+// Pump the input manager and report whether the user pressed Back. Fetches
+// run synchronously on the main task, so without this the Back press would
+// sit unseen until the fetch finishes. Safe to call in a blocking loop —
+// it is the same update() the main loop performs each frame.
+inline bool pollCancel(MappedInputManager* input) {
+  if (!input) return false;
+  input->update();
+  return input->wasPressed(MappedInputManager::Button::Back);
+}
+
+inline WeatherData fetchWeather(bool allowCache = false, MappedInputManager* cancelInput = nullptr) {
+  WeatherData data{};
   
   // Check cache if allowed
   if (allowCache) {
@@ -69,6 +83,8 @@ inline WeatherData fetchWeather(bool allowCache = false) {
     }
   }
   
+  if (pollCancel(cancelInput)) { data.cancelled = true; return data; }
+
   HTTPClient http;
   http.begin("https://wttr.in/?format=j1");
   http.setTimeout(HTTP_TIMEOUT_MS);
@@ -77,7 +93,7 @@ inline WeatherData fetchWeather(bool allowCache = false) {
   // wttr.in is frequently slow/unreachable on the first attempt; one retry
   // covers most transient failures without a long UI stall.
   int httpCode = http.GET();
-  if (httpCode != 200) {
+  if (httpCode != 200 && !pollCancel(cancelInput)) {
     Serial.printf("[Weather] HTTP Code: %d, retrying\n", httpCode);
     http.end();
     delay(500);
@@ -87,6 +103,7 @@ inline WeatherData fetchWeather(bool allowCache = false) {
     httpCode = http.GET();
   }
   Serial.printf("[Weather] HTTP Code: %d\n", httpCode);
+  if (pollCancel(cancelInput)) { http.end(); data.cancelled = true; return data; }
 
   if (httpCode == 200) {
     // Read the ~40KB body into a String (getString's drain loop handles
@@ -166,8 +183,8 @@ inline WeatherData fetchWeather(bool allowCache = false) {
   return data;
 }
 
-inline WordData fetchWordOfDay() {
-  WordData data = {false, "", "", ""};
+inline WordData fetchWordOfDay(MappedInputManager* cancelInput = nullptr) {
+  WordData data{};
   
   HTTPClient http;
   http.begin("https://random-word-api.herokuapp.com/word?number=1");
@@ -182,9 +199,10 @@ inline WordData fetchWordOfDay() {
     }
   }
   http.end();
-  
+
   if (data.word.length() == 0) return data;
-  
+  if (pollCancel(cancelInput)) { data.cancelled = true; return data; }
+
   String dictUrl = "https://api.dictionaryapi.dev/api/v2/entries/en/" + data.word;
   http.begin(dictUrl);
   http.setTimeout(HTTP_TIMEOUT_MS);
@@ -216,8 +234,8 @@ inline WordData fetchWordOfDay() {
   return data;
 }
 
-inline WikipediaData fetchWikipediaRandom() {
-  WikipediaData data = {false, "", "", ""};
+inline WikipediaData fetchWikipediaRandom(MappedInputManager* cancelInput = nullptr) {
+  WikipediaData data{};
   
   HTTPClient http;
   http.begin("https://en.wikipedia.org/api/rest_v1/page/random/summary");
@@ -227,7 +245,8 @@ inline WikipediaData fetchWikipediaRandom() {
   
   int httpCode = http.GET();
   Serial.printf("[WIKI API] HTTP code: %d\n", httpCode);
-  
+  if (pollCancel(cancelInput)) { http.end(); data.cancelled = true; return data; }
+
   // Accept 200 (success) or 303 (redirect that wasn't followed)
   if (httpCode == 200 || httpCode == 303) {
     String payload = http.getString();
@@ -295,7 +314,7 @@ inline WikipediaData fetchWikipediaRandom() {
   return data;
 }
 
-inline bool ensureWiFi() {
+inline bool ensureWiFi(MappedInputManager* cancelInput = nullptr) {
   if (WiFi.status() == WL_CONNECTED) return true;
 
   // Upstream suppresses the SDK's NVS auto-connect (WiFi.persistent(false) +
@@ -322,8 +341,9 @@ inline bool ensureWiFi() {
     WiFi.begin(cred->ssid.c_str(), cred->password.c_str());
   }
 
-  // Wait up to 10 seconds for association + DHCP
+  // Wait up to 10 seconds for association + DHCP; Back aborts the wait
   for (int attempts = 0; WiFi.status() != WL_CONNECTED && attempts < 100; attempts++) {
+    if (pollCancel(cancelInput)) return false;
     delay(100);
   }
   Serial.printf("[WiFi] ensureWiFi: %s (ssid: %s)\n",

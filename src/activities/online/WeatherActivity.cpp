@@ -21,7 +21,7 @@ void WeatherActivity::onEnter() {
   render();
   
   // Connect using CrossPoint's saved WiFi credentials
-  if (OnlineContentFetcher::ensureWiFi() && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
+  if (OnlineContentFetcher::ensureWiFi(&mappedInput) && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
     fetchWeather(true);  // Use cache on first load
   } else {
     state = ERROR;
@@ -57,8 +57,14 @@ void WeatherActivity::fetchWeather(bool allowCache) {
     return;
   }
   
-  OnlineContentFetcher::WeatherData data = OnlineContentFetcher::fetchWeather(allowCache);
+  OnlineContentFetcher::WeatherData data = OnlineContentFetcher::fetchWeather(allowCache, &mappedInput);
   
+  if (data.cancelled) {
+    // User pressed Back mid-fetch — leave the activity instead of rendering
+    if (onBack) onBack();
+    return;
+  }
+
   if (data.success) {
     temperature = data.temperature;
     location = data.location.c_str();

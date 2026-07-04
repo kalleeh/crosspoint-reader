@@ -12,7 +12,7 @@
 
 void WordOfTheDayActivity::onEnter() {
   // Connect using CrossPoint's saved WiFi credentials
-  if (OnlineContentFetcher::ensureWiFi() && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
+  if (OnlineContentFetcher::ensureWiFi(&mappedInput) && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
     fetchWord();
   } else {
     state = ERROR;
@@ -34,7 +34,12 @@ void WordOfTheDayActivity::fetchWord() {
     return;
   }
   
-  auto data = OnlineContentFetcher::fetchWordOfDay();
+  auto data = OnlineContentFetcher::fetchWordOfDay(&mappedInput);
+  if (data.cancelled) {
+    // User pressed Back mid-fetch — leave the activity instead of rendering
+    if (onBack) onBack();
+    return;
+  }
   
   if (data.success) {
     word = data.word.c_str();

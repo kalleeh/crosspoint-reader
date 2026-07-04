@@ -26,6 +26,7 @@ class WikipediaRandomActivity final : public Activity {
   const std::function<void()> onBack;
   State state = LOADED;  // Start in LOADED state
   bool isFetching = false;  // Loading indicator
+  bool cancelRequested = false;  // Back pressed during a blocking download
   int pendingFetches = 0;
   std::vector<WikiArticle> feed;
   int scrollOffset = 0;  // Vertical scroll position

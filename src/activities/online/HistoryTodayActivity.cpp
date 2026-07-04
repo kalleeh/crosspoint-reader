@@ -15,7 +15,7 @@
 
 void HistoryTodayActivity::onEnter() {
   // Connect using CrossPoint's saved WiFi credentials
-  if (OnlineContentFetcher::ensureWiFi() && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
+  if (OnlineContentFetcher::ensureWiFi(&mappedInput) && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
     fetchEvents();
   } else {
     state = ERROR;

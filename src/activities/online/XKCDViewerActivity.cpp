@@ -51,7 +51,7 @@ int32_t pngSeek(PNGFILE *handle, int32_t position) {
 void XKCDViewerActivity::onEnter() {
   s_instance = this;
   // Connect using CrossPoint's saved WiFi credentials
-  if (OnlineContentFetcher::ensureWiFi() && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
+  if (OnlineContentFetcher::ensureWiFi(&mappedInput) && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
     fetchComic(); // Fetch latest
   } else {
     state = ERROR;

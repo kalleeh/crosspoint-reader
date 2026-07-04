@@ -26,13 +26,18 @@ void WikipediaRandomActivity::onEnter() {
 
   // Connect using CrossPoint's saved WiFi credentials
   DEBUG_PRINTF("[%lu] [WIKI] Waiting for WiFi...\n", millis());
-  if (OnlineContentFetcher::ensureWiFi() && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
+  if (OnlineContentFetcher::ensureWiFi(&mappedInput) && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
     DEBUG_PRINTF("[%lu] [WIKI] WiFi connected\n", millis());
     loadInterests();
     lastFetchTime = millis();  // Initialize to prevent immediate reload
 
     isFetching = true;
-    auto data = OnlineContentFetcher::fetchWikipediaRandom();
+    auto data = OnlineContentFetcher::fetchWikipediaRandom(&mappedInput);
+    if (data.cancelled) {
+      isFetching = false;
+      onBack();
+      return;
+    }
     if (data.success) {
       WikiArticle article;
       article.title = data.title;
@@ -181,6 +186,14 @@ bool WikipediaRandomActivity::downloadAndCacheImage(WikiArticle& article) {
   unsigned long downloadStart = millis();
   while (http.connected() && (contentLength < 0 || downloaded < contentLength)) {
     if (millis() - downloadStart > 20000) break;  // 20-second wall-clock cap
+    if (OnlineContentFetcher::pollCancel(&mappedInput)) {
+      // Back mid-download: abort, clean up, and leave the activity
+      tempFile.close();
+      Storage.remove(tempPath.c_str());
+      http.end();
+      cancelRequested = true;
+      return false;
+    }
     int avail = stream->available();
     if (avail > 0) {
       if (avail > (int)sizeof(buffer)) avail = sizeof(buffer);
@@ -266,7 +279,15 @@ void WikipediaRandomActivity::fetchSingleArticle() {
   if (WiFi.status() != WL_CONNECTED) return;
   isFetching = true;
 
-  auto data = OnlineContentFetcher::fetchWikipediaRandom();
+  auto data = OnlineContentFetcher::fetchWikipediaRandom(&mappedInput);
+  if (data.cancelled) {
+    // Back pressed mid-fetch: pollCancel consumed the press event, so the
+    // outer loop() won't see it — leave the activity from here.
+    isFetching = false;
+    pendingFetches = 0;
+    onBack();
+    return;
+  }
   if (data.success) {
     WikiArticle article;
     article.title = data.title;
@@ -465,7 +486,7 @@ void WikipediaRandomActivity::render() {
 }
 
 void WikipediaRandomActivity::loop() {
-  if (mappedInput.wasPressed(MappedInputManager::Button::Back)) {
+  if (cancelRequested || mappedInput.wasPressed(MappedInputManager::Button::Back)) {
     onBack();
     return;
   }
