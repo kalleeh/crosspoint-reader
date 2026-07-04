@@ -608,10 +608,11 @@ int ChessActivity::minimax(int depth, int alpha, int beta, bool maximizing) {
     return evaluateBoard();
   }
 
-  std::vector<Move> moves = getLegalMoves(!maximizing);
+  // maximizing == true means it is white's turn (evaluation is white-positive)
+  std::vector<Move> moves = getLegalMoves(maximizing);
   if (moves.empty()) {
-    if (isInCheck(!maximizing)) {
-      return maximizing ? -30000 : 30000;  // Checkmate
+    if (isInCheck(maximizing)) {
+      return maximizing ? -30000 : 30000;  // Side to move is checkmated
     }
     return 0;  // Stalemate
   }

@@ -114,13 +114,17 @@ bool Game2048Activity::move(int dx, int dy) {
   bool moved = false;
   bool merged[GRID_SIZE][GRID_SIZE] = {false};
 
-  int startX = (dx > 0) ? GRID_SIZE - 2 : 1;
-  int endX = (dx > 0) ? -1 : GRID_SIZE;
-  int stepX = (dx > 0) ? -1 : 1;
+  // Skip the front cell only on the axis of movement; iterate the full
+  // range on the perpendicular axis (dx/dy == 0 means that axis is fixed).
+  int startX, endX, stepX;
+  if (dx > 0)      { startX = GRID_SIZE - 2; endX = -1;        stepX = -1; }
+  else if (dx < 0) { startX = 1;             endX = GRID_SIZE; stepX = 1;  }
+  else             { startX = 0;             endX = GRID_SIZE; stepX = 1;  }
 
-  int startY = (dy > 0) ? GRID_SIZE - 2 : 1;
-  int endY = (dy > 0) ? -1 : GRID_SIZE;
-  int stepY = (dy > 0) ? -1 : 1;
+  int startY, endY, stepY;
+  if (dy > 0)      { startY = GRID_SIZE - 2; endY = -1;        stepY = -1; }
+  else if (dy < 0) { startY = 1;             endY = GRID_SIZE; stepY = 1;  }
+  else             { startY = 0;             endY = GRID_SIZE; stepY = 1;  }
 
   for (int i = startY; i != endY; i += stepY) {
     for (int j = startX; j != endX; j += stepX) {

@@ -199,8 +199,11 @@ void AWSCertMenuActivity::renderStatsTab() {
       char historyText[128];
       int percentage = (result.score * 100) / result.total;
       
-      // Format date
-      struct tm* timeinfo = localtime((time_t*)&result.timestamp);
+      // Format date (copy to a time_t: the field is a packed uint32_t, and
+      // time_t is 64-bit — casting the pointer would read past the field
+      // and do an unaligned load)
+      time_t ts = result.timestamp;
+      struct tm* timeinfo = localtime(&ts);
       char dateStr[16];
       if (timeinfo) {
         strftime(dateStr, sizeof(dateStr), "%b %d", timeinfo);

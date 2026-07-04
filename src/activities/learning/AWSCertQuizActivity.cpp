@@ -81,50 +81,61 @@ void AWSCertQuizActivity::onEnter() {
     }
     std::sort(fileIndices.begin(), fileIndices.end());
 
-  } else if (practiceMode != "quickstart" && peekSessionFileIndices(fileIndices) &&
-             (int)fileIndices.size() == neededCount) {
-    // Resuming an interrupted session — reload the exact same question set.
-    // Only resume if the saved session has the number of questions this mode
-    // expects. A mismatch means the session is stale/degenerate (e.g. a leftover
-    // 2-question file for a 65-question Full exam), so fall through to a fresh
-    // start instead of resuming into a broken quiz.
-    // loadCustomQuestions() requires a sorted index list (forward-only cursor);
-    // peekSessionFileIndices returns them in shuffled questionOrder sequence.
-    std::sort(fileIndices.begin(), fileIndices.end());
-
   } else {
-    // Fresh start.
-    fileIndices.clear();
-
+    // Domain mode: the bank may hold fewer questions for a domain than the
+    // mode's nominal size, so scan first and clamp neededCount to what
+    // actually exists. Otherwise a valid saved domain session could never
+    // pass the resume size check below.
+    std::vector<uint16_t> domainIndices;
     if (practiceMode == "domain" && practiceDomain != "all") {
-      // Cheap domain scan: only the matching file positions.
-      if (!cheapDomainScan(practiceDomain.c_str(), fileIndices) || fileIndices.empty()) {
+      if (!cheapDomainScan(practiceDomain.c_str(), domainIndices) || domainIndices.empty()) {
         showError("No Questions Found",
                   "No questions found for this domain.\n\n"
                   "Try selecting a different domain or use 'All Domains' mode.");
         return;
       }
-      // If more domain questions exist than we need, random-sub-select.
-      if ((int)fileIndices.size() > neededCount) {
-        std::vector<uint16_t> sub;
-        randomSelectIndices(fileIndices.size(), neededCount, sub);
-        std::vector<uint16_t> filtered;
-        filtered.reserve(sub.size());
-        for (uint16_t idx : sub) filtered.push_back(fileIndices[idx]);
-        std::sort(filtered.begin(), filtered.end());
-        fileIndices = std::move(filtered);
-      }
+      neededCount = std::min(neededCount, (int)domainIndices.size());
+    }
+
+    if (practiceMode != "quickstart" && peekSessionFileIndices(fileIndices) &&
+        (int)fileIndices.size() == neededCount) {
+      // Resuming an interrupted session — reload the exact same question set.
+      // Only resume if the saved session has the number of questions this mode
+      // expects. A mismatch means the session is stale/degenerate (e.g. a leftover
+      // 2-question file for a 65-question Full exam), so fall through to a fresh
+      // start instead of resuming into a broken quiz.
+      // loadCustomQuestions() requires a sorted index list (forward-only cursor);
+      // peekSessionFileIndices returns them in shuffled questionOrder sequence.
+      std::sort(fileIndices.begin(), fileIndices.end());
+
     } else {
-      // Random selection from the whole bank.
-      int total = countQuestionsInFile();
-      if (total <= 0) {
-        showError("No Questions Found",
-                  "Question bank files not found on SD card.\n\n"
-                  "Please add question files to:\n/aws-quiz/\n\n"
-                  "Format: JSON files with questions array");
-        return;
+      // Fresh start.
+      fileIndices.clear();
+
+      if (practiceMode == "domain" && practiceDomain != "all") {
+        // If more domain questions exist than we need, random-sub-select.
+        if ((int)domainIndices.size() > neededCount) {
+          std::vector<uint16_t> sub;
+          randomSelectIndices(domainIndices.size(), neededCount, sub);
+          fileIndices.reserve(sub.size());
+          for (uint16_t idx : sub) fileIndices.push_back(domainIndices[idx]);
+          std::sort(fileIndices.begin(), fileIndices.end());
+        } else {
+          // cheapDomainScan appends in file order, so already sorted.
+          fileIndices = std::move(domainIndices);
+        }
+      } else {
+        // Random selection from the whole bank.
+        int total = countQuestionsInFile();
+        if (total <= 0) {
+          showError("No Questions Found",
+                    "Question bank files not found on SD card.\n\n"
+                    "Please add question files to:\n/aws-quiz/\n\n"
+                    "Format: JSON files with questions array");
+          return;
+        }
+        randomSelectIndices(total, neededCount, fileIndices);
       }
-      randomSelectIndices(total, neededCount, fileIndices);
     }
   }
 
@@ -794,15 +805,16 @@ bool AWSCertQuizActivity::loadCustomQuestions(const std::vector<uint16_t>* onlyF
   DEBUG_PRINTF("[AWS] Free memory before parsing: %d bytes\n", ESP.getFreeHeap());
 
   while (file.available() && targetCursor < targetCount) {
-    // Safety caps for the unfiltered fallback path (onlyFileIndices == nullptr)
-    if (!onlyFileIndices) {
-      if (parsedCount >= MAX_QUESTIONS_FROM_FILE) break;
-      if (parsedCount > 0 && parsedCount % 10 == 0 && ESP.getFreeHeap() < 60000) {
-        DEBUG_PRINTF("[AWS] Heap guard triggered after %d questions (%d bytes free)\n",
-                     parsedCount, ESP.getFreeHeap());
-        break;
-      }
+    // Heap guard on BOTH paths: a 75-question exam of long questions can
+    // need >100KB of string heap, and std::string growth aborts on OOM
+    // under -fno-exceptions. Stop loading and run with what we have.
+    if (parsedCount > 0 && parsedCount % 10 == 0 && ESP.getFreeHeap() < 60000) {
+      DEBUG_PRINTF("[AWS] Heap guard triggered after %d questions (%d bytes free)\n",
+                   parsedCount, ESP.getFreeHeap());
+      break;
     }
+    // Question-count cap for the unfiltered fallback path
+    if (!onlyFileIndices && parsedCount >= MAX_QUESTIONS_FROM_FILE) break;
 
     char c = file.read();
 

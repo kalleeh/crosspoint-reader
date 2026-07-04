@@ -1509,6 +1509,7 @@
     <button class="action-btn upload-action-btn" onclick="openUploadModal()">📤 Upload</button>
     <button class="action-btn folder-action-btn" onclick="openFolderModal()">📁 New Folder</button>
     <button class="action-btn delete-action-btn" onclick="openDeleteSelectedModal()">🗑️ Delete Selected</button>
+    <button class="action-btn" id="toggleHiddenBtn" onclick="toggleHiddenFiles()" style="background-color:#95a5a6">👁️ Show Hidden</button>
   </div>
 </div>
 
@@ -1905,7 +1906,10 @@
       totalSize += file.size;
     });
 
-    document.getElementById('folder-summary').innerHTML = `${folderCount} folders, ${filteredFiles.length - folderCount} files, ${formatFileSize(totalSize)}`;
+    const folderLabel = folderCount === 1 ? 'folder' : 'folders';
+    const fileCount = filteredFiles.length - folderCount;
+    const fileLabel = fileCount === 1 ? 'file' : 'files';
+    document.getElementById('folder-summary').innerHTML = `${folderCount} ${folderLabel}, ${fileCount} ${fileLabel}, ${formatFileSize(totalSize)}`;
 
     if (filteredFiles.length === 0) {
       fileTable.innerHTML = '<div class="no-files">This folder is empty</div>';
@@ -1913,9 +1917,10 @@
     }
 
     let fileTableContent = '<table class="file-table">';
-    fileTableContent += '<tr><th><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"></th><th>Name</th><th>Type</th><th>Size</th><th class="actions-col">Actions</th></tr>';
+    fileTableContent += '<tr><th style="width:40px"><input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)"></th><th>Name</th><th>Type</th><th>Size</th><th class="actions-col">Actions</th></tr>';
 
     const sortedFiles = filteredFiles.sort((a, b) => {
+      // Directories first, then epub files, then other files, alphabetically within each group
       if (a.isDirectory && !b.isDirectory) return -1;
       if (!a.isDirectory && b.isDirectory) return 1;
       if (a.isEpub && !b.isEpub) return -1;
@@ -1929,12 +1934,12 @@
         if (!folderPath.endsWith("/")) folderPath += "/";
         folderPath += file.name;
 
-        fileTableContent += '<tr class="folder-row">';
-        fileTableContent += `<td><input type="checkbox" class="file-checkbox" data-path="${folderPath.replaceAll('"', '&quot;')}" data-type="folder"></td>`;
-        fileTableContent += `<td><span class="file-icon">📁</span><a href="/files?path=${encodeURIComponent(folderPath)}" class="folder-link">${escapeHtml(file.name)}</a><span class="folder-badge">FOLDER</span></td>`;
-        fileTableContent += '<td>Folder</td>';
+        fileTableContent += `<tr class="folder-row">`;
+        fileTableContent += `<td><input type="checkbox" class="select-item" data-path="${encodeURIComponent(folderPath)}" data-name="${escapeHtml(file.name)}" data-type="folder"></td>`;
+        fileTableContent += `<td><span class="file-icon">📁</span><a href="/files?path=${encodeURIComponent(folderPath)}" class="folder-link">${escapeHtml(file.name)}</a></td>`;
+        fileTableContent += '<td><span class="folder-badge">FOLDER</span></td>';
         fileTableContent += '<td>-</td>';
-        fileTableContent += `<td class="actions-col"><button class="delete-btn" onclick="openDeleteModal('${file.name.replaceAll("'", "\\'")}', '${folderPath.replaceAll("'", "\\'")}', true)" title="Delete folder">🗑️</button></td>`;
+        fileTableContent += `<td class="actions-col"><div class="action-icon-group"><button class="delete-btn" onclick="openDeleteModal('${file.name.replaceAll("'", "\\'")}', '${folderPath.replaceAll("'", "\\'")}', true)" title="Delete folder">🗑️</button></div></td>`;
         fileTableContent += '</tr>';
       } else {
         let filePath = currentPath;
@@ -1942,13 +1947,17 @@
         filePath += file.name;
 
         fileTableContent += `<tr class="${file.isEpub ? 'epub-file' : ''}">`;
-        fileTableContent += `<td><input type="checkbox" class="file-checkbox" data-path="${filePath.replaceAll('"', '&quot;')}" data-type="file"></td>`;
-        fileTableContent += `<td><span class="file-icon">${file.isEpub ? '📗' : '📄'}</span>${escapeHtml(file.name)}`;
-        if (file.isEpub) fileTableContent += '<span class="epub-badge">EPUB</span>';
+        fileTableContent += `<td><input type="checkbox" class="select-item" data-path="${encodeURIComponent(filePath)}" data-name="${escapeHtml(file.name)}" data-type="file"></td>`;
+        fileTableContent += `<td><span class="file-icon">${file.isEpub ? '📗' : '📄'}</span>`;
+        fileTableContent += `<a rel="noopener noreferrer" target="_blank" href="/download?path=${encodeURIComponent(filePath)}" class="file-link">${escapeHtml(file.name)}</a>`;
         fileTableContent += '</td>';
-        fileTableContent += `<td>${file.name.split('.').pop().toUpperCase()}</td>`;
+        fileTableContent += file.isEpub ? '<td><span class="epub-badge">EPUB</span></td>' : `<td>${escapeHtml(file.name.split('.').pop().toUpperCase())}</td>`;
         fileTableContent += `<td>${formatFileSize(file.size)}</td>`;
-        fileTableContent += `<td class="actions-col"><button class="delete-btn" onclick="openDeleteModal('${file.name.replaceAll("'", "\\'")}', '${filePath.replaceAll("'", "\\'")}', false)" title="Delete file">🗑️</button></td>`;
+        fileTableContent += `<td class="actions-col"><div class="action-icon-group">`;
+        fileTableContent += `<button class="move-btn" onclick="openMoveModal('${file.name.replaceAll("'", "\\'")}', '${filePath.replaceAll("'", "\\'")}' )" title="Move file">📂</button>`;
+        fileTableContent += `<button class="rename-btn" onclick="openRenameModal('${file.name.replaceAll("'", "\\'")}', '${filePath.replaceAll("'", "\\'")}' )" title="Rename file">✏️</button>`;
+        fileTableContent += `<button class="delete-btn" onclick="openDeleteModal('${file.name.replaceAll("'", "\\'")}', '${filePath.replaceAll("'", "\\'")}', false)" title="Delete file">🗑️</button>`;
+        fileTableContent += `</div></td>`;
         fileTableContent += '</tr>';
       }
     });
@@ -2035,75 +2044,7 @@
       return;
     }
 
-    let folderCount = 0;
-    let totalSize = 0;
-    files.forEach(file => {
-      if (file.isDirectory) folderCount++;
-      totalSize += file.size;
-    });
-
-    const fileCount = files.length - folderCount;
-    const folderLabel = folderCount === 1 ? 'folder' : 'folders';
-    const fileLabel = fileCount === 1 ? 'file' : 'files';
-    document.getElementById('folder-summary').innerHTML = `${folderCount} ${folderLabel}, ${fileCount} ${fileLabel}, ${formatFileSize(totalSize)}`;
-
-    if (files.length === 0) {
-      fileTable.innerHTML = '<div class="no-files">This folder is empty</div>';
-    } else {
-      let fileTableContent = '<table class="file-table">';
-
-				// Add select-all checkbox column
-      fileTableContent += '<tr><th style="width:40px"><input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)"></th><th>Name</th><th>Type</th><th>Size</th><th class="actions-col">Actions</th></tr>';
-
-
-      const sortedFiles = files.sort((a, b) => {
-        // Directories first, then epub files, then other files, alphabetically within each group
-        if (a.isDirectory && !b.isDirectory) return -1;
-        if (!a.isDirectory && b.isDirectory) return 1;
-        if (a.isEpub && !b.isEpub) return -1;
-        if (!a.isEpub && b.isEpub) return 1;
-        return a.name.localeCompare(b.name);
-      });
-
-      sortedFiles.forEach(file => {
-        if (file.isDirectory) {
-          let folderPath = currentPath;
-          if (!folderPath.endsWith("/")) folderPath += "/";
-          folderPath += file.name;
-
-         // Checkbox cell + folder row
-          fileTableContent += `<tr class="folder-row">`;
-          fileTableContent += `<td><input type="checkbox" class="select-item" data-path="${encodeURIComponent(folderPath)}" data-name="${escapeHtml(file.name)}" data-type="folder"></td>`;
-          fileTableContent += `<td><span class="file-icon">📁</span><a href="/files?path=${encodeURIComponent(folderPath)}" class="folder-link">${escapeHtml(file.name)}</a></td>`;
-          fileTableContent += '<td><span class="folder-badge">FOLDER</span></td>';
-          fileTableContent += '<td>-</td>';
-          fileTableContent += `<td class="actions-col"><div class="action-icon-group"><button class="delete-btn" onclick="openDeleteModal('${file.name.replaceAll("'", "\\'")}', '${folderPath.replaceAll("'", "\\'")}', true)" title="Delete folder">🗑️</button></div></td>`;
-          fileTableContent += '</tr>';
-        } else {
-          let filePath = currentPath;
-          if (!filePath.endsWith("/")) filePath += "/";
-          filePath += file.name;
-
-          // Checkbox cell + file row
-          fileTableContent += `<tr class="${file.isEpub ? 'epub-file' : ''}">`;
-          fileTableContent += `<td><input type="checkbox" class="select-item" data-path="${encodeURIComponent(filePath)}" data-name="${escapeHtml(file.name)}" data-type="file"></td>`;
-          fileTableContent += `<td><span class="file-icon">${file.isEpub ? '📗' : '📄'}</span>`;
-          fileTableContent += `<a rel="noopener noreferrer" target="_blank" href="/download?path=${encodeURIComponent(filePath)}" class="file-link">${escapeHtml(file.name)}</a>`;
-          fileTableContent += '</td>';
-          fileTableContent += file.isEpub ? '<td><span class="epub-badge">EPUB</span></td>' : `<td>${escapeHtml(file.name.split('.').pop().toUpperCase())}</td>`;
-          fileTableContent += `<td>${formatFileSize(file.size)}</td>`;
-          fileTableContent += `<td class="actions-col"><div class="action-icon-group">`;
-          fileTableContent += `<button class="move-btn" onclick="openMoveModal('${file.name.replaceAll("'", "\\'")}', '${filePath.replaceAll("'", "\\'")}' )" title="Move file">📂</button>`;
-          fileTableContent += `<button class="rename-btn" onclick="openRenameModal('${file.name.replaceAll("'", "\\'")}', '${filePath.replaceAll("'", "\\'")}' )" title="Rename file">✏️</button>`;
-          fileTableContent += `<button class="delete-btn" onclick="openDeleteModal('${file.name.replaceAll("'", "\\'")}', '${filePath.replaceAll("'", "\\'")}', false)" title="Delete file">🗑️</button>`;
-          fileTableContent += `</div></td>`;
-          fileTableContent += '</tr>';
-        }
-      });
-
-      fileTableContent += '</table>';
-      fileTable.innerHTML = fileTableContent;
-    }
+    renderFiles();
   }
 
   // Modal functions
