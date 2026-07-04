@@ -1,5 +1,7 @@
 #include "ForkI18nStrings.h"
 
+#include <cstddef>
+
 namespace fork_i18n_strings {
 
 const char* const FORK_STRINGS_EN[] = {
@@ -87,7 +89,37 @@ const char* const FORK_STRINGS_EN[] = {
   "Unstoppable!",
   "Perfect!",
   "Keep learning!",
-  "Confirm again to clear ALL stats"
+  "Confirm again to clear ALL stats",
+  "Prev",
+  "Start",
+  "Finish",
+  "Submit",
+  "Info",
+  "Stats",
+  "Slide",
+  "Turn",
+  "Move",
+  "Answer",
+  "Review",
+  "Practice",
+  "Clear All",
+  "No Review History",
+  "No incorrect questions found.\n\nComplete a quiz first to build your review history.",
+  "No Questions Found",
+  "No questions found for this domain.\n\nTry selecting a different domain or use 'All Domains' mode.",
+  "Question bank files not found on SD card.\n\nPlease add question files to:\n/aws-quiz/\n\nFormat: JSON files with questions array",
+  "Session Load Error",
+  "Could not open file.\n\nCheck SD card and file path.",
+  "Loading questions...",
+  "Score: %d/%d",
+  "Review %d/%d",
+  "Review Mistakes (%d)",
+  "No answers recorded.",
+  "Select answers and press Submit.",
+  "... and %d more",
+  "Answer: %s",
+  "Score: %d/%d  (%d skipped)",
+  "EPUB load error"
 };
 
 const char* const FORK_STRINGS_ES[] = {
@@ -175,7 +207,37 @@ const char* const FORK_STRINGS_ES[] = {
   "Unstoppable!",
   "Perfect!",
   "Keep learning!",
-  "Confirm again to clear ALL stats"
+  "Confirm again to clear ALL stats",
+  "Ant.",
+  "Iniciar",
+  "Terminar",
+  "Enviar",
+  "Info",
+  "Estad.",
+  "Deslizar",
+  "Girar",
+  "Mover",
+  "Responder",
+  "Revisar",
+  "Practicar",
+  "Borrar todo",
+  "No Review History",
+  "No incorrect questions found.\n\nComplete a quiz first to build your review history.",
+  "No Questions Found",
+  "No questions found for this domain.\n\nTry selecting a different domain or use 'All Domains' mode.",
+  "Question bank files not found on SD card.\n\nPlease add question files to:\n/aws-quiz/\n\nFormat: JSON files with questions array",
+  "Session Load Error",
+  "Could not open file.\n\nCheck SD card and file path.",
+  "Loading questions...",
+  "Score: %d/%d",
+  "Review %d/%d",
+  "Review Mistakes (%d)",
+  "No answers recorded.",
+  "Select answers and press Submit.",
+  "... and %d more",
+  "Answer: %s",
+  "Score: %d/%d  (%d skipped)",
+  "EPUB load error"
 };
 
 const char* const FORK_STRINGS_FR[] = {
@@ -263,7 +325,37 @@ const char* const FORK_STRINGS_FR[] = {
   "Unstoppable!",
   "Perfect!",
   "Keep learning!",
-  "Confirm again to clear ALL stats"
+  "Confirm again to clear ALL stats",
+  "Préc.",
+  "Démarrer",
+  "Terminer",
+  "Envoyer",
+  "Info",
+  "Stats",
+  "Glisser",
+  "Tourner",
+  "Déplacer",
+  "Répondre",
+  "Réviser",
+  "Pratiquer",
+  "Tout effacer",
+  "No Review History",
+  "No incorrect questions found.\n\nComplete a quiz first to build your review history.",
+  "No Questions Found",
+  "No questions found for this domain.\n\nTry selecting a different domain or use 'All Domains' mode.",
+  "Question bank files not found on SD card.\n\nPlease add question files to:\n/aws-quiz/\n\nFormat: JSON files with questions array",
+  "Session Load Error",
+  "Could not open file.\n\nCheck SD card and file path.",
+  "Loading questions...",
+  "Score: %d/%d",
+  "Review %d/%d",
+  "Review Mistakes (%d)",
+  "No answers recorded.",
+  "Select answers and press Submit.",
+  "... and %d more",
+  "Answer: %s",
+  "Score: %d/%d  (%d skipped)",
+  "EPUB load error"
 };
 
 const char* const FORK_STRINGS_DE[] = {
@@ -351,7 +443,37 @@ const char* const FORK_STRINGS_DE[] = {
   "Unstoppable!",
   "Perfect!",
   "Keep learning!",
-  "Confirm again to clear ALL stats"
+  "Confirm again to clear ALL stats",
+  "Vorh.",
+  "Start",
+  "Beenden",
+  "Senden",
+  "Info",
+  "Stat.",
+  "Schieben",
+  "Drehen",
+  "Zug",
+  "Antwort",
+  "Prüfen",
+  "Üben",
+  "Alle löschen",
+  "No Review History",
+  "No incorrect questions found.\n\nComplete a quiz first to build your review history.",
+  "No Questions Found",
+  "No questions found for this domain.\n\nTry selecting a different domain or use 'All Domains' mode.",
+  "Question bank files not found on SD card.\n\nPlease add question files to:\n/aws-quiz/\n\nFormat: JSON files with questions array",
+  "Session Load Error",
+  "Could not open file.\n\nCheck SD card and file path.",
+  "Loading questions...",
+  "Score: %d/%d",
+  "Review %d/%d",
+  "Review Mistakes (%d)",
+  "No answers recorded.",
+  "Select answers and press Submit.",
+  "... and %d more",
+  "Answer: %s",
+  "Score: %d/%d  (%d skipped)",
+  "EPUB load error"
 };
 
 const char* const FORK_STRINGS_CZ[] = {
@@ -439,7 +561,37 @@ const char* const FORK_STRINGS_CZ[] = {
   "Unstoppable!",
   "Perfect!",
   "Keep learning!",
-  "Confirm again to clear ALL stats"
+  "Confirm again to clear ALL stats",
+  "Před.",
+  "Start",
+  "Konec",
+  "Odeslat",
+  "Info",
+  "Stat.",
+  "Posun",
+  "Otočit",
+  "Tah",
+  "Odpověď",
+  "Revize",
+  "Procvičit",
+  "Smazat vše",
+  "No Review History",
+  "No incorrect questions found.\n\nComplete a quiz first to build your review history.",
+  "No Questions Found",
+  "No questions found for this domain.\n\nTry selecting a different domain or use 'All Domains' mode.",
+  "Question bank files not found on SD card.\n\nPlease add question files to:\n/aws-quiz/\n\nFormat: JSON files with questions array",
+  "Session Load Error",
+  "Could not open file.\n\nCheck SD card and file path.",
+  "Loading questions...",
+  "Score: %d/%d",
+  "Review %d/%d",
+  "Review Mistakes (%d)",
+  "No answers recorded.",
+  "Select answers and press Submit.",
+  "... and %d more",
+  "Answer: %s",
+  "Score: %d/%d  (%d skipped)",
+  "EPUB load error"
 };
 
 const char* const FORK_STRINGS_PO[] = {
@@ -527,7 +679,37 @@ const char* const FORK_STRINGS_PO[] = {
   "Unstoppable!",
   "Perfect!",
   "Keep learning!",
-  "Confirm again to clear ALL stats"
+  "Confirm again to clear ALL stats",
+  "Ant.",
+  "Iniciar",
+  "Terminar",
+  "Enviar",
+  "Info",
+  "Estat.",
+  "Deslizar",
+  "Virar",
+  "Mover",
+  "Responder",
+  "Rever",
+  "Praticar",
+  "Limpar tudo",
+  "No Review History",
+  "No incorrect questions found.\n\nComplete a quiz first to build your review history.",
+  "No Questions Found",
+  "No questions found for this domain.\n\nTry selecting a different domain or use 'All Domains' mode.",
+  "Question bank files not found on SD card.\n\nPlease add question files to:\n/aws-quiz/\n\nFormat: JSON files with questions array",
+  "Session Load Error",
+  "Could not open file.\n\nCheck SD card and file path.",
+  "Loading questions...",
+  "Score: %d/%d",
+  "Review %d/%d",
+  "Review Mistakes (%d)",
+  "No answers recorded.",
+  "Select answers and press Submit.",
+  "... and %d more",
+  "Answer: %s",
+  "Score: %d/%d  (%d skipped)",
+  "EPUB load error"
 };
 
 const char* const FORK_STRINGS_RU[] = {
@@ -615,7 +797,37 @@ const char* const FORK_STRINGS_RU[] = {
   "Unstoppable!",
   "Perfect!",
   "Keep learning!",
-  "Confirm again to clear ALL stats"
+  "Confirm again to clear ALL stats",
+  "Пред.",
+  "Старт",
+  "Готово",
+  "Отправить",
+  "Инфо",
+  "Стат.",
+  "Сдвиг",
+  "Поворот",
+  "Ход",
+  "Ответ",
+  "Обзор",
+  "Практика",
+  "Очистить всё",
+  "No Review History",
+  "No incorrect questions found.\n\nComplete a quiz first to build your review history.",
+  "No Questions Found",
+  "No questions found for this domain.\n\nTry selecting a different domain or use 'All Domains' mode.",
+  "Question bank files not found on SD card.\n\nPlease add question files to:\n/aws-quiz/\n\nFormat: JSON files with questions array",
+  "Session Load Error",
+  "Could not open file.\n\nCheck SD card and file path.",
+  "Loading questions...",
+  "Score: %d/%d",
+  "Review %d/%d",
+  "Review Mistakes (%d)",
+  "No answers recorded.",
+  "Select answers and press Submit.",
+  "... and %d more",
+  "Answer: %s",
+  "Score: %d/%d  (%d skipped)",
+  "EPUB load error"
 };
 
 const char* const FORK_STRINGS_SV[] = {
@@ -703,7 +915,37 @@ const char* const FORK_STRINGS_SV[] = {
   "Unstoppable!",
   "Perfect!",
   "Keep learning!",
-  "Confirm again to clear ALL stats"
+  "Confirm again to clear ALL stats",
+  "Föreg.",
+  "Starta",
+  "Avsluta",
+  "Skicka",
+  "Info",
+  "Stat.",
+  "Dra",
+  "Sväng",
+  "Flytta",
+  "Svara",
+  "Granska",
+  "Öva",
+  "Rensa allt",
+  "No Review History",
+  "No incorrect questions found.\n\nComplete a quiz first to build your review history.",
+  "No Questions Found",
+  "No questions found for this domain.\n\nTry selecting a different domain or use 'All Domains' mode.",
+  "Question bank files not found on SD card.\n\nPlease add question files to:\n/aws-quiz/\n\nFormat: JSON files with questions array",
+  "Session Load Error",
+  "Could not open file.\n\nCheck SD card and file path.",
+  "Loading questions...",
+  "Score: %d/%d",
+  "Review %d/%d",
+  "Review Mistakes (%d)",
+  "No answers recorded.",
+  "Select answers and press Submit.",
+  "... and %d more",
+  "Answer: %s",
+  "Score: %d/%d  (%d skipped)",
+  "EPUB load error"
 };
 
 const char* const FORK_STRINGS_RO[] = {
@@ -791,7 +1033,37 @@ const char* const FORK_STRINGS_RO[] = {
   "Unstoppable!",
   "Perfect!",
   "Keep learning!",
-  "Confirm again to clear ALL stats"
+  "Confirm again to clear ALL stats",
+  "Anter.",
+  "Start",
+  "Termină",
+  "Trimite",
+  "Info",
+  "Stat.",
+  "Glisează",
+  "Virează",
+  "Mută",
+  "Răspunde",
+  "Revizuire",
+  "Exersează",
+  "Șterge tot",
+  "No Review History",
+  "No incorrect questions found.\n\nComplete a quiz first to build your review history.",
+  "No Questions Found",
+  "No questions found for this domain.\n\nTry selecting a different domain or use 'All Domains' mode.",
+  "Question bank files not found on SD card.\n\nPlease add question files to:\n/aws-quiz/\n\nFormat: JSON files with questions array",
+  "Session Load Error",
+  "Could not open file.\n\nCheck SD card and file path.",
+  "Loading questions...",
+  "Score: %d/%d",
+  "Review %d/%d",
+  "Review Mistakes (%d)",
+  "No answers recorded.",
+  "Select answers and press Submit.",
+  "... and %d more",
+  "Answer: %s",
+  "Score: %d/%d  (%d skipped)",
+  "EPUB load error"
 };
 
 const char* const FORK_STRINGS_CA[] = {
@@ -879,7 +1151,37 @@ const char* const FORK_STRINGS_CA[] = {
   "Unstoppable!",
   "Perfect!",
   "Keep learning!",
-  "Confirm again to clear ALL stats"
+  "Confirm again to clear ALL stats",
+  "Ant.",
+  "Inicia",
+  "Acaba",
+  "Envia",
+  "Info",
+  "Estad.",
+  "Llisca",
+  "Gira",
+  "Mou",
+  "Respon",
+  "Revisa",
+  "Practica",
+  "Esborra-ho tot",
+  "No Review History",
+  "No incorrect questions found.\n\nComplete a quiz first to build your review history.",
+  "No Questions Found",
+  "No questions found for this domain.\n\nTry selecting a different domain or use 'All Domains' mode.",
+  "Question bank files not found on SD card.\n\nPlease add question files to:\n/aws-quiz/\n\nFormat: JSON files with questions array",
+  "Session Load Error",
+  "Could not open file.\n\nCheck SD card and file path.",
+  "Loading questions...",
+  "Score: %d/%d",
+  "Review %d/%d",
+  "Review Mistakes (%d)",
+  "No answers recorded.",
+  "Select answers and press Submit.",
+  "... and %d more",
+  "Answer: %s",
+  "Score: %d/%d  (%d skipped)",
+  "EPUB load error"
 };
 
 const char* const FORK_STRINGS_UK[] = {
@@ -967,7 +1269,37 @@ const char* const FORK_STRINGS_UK[] = {
   "Unstoppable!",
   "Perfect!",
   "Keep learning!",
-  "Confirm again to clear ALL stats"
+  "Confirm again to clear ALL stats",
+  "Попер.",
+  "Старт",
+  "Готово",
+  "Надіслати",
+  "Інфо",
+  "Стат.",
+  "Зсув",
+  "Поворот",
+  "Хід",
+  "Відповідь",
+  "Огляд",
+  "Практика",
+  "Очистити все",
+  "No Review History",
+  "No incorrect questions found.\n\nComplete a quiz first to build your review history.",
+  "No Questions Found",
+  "No questions found for this domain.\n\nTry selecting a different domain or use 'All Domains' mode.",
+  "Question bank files not found on SD card.\n\nPlease add question files to:\n/aws-quiz/\n\nFormat: JSON files with questions array",
+  "Session Load Error",
+  "Could not open file.\n\nCheck SD card and file path.",
+  "Loading questions...",
+  "Score: %d/%d",
+  "Review %d/%d",
+  "Review Mistakes (%d)",
+  "No answers recorded.",
+  "Select answers and press Submit.",
+  "... and %d more",
+  "Answer: %s",
+  "Score: %d/%d  (%d skipped)",
+  "EPUB load error"
 };
 
 const char* const FORK_STRINGS_BE[] = {
@@ -1055,7 +1387,58 @@ const char* const FORK_STRINGS_BE[] = {
   "Unstoppable!",
   "Perfect!",
   "Keep learning!",
-  "Confirm again to clear ALL stats"
+  "Confirm again to clear ALL stats",
+  "Папяр.",
+  "Старт",
+  "Гатова",
+  "Даслаць",
+  "Інфа",
+  "Стат.",
+  "Зрух",
+  "Паварот",
+  "Ход",
+  "Адказ",
+  "Агляд",
+  "Практыка",
+  "Ачысціць усё",
+  "No Review History",
+  "No incorrect questions found.\n\nComplete a quiz first to build your review history.",
+  "No Questions Found",
+  "No questions found for this domain.\n\nTry selecting a different domain or use 'All Domains' mode.",
+  "Question bank files not found on SD card.\n\nPlease add question files to:\n/aws-quiz/\n\nFormat: JSON files with questions array",
+  "Session Load Error",
+  "Could not open file.\n\nCheck SD card and file path.",
+  "Loading questions...",
+  "Score: %d/%d",
+  "Review %d/%d",
+  "Review Mistakes (%d)",
+  "No answers recorded.",
+  "Select answers and press Submit.",
+  "... and %d more",
+  "Answer: %s",
+  "Score: %d/%d  (%d skipped)",
+  "EPUB load error"
 };
+
+// Compile-time guard: every language array must have exactly one entry per
+// ForkStrId. A mismatch here means a key was added to ForkI18nKeys.h without
+// updating one of the arrays above (or vice versa) — that would be an
+// out-of-bounds flash read at runtime.
+#define FORK_I18N_ASSERT_SIZE(arr) \
+  static_assert(sizeof(arr) / sizeof(arr[0]) == static_cast<size_t>(ForkStrId::_COUNT), \
+                #arr " entry count != ForkStrId::_COUNT")
+FORK_I18N_ASSERT_SIZE(FORK_STRINGS_EN);
+FORK_I18N_ASSERT_SIZE(FORK_STRINGS_ES);
+FORK_I18N_ASSERT_SIZE(FORK_STRINGS_FR);
+FORK_I18N_ASSERT_SIZE(FORK_STRINGS_DE);
+FORK_I18N_ASSERT_SIZE(FORK_STRINGS_CZ);
+FORK_I18N_ASSERT_SIZE(FORK_STRINGS_PO);
+FORK_I18N_ASSERT_SIZE(FORK_STRINGS_RU);
+FORK_I18N_ASSERT_SIZE(FORK_STRINGS_SV);
+FORK_I18N_ASSERT_SIZE(FORK_STRINGS_RO);
+FORK_I18N_ASSERT_SIZE(FORK_STRINGS_CA);
+FORK_I18N_ASSERT_SIZE(FORK_STRINGS_UK);
+FORK_I18N_ASSERT_SIZE(FORK_STRINGS_BE);
+#undef FORK_I18N_ASSERT_SIZE
 
 }  // namespace fork_i18n_strings

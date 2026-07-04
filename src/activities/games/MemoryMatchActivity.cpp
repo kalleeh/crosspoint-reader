@@ -273,7 +273,7 @@ void MemoryMatchActivity::render() {
 
   // Button hints
   const char* confirmText = gameState == PLAYING ? fork_tr(STR_GAME_REVEAL) : fork_tr(STR_GAME_RESTART);
-  const auto labels = mappedInput.mapLabels("Back", confirmText, "Move", "Move");
+  const auto labels = mappedInput.mapLabels(tr(STR_BACK), confirmText, fork_tr(STR_BTN_MOVE), fork_tr(STR_BTN_MOVE));
   GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 
   // Battery

@@ -153,9 +153,9 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
     http.end();
     renderer.drawCenteredText(UI_10_FONT_ID, height / 2, fork_tr(STR_ONLINE_FAILED_LOAD), true);
 
-    GUI.drawButtonHints(renderer, "Back", "",
-                      currentComic > 1 ? "Prev" : "",
-                      currentComic < maxComic ? "Next" : "");
+    GUI.drawButtonHints(renderer, tr(STR_BACK), "",
+                      currentComic > 1 ? fork_tr(STR_BTN_PREV) : "",
+                      currentComic < maxComic ? tr(STR_NEXT_FIELD) : "");
 
     renderer.displayBuffer(HalDisplay::FAST_REFRESH);
     return;
@@ -200,9 +200,9 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
   if (writeFailed) {
     Storage.remove("/.crosspoint/xkcd_temp.png");
     renderer.drawCenteredText(UI_10_FONT_ID, height / 2, fork_tr(STR_ONLINE_FAILED_LOAD), true);
-    GUI.drawButtonHints(renderer, "Back", "",
-                        currentComic > 1 ? "Prev" : "",
-                        currentComic < maxComic ? "Next" : "");
+    GUI.drawButtonHints(renderer, tr(STR_BACK), "",
+                        currentComic > 1 ? fork_tr(STR_BTN_PREV) : "",
+                        currentComic < maxComic ? tr(STR_NEXT_FIELD) : "");
     renderer.displayBuffer(HalDisplay::FAST_REFRESH);
     return;
   }
@@ -231,9 +231,9 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
   // Clean up temp file
   Storage.remove("/.crosspoint/xkcd_temp.png");
 
-  GUI.drawButtonHints(renderer, "Back", "",
-                      currentComic > 1 ? "Prev" : "",
-                      currentComic < maxComic ? "Next" : "");
+  GUI.drawButtonHints(renderer, tr(STR_BACK), "",
+                      currentComic > 1 ? fork_tr(STR_BTN_PREV) : "",
+                      currentComic < maxComic ? tr(STR_NEXT_FIELD) : "");
 
   // Display the complete buffer (title + image + menu)
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
@@ -421,9 +421,9 @@ void XKCDViewerActivity::render() {
 
     maxScroll = max(0, y - height + margin);
 
-    GUI.drawButtonHints(renderer, "Back", "",
-                        currentComic > 1 ? "Prev" : "",
-                        currentComic < maxComic ? "Next" : "");
+    GUI.drawButtonHints(renderer, tr(STR_BACK), "",
+                        currentComic > 1 ? fork_tr(STR_BTN_PREV) : "",
+                        currentComic < maxComic ? tr(STR_NEXT_FIELD) : "");
   }
 
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);

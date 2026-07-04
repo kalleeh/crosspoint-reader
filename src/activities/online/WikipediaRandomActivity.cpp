@@ -458,7 +458,7 @@ void WikipediaRandomActivity::render() {
 
     // Legend (show loading status)
     const char* btn2 = (isFetching || pendingFetches > 0) ? "" : fork_tr(STR_ONLINE_LOAD_MORE);
-    GUI.drawButtonHints(renderer, "Back", btn2, "", "");
+    GUI.drawButtonHints(renderer, tr(STR_BACK), btn2, "", "");
   }
 
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);

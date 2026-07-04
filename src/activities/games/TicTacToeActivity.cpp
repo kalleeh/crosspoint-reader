@@ -273,7 +273,7 @@ void TicTacToeActivity::render() {
 
   // Button hints
   const char* confirmText = gameState == PLAYING ? fork_tr(STR_GAME_PLACE) : fork_tr(STR_GAME_RESTART);
-  const auto labels = mappedInput.mapLabels("Back", confirmText, fork_tr(STR_TICTACTOE_MOVE), fork_tr(STR_TICTACTOE_MOVE));
+  const auto labels = mappedInput.mapLabels(tr(STR_BACK), confirmText, fork_tr(STR_TICTACTOE_MOVE), fork_tr(STR_TICTACTOE_MOVE));
   GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 
   // Battery

@@ -234,7 +234,7 @@ void WeatherActivity::render() {
 
   // Button hints
   const char* confirmText = state == LOADING ? "" : fork_tr(STR_ONLINE_REFRESH);
-  const auto labels = mappedInput.mapLabels("Back", confirmText, "", "");
+  const auto labels = mappedInput.mapLabels(tr(STR_BACK), confirmText, "", "");
   GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 
   // Battery

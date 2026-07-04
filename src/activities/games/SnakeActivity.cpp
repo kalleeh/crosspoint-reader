@@ -228,7 +228,7 @@ void SnakeActivity::render() {
 
   // Button hints at bottom
   const char* confirmText = gameState == PLAYING ? "" : fork_tr(STR_GAME_RESTART);
-  const auto labels = mappedInput.mapLabels("Back", confirmText, "Turn", "Turn");
+  const auto labels = mappedInput.mapLabels(tr(STR_BACK), confirmText, fork_tr(STR_BTN_TURN), fork_tr(STR_BTN_TURN));
   GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 
   // Battery at top right

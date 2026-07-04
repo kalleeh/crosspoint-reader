@@ -63,7 +63,7 @@ void AWSPracticeModeActivity::render() {
     renderer.drawText(UI_10_FONT_ID, margin, height - 60, statusMessage.c_str(), true);
   }
 
-  GUI.drawButtonHints(renderer, "Back", "Start", "", "");
+  GUI.drawButtonHints(renderer, tr(STR_BACK), fork_tr(STR_BTN_START), "", "");
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
 
@@ -108,7 +108,7 @@ void AWSPracticeModeActivity::renderDomainSelect() {
     }
   }
 
-  GUI.drawButtonHints(renderer, "Back", "Start", "", "");
+  GUI.drawButtonHints(renderer, tr(STR_BACK), fork_tr(STR_BTN_START), "", "");
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
 

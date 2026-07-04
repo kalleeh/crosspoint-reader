@@ -1055,8 +1055,8 @@ void ChessActivity::render() {
   // Button hints — show restart option when game is over
   const bool gameOver = (gameState == CHECKMATE || gameState == STALEMATE);
   const auto labels = gameOver
-    ? mappedInput.mapLabels("Back", fork_tr(STR_GAME_RESTART), "", "")
-    : mappedInput.mapLabels("Back", "Select", "Move", "Move");
+    ? mappedInput.mapLabels(tr(STR_BACK), fork_tr(STR_GAME_RESTART), "", "")
+    : mappedInput.mapLabels(tr(STR_BACK), tr(STR_SELECT), fork_tr(STR_BTN_MOVE), fork_tr(STR_BTN_MOVE));
   GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 
   // Battery indicator at top right

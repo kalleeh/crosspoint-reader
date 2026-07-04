@@ -91,7 +91,7 @@ void AWSCertMenuActivity::renderCertificationsTab() {
   }
   
   // Button hints
-  GUI.drawButtonHints(renderer, "Back", "Start", "Info", "Stats");
+  GUI.drawButtonHints(renderer, tr(STR_BACK), fork_tr(STR_BTN_START), fork_tr(STR_BTN_INFO), fork_tr(STR_BTN_STATS));
   
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
@@ -265,8 +265,8 @@ void AWSCertMenuActivity::renderStatsTab() {
   }
 
   // Button hints
-  const char* clearHint = stats.getTotalQuestionsAnswered(certs[selectedIndex].id) > 0 ? "Clear All" : "";
-  GUI.drawButtonHints(renderer, "Back", clearHint, "", "");
+  const char* clearHint = stats.getTotalQuestionsAnswered(certs[selectedIndex].id) > 0 ? fork_tr(STR_BTN_CLEAR_ALL) : "";
+  GUI.drawButtonHints(renderer, tr(STR_BACK), clearHint, "", "");
   
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
@@ -338,6 +338,6 @@ void AWSCertMenuActivity::renderInfo() {
   // Practice info
   renderer.drawText(UI_10_FONT_ID, margin, y, fork_tr(STR_AWS_PRACTICE_INFO), true);
   
-  GUI.drawButtonHints(renderer, "Back", "Practice", "", "");
+  GUI.drawButtonHints(renderer, tr(STR_BACK), fork_tr(STR_BTN_PRACTICE), "", "");
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }

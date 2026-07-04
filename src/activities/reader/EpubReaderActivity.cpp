@@ -5,6 +5,7 @@
 #include <FontCacheManager.h>
 #include <FsHelpers.h>
 #include <GfxRenderer.h>
+#include <ForkI18n.h>  // FORK: for STR_EPUB_LOAD_ERROR
 #include <HalStorage.h>
 #include <I18n.h>
 #include <JsonSettingsIO.h>
@@ -792,9 +793,10 @@ void EpubReaderActivity::pageTurn(bool isForwardTurn) {
 void EpubReaderActivity::render(RenderLock&& lock) {
   if (!epub) {
     // FORK: surface load failure to the user instead of a blank screen
-    Serial.println("[EPR] Error: epub is null");
+    LOG_ERR("EPR", "epub is null");
     renderer.clearScreen();
-    renderer.drawCenteredText(UI_12_FONT_ID, 300, "EPUB load error", true, EpdFontFamily::BOLD);
+    renderer.drawCenteredText(UI_12_FONT_ID, renderer.getScreenHeight() / 2, fork_tr(STR_EPUB_LOAD_ERROR), true,
+                              EpdFontFamily::BOLD);
     renderer.displayBuffer();
     return;
   }

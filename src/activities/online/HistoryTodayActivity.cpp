@@ -8,6 +8,7 @@
 #include <GfxRenderer.h>
 #include "../../MappedInputManager.h"
 #include "../../fontIds.h"
+#include <I18n.h>
 #include <ForkI18n.h>
 #include "OnlineContentFetcher.h"
 #include "components/UITheme.h"
@@ -219,7 +220,7 @@ void HistoryTodayActivity::render() {
     maxScroll = max(0, y - height + margin);
   }
   
-  GUI.drawButtonHints(renderer, "Back", state == LOADING ? "" : fork_tr(STR_ONLINE_REFRESH), "", "");
+  GUI.drawButtonHints(renderer, tr(STR_BACK), state == LOADING ? "" : fork_tr(STR_ONLINE_REFRESH), "", "");
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
 

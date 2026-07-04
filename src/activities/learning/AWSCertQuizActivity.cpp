@@ -53,7 +53,7 @@ void AWSCertQuizActivity::onEnter() {
 
   // Show loading screen while parsing (JSON parse can take several seconds)
   renderer.clearScreen();
-  renderer.drawText(UI_12_FONT_ID, DEFAULT_MARGIN, renderer.getScreenHeight() / 2 - 10, "Loading questions...", true);
+  renderer.drawText(UI_12_FONT_ID, DEFAULT_MARGIN, renderer.getScreenHeight() / 2 - 10, fork_tr(STR_AWS_LOADING_QUESTIONS), true);
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 
   // ------------------------------------------------------------------
@@ -74,9 +74,7 @@ void AWSCertQuizActivity::onEnter() {
   if (practiceMode == "review") {
     // Review mode: load only the questions that were previously wrong.
     if (!loadIncorrectHistory(fileIndices) || fileIndices.empty()) {
-      showError("No Review History",
-                "No incorrect questions found.\n\n"
-                "Complete a quiz first to build your review history.");
+      showError(fork_tr(STR_AWS_ERR_NO_REVIEW_TITLE), fork_tr(STR_AWS_ERR_NO_REVIEW_BODY));
       return;
     }
     std::sort(fileIndices.begin(), fileIndices.end());
@@ -89,9 +87,7 @@ void AWSCertQuizActivity::onEnter() {
     std::vector<uint16_t> domainIndices;
     if (practiceMode == "domain" && practiceDomain != "all") {
       if (!cheapDomainScan(practiceDomain.c_str(), domainIndices) || domainIndices.empty()) {
-        showError("No Questions Found",
-                  "No questions found for this domain.\n\n"
-                  "Try selecting a different domain or use 'All Domains' mode.");
+        showError(fork_tr(STR_AWS_ERR_NO_QUESTIONS_TITLE), fork_tr(STR_AWS_ERR_NO_DOMAIN_BODY));
         return;
       }
       neededCount = std::min(neededCount, (int)domainIndices.size());
@@ -128,10 +124,7 @@ void AWSCertQuizActivity::onEnter() {
         // Random selection from the whole bank.
         int total = countQuestionsInFile();
         if (total <= 0) {
-          showError("No Questions Found",
-                    "Question bank files not found on SD card.\n\n"
-                    "Please add question files to:\n/aws-quiz/\n\n"
-                    "Format: JSON files with questions array");
+          showError(fork_tr(STR_AWS_ERR_NO_QUESTIONS_TITLE), fork_tr(STR_AWS_ERR_NO_FILES_BODY));
           return;
         }
         randomSelectIndices(total, neededCount, fileIndices);
@@ -146,10 +139,7 @@ void AWSCertQuizActivity::onEnter() {
 
   if (!hasCustomPack || customQuestions.empty()) {
     state = LOADING;
-    showError("No Questions Found",
-              "Question bank files not found on SD card.\n\n"
-              "Please add question files to:\n/aws-quiz/\n\n"
-              "Format: JSON files with questions array");
+    showError(fork_tr(STR_AWS_ERR_NO_QUESTIONS_TITLE), fork_tr(STR_AWS_ERR_NO_FILES_BODY));
     return;
   }
 
@@ -202,9 +192,7 @@ void AWSCertQuizActivity::onEnter() {
     shuffleQuestions();
     if (questionOrder.empty() || questionCount == 0) {
       state = LOADING;
-      showError("No Questions Found",
-                "No questions found for this domain.\n\n"
-                "Try selecting a different domain or use 'All Domains' mode.");
+      showError(fork_tr(STR_AWS_ERR_NO_QUESTIONS_TITLE), fork_tr(STR_AWS_ERR_NO_DOMAIN_BODY));
       return;
     }
   }
@@ -319,7 +307,7 @@ bool AWSCertQuizActivity::loadSession() {
   char path[256];
   snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-session-%s-%s-%s.dat", certId.c_str(), practiceMode.c_str(), safeDomain);
   HalFile file;
-  if (!openFileOrShowError(path, file, "Session Load Error")) {
+  if (!openFileOrShowError(path, file, fork_tr(STR_AWS_ERR_SESSION_TITLE))) {
     return false;
   }
 
@@ -471,7 +459,7 @@ bool AWSCertQuizActivity::loadIncorrectHistory(std::vector<uint16_t>& outFileInd
 bool AWSCertQuizActivity::openFileOrShowError(const char* path, HalFile& file, const char* errorTitle) {
   if (!Storage.openFileForRead("AWS", path, file)) {
     DEBUG_PRINTF("[AWS] Failed to open: %s\n", path);
-    showError(errorTitle, "Could not open file.\n\nCheck SD card and file path.");
+    showError(errorTitle, fork_tr(STR_AWS_ERR_FILE_BODY));
     return false;
   }
   return true;
@@ -552,7 +540,7 @@ void AWSCertQuizActivity::showError(const char* title, const char* message) {
   
   drawWrappedText(UI_10_FONT_ID, margin, y, message, width - 2 * margin);
   
-  GUI.drawButtonHints(renderer, "Back", "", "", "");
+  GUI.drawButtonHints(renderer, tr(STR_BACK), "", "", "");
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
 
@@ -1028,25 +1016,25 @@ void AWSCertQuizActivity::renderQuestion() {
         && userAnswers[currentIndex] < 4
         && y + 6 < height - 50) {
       char selText[20];
-      snprintf(selText, sizeof(selText), "Answer: %s", optLabels[userAnswers[currentIndex]]);
+      snprintf(selText, sizeof(selText), fork_tr(STR_AWS_ANSWER_FMT), optLabels[userAnswers[currentIndex]]);
       renderer.drawText(UI_10_FONT_ID, margin, y + 6, selText, true);
     }
   }
   
   // Button hints (match physical button layout)
-  const char* btn1 = "Back";
+  const char* btn1 = tr(STR_BACK);
   const char* btn2;
-  const char* btn3 = currentIndex > 0 ? "Prev" : "";
+  const char* btn3 = currentIndex > 0 ? fork_tr(STR_BTN_PREV) : "";
   const char* btn4;
   
   if (practiceMode == "study") {
     // Study mode: "Answer" only shown once user has highlighted an option
-    btn2 = selectedOption >= 0 ? "Answer" : "";
-    btn4 = currentIndex < questionCount - 1 ? "Next" : "Finish";
+    btn2 = selectedOption >= 0 ? fork_tr(STR_BTN_ANSWER) : "";
+    btn4 = currentIndex < questionCount - 1 ? tr(STR_NEXT_FIELD) : fork_tr(STR_BTN_FINISH);
   } else {
     // Exam mode: Up/Down to highlight, Select to confirm, Next/Prev to navigate freely
-    btn2 = selectedOption >= 0 ? "Select" : "";
-    btn4 = currentIndex < questionCount - 1 ? "Next" : "Submit";
+    btn2 = selectedOption >= 0 ? tr(STR_SELECT) : "";
+    btn4 = currentIndex < questionCount - 1 ? tr(STR_NEXT_FIELD) : fork_tr(STR_BTN_SUBMIT);
   }
   
   GUI.drawButtonHints(renderer, btn1, btn2, btn3, btn4);
@@ -1119,7 +1107,7 @@ void AWSCertQuizActivity::renderAnswer() const {
     }
   }
   char scoreText[64];
-  snprintf(scoreText, sizeof(scoreText), "Score: %d/%d", runningScore, answeredCount);
+  snprintf(scoreText, sizeof(scoreText), fork_tr(STR_AWS_SCORE_FMT), runningScore, answeredCount);
   renderer.drawText(UI_10_FONT_ID, margin, y, scoreText, true);
 
   // Score bar
@@ -1129,10 +1117,10 @@ void AWSCertQuizActivity::renderAnswer() const {
   renderer.fillRect(margin + 100, y + 5, scoreFilled, 10);
   
   // Button hints: Confirm re-shows the current question; Right advances (or finishes)
-  const char* btn1 = "Back";
-  const char* btn2 = "Re-view";
-  const char* btn3 = currentIndex > 0 ? "Prev" : "";
-  const char* btn4 = currentIndex < questionCount - 1 ? "Next" : "Done";
+  const char* btn1 = tr(STR_BACK);
+  const char* btn2 = fork_tr(STR_BTN_REVIEW);
+  const char* btn3 = currentIndex > 0 ? fork_tr(STR_BTN_PREV) : "";
+  const char* btn4 = currentIndex < questionCount - 1 ? tr(STR_NEXT_FIELD) : tr(STR_DONE);
   GUI.drawButtonHints(renderer, btn1, btn2, btn3, btn4);
 
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
@@ -1180,9 +1168,9 @@ void AWSCertQuizActivity::renderSummary() const {
   int badgeY = margin + 90;
   int badgeX = width / 2 - 60;
   if (totalAnswered == 0) {
-    renderer.drawText(UI_12_FONT_ID, margin, badgeY + 50, "No answers recorded.", true);
-    renderer.drawText(UI_10_FONT_ID, margin, badgeY + 80, "Select answers and press Submit.", true);
-    GUI.drawButtonHints(renderer, "Back", "", "", "");
+    renderer.drawText(UI_12_FONT_ID, margin, badgeY + 50, fork_tr(STR_AWS_NO_ANSWERS), true);
+    renderer.drawText(UI_10_FONT_ID, margin, badgeY + 80, fork_tr(STR_AWS_SELECT_SUBMIT), true);
+    GUI.drawButtonHints(renderer, tr(STR_BACK), "", "", "");
     return;
   } else if (passed) {
     drawPassBadge(badgeX, badgeY);
@@ -1194,10 +1182,10 @@ void AWSCertQuizActivity::renderSummary() const {
   int y = badgeY + 140;
   char scoreText[64];
   if (totalAnswered < questionCount) {
-    snprintf(scoreText, sizeof(scoreText), "Score: %d/%d  (%d skipped)",
+    snprintf(scoreText, sizeof(scoreText), fork_tr(STR_AWS_SCORE_SKIPPED_FMT),
              correctCount, totalAnswered, questionCount - totalAnswered);
   } else {
-    snprintf(scoreText, sizeof(scoreText), "Score: %d/%d", correctCount, questionCount);
+    snprintf(scoreText, sizeof(scoreText), fork_tr(STR_AWS_SCORE_FMT), correctCount, questionCount);
   }
   renderer.drawText(UI_12_FONT_ID, margin, y, scoreText, true);
   y += 40;
@@ -1253,7 +1241,7 @@ void AWSCertQuizActivity::renderSummary() const {
   // Review incorrect option
   if (incorrectQuestions.size() > 0) {
     char reviewText[64];
-    snprintf(reviewText, sizeof(reviewText), "Review Mistakes (%d)", incorrectQuestions.size());
+    snprintf(reviewText, sizeof(reviewText), fork_tr(STR_AWS_REVIEW_MISTAKES_FMT), incorrectQuestions.size());
     renderer.drawRect(margin, y, 200, 35);
     renderer.drawText(UI_10_FONT_ID, margin + 10, y + 10, reviewText, true);
     y += 45;
@@ -1286,7 +1274,7 @@ void AWSCertQuizActivity::renderReview() const {
   // Header
   int y = margin;
   char header[64];
-  snprintf(header, sizeof(header), "Review %d/%d", reviewIndex + 1, (int)incorrectQuestions.size());
+  snprintf(header, sizeof(header), fork_tr(STR_AWS_REVIEW_FMT), reviewIndex + 1, (int)incorrectQuestions.size());
   renderer.drawText(UI_12_FONT_ID, margin, y, header, true);
   y += renderer.getLineHeight(UI_12_FONT_ID) + 10;
   
@@ -1323,10 +1311,10 @@ void AWSCertQuizActivity::renderReview() const {
   y += drawWrappedText(UI_10_FONT_ID, margin, y, q->explanation.c_str(), width - 2 * margin);
   
   // btn2=Confirm(Next/Done), btn3=Left(Prev), btn4=Right also works but not labelled
-  const char* btn2 = reviewIndex < (int)incorrectQuestions.size() - 1 ? "Next" : "Done";
-  const char* btn3 = reviewIndex > 0 ? "Prev" : "";
+  const char* btn2 = reviewIndex < (int)incorrectQuestions.size() - 1 ? tr(STR_NEXT_FIELD) : tr(STR_DONE);
+  const char* btn3 = reviewIndex > 0 ? fork_tr(STR_BTN_PREV) : "";
   const char* btn4 = "";
-  GUI.drawButtonHints(renderer, "Back", btn2, btn3, btn4);
+  GUI.drawButtonHints(renderer, tr(STR_BACK), btn2, btn3, btn4);
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
 
@@ -1602,7 +1590,7 @@ void AWSCertQuizActivity::renderDomainStats() const {
   if (domainTotal.empty()) {
     renderer.drawText(UI_12_FONT_ID, margin, margin, fork_tr(STR_AWS_DOMAIN_BREAKDOWN), true);
     renderer.drawText(UI_10_FONT_ID, margin, margin + 50, fork_tr(STR_AWS_NO_DOMAIN_DATA), true);
-    GUI.drawButtonHints(renderer, "Back", "", "", "");
+    GUI.drawButtonHints(renderer, tr(STR_BACK), "", "", "");
     renderer.displayBuffer(HalDisplay::FAST_REFRESH);
     return;
   }
@@ -1644,11 +1632,11 @@ void AWSCertQuizActivity::renderDomainStats() const {
 
   if (truncated) {
     char moreText[32];
-    snprintf(moreText, sizeof(moreText), "... and %d more", totalDomains - shown);
+    snprintf(moreText, sizeof(moreText), fork_tr(STR_AWS_AND_N_MORE), totalDomains - shown);
     renderer.drawText(UI_10_FONT_ID, margin, y, moreText, true);
   }
 
-  GUI.drawButtonHints(renderer, "Back", "", "", "");
+  GUI.drawButtonHints(renderer, tr(STR_BACK), "", "", "");
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
 
