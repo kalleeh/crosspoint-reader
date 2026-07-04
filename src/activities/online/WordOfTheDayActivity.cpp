@@ -10,17 +10,8 @@
 #include "components/UITheme.h"
 
 void WordOfTheDayActivity::onEnter() {
-  WiFi.mode(WIFI_STA);
-  WiFi.begin();  // Auto-reconnect to saved network
-  
-  // Wait briefly for connection
-  int attempts = 0;
-  while (WiFi.status() != WL_CONNECTED && attempts < 50) {
-    delay(100);
-    attempts++;
-  }
-  
-  if (WiFi.status() == WL_CONNECTED && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
+  // Connect using CrossPoint's saved WiFi credentials
+  if (OnlineContentFetcher::ensureWiFi() && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
     fetchWord();
   } else {
     state = ERROR;

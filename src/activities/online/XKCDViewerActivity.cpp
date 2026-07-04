@@ -11,6 +11,8 @@
 #include "../../fontIds.h"
 #include <I18n.h>
 #include <ForkI18n.h>
+#include <new>
+#include "OnlineContentFetcher.h"
 
 // Static pointer for PNG callback
 static XKCDViewerActivity* s_instance = nullptr;
@@ -48,17 +50,8 @@ int32_t pngSeek(PNGFILE *handle, int32_t position) {
 
 void XKCDViewerActivity::onEnter() {
   s_instance = this;
-  WiFi.mode(WIFI_STA);
-  WiFi.begin();  // Auto-reconnect to saved network
-
-  // Wait up to 5 seconds for connection
-  int attempts = 0;
-  while (WiFi.status() != WL_CONNECTED && attempts < 50) {
-    delay(100);
-    attempts++;
-  }
-
-  if (WiFi.status() == WL_CONNECTED && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
+  // Connect using CrossPoint's saved WiFi credentials
+  if (OnlineContentFetcher::ensureWiFi() && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
     fetchComic(); // Fetch latest
   } else {
     state = ERROR;
@@ -220,9 +213,12 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 
   // Decode PNG (draws directly to screen buffer via callback)
+  int decodeResult = PNG_DECODE_ERROR;
   if (png.open("/.crosspoint/xkcd_temp.png", pngOpen, pngClose, pngRead, pngSeek, pngDraw) == PNG_SUCCESS) {
-    png.decode(NULL, 0);
+    decodeResult = png.decode(NULL, 0);
     png.close();
+  }
+  if (decodeResult == PNG_SUCCESS) {
     imageLoaded = true;
   } else {
     // Redraw cleanly with failure message instead of leaving "Decoding..." on screen
@@ -262,24 +258,28 @@ int XKCDViewerActivity::pngDraw(PNGDRAW *pDraw) {
   int xOffset = (screenWidth - scaledWidth) / 2;
   int yOffset = topMargin;
 
-  // Initialize dithering buffers on first line
+  // Initialize dithering buffers on first line. Free the previous comic's
+  // buffers before reallocating so a failed allocation never leaves a
+  // stale-sized buffer behind.
   if (pDraw->y == 0) {
     ditherWidth = scaledWidth;
-    if (errorBuffer) delete[] errorBuffer;
-    if (nextErrorBuffer) delete[] nextErrorBuffer;
-    errorBuffer = new int16_t[ditherWidth + 2]();
-    nextErrorBuffer = new int16_t[ditherWidth + 2]();
-    if (!errorBuffer || !nextErrorBuffer) {
-      if (errorBuffer)    { delete[] errorBuffer;    errorBuffer    = nullptr; }
-      if (nextErrorBuffer) { delete[] nextErrorBuffer; nextErrorBuffer = nullptr; }
-      return 1;
+    delete[] errorBuffer;
+    delete[] nextErrorBuffer;
+    delete[] s_lineBuffer;
+    errorBuffer = new (std::nothrow) int16_t[ditherWidth + 2]();
+    nextErrorBuffer = new (std::nothrow) int16_t[ditherWidth + 2]();
+    s_lineBuffer = new (std::nothrow) uint16_t[pDraw->iWidth];
+    if (!errorBuffer || !nextErrorBuffer || !s_lineBuffer) {
+      DEBUG_PRINTF("[XKCD] OOM allocating dither buffers (width %d)\n", pDraw->iWidth);
+      delete[] errorBuffer;     errorBuffer = nullptr;
+      delete[] nextErrorBuffer; nextErrorBuffer = nullptr;
+      delete[] s_lineBuffer;    s_lineBuffer = nullptr;
+      return 0;  // abort decode — PNGdec stops when the draw callback returns 0
     }
-    if (s_lineBuffer) delete[] s_lineBuffer;
-    s_lineBuffer = new uint16_t[pDraw->iWidth];
   }
 
-  // Convert PNG line to RGB565
-  if (!s_lineBuffer) return 1;
+  // Buffers may be null if line 0 failed to allocate — abort decode
+  if (!errorBuffer || !nextErrorBuffer || !s_lineBuffer) return 0;
   s_instance->png.getLineAsRGB565(pDraw, s_lineBuffer, PNG_RGB565_BIG_ENDIAN, 0xffffffff);
 
   // Process line with Floyd-Steinberg dithering

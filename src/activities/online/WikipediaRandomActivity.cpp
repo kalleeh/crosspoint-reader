@@ -24,17 +24,9 @@ void WikipediaRandomActivity::onEnter() {
   // Show empty feed immediately
   render();
 
-  WiFi.mode(WIFI_STA);
-  WiFi.begin();
-
+  // Connect using CrossPoint's saved WiFi credentials
   DEBUG_PRINTF("[%lu] [WIKI] Waiting for WiFi...\n", millis());
-  int attempts = 0;
-  while (WiFi.status() != WL_CONNECTED && attempts < 50) {
-    delay(100);
-    attempts++;
-  }
-
-  if (WiFi.status() == WL_CONNECTED && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
+  if (OnlineContentFetcher::ensureWiFi() && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
     DEBUG_PRINTF("[%lu] [WIKI] WiFi connected\n", millis());
     loadInterests();
     lastFetchTime = millis();  // Initialize to prevent immediate reload
@@ -388,7 +380,9 @@ void WikipediaRandomActivity::render() {
           HalFile bmpFile;
           if (Storage.openFileForRead("WIKI", article.cachedImagePath.c_str(), bmpFile)) {
             Bitmap bitmap(bmpFile);
-            renderer.drawBitmap(bitmap, 0, y, width, 400);
+            if (bitmap.parseHeaders() == BmpReaderError::Ok) {
+              renderer.drawBitmap(bitmap, 0, y, width, 400);
+            }
             bmpFile.close();
           }
         }

@@ -20,19 +20,8 @@ void WeatherActivity::onEnter() {
   state = LOADING;
   render();
   
-  // Enable WiFi and try auto-reconnect with saved credentials
-  WiFi.mode(WIFI_STA);
-  WiFi.begin();  // Auto-reconnect to saved network
-  
-  // Wait up to 5 seconds for connection
-  int attempts = 0;
-  while (WiFi.status() != WL_CONNECTED && attempts < 50) {
-    delay(100);
-    attempts++;
-  }
-  
-  // Check if connected with valid IP
-  if (WiFi.status() == WL_CONNECTED && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
+  // Connect using CrossPoint's saved WiFi credentials
+  if (OnlineContentFetcher::ensureWiFi() && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
     fetchWeather(true);  // Use cache on first load
   } else {
     state = ERROR;

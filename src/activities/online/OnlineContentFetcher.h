@@ -5,6 +5,8 @@
 #include <HTTPClient.h>
 #include <WiFi.h>
 
+#include "../../WifiCredentialStore.h"
+
 namespace OnlineContentFetcher {
 
 static constexpr int HTTP_TIMEOUT_MS = 10000;
@@ -71,19 +73,46 @@ inline WeatherData fetchWeather(bool allowCache = false) {
   http.begin("https://wttr.in/?format=j1");
   http.setTimeout(HTTP_TIMEOUT_MS);
   http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
-  
+
+  // wttr.in is frequently slow/unreachable on the first attempt; one retry
+  // covers most transient failures without a long UI stall.
   int httpCode = http.GET();
+  if (httpCode != 200) {
+    Serial.printf("[Weather] HTTP Code: %d, retrying\n", httpCode);
+    http.end();
+    delay(500);
+    http.begin("https://wttr.in/?format=j1");
+    http.setTimeout(HTTP_TIMEOUT_MS);
+    http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
+    httpCode = http.GET();
+  }
   Serial.printf("[Weather] HTTP Code: %d\n", httpCode);
-  
+
   if (httpCode == 200) {
+    // Read the ~40KB body into a String (getString's drain loop handles
+    // wttr.in's missing Content-Length correctly; ArduinoJson's stream
+    // reader hits IncompleteInput on this server). The filter below keeps
+    // the parse tree tiny, which was the real memory spike.
     String payload = http.getString();
     Serial.printf("[Weather] Payload length: %d\n", payload.length());
-    
+
+    JsonDocument filter;
+    filter["current_condition"][0]["temp_C"] = true;
+    filter["current_condition"][0]["FeelsLikeC"] = true;
+    filter["current_condition"][0]["humidity"] = true;
+    filter["current_condition"][0]["windspeedKmph"] = true;
+    filter["current_condition"][0]["weatherDesc"][0]["value"] = true;
+    filter["nearest_area"][0]["areaName"][0]["value"] = true;
+
     JsonDocument doc;
-    DeserializationError error = deserializeJson(doc, payload);
+    DeserializationError error =
+        deserializeJson(doc, payload, DeserializationOption::Filter(filter));
     Serial.printf("[Weather] JSON parse: %s\n", error.c_str());
-    
-    if (!error &&
+
+    // wttr.in often truncates the tail of the payload (the multi-day forecast
+    // array, which we don't read). The fields we need are at the start, so
+    // accept IncompleteInput and let the field validation below decide.
+    if ((!error || error == DeserializationError::IncompleteInput) &&
         doc["current_condition"].size() > 0 &&
         doc["current_condition"][0]["weatherDesc"].size() > 0 &&
         !doc["current_condition"][0]["temp_C"].isNull() &&
@@ -267,15 +296,38 @@ inline WikipediaData fetchWikipediaRandom() {
 }
 
 inline bool ensureWiFi() {
-  WiFi.mode(WIFI_STA);
-  WiFi.begin();
-  
-  int attempts = 0;
-  while (WiFi.status() != WL_CONNECTED && attempts < 50) {
-    delay(100);
-    attempts++;
+  if (WiFi.status() == WL_CONNECTED) return true;
+
+  // Upstream suppresses the SDK's NVS auto-connect (WiFi.persistent(false) +
+  // disconnect(true, true) in WifiSelectionActivity), so an argless
+  // WiFi.begin() has no stored network to join. Connect explicitly with the
+  // credentials CrossPoint keeps in WIFI_STORE, preferring the last-used one.
+  if (WIFI_STORE.getCredentials().empty()) WIFI_STORE.loadFromFile();
+
+  const std::string& lastSsid = WIFI_STORE.getLastConnectedSsid();
+  const WifiCredential* cred = lastSsid.empty() ? nullptr : WIFI_STORE.findCredential(lastSsid);
+  if (!cred && !WIFI_STORE.getCredentials().empty()) {
+    cred = &WIFI_STORE.getCredentials().front();
   }
-  
+  if (!cred) {
+    Serial.println("[WiFi] No saved credentials — connect once via Settings > WiFi");
+    return false;
+  }
+
+  WiFi.persistent(false);
+  WiFi.mode(WIFI_STA);
+  if (cred->password.empty()) {
+    WiFi.begin(cred->ssid.c_str());
+  } else {
+    WiFi.begin(cred->ssid.c_str(), cred->password.c_str());
+  }
+
+  // Wait up to 10 seconds for association + DHCP
+  for (int attempts = 0; WiFi.status() != WL_CONNECTED && attempts < 100; attempts++) {
+    delay(100);
+  }
+  Serial.printf("[WiFi] ensureWiFi: %s (ssid: %s)\n",
+                WiFi.status() == WL_CONNECTED ? "connected" : "FAILED", cred->ssid.c_str());
   return WiFi.status() == WL_CONNECTED;
 }
 

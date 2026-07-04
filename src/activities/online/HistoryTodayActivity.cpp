@@ -9,20 +9,12 @@
 #include "../../MappedInputManager.h"
 #include "../../fontIds.h"
 #include <ForkI18n.h>
+#include "OnlineContentFetcher.h"
 #include "components/UITheme.h"
 
 void HistoryTodayActivity::onEnter() {
-  WiFi.mode(WIFI_STA);
-  WiFi.begin();  // Auto-reconnect to saved network
-  
-  // Wait up to 5 seconds for connection
-  int attempts = 0;
-  while (WiFi.status() != WL_CONNECTED && attempts < 50) {
-    delay(100);
-    attempts++;
-  }
-  
-  if (WiFi.status() == WL_CONNECTED && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
+  // Connect using CrossPoint's saved WiFi credentials
+  if (OnlineContentFetcher::ensureWiFi() && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
     fetchEvents();
   } else {
     state = ERROR;
@@ -70,6 +62,7 @@ void HistoryTodayActivity::fetchEvents() {
   date = String(dateStr);
   
   HTTPClient http;
+  http.useHTTP10(true);  // getStreamPtr() can't decode chunked encoding
   char url[128];
   snprintf(url, sizeof(url), "https://en.wikipedia.org/api/rest_v1/feed/onthisday/events/%d/%d", month, day);
   http.begin(url);
@@ -81,11 +74,18 @@ void HistoryTodayActivity::fetchEvents() {
   DEBUG_PRINTF("[History] HTTP Code: %d\n", httpCode);
   
   if (httpCode == 200) {
-    // Use stream to avoid loading entire 890KB response into RAM
+    // Stream the ~890KB response and filter to just events[].year/text —
+    // without the filter deserializeJson materializes the entire parse
+    // tree in RAM, which cannot fit on this device.
     WiFiClient* stream = http.getStreamPtr();
-    
+
+    JsonDocument filter;
+    filter["events"][0]["year"] = true;
+    filter["events"][0]["text"] = true;
+
     JsonDocument doc;
-    DeserializationError error = deserializeJson(doc, *stream);
+    DeserializationError error =
+        deserializeJson(doc, *stream, DeserializationOption::Filter(filter));
     
     DEBUG_PRINTF("[History] JSON parse: %s\n", error.c_str());
     
