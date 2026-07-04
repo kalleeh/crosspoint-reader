@@ -71,11 +71,24 @@ class AWSCertQuizActivity final : public Activity {
   
   uint16_t getCachedTextWidth(int fontId, const char* text) const;
   
+  // Spaced-repetition history record (v3 file format)
+  struct HistoryRecord {
+    uint16_t fileIndex;
+    uint8_t missCount;
+    uint8_t correctStreak;
+  };
+  static constexpr int MAX_HISTORY_RECORDS = 200;
+  static constexpr uint8_t MAX_MISS_COUNT = 15;
+  static constexpr uint8_t GRADUATE_STREAK = 2;
+
   void loadQuestions();
   bool loadCustomQuestions(const std::vector<uint16_t>* onlyFileIndices = nullptr);
   void shuffleQuestions();
   int  countQuestionsInFile();
   void randomSelectIndices(int total, int needed, std::vector<uint16_t>& outIndices);
+  void weightedSelectIndices(int total, int needed, std::vector<uint16_t>& outIndices,
+                             const uint16_t* poolToFileIndex = nullptr);
+  bool loadHistoryRecords(std::vector<HistoryRecord>& outRecords);
   bool cheapDomainScan(const char* domain, std::vector<uint16_t>& outIndices);
   bool peekSessionFileIndices(std::vector<uint16_t>& outIndices);
   void saveSession();

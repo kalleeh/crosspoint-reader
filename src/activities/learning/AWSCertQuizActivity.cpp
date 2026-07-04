@@ -109,10 +109,11 @@ void AWSCertQuizActivity::onEnter() {
       fileIndices.clear();
 
       if (practiceMode == "domain" && practiceDomain != "all") {
-        // If more domain questions exist than we need, random-sub-select.
+        // If more domain questions exist than we need, sub-select with
+        // spaced-repetition weighting (previously-missed questions favored).
         if ((int)domainIndices.size() > neededCount) {
           std::vector<uint16_t> sub;
-          randomSelectIndices(domainIndices.size(), neededCount, sub);
+          weightedSelectIndices(domainIndices.size(), neededCount, sub, domainIndices.data());
           fileIndices.reserve(sub.size());
           for (uint16_t idx : sub) fileIndices.push_back(domainIndices[idx]);
           std::sort(fileIndices.begin(), fileIndices.end());
@@ -121,13 +122,13 @@ void AWSCertQuizActivity::onEnter() {
           fileIndices = std::move(domainIndices);
         }
       } else {
-        // Random selection from the whole bank.
+        // Selection from the whole bank with spaced-repetition weighting.
         int total = countQuestionsInFile();
         if (total <= 0) {
           showError(fork_tr(STR_AWS_ERR_NO_QUESTIONS_TITLE), fork_tr(STR_AWS_ERR_NO_FILES_BODY));
           return;
         }
-        randomSelectIndices(total, neededCount, fileIndices);
+        weightedSelectIndices(total, neededCount, fileIndices);
       }
     }
   }
@@ -386,33 +387,17 @@ void AWSCertQuizActivity::clearSession() {
   Storage.remove(path);
 }
 
-void AWSCertQuizActivity::saveIncorrectHistory() {
-  if (incorrectQuestions.empty()) return;
-
-  char path[PATH_BUF_SIZE];
-  snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-history-%s.dat", certId.c_str());
-  HalFile file = Storage.open(path, O_WRONLY | O_CREAT | O_TRUNC);
-  if (!file) return;
-
-  // v2 format: [magic: 0xAB 0x02][count: uint16][fileIndex: uint16 × count]
-  uint8_t magic[2] = {0xAB, 0x02};
-  file.write(magic, 2);
-  uint16_t count = (uint16_t)incorrectQuestions.size();
-  file.write((uint8_t*)&count, sizeof(count));
-
-  for (int idx : incorrectQuestions) {
-    int actualIdx = questionOrder[idx];
-    uint16_t fi = (actualIdx >= 0 && actualIdx < (int)customQuestions.size())
-                  ? customQuestions[actualIdx].fileIndex : 0;
-    file.write((uint8_t*)&fi, sizeof(fi));
-  }
-
-  file.close();
-  DEBUG_PRINTF("[AWS] Saved %d incorrect questions to history\n", count);
-}
-
-bool AWSCertQuizActivity::loadIncorrectHistory(std::vector<uint16_t>& outFileIndices) {
-  outFileIndices.clear();
+// ---------------------------------------------------------------------------
+// History file (spaced repetition), /.crosspoint/aws-quiz-history-{cert}.dat
+// v3: [magic 0xAB 0x03][count: uint16][{fileIndex: uint16, missCount: uint8,
+//     correctStreak: uint8} × count]
+// v2 (read-only migration): [magic 0xAB 0x02][count][fileIndex × count]
+// Records MERGE across quizzes: a miss bumps missCount and resets the streak;
+// a correct answer on a tracked question bumps the streak, and two correct
+// answers in a row "graduate" the record out of the file.
+// ---------------------------------------------------------------------------
+bool AWSCertQuizActivity::loadHistoryRecords(std::vector<HistoryRecord>& outRecords) {
+  outRecords.clear();
 
   char path[PATH_BUF_SIZE];
   snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-history-%s.dat", certId.c_str());
@@ -422,38 +407,125 @@ bool AWSCertQuizActivity::loadIncorrectHistory(std::vector<uint16_t>& outFileInd
     return false;
   }
 
-  // Detect v2 format via magic bytes
   uint8_t magic[2];
-  if (file.read(magic, 2) != 2 || magic[0] != 0xAB || magic[1] != 0x02) {
+  if (file.read(magic, 2) != 2 || magic[0] != 0xAB || (magic[1] != 0x02 && magic[1] != 0x03)) {
     DEBUG_PRINTLN("[AWS] History file is old format — discarding");
     file.close();
     return false;
   }
+  const bool v3 = (magic[1] == 0x03);
 
   uint16_t count;
-  if (file.read((uint8_t*)&count, sizeof(count)) != sizeof(count)) {
-    file.close();
-    return false;
-  }
-  if (count == 0 || count > 200) {
+  if (file.read((uint8_t*)&count, sizeof(count)) != sizeof(count) || count == 0 || count > MAX_HISTORY_RECORDS) {
     file.close();
     return false;
   }
 
-  outFileIndices.reserve(count);
+  outRecords.reserve(count);
   for (int i = 0; i < (int)count; i++) {
-    uint16_t fi;
-    if (file.read((uint8_t*)&fi, sizeof(fi)) != sizeof(fi)) {
+    HistoryRecord rec{0, 1, 0};
+    if (file.read((uint8_t*)&rec.fileIndex, sizeof(rec.fileIndex)) != sizeof(rec.fileIndex)) {
       file.close();
-      outFileIndices.clear();
+      outRecords.clear();
       return false;
     }
-    outFileIndices.push_back(fi);
+    if (v3) {
+      if (file.read(&rec.missCount, 1) != 1 || file.read(&rec.correctStreak, 1) != 1) {
+        file.close();
+        outRecords.clear();
+        return false;
+      }
+    }
+    // v2 records migrate as missCount=1, streak=0 (set at initialisation)
+    outRecords.push_back(rec);
   }
 
   file.close();
-  DEBUG_PRINTF("[AWS] Loaded %d incorrect question file indices from history\n", count);
+  DEBUG_PRINTF("[AWS] Loaded %d history records (%s)\n", count, v3 ? "v3" : "v2-migrated");
   return true;
+}
+
+void AWSCertQuizActivity::saveIncorrectHistory() {
+  // Merge this quiz's outcomes into the persistent records.
+  std::vector<HistoryRecord> records;
+  loadHistoryRecords(records);
+  if (records.empty() && incorrectQuestions.empty()) return;  // nothing tracked, nothing missed
+
+  auto findRecord = [&records](uint16_t fi) -> HistoryRecord* {
+    for (auto& r : records) {
+      if (r.fileIndex == fi) return &r;
+    }
+    return nullptr;
+  };
+
+  // Pass 1: misses — bump missCount, reset streak, create record if new
+  for (int idx : incorrectQuestions) {
+    int actualIdx = questionOrder[idx];
+    if (actualIdx < 0 || actualIdx >= (int)customQuestions.size()) continue;
+    const uint16_t fi = customQuestions[actualIdx].fileIndex;
+    if (HistoryRecord* rec = findRecord(fi)) {
+      if (rec->missCount < MAX_MISS_COUNT) rec->missCount++;
+      rec->correctStreak = 0;
+    } else {
+      records.push_back({fi, 1, 0});
+    }
+  }
+
+  // Pass 2: correct answers on tracked questions — bump streak, graduate at 2
+  for (int i = 0; i < questionCount; i++) {
+    if (i >= (int)userAnswers.size() || userAnswers[i] < 0) continue;
+    const int actualIdx = questionOrder[i];
+    if (actualIdx < 0 || actualIdx >= (int)customQuestions.size()) continue;
+    const Question& q = customQuestions[actualIdx];
+    if (userAnswers[i] != q.correct) continue;  // misses handled in pass 1
+    if (HistoryRecord* rec = findRecord(q.fileIndex)) {
+      rec->correctStreak++;
+    }
+  }
+  records.erase(std::remove_if(records.begin(), records.end(),
+                               [](const HistoryRecord& r) { return r.correctStreak >= GRADUATE_STREAK; }),
+                records.end());
+
+  // Cap: drop the least-missed records first
+  if (records.size() > MAX_HISTORY_RECORDS) {
+    std::sort(records.begin(), records.end(),
+              [](const HistoryRecord& a, const HistoryRecord& b) { return a.missCount > b.missCount; });
+    records.resize(MAX_HISTORY_RECORDS);
+  }
+
+  char path[PATH_BUF_SIZE];
+  snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-history-%s.dat", certId.c_str());
+  if (records.empty()) {
+    // Everything graduated — remove the file rather than writing an empty one
+    Storage.remove(path);
+    DEBUG_PRINTLN("[AWS] History empty after merge, removed file");
+    return;
+  }
+
+  HalFile file = Storage.open(path, O_WRONLY | O_CREAT | O_TRUNC);
+  if (!file) return;
+
+  uint8_t magic[2] = {0xAB, 0x03};
+  file.write(magic, 2);
+  uint16_t count = (uint16_t)records.size();
+  file.write((uint8_t*)&count, sizeof(count));
+  for (const auto& rec : records) {
+    file.write((uint8_t*)&rec.fileIndex, sizeof(rec.fileIndex));
+    file.write(&rec.missCount, 1);
+    file.write(&rec.correctStreak, 1);
+  }
+  file.close();
+  DEBUG_PRINTF("[AWS] Saved %d history records (v3)\n", count);
+}
+
+bool AWSCertQuizActivity::loadIncorrectHistory(std::vector<uint16_t>& outFileIndices) {
+  outFileIndices.clear();
+  std::vector<HistoryRecord> records;
+  if (!loadHistoryRecords(records)) return false;
+
+  outFileIndices.reserve(records.size());
+  for (const auto& rec : records) outFileIndices.push_back(rec.fileIndex);
+  return !outFileIndices.empty();
 }
 
 bool AWSCertQuizActivity::openFileOrShowError(const char* path, HalFile& file, const char* errorTitle) {
@@ -620,6 +692,72 @@ void AWSCertQuizActivity::randomSelectIndices(int total, int needed, std::vector
 
   outIndices.assign(pool.begin(), pool.begin() + needed);
   std::sort(outIndices.begin(), outIndices.end());  // sorted for sequential file access
+}
+
+// ---------------------------------------------------------------------------
+// weightedSelectIndices()
+// Spaced-repetition variant of randomSelectIndices: previously-missed
+// questions (from the v3 history) get weight 1 + 2×missCount so they are
+// several times more likely to be drawn, without ever excluding the rest of
+// the bank. mapToFileIndex translates a pool position to the fileIndex the
+// history is keyed by (identity for whole-bank selection; domainIndices[i]
+// for domain mode). Output contract matches randomSelectIndices: unique,
+// sorted ascending.
+// ---------------------------------------------------------------------------
+void AWSCertQuizActivity::weightedSelectIndices(int total, int needed, std::vector<uint16_t>& outIndices,
+                                                const uint16_t* poolToFileIndex) {
+  outIndices.clear();
+  if (total <= 0) return;
+  if (needed >= total) {
+    outIndices.resize(total);
+    for (int i = 0; i < total; i++) outIndices[i] = (uint16_t)i;
+    return;
+  }
+
+  std::vector<HistoryRecord> records;
+  if (!loadHistoryRecords(records)) {
+    // No history — plain uniform selection
+    randomSelectIndices(total, needed, outIndices);
+    return;
+  }
+
+  // Build per-pool-position weights
+  std::vector<uint8_t> weights(total, 1);
+  uint32_t totalWeight = (uint32_t)total;
+  for (int i = 0; i < total; i++) {
+    const uint16_t fi = poolToFileIndex ? poolToFileIndex[i] : (uint16_t)i;
+    for (const auto& rec : records) {
+      if (rec.fileIndex == fi) {
+        const uint8_t extra = (uint8_t)std::min<int>(2 * rec.missCount, 250);
+        weights[i] += extra;
+        totalWeight += extra;
+        break;
+      }
+    }
+  }
+
+  // Weighted sampling without replacement: draw, zero the winner's weight
+  std::seed_seq seed{esp_random(), esp_random(), esp_random()};
+  std::mt19937 g(seed);
+  outIndices.reserve(needed);
+  for (int drawn = 0; drawn < needed && totalWeight > 0; drawn++) {
+    std::uniform_int_distribution<uint32_t> dist(0, totalWeight - 1);
+    uint32_t r = dist(g);
+    for (int i = 0; i < total; i++) {
+      if (weights[i] == 0) continue;
+      if (r < weights[i]) {
+        outIndices.push_back((uint16_t)i);
+        totalWeight -= weights[i];
+        weights[i] = 0;
+        break;
+      }
+      r -= weights[i];
+    }
+  }
+  std::sort(outIndices.begin(), outIndices.end());  // sorted for sequential file access
+
+  DEBUG_PRINTF("[AWS] Weighted selection: %d of %d (history records: %d)\n", (int)outIndices.size(), total,
+               (int)records.size());
 }
 
 // ---------------------------------------------------------------------------
