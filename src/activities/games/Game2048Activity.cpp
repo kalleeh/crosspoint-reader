@@ -36,7 +36,7 @@ void Game2048Activity::resetGame() {
 }
 
 void Game2048Activity::loop() {
-  if (mappedInput.wasReleased(MappedInputManager::Button::Back)) {
+  if (mappedInput.wasPressed(MappedInputManager::Button::Back)) {
     if (onBack) {
       onBack();
     }

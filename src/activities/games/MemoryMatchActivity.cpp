@@ -54,7 +54,7 @@ void MemoryMatchActivity::resetGame() {
 }
 
 void MemoryMatchActivity::loop() {
-  if (mappedInput.wasReleased(MappedInputManager::Button::Back)) {
+  if (mappedInput.wasPressed(MappedInputManager::Button::Back)) {
     if (onBack) {
       onBack();
     }

@@ -41,7 +41,10 @@ void AppsMenuActivity::render() {
 void AppsMenuActivity::loop() {
   Activity::loop();
   
-  if (mappedInput.wasReleased(MappedInputManager::Button::Back)) {
+  // Back on press-edge: children also navigate on press, so the release edge
+  // of the same physical press must not be re-handled here (it would cascade
+  // one extra level up per press).
+  if (mappedInput.wasPressed(MappedInputManager::Button::Back)) {
     onBack();
   } else if (mappedInput.wasReleased(MappedInputManager::Button::Confirm)) {
     if (selectedIndex == 0) {

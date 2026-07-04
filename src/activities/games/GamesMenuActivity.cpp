@@ -24,7 +24,9 @@ void GamesMenuActivity::registerGame(const std::string& name, const std::string&
 }
 
 void GamesMenuActivity::loop() {
-  if (mappedInput.wasReleased(MappedInputManager::Button::Back)) {
+  // Back on press-edge, consistent across all fork activities: mixing press
+  // and release edges makes one physical press navigate two levels up.
+  if (mappedInput.wasPressed(MappedInputManager::Button::Back)) {
     if (onBack) {
       onBack();
     }

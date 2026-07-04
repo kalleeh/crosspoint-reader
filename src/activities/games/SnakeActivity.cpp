@@ -40,7 +40,7 @@ void SnakeActivity::resetGame() {
 }
 
 void SnakeActivity::loop() {
-  if (mappedInput.wasReleased(MappedInputManager::Button::Back)) {
+  if (mappedInput.wasPressed(MappedInputManager::Button::Back)) {
     if (onBack) {
       onBack();
     }

@@ -39,7 +39,7 @@ void TicTacToeActivity::resetGame() {
 }
 
 void TicTacToeActivity::loop() {
-  if (mappedInput.wasReleased(MappedInputManager::Button::Back)) {
+  if (mappedInput.wasPressed(MappedInputManager::Button::Back)) {
     if (onBack) {
       onBack();
     }
