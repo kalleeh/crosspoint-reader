@@ -119,7 +119,17 @@ const char* const FORK_STRINGS_EN[] = {
   "... and %d more",
   "Answer: %s",
   "Score: %d/%d  (%d skipped)",
-  "EPUB load error"
+  "EPUB load error",
+  "Reading Stats",
+  "Today",
+  "All Time",
+  "Last 7 Days",
+  "Time: %luh %lum",
+  "Pages: %lu",
+  "Sessions: %u",
+  "Avg: %d pages/hour",
+  "No reading recorded yet",
+  "%dd ago: %dm, %d pages"
 };
 
 const char* const FORK_STRINGS_ES[] = {
@@ -237,7 +247,17 @@ const char* const FORK_STRINGS_ES[] = {
   "... and %d more",
   "Answer: %s",
   "Score: %d/%d  (%d skipped)",
-  "EPUB load error"
+  "EPUB load error",
+  "Reading Stats",
+  "Today",
+  "All Time",
+  "Last 7 Days",
+  "Time: %luh %lum",
+  "Pages: %lu",
+  "Sessions: %u",
+  "Avg: %d pages/hour",
+  "No reading recorded yet",
+  "%dd ago: %dm, %d pages"
 };
 
 const char* const FORK_STRINGS_FR[] = {
@@ -355,7 +375,17 @@ const char* const FORK_STRINGS_FR[] = {
   "... and %d more",
   "Answer: %s",
   "Score: %d/%d  (%d skipped)",
-  "EPUB load error"
+  "EPUB load error",
+  "Reading Stats",
+  "Today",
+  "All Time",
+  "Last 7 Days",
+  "Time: %luh %lum",
+  "Pages: %lu",
+  "Sessions: %u",
+  "Avg: %d pages/hour",
+  "No reading recorded yet",
+  "%dd ago: %dm, %d pages"
 };
 
 const char* const FORK_STRINGS_DE[] = {
@@ -473,7 +503,17 @@ const char* const FORK_STRINGS_DE[] = {
   "... and %d more",
   "Answer: %s",
   "Score: %d/%d  (%d skipped)",
-  "EPUB load error"
+  "EPUB load error",
+  "Reading Stats",
+  "Today",
+  "All Time",
+  "Last 7 Days",
+  "Time: %luh %lum",
+  "Pages: %lu",
+  "Sessions: %u",
+  "Avg: %d pages/hour",
+  "No reading recorded yet",
+  "%dd ago: %dm, %d pages"
 };
 
 const char* const FORK_STRINGS_CZ[] = {
@@ -591,7 +631,17 @@ const char* const FORK_STRINGS_CZ[] = {
   "... and %d more",
   "Answer: %s",
   "Score: %d/%d  (%d skipped)",
-  "EPUB load error"
+  "EPUB load error",
+  "Reading Stats",
+  "Today",
+  "All Time",
+  "Last 7 Days",
+  "Time: %luh %lum",
+  "Pages: %lu",
+  "Sessions: %u",
+  "Avg: %d pages/hour",
+  "No reading recorded yet",
+  "%dd ago: %dm, %d pages"
 };
 
 const char* const FORK_STRINGS_PO[] = {
@@ -709,7 +759,17 @@ const char* const FORK_STRINGS_PO[] = {
   "... and %d more",
   "Answer: %s",
   "Score: %d/%d  (%d skipped)",
-  "EPUB load error"
+  "EPUB load error",
+  "Reading Stats",
+  "Today",
+  "All Time",
+  "Last 7 Days",
+  "Time: %luh %lum",
+  "Pages: %lu",
+  "Sessions: %u",
+  "Avg: %d pages/hour",
+  "No reading recorded yet",
+  "%dd ago: %dm, %d pages"
 };
 
 const char* const FORK_STRINGS_RU[] = {
@@ -827,7 +887,17 @@ const char* const FORK_STRINGS_RU[] = {
   "... and %d more",
   "Answer: %s",
   "Score: %d/%d  (%d skipped)",
-  "EPUB load error"
+  "EPUB load error",
+  "Reading Stats",
+  "Today",
+  "All Time",
+  "Last 7 Days",
+  "Time: %luh %lum",
+  "Pages: %lu",
+  "Sessions: %u",
+  "Avg: %d pages/hour",
+  "No reading recorded yet",
+  "%dd ago: %dm, %d pages"
 };
 
 const char* const FORK_STRINGS_SV[] = {
@@ -945,7 +1015,17 @@ const char* const FORK_STRINGS_SV[] = {
   "... and %d more",
   "Answer: %s",
   "Score: %d/%d  (%d skipped)",
-  "EPUB load error"
+  "EPUB load error",
+  "Reading Stats",
+  "Today",
+  "All Time",
+  "Last 7 Days",
+  "Time: %luh %lum",
+  "Pages: %lu",
+  "Sessions: %u",
+  "Avg: %d pages/hour",
+  "No reading recorded yet",
+  "%dd ago: %dm, %d pages"
 };
 
 const char* const FORK_STRINGS_RO[] = {
@@ -1063,7 +1143,17 @@ const char* const FORK_STRINGS_RO[] = {
   "... and %d more",
   "Answer: %s",
   "Score: %d/%d  (%d skipped)",
-  "EPUB load error"
+  "EPUB load error",
+  "Reading Stats",
+  "Today",
+  "All Time",
+  "Last 7 Days",
+  "Time: %luh %lum",
+  "Pages: %lu",
+  "Sessions: %u",
+  "Avg: %d pages/hour",
+  "No reading recorded yet",
+  "%dd ago: %dm, %d pages"
 };
 
 const char* const FORK_STRINGS_CA[] = {
@@ -1181,7 +1271,17 @@ const char* const FORK_STRINGS_CA[] = {
   "... and %d more",
   "Answer: %s",
   "Score: %d/%d  (%d skipped)",
-  "EPUB load error"
+  "EPUB load error",
+  "Reading Stats",
+  "Today",
+  "All Time",
+  "Last 7 Days",
+  "Time: %luh %lum",
+  "Pages: %lu",
+  "Sessions: %u",
+  "Avg: %d pages/hour",
+  "No reading recorded yet",
+  "%dd ago: %dm, %d pages"
 };
 
 const char* const FORK_STRINGS_UK[] = {
@@ -1299,7 +1399,17 @@ const char* const FORK_STRINGS_UK[] = {
   "... and %d more",
   "Answer: %s",
   "Score: %d/%d  (%d skipped)",
-  "EPUB load error"
+  "EPUB load error",
+  "Reading Stats",
+  "Today",
+  "All Time",
+  "Last 7 Days",
+  "Time: %luh %lum",
+  "Pages: %lu",
+  "Sessions: %u",
+  "Avg: %d pages/hour",
+  "No reading recorded yet",
+  "%dd ago: %dm, %d pages"
 };
 
 const char* const FORK_STRINGS_BE[] = {
@@ -1417,7 +1527,17 @@ const char* const FORK_STRINGS_BE[] = {
   "... and %d more",
   "Answer: %s",
   "Score: %d/%d  (%d skipped)",
-  "EPUB load error"
+  "EPUB load error",
+  "Reading Stats",
+  "Today",
+  "All Time",
+  "Last 7 Days",
+  "Time: %luh %lum",
+  "Pages: %lu",
+  "Sessions: %u",
+  "Avg: %d pages/hour",
+  "No reading recorded yet",
+  "%dd ago: %dm, %d pages"
 };
 
 // Compile-time guard: every language array must have exactly one entry per

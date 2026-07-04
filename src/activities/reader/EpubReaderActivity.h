@@ -46,6 +46,10 @@ class EpubReaderActivity final : public Activity {
   // Consumed in onExit() to relocate the finished book into /Read/.
   bool pendingReadFolderMove = false;
 
+  // FORK: reading-stats session tracking (accumulated in onExit)
+  unsigned long statsSessionStartMs = 0UL;
+  uint32_t statsSessionPageTurns = 0;
+
   // Footnote support
   std::vector<FootnoteEntry> currentPageFootnotes;
   struct SavedPosition {

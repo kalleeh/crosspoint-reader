@@ -6,6 +6,8 @@
 #include <FsHelpers.h>
 #include <GfxRenderer.h>
 #include <ForkI18n.h>  // FORK: for STR_EPUB_LOAD_ERROR
+
+#include "ReadingStatsManager.h"  // FORK: reading stats
 #include <HalStorage.h>
 #include <I18n.h>
 #include <JsonSettingsIO.h>
@@ -200,12 +202,25 @@ void EpubReaderActivity::onEnter() {
 
   loadCachedBookmarks();
 
+  // FORK: start the reading-stats session clock
+  statsSessionStartMs = millis();
+  statsSessionPageTurns = 0;
+
   // Trigger first update
   requestUpdate();
 }
 
 void EpubReaderActivity::onExit() {
   Activity::onExit();
+
+  // FORK: record the reading session (guard against clock weirdness)
+  if (statsSessionStartMs != 0) {
+    const unsigned long elapsedMs = millis() - statsSessionStartMs;
+    if (elapsedMs < 24UL * 3600 * 1000) {
+      READING_STATS.recordSession(elapsedMs / 1000, statsSessionPageTurns);
+    }
+    statsSessionStartMs = 0;
+  }
 
   // Reset orientation back to portrait for the rest of the UI
   renderer.setOrientation(GfxRenderer::Orientation::Portrait);
@@ -759,6 +774,7 @@ void EpubReaderActivity::toggleAutoPageTurn(const uint8_t selectedPageTurnOption
 }
 
 void EpubReaderActivity::pageTurn(bool isForwardTurn) {
+  statsSessionPageTurns++;  // FORK: reading stats
   if (isForwardTurn) {
     if (section->currentPage < section->pageCount - 1) {
       section->currentPage++;

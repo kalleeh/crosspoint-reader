@@ -8,6 +8,7 @@
 #include "MappedInputManager.h"
 #include "activities/ActivityManager.h"
 #include "activities/home/AppsMenuActivity.h"
+#include "activities/home/ReadingStatsActivity.h"
 #include "activities/games/ChessActivity.h"
 #include "activities/games/Game2048Activity.h"
 #include "activities/games/GamesMenuActivity.h"
@@ -38,8 +39,12 @@ static String awsMode;
 static String awsDomain;
 
 void onGoToApps() {
-  activityManager.replaceActivity(
-      std::make_unique<AppsMenuActivity>(renderer, mappedInputManager, onGoHome, onGoToOnline, onGoToGames, onGoToAWSCert));
+  activityManager.replaceActivity(std::make_unique<AppsMenuActivity>(
+      renderer, mappedInputManager, onGoHome, onGoToOnline, onGoToGames, onGoToAWSCert, onGoToReadingStats));
+}
+
+void onGoToReadingStats() {
+  activityManager.replaceActivity(std::make_unique<ReadingStatsActivity>(renderer, mappedInputManager, onGoToApps));
 }
 
 void onGoToGames() {

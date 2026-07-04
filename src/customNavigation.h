@@ -19,5 +19,6 @@ void onGoToHistory();
 void onGoToXKCD();
 
 void onGoToAWSCert();
+void onGoToReadingStats();
 void onGoToAWSPracticeMode(const char* certId);
 void onStartAWSQuiz(const char* certId, const char* mode, const char* domain);
