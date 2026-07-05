@@ -396,7 +396,7 @@ static void convertScanlineToGray(const PngDecodeContext& ctx, uint8_t* grayRow)
 }
 
 bool PngToBmpConverter::pngFileToBmpStreamInternal(HalFile& pngFile, Print& bmpOut, int targetWidth, int targetHeight,
-                                                   bool oneBit, bool crop) {
+                                                   bool oneBit, bool crop, uint8_t* inflateRingBuffer) {
   LOG_DBG("PNG", "Converting PNG to %s BMP (target: %dx%d)", oneBit ? "1-bit" : "2-bit", targetWidth, targetHeight);
 
   // Verify PNG signature
@@ -556,7 +556,7 @@ bool PngToBmpConverter::pngFileToBmpStreamInternal(HalFile& pngFile, Print& bmpO
   }
 
   // Initialize streaming decompressor with 32KB ring buffer for back-reference history
-  if (!ctx.reader.init(true)) {
+  if (!ctx.reader.init(true, inflateRingBuffer)) {
     LOG_ERR("PNG", "Failed to init inflate reader");
     free(ctx.currentRow);
     free(ctx.previousRow);
@@ -833,6 +833,7 @@ bool PngToBmpConverter::pngFileToBmpStreamWithSize(HalFile& pngFile, Print& bmpO
 }
 
 bool PngToBmpConverter::pngFileTo1BitBmpStreamWithSize(HalFile& pngFile, Print& bmpOut, int targetMaxWidth,
-                                                       int targetMaxHeight) {
-  return pngFileToBmpStreamInternal(pngFile, bmpOut, targetMaxWidth, targetMaxHeight, true, true);
+                                                       int targetMaxHeight, bool crop,
+                                                       uint8_t* inflateRingBuffer) {
+  return pngFileToBmpStreamInternal(pngFile, bmpOut, targetMaxWidth, targetMaxHeight, true, crop, inflateRingBuffer);
 }

@@ -104,6 +104,7 @@ enum class ForkStrId : uint16_t {
   STR_BTN_REVIEW,
   STR_BTN_PRACTICE,
   STR_BTN_CLEAR_ALL,
+  STR_BTN_RANDOM,
   // Quiz errors and format strings
   STR_AWS_ERR_NO_REVIEW_TITLE,
   STR_AWS_ERR_NO_REVIEW_BODY,

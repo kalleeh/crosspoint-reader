@@ -13,12 +13,18 @@ static_assert(std::is_standard_layout<InflateReader>::value,
 
 InflateReader::~InflateReader() { deinit(); }
 
-bool InflateReader::init(const bool streaming) {
+bool InflateReader::init(const bool streaming, uint8_t* externalRingBuffer) {
   deinit();  // free any previously allocated ring buffer and reset state
 
   if (streaming) {
-    ringBuffer = static_cast<uint8_t*>(malloc(INFLATE_DICT_SIZE));
-    if (!ringBuffer) return false;
+    if (externalRingBuffer) {
+      ringBuffer = externalRingBuffer;
+      ownsRingBuffer = false;
+    } else {
+      ringBuffer = static_cast<uint8_t*>(malloc(INFLATE_DICT_SIZE));
+      if (!ringBuffer) return false;
+      ownsRingBuffer = true;
+    }
     memset(ringBuffer, 0, INFLATE_DICT_SIZE);
   }
 
@@ -27,10 +33,11 @@ bool InflateReader::init(const bool streaming) {
 }
 
 void InflateReader::deinit() {
-  if (ringBuffer) {
+  if (ringBuffer && ownsRingBuffer) {
     free(ringBuffer);
-    ringBuffer = nullptr;
   }
+  ringBuffer = nullptr;
+  ownsRingBuffer = false;
   memset(&decomp, 0, sizeof(decomp));
 }
 

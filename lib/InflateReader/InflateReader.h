@@ -38,18 +38,32 @@ enum class InflateStatus {
 //
 class InflateReader {
  public:
+  // Size required by an externally-supplied ring buffer passed to init().
+  static constexpr size_t kRingBufferSize = 32768;
+
   InflateReader() = default;
   ~InflateReader();
 
   InflateReader(const InflateReader&) = delete;
   InflateReader& operator=(const InflateReader&) = delete;
 
-  // Initialise decompressor. streaming=true allocates a 32KB ring buffer needed
-  // when read() or readAtMost() will be called multiple times.
+  // Initialise decompressor. streaming=true needs a 32KB ring buffer for
+  // back-references, used when read() or readAtMost() will be called
+  // multiple times.
+  //
+  // If externalRingBuffer is null, a buffer is malloc'd on demand and freed
+  // by deinit()/the destructor — the original behavior. Pass a caller-owned
+  // buffer of at least kRingBufferSize bytes to skip that allocation instead;
+  // ownership stays with the caller and deinit() will not free it. This
+  // matters on this device: once WiFi/TLS has touched the heap in a boot
+  // session, the allocator's free list is left fragmented such that a single
+  // contiguous 32KB block may no longer be available even though total free
+  // heap looks fine — callers that mix this decoder with networking should
+  // allocate the ring buffer once, before any networking, and reuse it.
   // Returns false only in streaming mode if the ring buffer allocation fails.
-  bool init(bool streaming = false);
+  bool init(bool streaming = false, uint8_t* externalRingBuffer = nullptr);
 
-  // Release the ring buffer and reset internal state.
+  // Release the ring buffer (if owned) and reset internal state.
   void deinit();
 
   // Set the entire compressed input as a contiguous memory buffer.
@@ -82,4 +96,5 @@ class InflateReader {
  private:
   uzlib_uncomp decomp = {};
   uint8_t* ringBuffer = nullptr;
+  bool ownsRingBuffer = false;
 };
