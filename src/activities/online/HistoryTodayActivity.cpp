@@ -67,7 +67,8 @@ void HistoryTodayActivity::fetchEvents() {
   char url[128];
   snprintf(url, sizeof(url), "https://en.wikipedia.org/api/rest_v1/feed/onthisday/events/%d/%d", month, day);
   http.begin(url);
-  http.setTimeout(15000);  // 15 second timeout for SSL
+  http.setConnectTimeout(4000);
+  http.setTimeout(6000);  // was 15s — a slow-server GET() has zero polling inside it
   http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
   
   int httpCode = http.GET();

@@ -3,6 +3,8 @@
 
 #include <Arduino.h>
 #include <Bitmap.h>
+
+#include <algorithm>
 #include <GfxRenderer.h>
 #include <HalDisplay.h>
 #include <HalStorage.h>
@@ -88,20 +90,28 @@ void WeatherActivity::drawWeatherIcon(int x, int y, int size, const char* cond) 
   
   // Sun
   if (condition.indexOf("sunny") >= 0 || condition.indexOf("clear") >= 0) {
-    // Circle
-    int r = size / 3;
+    // A solid black disk reads as a heavy blob on a 1-bit display and
+    // dominates the screen next to the light photographic backgrounds.
+    // Use a dithered gray glow with a thin black outline instead — same
+    // technique the theme uses for soft rounded corners (fillRectDither).
+    const int r = size / 4;
     for (int dy = -r; dy <= r; dy++) {
-      int dx = (int)sqrt(r*r - dy*dy);
-      renderer.drawLine(x - dx, y + dy, x + dx, y + dy);
+      const int dx = (int)sqrt(r * r - dy * dy);
+      renderer.fillRectDither(x - dx, y + dy, 2 * dx + 1, 1, Color::LightGray);
     }
-    // Rays
+    // Thin ring outline for definition (four quarter-arcs sharing one center)
+    renderer.drawArc(r, x, y, 1, 1, 2, true);
+    renderer.drawArc(r, x, y, 1, -1, 2, true);
+    renderer.drawArc(r, x, y, -1, 1, 2, true);
+    renderer.drawArc(r, x, y, -1, -1, 2, true);
+    // Short, thin rays — gray dithered dashes instead of thick black spikes
     for (int i = 0; i < 8; i++) {
-      float angle = i * PI / 4;
-      int x1 = x + cos(angle) * r * 1.3;
-      int y1 = y + sin(angle) * r * 1.3;
-      int x2 = x + cos(angle) * r * 1.8;
-      int y2 = y + sin(angle) * r * 1.8;
-      renderer.drawLine(x1, y1, x2, y2);
+      const float angle = i * (float)PI / 4;
+      const int x1 = x + (int)(cos(angle) * r * 1.3f);
+      const int y1 = y + (int)(sin(angle) * r * 1.3f);
+      const int x2 = x + (int)(cos(angle) * r * 1.7f);
+      const int y2 = y + (int)(sin(angle) * r * 1.7f);
+      renderer.drawLine(x1, y1, x2, y2, 2, true);
     }
   }
   // Cloud
@@ -147,10 +157,11 @@ void WeatherActivity::drawWeatherIcon(int x, int y, int size, const char* cond) 
         renderer.drawLine(cx - dx, cy + dy, cx + dx, cy + dy);
       }
     }
-    // Lightning bolt
-    renderer.drawLine(x,           y - size/8,  x - size/8, y + size/8);
-    renderer.drawLine(x - size/8,  y + size/8,  x + size/16, y + size/16);
-    renderer.drawLine(x + size/16, y + size/16, x - size/8, y + size/2);
+    // Lightning bolt — thick strokes so the jagged shape reads clearly
+    const int boltWidth = std::max(2, size / 24);
+    renderer.drawLine(x,           y - size/8,  x - size/8, y + size/8, boltWidth, true);
+    renderer.drawLine(x - size/8,  y + size/8,  x + size/16, y + size/16, boltWidth, true);
+    renderer.drawLine(x + size/16, y + size/16, x - size/8, y + size/2, boltWidth, true);
   }
   // Snow
   else if (condition.indexOf("snow") >= 0) {
