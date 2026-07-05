@@ -162,8 +162,16 @@ bool WikipediaRandomActivity::downloadAndCacheImage(WikiArticle& article) {
 
   // Download image
   HTTPClient http;
-  http.setTimeout(15000);
+  http.setConnectTimeout(4000);
+  http.setTimeout(8000);  // was 15s — a slow-server GET() has zero polling inside it
   http.begin(article.imageUrl);
+  // HTTPClient defaults to _reuse=true, which skips closing the socket on
+  // end() whenever the server sends Connection: keep-alive. Since a fresh
+  // HTTPClient is created per image here rather than actually reused, that
+  // socket then just leaks — confirmed on XKCDViewerActivity that ESP32-C3's
+  // small fixed lwIP socket pool gets silently exhausted after a handful of
+  // leaked sockets, after which new connections stall and time out.
+  http.setReuse(false);
   int httpCode = http.GET();
 
   if (httpCode != 200) {
@@ -476,11 +484,13 @@ void WikipediaRandomActivity::render() {
     }
 
     maxScroll = max(0, virtualY - height);
-
-    // Legend (show loading status)
-    const char* btn2 = (isFetching || pendingFetches > 0) ? "" : fork_tr(STR_ONLINE_LOAD_MORE);
-    GUI.drawButtonHints(renderer, tr(STR_BACK), btn2, "", "");
   }
+
+  // Button hints stay visible in every state (including ERROR) so Back is
+  // always labeled, not just once the feed has loaded.
+  const char* btn2 =
+      (state == ERROR || isFetching || pendingFetches > 0) ? "" : fork_tr(STR_ONLINE_LOAD_MORE);
+  GUI.drawButtonHints(renderer, tr(STR_BACK), btn2, "", "");
 
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }

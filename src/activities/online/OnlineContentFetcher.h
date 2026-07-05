@@ -11,7 +11,12 @@
 
 namespace OnlineContentFetcher {
 
-static constexpr int HTTP_TIMEOUT_MS = 10000;
+// http.GET() blocks with no polling until connect+response completes or one
+// of these fires — there is no way to interrupt a blocking socket read
+// without a background task (no precedent anywhere in this codebase), so
+// responsiveness to Back is bounded by these, not by pollCancel() alone.
+static constexpr int HTTP_CONNECT_TIMEOUT_MS = 4000;
+static constexpr int HTTP_TIMEOUT_MS = 6000;
 static constexpr unsigned long WEATHER_CACHE_DURATION_SEC = 1800;  // 30 minutes
 
 // Weather data cache (persists for the session, not across reboots)
@@ -88,21 +93,21 @@ inline WeatherData fetchWeather(bool allowCache = false, MappedInputManager* can
 
   HTTPClient http;
   http.begin("https://wttr.in/?format=j1");
+  // A fresh HTTPClient is created per fetch (not actually reused across
+  // calls), so the default _reuse=true just leaks the socket whenever the
+  // server sends Connection: keep-alive — ESP32-C3's small fixed lwIP socket
+  // pool can silently exhaust after a handful of leaked sockets, after which
+  // new connections stall and time out instead of failing fast (confirmed on
+  // XKCDViewerActivity).
+  http.setReuse(false);
+  http.setConnectTimeout(HTTP_CONNECT_TIMEOUT_MS);
   http.setTimeout(HTTP_TIMEOUT_MS);
   http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
 
-  // wttr.in is frequently slow/unreachable on the first attempt; one retry
-  // covers most transient failures without a long UI stall.
+  // Each GET() blocks solid for up to connect+response timeout with zero
+  // polling — a retry here used to double that block, which is what made
+  // Back feel unresponsive. One GET, cancel-checked immediately after.
   int httpCode = http.GET();
-  if (httpCode != 200 && !pollCancel(cancelInput)) {
-    Serial.printf("[Weather] HTTP Code: %d, retrying\n", httpCode);
-    http.end();
-    delay(500);
-    http.begin("https://wttr.in/?format=j1");
-    http.setTimeout(HTTP_TIMEOUT_MS);
-    http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
-    httpCode = http.GET();
-  }
   Serial.printf("[Weather] HTTP Code: %d\n", httpCode);
   if (pollCancel(cancelInput)) { http.end(); data.cancelled = true; return data; }
 
@@ -191,9 +196,12 @@ inline WordData fetchWordOfDay(MappedInputManager* cancelInput = nullptr) {
   
   HTTPClient http;
   http.begin("https://random-word-api.herokuapp.com/word?number=1");
+  // See setReuse comment in fetchWeather() above.
+  http.setReuse(false);
+  http.setConnectTimeout(HTTP_CONNECT_TIMEOUT_MS);
   http.setTimeout(HTTP_TIMEOUT_MS);
   http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
-  
+
   if (http.GET() == 200) {
     String payload = http.getString();
     JsonDocument doc;
@@ -208,6 +216,8 @@ inline WordData fetchWordOfDay(MappedInputManager* cancelInput = nullptr) {
 
   String dictUrl = "https://api.dictionaryapi.dev/api/v2/entries/en/" + data.word;
   http.begin(dictUrl);
+  http.setReuse(false);
+  http.setConnectTimeout(HTTP_CONNECT_TIMEOUT_MS);
   http.setTimeout(HTTP_TIMEOUT_MS);
   http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
   
@@ -247,6 +257,9 @@ inline WikipediaData fetchWikipediaRandom(MappedInputManager* cancelInput = null
   
   HTTPClient http;
   http.begin("https://en.wikipedia.org/api/rest_v1/page/random/summary");
+  // See setReuse comment in fetchWeather() above.
+  http.setReuse(false);
+  http.setConnectTimeout(HTTP_CONNECT_TIMEOUT_MS);
   http.setTimeout(HTTP_TIMEOUT_MS);
   http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
   http.setUserAgent("CrossPointReader/1.0 (https://github.com/daveallie/crosspoint-reader)");
