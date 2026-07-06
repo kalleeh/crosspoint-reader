@@ -6,12 +6,30 @@
 #include <time.h>
 #include <HalDisplay.h>
 #include <GfxRenderer.h>
+#include <HalStorage.h>
 #include "../../MappedInputManager.h"
 #include "../../fontIds.h"
 #include <I18n.h>
 #include <ForkI18n.h>
 #include "OnlineContentFetcher.h"
 #include "components/UITheme.h"
+
+namespace {
+// HalFile derives from Print, not Stream, so it doesn't match ArduinoJson's
+// ArduinoStreamReader specialization. This thin wrapper satisfies the
+// generic Reader<TSource> template instead (needs read() -> int and
+// readBytes(char*, size_t) -> size_t), letting deserializeJson read directly
+// off SD without loading the whole file into a RAM buffer first.
+struct HalFileReader {
+  explicit HalFileReader(HalFile& file) : file_(file) {}
+  int read() { return file_.read(); }
+  size_t readBytes(char* buffer, size_t length) {
+    int n = file_.read(buffer, length);
+    return n > 0 ? static_cast<size_t>(n) : 0;
+  }
+  HalFile& file_;
+};
+}  // namespace
 
 void HistoryTodayActivity::onEnter() {
   // Connect using CrossPoint's saved WiFi credentials
@@ -47,6 +65,7 @@ void HistoryTodayActivity::fetchEvents() {
 
   if (time(nullptr) < 1000000000L) {
     // NTP sync failed — cannot determine today's date
+    ERROR_PRINTF("[History] NTP sync failed, time()=%ld\n", (long)time(nullptr));
     state = ERROR;
     render();
     return;
@@ -62,73 +81,144 @@ void HistoryTodayActivity::fetchEvents() {
   snprintf(dateStr, sizeof(dateStr), "%d/%d", month, day);
   date = String(dateStr);
   
-  HTTPClient http;
-  http.useHTTP10(true);  // getStreamPtr() can't decode chunked encoding
   char url[128];
   snprintf(url, sizeof(url), "https://en.wikipedia.org/api/rest_v1/feed/onthisday/events/%d/%d", month, day);
-  http.begin(url);
-  http.setConnectTimeout(4000);
-  http.setTimeout(6000);  // was 15s — a slow-server GET() has zero polling inside it
-  http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
-  
-  int httpCode = http.GET();
-  
-  DEBUG_PRINTF("[History] HTTP Code: %d\n", httpCode);
-  
-  if (httpCode == 200) {
-    // Stream the ~890KB response and filter to just events[].year/text —
-    // without the filter deserializeJson materializes the entire parse
-    // tree in RAM, which cannot fit on this device.
-    WiFiClient* stream = http.getStreamPtr();
 
-    JsonDocument filter;
-    filter["events"][0]["year"] = true;
-    filter["events"][0]["text"] = true;
+  // Download to SD first instead of streaming straight into deserializeJson.
+  // NetworkClientSecure::available()/read() call stop() on any transient
+  // mbedTLS hiccup mid-transfer (not just real connection loss), which
+  // permanently kills the stream — ArduinoJson then sees early EOF and
+  // reports IncompleteInput no matter how generous the timeout is (confirmed:
+  // this reproduced at both 6s and 15s timeouts, with the whole ~500KB
+  // response otherwise fetching in under a second on a healthy connection).
+  // XKCDViewerActivity hit the identical stall pattern downloading images;
+  // the fix there — and here — is to retry the download itself rather than
+  // trying to make a single stream survive the whole transfer.
+  const char* tempPath = "/.crosspoint/history_temp.json";
+  auto attemptDownload = [&](HTTPClient& httpClient) -> bool {
+    httpClient.useHTTP10(true);  // getStreamPtr() can't decode chunked encoding
+    httpClient.begin(url);
+    httpClient.setReuse(false);
+    httpClient.setConnectTimeout(4000);
+    httpClient.setTimeout(8000);
+    httpClient.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
 
-    JsonDocument doc;
-    DeserializationError error =
-        deserializeJson(doc, *stream, DeserializationOption::Filter(filter));
-    
-    DEBUG_PRINTF("[History] JSON parse: %s\n", error.c_str());
-    
-    if (error == DeserializationError::Ok) {
-      JsonArray eventsArray = doc["events"];
-      events.clear();
-      
-      DEBUG_PRINTF("[History] Events array size: %d\n", eventsArray.size());
-      
-      if (eventsArray.size() > 0) {
-        // Get first 5 events
-        int count = 0;
-        for (JsonObject event : eventsArray) {
-          if (count >= 5) break;
-          
-          int year = event["year"].as<int>();
-          String text = event["text"].as<String>();
-          
-          DEBUG_PRINTF("[History] Event %d: %d - %s\n", count, year, text.substring(0, 50).c_str());
-          
-          String eventStr = String(year) + ": " + text;
-          events.push_back(eventStr);
-          count++;
+    int httpCode = httpClient.GET();
+    ERROR_PRINTF("[History] GET -> %d\n", httpCode);
+    if (httpCode != 200) {
+      httpClient.end();
+      return false;
+    }
+
+    HalFile file;
+    if (!Storage.openFileForWrite("HIST", tempPath, file)) {
+      httpClient.end();
+      return false;
+    }
+
+    int contentLength = httpClient.getSize();
+    int downloaded = 0;
+    bool writeFailed = false;
+    bool stalled = false;
+    WiFiClient* stream = httpClient.getStreamPtr();
+    uint8_t buffer[512];
+    unsigned long downloadStart = millis();
+    unsigned long lastByteTime = millis();
+    while (httpClient.connected() && (contentLength < 0 || downloaded < contentLength)) {
+      if (millis() - downloadStart > 20000) break;                     // 20-second wall-clock cap
+      if (millis() - lastByteTime > 4000) { stalled = true; break; }    // stream went quiet
+      int avail = stream->available();
+      if (avail > 0) {
+        if (avail > (int)sizeof(buffer)) avail = sizeof(buffer);
+        int len = stream->readBytes(buffer, avail);
+        if (len > 0) {
+          if (file.write(buffer, len) != (size_t)len) {
+            writeFailed = true;
+            break;
+          }
+          downloaded += len;
+          lastByteTime = millis();
         }
-        
-        state = LOADED;
-        scrollOffset = 0;
       } else {
-        DEBUG_PRINTLN("[History] Events array is empty");
-        state = ERROR;
+        delay(1);
       }
+    }
+    file.close();
+    httpClient.end();
+    ERROR_PRINTF("[History] downloaded %d of %d bytes, writeFailed=%d stalled=%d\n", downloaded, contentLength,
+                 writeFailed, stalled);
+    return !writeFailed && (contentLength < 0 || downloaded >= contentLength);
+  };
+
+  HTTPClient http;
+  bool ok = attemptDownload(http);
+  if (!ok) {
+    ERROR_PRINTLN("[History] retrying download with a fresh connection");
+    Storage.remove(tempPath);
+    HTTPClient retryHttp;
+    ok = attemptDownload(retryHttp);
+  }
+
+  if (!ok) {
+    Storage.remove(tempPath);
+    state = ERROR;
+    render();
+    return;
+  }
+
+  // Parse from the now-complete local file — filtered to just
+  // events[].year/text, since without the filter deserializeJson
+  // materializes the entire parse tree in RAM, which cannot fit on this
+  // device.
+  HalFile jsonFile;
+  if (!Storage.openFileForRead("HIST", tempPath, jsonFile)) {
+    Storage.remove(tempPath);
+    state = ERROR;
+    render();
+    return;
+  }
+
+  JsonDocument filter;
+  filter["events"][0]["year"] = true;
+  filter["events"][0]["text"] = true;
+
+  JsonDocument doc;
+  HalFileReader reader(jsonFile);
+  DeserializationError error = deserializeJson(doc, reader, DeserializationOption::Filter(filter));
+  jsonFile.close();
+  Storage.remove(tempPath);
+
+  ERROR_PRINTF("[History] JSON parse: %s\n", error.c_str());
+
+  if (error == DeserializationError::Ok) {
+    JsonArray eventsArray = doc["events"];
+    events.clear();
+
+    if (eventsArray.size() > 0) {
+      // Get first 5 events
+      int count = 0;
+      for (JsonObject event : eventsArray) {
+        if (count >= 5) break;
+
+        int year = event["year"].as<int>();
+        String text = event["text"].as<String>();
+
+        String eventStr = String(year) + ": " + text;
+        events.push_back(eventStr);
+        count++;
+      }
+
+      state = LOADED;
+      scrollOffset = 0;
     } else {
-      DEBUG_PRINTLN("[History] JSON parse failed");
+      ERROR_PRINTLN("[History] Events array is empty");
       state = ERROR;
     }
   } else {
-    DEBUG_PRINTF("[History] HTTP failed: %d\n", httpCode);
+    ERROR_PRINTLN("[History] JSON parse failed");
     state = ERROR;
   }
-  
-  http.end();
+
   render();
 }
 
