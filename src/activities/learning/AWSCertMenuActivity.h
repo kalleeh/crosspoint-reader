@@ -2,101 +2,83 @@
 
 #include <GfxRenderer.h>
 
-#include <functional>
-#include <vector>
-
 #include "../../MappedInputManager.h"
-#include "../Activity.h"
+#include "../UiTabListActivity.h"
 
-class AWSCertMenuActivity final : public Activity {
+// AWS certification hub: a two-tab FreeInkUI list screen (Certifications /
+// Stats) plus an in-activity Info page for the selected certification.
+// Ring model (UiTabListActivity): 0 = tab bar, 1..N = rows.
+class AWSCertMenuActivity final : public UiTabListActivity {
  public:
-  enum class Tab { Certifications, Stats };
-
- private:
-  const std::function<void()> onBack;
-  const std::function<void(const char*)> onSelectCert;
-
-  Tab currentTab = Tab::Certifications;
-
   struct CertOption {
     const char* id;
     const char* name;
     const char* examCode;
-    int questionCount;
-    int passingScore;
+    uint8_t questionCount;
+    uint8_t passingScore;
     const char* level;
     const char* audience;
-    const char* domains;
+    const char* domains;  // '|'-separated
   };
 
-  std::vector<CertOption> certs;
-  int selectedIndex = 0;
-  int scrollOffset = 0;
-  bool showingInfo = false;
-  bool confirmingClear = false;
-  std::vector<bool> certFileAvailable;
+  static constexpr int CERT_COUNT = 13;
 
-  void render();
-  void renderCertificationsTab();
-  void renderStatsTab();
-  void renderInfo();
-  void drawTabBand(int y, int height, const char* const* labels, int count, int selected) const;
-
- public:
-  explicit AWSCertMenuActivity(GfxRenderer& renderer, MappedInputManager& mappedInput,
-                               const std::function<void()>& onBack,
-                               const std::function<void(const char*)>& onSelectCert)
-      : Activity("AWS Certifications", renderer, mappedInput), onBack(onBack), onSelectCert(onSelectCert) {
-    // Foundational
-    certs.push_back({"cloud-practitioner", "Cloud Practitioner", "CLF-C02", 65, 70, "Foundational",
-                     "Business, Sales, Technical", "Cloud Concepts 24% | Security 30% | Technology 34% | Billing 12%"});
-    certs.push_back({"ai-practitioner", "AI Practitioner", "AIF-C01", 65, 70, "Foundational",
-                     "Business, Technical, AI/ML interested",
-                     "AI/ML Fundamentals 20% | Generative AI 24% | Applications 28% | Security 28%"});
-
-    // Associate
-    certs.push_back({"sa-associate", "Solutions Architect Associate", "SAA-C03", 65, 72, "Associate",
-                     "Solutions Architects, 1yr AWS experience",
-                     "Resilient Arch 26% | High-Performance 24% | Secure Apps 30% | Cost-Optimized 20%"});
-    certs.push_back({"developer-associate", "Developer Associate", "DVA-C02", 65, 72, "Associate",
-                     "Developers, 1yr AWS development",
-                     "Development 32% | Security 26% | Deployment 24% | Troubleshooting 18%"});
-    certs.push_back({"sysops-associate", "SysOps Administrator Associate", "SOA-C02", 65, 72, "Associate",
-                     "SysOps, 1yr AWS operations",
-                     "Monitoring 20% | Reliability 16% | Deployment 18% | Security 16% | Networking 18% | Cost 12%"});
-
-    // Professional
-    certs.push_back(
-        {"sa-professional", "Solutions Architect Professional", "SAP-C02", 75, 75, "Professional",
-         "Solutions Architects, 2yr AWS experience",
-         "Design Solutions 26% | Continuous Improvement 26% | Migration 18% | Cost Control 20% | Security 10%"});
-    certs.push_back({"devops-professional", "DevOps Engineer Professional", "DOP-C02", 75, 75, "Professional",
-                     "DevOps Engineers, 2yr AWS experience",
-                     "SDLC Automation 22% | Config Mgmt 17% | Monitoring 15% | Policies 10% | Incident Response 14% | "
-                     "Security 22%"});
-
-    // Specialty
-    certs.push_back({"security-specialty", "Security Specialty", "SCS-C02", 65, 75, "Specialty",
-                     "Security roles, 2yr AWS security",
-                     "Threat Detection 14% | Security Logging 18% | Infrastructure 20% | Identity 16% | Data "
-                     "Protection 18% | Incident Response 14%"});
-    certs.push_back({"ml-specialty", "Machine Learning Specialty", "MLS-C01", 65, 75, "Specialty",
-                     "ML Engineers, 1yr AWS ML experience",
-                     "Data Engineering 20% | Exploratory Analysis 24% | Modeling 36% | ML Implementation 20%"});
-    certs.push_back({"database-specialty", "Database Specialty", "DBS-C01", 65, 75, "Specialty",
-                     "Database Architects, 2yr AWS DB",
-                     "Workload Design 26% | Deployment 20% | Management 18% | Monitoring 18% | Security 18%"});
-    certs.push_back({"networking-specialty", "Advanced Networking Specialty", "ANS-C01", 65, 75, "Specialty",
-                     "Network Engineers, 5yr networking",
-                     "Network Design 30% | Implementation 26% | Management 20% | Security 24%"});
-    certs.push_back({"analytics-specialty", "Data Analytics Specialty", "DAS-C01", 65, 75, "Specialty",
-                     "Data Analysts, 2yr AWS analytics",
-                     "Collection 18% | Storage 22% | Processing 24% | Analysis 18% | Visualization 12% | Security 6%"});
-    certs.push_back({"sap-specialty", "SAP on AWS Specialty", "PAS-C01", 65, 75, "Specialty",
-                     "SAP Architects, SAP + AWS experience",
-                     "SAP Workloads 30% | Design 28% | Implementation 20% | Operations 22%"});
-  }
+  explicit AWSCertMenuActivity(GfxRenderer& renderer, MappedInputManager& mappedInput, void (*onBack)(),
+                               void (*onSelectCert)(const char*))
+      : UiTabListActivity("AWS Certifications", renderer, mappedInput), onBack(onBack), onSelectCert(onSelectCert) {}
 
   void onEnter() override;
-  void loop() override;
+
+ private:
+  enum class Tab : int { Certifications = 0, Stats = 1 };
+  static constexpr int TAB_COUNT = 2;
+  static constexpr size_t SUBTITLE_LEN = 32;
+  static constexpr int HISTORY_ROWS = 5;
+  static constexpr int WEAK_ROWS = 3;
+
+  void (*const onBack)();
+  void (*const onSelectCert)(const char*);
+
+  Tab tab = Tab::Certifications;
+  int selectedCert = 0;  // last cert row the user rested on; drives Info + Stats
+  bool showingInfo = false;
+  bool confirmingClear = false;
+  bool statsHasData = false;  // cached: the Stats tab has a "Clear All Stats" row
+
+  // Row storage for the Certifications tab. Labels point at flash literals;
+  // subtitles ("<level> · <exam code>") are built once in onEnter.
+  freeink::ui::ListItem certItems[CERT_COUNT];
+  char certSubtitles[CERT_COUNT][SUBTITLE_LEN];
+  // Single row of the Stats tab (the clear action); label is a flash string.
+  freeink::ui::ListItem clearItem;
+  // Scratch for one text line; drawn immediately, so one buffer suffices.
+  char lineBuf[128];
+
+  // --- UiListActivity / UiTabListActivity contract ---
+  int listCount() const override;
+  void buildScreen(UiScreen& screen) override;
+  void activateIndex(int index) override;
+  bool handleCustomInput() override;
+  bool handleButtons() override;
+  const char* headerTitle() const override;
+  void drawFooter() override;
+  int tabCount() const override { return TAB_COUNT; }
+  int activeTab() const override { return static_cast<int>(tab); }
+  const char* tabLabel(int index) const override;
+  void onTabAction(int index) override;
+  void stepTab(int direction) override;
+
+  // --- screen builders (render task) ---
+  void buildCertList(UiScreen& screen);
+  void buildStatsTab(UiScreen& screen);
+  void buildInfoPage(UiScreen& screen);
+  void textLine(UiScreen& screen, const char* text, const freeink::ui::TextStyle& style, int16_t indent = 0,
+                int16_t gap = 0);
+
+  // --- state helpers (loop task) ---
+  void switchTab(Tab target, bool landOnTabBar);
+  void rememberSelectedCert();
+  void refreshStatsSummary();
+  void openInfo();
+  void handleClearAction();
 };
