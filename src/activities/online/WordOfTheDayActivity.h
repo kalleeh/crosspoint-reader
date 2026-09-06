@@ -1,10 +1,11 @@
 #pragma once
 #include <functional>
+
 #include "../Activity.h"
 
 class WordOfTheDayActivity final : public Activity {
   enum State { LOADING, LOADED, ERROR };
-  
+
   const std::function<void()> onBack;
   State state = LOADING;
   String word;
@@ -20,7 +21,7 @@ class WordOfTheDayActivity final : public Activity {
   explicit WordOfTheDayActivity(GfxRenderer& renderer, MappedInputManager& mappedInput,
                                 const std::function<void()>& onBack)
       : Activity("Word of the Day", renderer, mappedInput), onBack(onBack) {}
-  
+
   void onEnter() override;
   void onExit() override;
   void loop() override;

@@ -1,16 +1,16 @@
-#include "../../DebugConfig.h"
 #include "Game2048Activity.h"
 
 #include <Arduino.h>
+#include <ForkI18n.h>
 #include <GfxRenderer.h>
 #include <HalDisplay.h>
-
-#include "../../MappedInputManager.h"
-#include "../../GameConstants.h"
-#include "components/UITheme.h"
-#include "../../fontIds.h"
 #include <I18n.h>
-#include <ForkI18n.h>
+
+#include "../../DebugConfig.h"
+#include "../../GameConstants.h"
+#include "../../MappedInputManager.h"
+#include "../../fontIds.h"
+#include "components/UITheme.h"
 
 using namespace GameConstants;
 
@@ -117,19 +117,38 @@ bool Game2048Activity::move(int dx, int dy) {
   // Skip the front cell only on the axis of movement; iterate the full
   // range on the perpendicular axis (dx/dy == 0 means that axis is fixed).
   int startX, endX, stepX;
-  if (dx > 0)      { startX = GRID_SIZE - 2; endX = -1;        stepX = -1; }
-  else if (dx < 0) { startX = 1;             endX = GRID_SIZE; stepX = 1;  }
-  else             { startX = 0;             endX = GRID_SIZE; stepX = 1;  }
+  if (dx > 0) {
+    startX = GRID_SIZE - 2;
+    endX = -1;
+    stepX = -1;
+  } else if (dx < 0) {
+    startX = 1;
+    endX = GRID_SIZE;
+    stepX = 1;
+  } else {
+    startX = 0;
+    endX = GRID_SIZE;
+    stepX = 1;
+  }
 
   int startY, endY, stepY;
-  if (dy > 0)      { startY = GRID_SIZE - 2; endY = -1;        stepY = -1; }
-  else if (dy < 0) { startY = 1;             endY = GRID_SIZE; stepY = 1;  }
-  else             { startY = 0;             endY = GRID_SIZE; stepY = 1;  }
+  if (dy > 0) {
+    startY = GRID_SIZE - 2;
+    endY = -1;
+    stepY = -1;
+  } else if (dy < 0) {
+    startY = 1;
+    endY = GRID_SIZE;
+    stepY = 1;
+  } else {
+    startY = 0;
+    endY = GRID_SIZE;
+    stepY = 1;
+  }
 
   for (int i = startY; i != endY; i += stepY) {
     for (int j = startX; j != endX; j += stepX) {
-      if (board[i][j] == 0)
-        continue;
+      if (board[i][j] == 0) continue;
 
       int newY = i;
       int newX = j;
@@ -139,8 +158,7 @@ bool Game2048Activity::move(int dx, int dy) {
         int nextY = newY + dy;
         int nextX = newX + dx;
 
-        if (nextY < 0 || nextY >= GRID_SIZE || nextX < 0 || nextX >= GRID_SIZE)
-          break;
+        if (nextY < 0 || nextY >= GRID_SIZE || nextX < 0 || nextX >= GRID_SIZE) break;
 
         if (board[nextY][nextX] == 0) {
           newY = nextY;
@@ -176,18 +194,15 @@ bool Game2048Activity::canMove() {
   // Check for empty cells
   for (int i = 0; i < GRID_SIZE; i++) {
     for (int j = 0; j < GRID_SIZE; j++) {
-      if (board[i][j] == 0)
-        return true;
+      if (board[i][j] == 0) return true;
     }
   }
 
   // Check for possible merges
   for (int i = 0; i < GRID_SIZE; i++) {
     for (int j = 0; j < GRID_SIZE; j++) {
-      if (j < GRID_SIZE - 1 && board[i][j] == board[i][j + 1])
-        return true;
-      if (i < GRID_SIZE - 1 && board[i][j] == board[i + 1][j])
-        return true;
+      if (j < GRID_SIZE - 1 && board[i][j] == board[i][j + 1]) return true;
+      if (i < GRID_SIZE - 1 && board[i][j] == board[i + 1][j]) return true;
     }
   }
 
@@ -197,18 +212,18 @@ bool Game2048Activity::canMove() {
 void Game2048Activity::drawTile(int x, int y, int value) {
   const int screenWidth = renderer.getScreenWidth();
   const int screenHeight = renderer.getScreenHeight();
-  
+
   // Calculate optimal tile size to use full screen
   const int topMargin = 80;
   const int bottomMargin = 50;
   const int availableHeight = screenHeight - topMargin - bottomMargin;
   const int availableWidth = screenWidth - 40;
   const int margin = 6;
-  
+
   const int cellSizeByWidth = (availableWidth - (GRID_SIZE + 1) * margin) / GRID_SIZE;
   const int cellSizeByHeight = (availableHeight - (GRID_SIZE + 1) * margin) / GRID_SIZE;
   const int cellSize = (cellSizeByWidth < cellSizeByHeight) ? cellSizeByWidth : cellSizeByHeight;
-  
+
   const int gridPixelSize = GRID_SIZE * cellSize + (GRID_SIZE + 1) * margin;
   const int gridX = (screenWidth - gridPixelSize) / 2;
   const int gridY = topMargin;

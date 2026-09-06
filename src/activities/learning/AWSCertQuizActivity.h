@@ -1,12 +1,14 @@
 #pragma once
 
-#include "../Activity.h"
-#include "../../MappedInputManager.h"
 #include <GfxRenderer.h>
+
 #include <functional>
 #include <map>
-#include <vector>
 #include <string>
+#include <vector>
+
+#include "../../MappedInputManager.h"
+#include "../Activity.h"
 
 class HalFile;  // forward decl (defined in HalStorage.h)
 
@@ -23,54 +25,54 @@ struct Question {
 
 class AWSCertQuizActivity final : public Activity {
   enum State { LOADING, QUESTION, ANSWER, SUMMARY, REVIEW, DOMAIN_STATS };
-  
+
   const std::function<void()> onBack;
   String certId;
-  String practiceMode;  // "full", "quick", "study", "domain", "review"
+  String practiceMode;    // "full", "quick", "study", "domain", "review"
   String practiceDomain;  // Domain filter for domain mode
   State state = LOADING;
-  
+
   int questionStartIndex = 0;
   int questionCount = 0;
   int currentIndex = 0;
   int selectedOption = -1;  // -1 = no selection (cursor inactive on fresh question)
   int correctCount = 0;
-  
+
   // Custom question pack support (SD card only)
   std::vector<Question> customQuestions;
   bool hasCustomPack = false;
-  
+
   // Randomization support (optimized for memory)
   std::vector<uint16_t> questionOrder;  // uint16_t instead of int (saves 2 bytes each)
   std::vector<int8_t> userAnswers;      // int8_t instead of int (saves 3 bytes each, -1 = not answered)
-  int maxQuestions = 15;  // Default quiz length
-  
+  int maxQuestions = 15;                // Default quiz length
+
   // Engagement features
   int currentStreak = 0;
   int longestStreak = 0;
-  
+
   // Timer (for Full Exam mode)
   unsigned long startTime = 0;
   unsigned long endTime = 0;
   bool showTimer = false;
-  
+
   // Review mode
   std::vector<int> incorrectQuestions;
   int reviewIndex = 0;
-  
+
   // Domain tracking
   std::map<String, int> domainCorrect;
   std::map<String, int> domainTotal;
-  
+
   // Text measurement cache (80 bytes)
   struct TextCache {
     std::string text;
     uint16_t width = 0;
   };
   mutable TextCache textWidthCache[4];  // Small LRU cache
-  
+
   uint16_t getCachedTextWidth(int fontId, const char* text) const;
-  
+
   // Spaced-repetition history record (v3 file format)
   struct HistoryRecord {
     uint16_t fileIndex;
@@ -84,7 +86,7 @@ class AWSCertQuizActivity final : public Activity {
   void loadQuestions();
   bool loadCustomQuestions(const std::vector<uint16_t>* onlyFileIndices = nullptr);
   void shuffleQuestions();
-  int  countQuestionsInFile();
+  int countQuestionsInFile();
   void randomSelectIndices(int total, int needed, std::vector<uint16_t>& outIndices);
   void weightedSelectIndices(int total, int needed, std::vector<uint16_t>& outIndices,
                              const uint16_t* poolToFileIndex = nullptr);
@@ -105,7 +107,7 @@ class AWSCertQuizActivity final : public Activity {
   void renderReview() const;
   void renderDomainStats() const;
   String getQuestionDomain(int index);
-  
+
   // UI helpers
   void drawAWSLogo(int x, int y) const;
   void drawCheckmark(int x, int y, int size) const;
@@ -113,19 +115,20 @@ class AWSCertQuizActivity final : public Activity {
   void drawPassBadge(int x, int y) const;
   void drawFailBadge(int x, int y) const;
   int drawWrappedText(int fontId, int x, int y, const char* text, int maxWidth, bool black = true) const;
-  
+
  public:
   explicit AWSCertQuizActivity(GfxRenderer& renderer, MappedInputManager& mappedInput,
-                               const std::function<void()>& onBack,
-                               const char* certId,
-                               const char* mode = "full",
+                               const std::function<void()>& onBack, const char* certId, const char* mode = "full",
                                const char* domain = "all")
-      : Activity("AWS Quiz", renderer, mappedInput), 
-        onBack(onBack), certId(certId), practiceMode(mode), practiceDomain(domain) {}
-  
+      : Activity("AWS Quiz", renderer, mappedInput),
+        onBack(onBack),
+        certId(certId),
+        practiceMode(mode),
+        practiceDomain(domain) {}
+
   void onEnter() override;
   void loop() override;
-  
+
  private:
   int getMaxQuestionsForCert() const {
     // Return actual exam question counts per certification

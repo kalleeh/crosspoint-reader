@@ -1,19 +1,22 @@
-#include "components/UITheme.h"
-#include "../../DebugConfig.h"
 #include "AWSCertQuizActivity.h"
-#include "../../fontIds.h"
-#include "../../QuizStatsManager.h"
+
+#include <ArduinoJson.h>
+#include <ForkI18n.h>
 #include <HalDisplay.h>
 #include <HalStorage.h>
-#include <ArduinoJson.h>
 #include <I18n.h>
-#include <ForkI18n.h>
-#include <vector>
+#include <esp_random.h>
+
 #include <algorithm>
 #include <cstring>
-#include <random>
-#include <esp_random.h>
 #include <map>
+#include <random>
+#include <vector>
+
+#include "../../DebugConfig.h"
+#include "../../QuizStatsManager.h"
+#include "../../fontIds.h"
+#include "components/UITheme.h"
 
 // Sanitize a string for use as a FAT filename component.
 // Replaces any character that isn't alphanumeric, '-', or '_' with '_'.
@@ -21,8 +24,7 @@ static void sanitizeFilenameComponent(const char* src, char* dst, size_t dstSize
   size_t i = 0;
   for (; src[i] && i < dstSize - 1; i++) {
     char c = src[i];
-    if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
-        (c >= '0' && c <= '9') || c == '-' || c == '_') {
+    if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '-' || c == '_') {
       dst[i] = c;
     } else {
       dst[i] = '_';
@@ -53,7 +55,8 @@ void AWSCertQuizActivity::onEnter() {
 
   // Show loading screen while parsing (JSON parse can take several seconds)
   renderer.clearScreen();
-  renderer.drawText(UI_12_FONT_ID, DEFAULT_MARGIN, renderer.getScreenHeight() / 2 - 10, fork_tr(STR_AWS_LOADING_QUESTIONS), true);
+  renderer.drawText(UI_12_FONT_ID, DEFAULT_MARGIN, renderer.getScreenHeight() / 2 - 10,
+                    fork_tr(STR_AWS_LOADING_QUESTIONS), true);
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 
   // ------------------------------------------------------------------
@@ -66,10 +69,14 @@ void AWSCertQuizActivity::onEnter() {
   // How many questions this mode expects (used both to validate a resumable
   // session and to size a fresh start).
   int neededCount;
-  if      (practiceMode == "quick")      neededCount = 15;
-  else if (practiceMode == "quickstart") neededCount = 5;
-  else if (practiceMode == "study")      neededCount = 20;
-  else                                   neededCount = getMaxQuestionsForCert();
+  if (practiceMode == "quick")
+    neededCount = 15;
+  else if (practiceMode == "quickstart")
+    neededCount = 5;
+  else if (practiceMode == "study")
+    neededCount = 20;
+  else
+    neededCount = getMaxQuestionsForCert();
 
   if (practiceMode == "review") {
     // Review mode: load only the questions that were previously wrong.
@@ -93,8 +100,7 @@ void AWSCertQuizActivity::onEnter() {
       neededCount = std::min(neededCount, (int)domainIndices.size());
     }
 
-    if (practiceMode != "quickstart" && peekSessionFileIndices(fileIndices) &&
-        (int)fileIndices.size() == neededCount) {
+    if (practiceMode != "quickstart" && peekSessionFileIndices(fileIndices) && (int)fileIndices.size() == neededCount) {
       // Resuming an interrupted session — reload the exact same question set.
       // Only resume if the saved session has the number of questions this mode
       // expects. A mismatch means the session is stale/degenerate (e.g. a leftover
@@ -262,7 +268,8 @@ void AWSCertQuizActivity::saveSession() {
   char safeDomain[48];
   sanitizeFilenameComponent(practiceDomain.c_str(), safeDomain, sizeof(safeDomain));
   char path[256];
-  snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-session-%s-%s-%s.dat", certId.c_str(), practiceMode.c_str(), safeDomain);
+  snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-session-%s-%s-%s.dat", certId.c_str(), practiceMode.c_str(),
+           safeDomain);
   HalFile file = Storage.open(path, O_WRONLY | O_CREAT | O_TRUNC);
   if (!file) return;
 
@@ -276,8 +283,7 @@ void AWSCertQuizActivity::saveSession() {
 
   // Write fileIndices so the same question set can be re-loaded on resume
   for (int i = 0; ok && i < questionCount; i++) {
-    uint16_t fi = (questionOrder[i] < customQuestions.size())
-                  ? customQuestions[questionOrder[i]].fileIndex : 0;
+    uint16_t fi = (questionOrder[i] < customQuestions.size()) ? customQuestions[questionOrder[i]].fileIndex : 0;
     ok = ok && file.write((uint8_t*)&fi, sizeof(fi)) == sizeof(fi);
   }
 
@@ -306,7 +312,8 @@ bool AWSCertQuizActivity::loadSession() {
   char safeDomain[48];
   sanitizeFilenameComponent(practiceDomain.c_str(), safeDomain, sizeof(safeDomain));
   char path[256];
-  snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-session-%s-%s-%s.dat", certId.c_str(), practiceMode.c_str(), safeDomain);
+  snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-session-%s-%s-%s.dat", certId.c_str(), practiceMode.c_str(),
+           safeDomain);
   HalFile file;
   if (!openFileOrShowError(path, file, fork_tr(STR_AWS_ERR_SESSION_TITLE))) {
     return false;
@@ -320,8 +327,8 @@ bool AWSCertQuizActivity::loadSession() {
   }
 
   // Validate bounds
-  if (questionCount <= 0 || questionCount > MAX_QUESTIONS_FROM_FILE ||
-      currentIndex < 0 || currentIndex >= questionCount) {
+  if (questionCount <= 0 || questionCount > MAX_QUESTIONS_FROM_FILE || currentIndex < 0 ||
+      currentIndex >= questionCount) {
     file.close();
     return false;
   }
@@ -337,7 +344,8 @@ bool AWSCertQuizActivity::loadSession() {
   for (int i = 0; i < questionCount; i++) {
     uint16_t dummy;
     if (file.read((uint8_t*)&dummy, sizeof(dummy)) != sizeof(dummy)) {
-      file.close(); return false;
+      file.close();
+      return false;
     }
   }
 
@@ -383,7 +391,8 @@ void AWSCertQuizActivity::clearSession() {
   char safeDomain[48];
   sanitizeFilenameComponent(practiceDomain.c_str(), safeDomain, sizeof(safeDomain));
   char path[256];
-  snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-session-%s-%s-%s.dat", certId.c_str(), practiceMode.c_str(), safeDomain);
+  snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-session-%s-%s-%s.dat", certId.c_str(), practiceMode.c_str(),
+           safeDomain);
   Storage.remove(path);
 }
 
@@ -544,7 +553,7 @@ uint16_t AWSCertQuizActivity::getCachedTextWidth(int fontId, const char* text) c
       return textWidthCache[i].width;
     }
   }
-  
+
   // Calculate and cache (LRU: shift and add to end)
   uint16_t width = renderer.getTextWidth(fontId, text);
   for (int i = 0; i < 3; i++) {
@@ -552,7 +561,7 @@ uint16_t AWSCertQuizActivity::getCachedTextWidth(int fontId, const char* text) c
   }
   textWidthCache[3].text = std::string(text);
   textWidthCache[3].width = width;
-  
+
   return width;
 }
 
@@ -569,7 +578,7 @@ void AWSCertQuizActivity::saveQuizStats() {
     ds.correct = (it != domainCorrect.end()) ? it->second : 0;
     domainVec.push_back(ds);
   }
-  
+
   // Calculate total score (only answered questions)
   int totalCorrect = 0;
   int totalAnswered = 0;
@@ -585,16 +594,11 @@ void AWSCertQuizActivity::saveQuizStats() {
   // Save to stats manager
   if (totalAnswered == 0) return;  // Nothing to save if no questions were answered
 
-  QuizStatsManager::getInstance().saveQuizResult(
-    certId.c_str(),
-    practiceMode.c_str(),
-    totalCorrect,
-    totalAnswered,
-    domainVec
-  );
+  QuizStatsManager::getInstance().saveQuizResult(certId.c_str(), practiceMode.c_str(), totalCorrect, totalAnswered,
+                                                 domainVec);
 
-  DEBUG_PRINTF("[AWS] Saved quiz stats: %d/%d correct (%d unanswered)\n",
-               totalCorrect, totalAnswered, questionCount - totalAnswered);
+  DEBUG_PRINTF("[AWS] Saved quiz stats: %d/%d correct (%d unanswered)\n", totalCorrect, totalAnswered,
+               questionCount - totalAnswered);
 }
 
 void AWSCertQuizActivity::showError(const char* title, const char* message) {
@@ -602,16 +606,16 @@ void AWSCertQuizActivity::showError(const char* title, const char* message) {
 
   const int margin = DEFAULT_MARGIN;
   const int width = renderer.getScreenWidth();
-  
+
   int y = margin;
   renderer.drawText(UI_12_FONT_ID, margin, y, title, true);
   y += renderer.getLineHeight(UI_12_FONT_ID) + 10;
-  
+
   renderer.drawLine(margin, y, width - margin, y);
   y += 20;
-  
+
   drawWrappedText(UI_10_FONT_ID, margin, y, message, width - 2 * margin);
-  
+
   GUI.drawButtonHints(renderer, tr(STR_BACK), "", "", "");
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
@@ -774,11 +778,17 @@ bool AWSCertQuizActivity::cheapDomainScan(const char* domain, std::vector<uint16
 
   HalFile file;
   if (!Storage.openFileForRead("AWS", path, file)) return false;
-  if (!seekToQuestionsArray(file)) { file.close(); return false; }
+  if (!seekToQuestionsArray(file)) {
+    file.close();
+    return false;
+  }
 
   const bool matchAll = (strcmp(domain, "all") == 0);
   char* buf = (char*)malloc(JSON_PARSE_BUF_SIZE);
-  if (!buf) { file.close(); return false; }
+  if (!buf) {
+    file.close();
+    return false;
+  }
 
   int seqIndex = 0;
   int braceDepth = 0;
@@ -841,8 +851,8 @@ bool AWSCertQuizActivity::peekSessionFileIndices(std::vector<uint16_t>& outIndic
   char safeDomain[48];
   sanitizeFilenameComponent(practiceDomain.c_str(), safeDomain, sizeof(safeDomain));
   char path[256];
-  snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-session-%s-%s-%s.dat",
-           certId.c_str(), practiceMode.c_str(), safeDomain);
+  snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-session-%s-%s-%s.dat", certId.c_str(), practiceMode.c_str(),
+           safeDomain);
 
   HalFile file;
   if (!Storage.openFileForRead("AWS", path, file)) return false;
@@ -850,10 +860,12 @@ bool AWSCertQuizActivity::peekSessionFileIndices(std::vector<uint16_t>& outIndic
   int savedCurrentIndex, savedQuestionCount;
   if (file.read((uint8_t*)&savedCurrentIndex, sizeof(savedCurrentIndex)) != sizeof(savedCurrentIndex) ||
       file.read((uint8_t*)&savedQuestionCount, sizeof(savedQuestionCount)) != sizeof(savedQuestionCount)) {
-    file.close(); return false;
+    file.close();
+    return false;
   }
   if (savedQuestionCount <= 0 || savedQuestionCount > MAX_QUESTIONS_FROM_FILE) {
-    file.close(); return false;
+    file.close();
+    return false;
   }
 
   // v2 session: next section is fileIndices (uint16_t × N)
@@ -861,7 +873,8 @@ bool AWSCertQuizActivity::peekSessionFileIndices(std::vector<uint16_t>& outIndic
   size_t expectedRemaining = (size_t)savedQuestionCount * (sizeof(uint16_t) + sizeof(uint16_t) + sizeof(int8_t));
   if (file.size() < (size_t)(8 + expectedRemaining)) {
     // Old format (no fileIndices section) — discard
-    file.close(); return false;
+    file.close();
+    return false;
   }
 
   outIndices.clear();
@@ -869,7 +882,9 @@ bool AWSCertQuizActivity::peekSessionFileIndices(std::vector<uint16_t>& outIndic
   for (int i = 0; i < savedQuestionCount; i++) {
     uint16_t val;
     if (file.read((uint8_t*)&val, sizeof(val)) != sizeof(val)) {
-      file.close(); outIndices.clear(); return false;
+      file.close();
+      outIndices.clear();
+      return false;
     }
     outIndices.push_back(val);
   }
@@ -917,7 +932,7 @@ bool AWSCertQuizActivity::loadCustomQuestions(const std::vector<uint16_t>* onlyF
   const int targetCount = onlyFileIndices ? (int)onlyFileIndices->size() : INT_MAX;
 
   int parsedCount = 0;
-  int seqIndex = 0;       // sequential question index in the file (0-based)
+  int seqIndex = 0;  // sequential question index in the file (0-based)
   int braceDepth = 0;
 
   char* buffer = (char*)malloc(JSON_PARSE_BUF_SIZE);
@@ -935,8 +950,7 @@ bool AWSCertQuizActivity::loadCustomQuestions(const std::vector<uint16_t>* onlyF
     // need >100KB of string heap, and std::string growth aborts on OOM
     // under -fno-exceptions. Stop loading and run with what we have.
     if (parsedCount > 0 && parsedCount % 10 == 0 && ESP.getFreeHeap() < 60000) {
-      DEBUG_PRINTF("[AWS] Heap guard triggered after %d questions (%d bytes free)\n",
-                   parsedCount, ESP.getFreeHeap());
+      DEBUG_PRINTF("[AWS] Heap guard triggered after %d questions (%d bytes free)\n", parsedCount, ESP.getFreeHeap());
       break;
     }
     // Question-count cap for the unfiltered fallback path
@@ -953,8 +967,7 @@ bool AWSCertQuizActivity::loadCustomQuestions(const std::vector<uint16_t>* onlyF
     bool capture = true;
     if (onlyFileIndices && braceDepth >= 1) {
       // Only buffer if this seqIndex is in our target list
-      capture = (targetCursor < targetCount &&
-                 (*onlyFileIndices)[targetCursor] == (uint16_t)seqIndex);
+      capture = (targetCursor < targetCount && (*onlyFileIndices)[targetCursor] == (uint16_t)seqIndex);
     }
 
     if (braceDepth > 0 && capture && bufferPos < (int)JSON_PARSE_BUF_SIZE - 1) {
@@ -967,9 +980,8 @@ bool AWSCertQuizActivity::loadCustomQuestions(const std::vector<uint16_t>* onlyF
         buffer[bufferPos] = '\0';
 
         // Only deserialize if this seqIndex was a target (or we're in fallback mode)
-        bool shouldDeserialize = !onlyFileIndices ||
-                                 (targetCursor < targetCount &&
-                                  (*onlyFileIndices)[targetCursor] == (uint16_t)seqIndex);
+        bool shouldDeserialize =
+            !onlyFileIndices || (targetCursor < targetCount && (*onlyFileIndices)[targetCursor] == (uint16_t)seqIndex);
 
         if (shouldDeserialize) {
           JsonDocument doc;
@@ -979,20 +991,22 @@ bool AWSCertQuizActivity::loadCustomQuestions(const std::vector<uint16_t>* onlyF
             JsonObject q = doc.as<JsonObject>();
             bool questionValid = q["question"].is<const char*>() && !q["options"].isNull();
             if (questionValid) {
-              const char* optA = nullptr; const char* optB = nullptr;
-              const char* optC = nullptr; const char* optD = nullptr;
+              const char* optA = nullptr;
+              const char* optB = nullptr;
+              const char* optC = nullptr;
+              const char* optD = nullptr;
 
-              if (q["options"].is<JsonArray>() && q["options"].size() >= 4 &&
-                  q["options"][0].is<const char*>() && q["options"][1].is<const char*>() &&
-                  q["options"][2].is<const char*>() && q["options"][3].is<const char*>()) {
+              if (q["options"].is<JsonArray>() && q["options"].size() >= 4 && q["options"][0].is<const char*>() &&
+                  q["options"][1].is<const char*>() && q["options"][2].is<const char*>() &&
+                  q["options"][3].is<const char*>()) {
                 optA = q["options"][0].as<const char*>();
                 optB = q["options"][1].as<const char*>();
                 optC = q["options"][2].as<const char*>();
                 optD = q["options"][3].as<const char*>();
               } else if (q["options"].is<JsonObject>()) {
                 JsonObject opts = q["options"].as<JsonObject>();
-                if (opts["A"].is<const char*>() && opts["B"].is<const char*>() &&
-                    opts["C"].is<const char*>() && opts["D"].is<const char*>()) {
+                if (opts["A"].is<const char*>() && opts["B"].is<const char*>() && opts["C"].is<const char*>() &&
+                    opts["D"].is<const char*>()) {
                   optA = opts["A"].as<const char*>();
                   optB = opts["B"].as<const char*>();
                   optC = opts["C"].as<const char*>();
@@ -1060,7 +1074,6 @@ bool AWSCertQuizActivity::loadCustomQuestions(const std::vector<uint16_t>* onlyF
   return customQuestions.size() > 0;
 }
 
-
 void AWSCertQuizActivity::renderQuestion() {
   renderer.clearScreen();
 
@@ -1071,7 +1084,7 @@ void AWSCertQuizActivity::renderQuestion() {
   int actualIndex = questionOrder[currentIndex];
   if (actualIndex < 0 || actualIndex >= (int)customQuestions.size()) return;
   const Question* q = &customQuestions[actualIndex];
-  
+
   // ── Header ────────────────────────────────────────────────────────────────
   // Row 1 (y=8):  progress bar
   int progressBarWidth = width - 2 * margin;
@@ -1091,8 +1104,8 @@ void AWSCertQuizActivity::renderQuestion() {
     // Left side — include domain name when in domain mode so user knows which domain they're on
     char leftText[96];
     if (practiceMode == "domain" && practiceDomain != "all" && !practiceDomain.isEmpty()) {
-      snprintf(leftText, sizeof(leftText), "Q %d/%d  %d ans  [%.28s]",
-               currentIndex + 1, questionCount, answeredSoFar, practiceDomain.c_str());
+      snprintf(leftText, sizeof(leftText), "Q %d/%d  %d ans  [%.28s]", currentIndex + 1, questionCount, answeredSoFar,
+               practiceDomain.c_str());
     } else {
       snprintf(leftText, sizeof(leftText), "Q %d/%d  %d ans", currentIndex + 1, questionCount, answeredSoFar);
     }
@@ -1103,8 +1116,8 @@ void AWSCertQuizActivity::renderQuestion() {
     char rightText[32];
     if (showTimer) {
       unsigned long elapsed = (millis() - startTime) / 1000;
-      snprintf(rightText, sizeof(rightText), "%s  %02d:%02d",
-               q->difficulty.c_str(), (int)(elapsed / 60), (int)(elapsed % 60));
+      snprintf(rightText, sizeof(rightText), "%s  %02d:%02d", q->difficulty.c_str(), (int)(elapsed / 60),
+               (int)(elapsed % 60));
     } else if (currentStreak >= 3) {
       snprintf(rightText, sizeof(rightText), "%s  %d correct!", q->difficulty.c_str(), currentStreak);
     } else {
@@ -1122,13 +1135,13 @@ void AWSCertQuizActivity::renderQuestion() {
   int y = 58;
   int textHeight = drawWrappedText(UI_10_FONT_ID, margin, y, q->question.c_str(), width - 2 * margin);
   y += textHeight + 10;
-  
+
   // Options — "A:  " / "B:  " labels with clear visual separation from answer text
-  static const char* optLabels[]      = { "A", "B", "C", "D" };
-  static const char* optLabelColons[] = { "A:", "B:", "C:", "D:" };
-  const int labelX   = margin + 4;   // Left edge of "A:" label
-  const int textX    = margin + 34;  // Left edge of option text (after "A:  " gap)
-  const int textW    = width - textX - margin;
+  static const char* optLabels[] = {"A", "B", "C", "D"};
+  static const char* optLabelColons[] = {"A:", "B:", "C:", "D:"};
+  const int labelX = margin + 4;  // Left edge of "A:" label
+  const int textX = margin + 34;  // Left edge of option text (after "A:  " gap)
+  const int textW = width - textX - margin;
 
   for (int i = 0; i < 4; i++) {
     int optionStartY = y;
@@ -1150,21 +1163,20 @@ void AWSCertQuizActivity::renderQuestion() {
   // "Answer: X" — shows only after explicit Select press; guard against off-screen rendering
   {
     const int height = renderer.getScreenHeight();
-    if (currentIndex < (int)userAnswers.size() && userAnswers[currentIndex] >= 0
-        && userAnswers[currentIndex] < 4
-        && y + 6 < height - 50) {
+    if (currentIndex < (int)userAnswers.size() && userAnswers[currentIndex] >= 0 && userAnswers[currentIndex] < 4 &&
+        y + 6 < height - 50) {
       char selText[20];
       snprintf(selText, sizeof(selText), fork_tr(STR_AWS_ANSWER_FMT), optLabels[userAnswers[currentIndex]]);
       renderer.drawText(UI_10_FONT_ID, margin, y + 6, selText, true);
     }
   }
-  
+
   // Button hints (match physical button layout)
   const char* btn1 = tr(STR_BACK);
   const char* btn2;
   const char* btn3 = currentIndex > 0 ? fork_tr(STR_BTN_PREV) : "";
   const char* btn4;
-  
+
   if (practiceMode == "study") {
     // Study mode: "Answer" only shown once user has highlighted an option
     btn2 = selectedOption >= 0 ? fork_tr(STR_BTN_ANSWER) : "";
@@ -1174,9 +1186,9 @@ void AWSCertQuizActivity::renderQuestion() {
     btn2 = selectedOption >= 0 ? tr(STR_SELECT) : "";
     btn4 = currentIndex < questionCount - 1 ? tr(STR_NEXT_FIELD) : fork_tr(STR_BTN_SUBMIT);
   }
-  
+
   GUI.drawButtonHints(renderer, btn1, btn2, btn3, btn4);
-  
+
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
 
@@ -1193,7 +1205,7 @@ void AWSCertQuizActivity::renderAnswer() const {
   // Use the saved answer (userAnswers), not the cursor position (selectedOption)
   int savedAnswer = (currentIndex < (int)userAnswers.size()) ? userAnswers[currentIndex] : -1;
   bool correct = (savedAnswer >= 0) && (savedAnswer == q->correct);
-  
+
   // Result with icon
   int iconX = margin;
   int iconY = margin;
@@ -1214,13 +1226,13 @@ void AWSCertQuizActivity::renderAnswer() const {
     renderer.drawText(UI_12_FONT_ID, iconX + 40, iconY + 5, fork_tr(STR_AWS_ANSWER_INCORRECT), true);
     renderer.drawText(UI_10_FONT_ID, iconX + 150, iconY + 5, fork_tr(STR_AWS_ANSWER_KEEP_LEARNING), true);
   }
-  
+
   // Progress bar
   int progressBarWidth = width - 2 * margin;
   int progressFilled = (progressBarWidth * (currentIndex + 1)) / questionCount;
   renderer.drawRect(margin, iconY + 40, progressBarWidth, 8);
   renderer.fillRect(margin, iconY + 40, progressFilled, 8);
-  
+
   // Correct answer
   int y = iconY + 60;
   char correctText[128];
@@ -1231,7 +1243,7 @@ void AWSCertQuizActivity::renderAnswer() const {
   // Explanation (wrapped)
   int explainHeight = drawWrappedText(UI_10_FONT_ID, margin, y, q->explanation.c_str(), width - 2 * margin);
   y += explainHeight + 20;
-  
+
   // Score with visual indicator — compute from userAnswers so it's accurate mid-quiz
   int runningScore = 0;
   int answeredCount = 0;
@@ -1253,7 +1265,7 @@ void AWSCertQuizActivity::renderAnswer() const {
   int scoreFilled = answeredCount > 0 ? (scoreBarWidth * runningScore) / answeredCount : 0;
   renderer.drawRect(margin + 100, y + 5, scoreBarWidth, 10);
   renderer.fillRect(margin + 100, y + 5, scoreFilled, 10);
-  
+
   // Button hints: Confirm re-shows the current question; Right advances (or finishes)
   const char* btn1 = tr(STR_BACK);
   const char* btn2 = fork_tr(STR_BTN_REVIEW);
@@ -1320,8 +1332,8 @@ void AWSCertQuizActivity::renderSummary() const {
   int y = badgeY + 140;
   char scoreText[64];
   if (totalAnswered < questionCount) {
-    snprintf(scoreText, sizeof(scoreText), fork_tr(STR_AWS_SCORE_SKIPPED_FMT),
-             correctCount, totalAnswered, questionCount - totalAnswered);
+    snprintf(scoreText, sizeof(scoreText), fork_tr(STR_AWS_SCORE_SKIPPED_FMT), correctCount, totalAnswered,
+             questionCount - totalAnswered);
   } else {
     snprintf(scoreText, sizeof(scoreText), fork_tr(STR_AWS_SCORE_FMT), correctCount, questionCount);
   }
@@ -1358,24 +1370,25 @@ void AWSCertQuizActivity::renderSummary() const {
   // Passing score threshold marker
   char passLabel[8];
   snprintf(passLabel, sizeof(passLabel), "%d%%", passingScore);
-  renderer.drawLine(margin + (barWidth * passingScore) / 100, y - 5, margin + (barWidth * passingScore) / 100, y + barHeight + 5);
+  renderer.drawLine(margin + (barWidth * passingScore) / 100, y - 5, margin + (barWidth * passingScore) / 100,
+                    y + barHeight + 5);
   renderer.drawText(UI_10_FONT_ID, margin + (barWidth * passingScore) / 100 - 10, y + barHeight + 15, passLabel, true);
-  
+
   y += 60;
-  
+
   // Streak achievement
   if (longestStreak >= 3) {
     char streakText[64];
     snprintf(streakText, sizeof(streakText), "Best run: %d correct in a row!", longestStreak);
     renderer.drawText(UI_10_FONT_ID, margin, y, streakText, true);
-    
+
     // Draw fire emoji representation (simple)
     if (longestStreak >= 5) {
       renderer.drawText(UI_12_FONT_ID, margin + 200, y - 5, "***", true);
     }
     y += 30;
   }
-  
+
   // Review incorrect option
   if (incorrectQuestions.size() > 0) {
     char reviewText[64];
@@ -1384,13 +1397,13 @@ void AWSCertQuizActivity::renderSummary() const {
     renderer.drawText(UI_10_FONT_ID, margin + 10, y + 10, reviewText, true);
     y += 45;
   }
-  
+
   // Domain stats option
   renderer.drawRect(margin, y, 200, 35);
   renderer.drawText(UI_10_FONT_ID, margin + 10, y + 10, fork_tr(STR_AWS_DOMAIN_BREAKDOWN), true);
-  
-  const char* legend = incorrectQuestions.size() > 0 ?
-                       "Back | Confirm: Review | Down: Domains" : "Back | Down: Domains";
+
+  const char* legend =
+      incorrectQuestions.size() > 0 ? "Back | Confirm: Review | Down: Domains" : "Back | Down: Domains";
   renderer.drawText(UI_10_FONT_ID, margin, height - 40, legend, true);
 }
 
@@ -1408,17 +1421,17 @@ void AWSCertQuizActivity::renderReview() const {
   if (actualIndex < 0 || actualIndex >= (int)customQuestions.size()) return;
   const Question* q = &customQuestions[actualIndex];
   int userAnswer = userAnswers[questionIdx];
-  
+
   // Header
   int y = margin;
   char header[64];
   snprintf(header, sizeof(header), fork_tr(STR_AWS_REVIEW_FMT), reviewIndex + 1, (int)incorrectQuestions.size());
   renderer.drawText(UI_12_FONT_ID, margin, y, header, true);
   y += renderer.getLineHeight(UI_12_FONT_ID) + 10;
-  
+
   renderer.drawLine(margin, y, width - margin, y);
   y += 20;
-  
+
   // Question
   y += drawWrappedText(UI_10_FONT_ID, margin, y, q->question.c_str(), width - 2 * margin);
   y += 20;
@@ -1447,7 +1460,7 @@ void AWSCertQuizActivity::renderReview() const {
   renderer.drawText(UI_10_FONT_ID, margin, y, fork_tr(STR_AWS_EXPLANATION), true);
   y += 20;
   y += drawWrappedText(UI_10_FONT_ID, margin, y, q->explanation.c_str(), width - 2 * margin);
-  
+
   // btn2=Confirm(Next/Done), btn3=Left(Prev), btn4=Right also works but not labelled
   const char* btn2 = reviewIndex < (int)incorrectQuestions.size() - 1 ? tr(STR_NEXT_FIELD) : tr(STR_DONE);
   const char* btn3 = reviewIndex > 0 ? fork_tr(STR_BTN_PREV) : "";
@@ -1481,8 +1494,8 @@ void AWSCertQuizActivity::loop() {
       if (currentIndex > 0) {
         currentIndex--;
         // Restore cursor to saved answer for that question (or -1 if unanswered)
-        selectedOption = (currentIndex < (int)userAnswers.size() && userAnswers[currentIndex] >= 0)
-                         ? userAnswers[currentIndex] : -1;
+        selectedOption =
+            (currentIndex < (int)userAnswers.size() && userAnswers[currentIndex] >= 0) ? userAnswers[currentIndex] : -1;
         renderQuestion();
       }
     } else if (mappedInput.wasPressed(MappedInputManager::Button::Right)) {
@@ -1490,8 +1503,8 @@ void AWSCertQuizActivity::loop() {
       if (currentIndex < questionCount - 1) {
         currentIndex++;
         // Restore cursor to saved answer for the next question (or -1 if unanswered)
-        selectedOption = (currentIndex < (int)userAnswers.size() && userAnswers[currentIndex] >= 0)
-                         ? userAnswers[currentIndex] : -1;
+        selectedOption =
+            (currentIndex < (int)userAnswers.size() && userAnswers[currentIndex] >= 0) ? userAnswers[currentIndex] : -1;
         renderQuestion();
       } else {
         // Last question - calculate results
@@ -1522,10 +1535,10 @@ void AWSCertQuizActivity::loop() {
             incorrectQuestions.push_back(i);
           }
         }
-        
-        clearSession();  // Quiz complete - clear session
+
+        clearSession();          // Quiz complete - clear session
         saveIncorrectHistory();  // Save incorrect questions for review mode
-        saveQuizStats();  // Save stats for tracking
+        saveQuizStats();         // Save stats for tracking
         if (showTimer) endTime = millis();
         state = SUMMARY;
         renderSummary();
@@ -1547,16 +1560,16 @@ void AWSCertQuizActivity::loop() {
   } else if (state == ANSWER) {
     if (mappedInput.wasPressed(MappedInputManager::Button::Confirm)) {
       // Return to question view — restore cursor to saved answer for consistency
-      selectedOption = (currentIndex < (int)userAnswers.size() && userAnswers[currentIndex] >= 0)
-                       ? userAnswers[currentIndex] : -1;
+      selectedOption =
+          (currentIndex < (int)userAnswers.size() && userAnswers[currentIndex] >= 0) ? userAnswers[currentIndex] : -1;
       state = QUESTION;
       renderQuestion();
     } else if (mappedInput.wasPressed(MappedInputManager::Button::Left)) {
       // Previous question — restore cursor for destination question
       if (currentIndex > 0) {
         currentIndex--;
-        selectedOption = (currentIndex < (int)userAnswers.size() && userAnswers[currentIndex] >= 0)
-                         ? userAnswers[currentIndex] : -1;
+        selectedOption =
+            (currentIndex < (int)userAnswers.size() && userAnswers[currentIndex] >= 0) ? userAnswers[currentIndex] : -1;
         state = QUESTION;
         renderQuestion();
       }
@@ -1564,8 +1577,8 @@ void AWSCertQuizActivity::loop() {
       // Next question — restore cursor for destination question
       if (currentIndex < questionCount - 1) {
         currentIndex++;
-        selectedOption = (currentIndex < (int)userAnswers.size() && userAnswers[currentIndex] >= 0)
-                         ? userAnswers[currentIndex] : -1;
+        selectedOption =
+            (currentIndex < (int)userAnswers.size() && userAnswers[currentIndex] >= 0) ? userAnswers[currentIndex] : -1;
         state = QUESTION;
         renderQuestion();
       } else {
@@ -1598,9 +1611,9 @@ void AWSCertQuizActivity::loop() {
           }
         }
 
-        clearSession();  // Quiz complete - clear session
+        clearSession();          // Quiz complete - clear session
         saveIncorrectHistory();  // Save incorrect questions for review mode
-        saveQuizStats();  // Save stats for tracking
+        saveQuizStats();         // Save stats for tracking
         if (showTimer) endTime = millis();
         state = SUMMARY;
         renderSummary();
@@ -1649,13 +1662,13 @@ void AWSCertQuizActivity::loop() {
 void AWSCertQuizActivity::drawAWSLogo(int x, int y) const {
   // Simple AWS smile logo
   int size = 35;
-  
+
   // Smile curve
   for (int i = 0; i < size; i++) {
     int offset = (i * i) / (size * 2);
     renderer.drawLine(x + i, y + 15 + offset, x + i, y + 17 + offset);
   }
-  
+
   // Arrow tip
   renderer.drawLine(x + size - 5, y + 20, x + size, y + 25);
   renderer.drawLine(x + size - 5, y + 30, x + size, y + 25);
@@ -1665,12 +1678,12 @@ void AWSCertQuizActivity::drawCheckmark(int x, int y, int size) const {
   // Draw checkmark
   int midX = x + size / 3;
   int midY = y + size * 2 / 3;
-  
+
   // Left part of check
   for (int i = 0; i < 3; i++) {
     renderer.drawLine(x + i, midY - size / 3 + i, midX + i, midY + i);
   }
-  
+
   // Right part of check
   for (int i = 0; i < 3; i++) {
     renderer.drawLine(midX + i, midY + i, x + size + i, y + i);
@@ -1687,30 +1700,30 @@ void AWSCertQuizActivity::drawXMark(int x, int y, int size) const {
 
 void AWSCertQuizActivity::drawPassBadge(int x, int y) const {
   int size = 120;
-  
+
   // Rounded rectangle (double border)
   renderer.drawRect(x, y, size, size);
   renderer.drawRect(x + 2, y + 2, size - 4, size - 4);
   renderer.drawRect(x + 4, y + 4, size - 8, size - 8);
-  
+
   // Checkmark
   drawCheckmark(x + size / 2 - 20, y + size / 2 - 15, 40);
-  
+
   // "PASS" text
   renderer.drawText(UI_12_FONT_ID, x + size / 2 - 20, y + size + 10, fork_tr(STR_AWS_PASS), true);
 }
 
 void AWSCertQuizActivity::drawFailBadge(int x, int y) const {
   int size = 120;
-  
+
   // Rounded rectangle (double border)
   renderer.drawRect(x, y, size, size);
   renderer.drawRect(x + 2, y + 2, size - 4, size - 4);
   renderer.drawRect(x + 4, y + 4, size - 8, size - 8);
-  
+
   // X mark
   drawXMark(x + size / 2 - 20, y + size / 2 - 20, 40);
-  
+
   // "FAIL" text
   renderer.drawText(UI_12_FONT_ID, x + size / 2 - 15, y + size + 10, fork_tr(STR_AWS_FAIL), true);
 }
@@ -1754,8 +1767,7 @@ void AWSCertQuizActivity::renderDomainStats() const {
     int percentage = (correct * 100) / total;
 
     char line[128];
-    snprintf(line, sizeof(line), "%s: %d/%d (%d%%)",
-             domain.c_str(), correct, total, percentage);
+    snprintf(line, sizeof(line), "%s: %d/%d (%d%%)", domain.c_str(), correct, total, percentage);
     renderer.drawText(UI_10_FONT_ID, margin, y, line, true);
 
     // Mini bar
@@ -1787,18 +1799,18 @@ String AWSCertQuizActivity::getQuestionDomain(int actualIndex) {
 
 int AWSCertQuizActivity::drawWrappedText(int fontId, int x, int y, const char* text, int maxWidth, bool black) const {
   if (!text || maxWidth <= 0) return 0;
-  
+
   const int startY = y;
   const int lineHeight = renderer.getLineHeight(fontId) + 2;
   char lineBuf[256];
-  
+
   const char* lineStart = text;
   const char* ptr = text;
   const char* lastSpace = nullptr;
-  
+
   while (*ptr) {
     if (*ptr == ' ') lastSpace = ptr;
-    
+
     // Measure current line + next char
     int len = ptr - lineStart + 1;
     {
@@ -1806,7 +1818,7 @@ int AWSCertQuizActivity::drawWrappedText(int fontId, int x, int y, const char* t
       memcpy(lineBuf, lineStart, copyLen);
       lineBuf[copyLen] = '\0';
       int testWidth = renderer.getTextWidth(fontId, lineBuf);
-      
+
       if (testWidth > maxWidth && ptr > lineStart) {
         // Line too long, break here
         const char* breakPoint = lastSpace ? lastSpace : ptr;
@@ -1814,7 +1826,7 @@ int AWSCertQuizActivity::drawWrappedText(int fontId, int x, int y, const char* t
         memcpy(lineBuf, lineStart, len);
         lineBuf[len] = '\0';
         renderer.drawText(fontId, x, y, lineBuf, black);
-        
+
         y += lineHeight;
         lineStart = (*breakPoint == ' ') ? breakPoint + 1 : breakPoint;
         ptr = lineStart;
@@ -1824,7 +1836,7 @@ int AWSCertQuizActivity::drawWrappedText(int fontId, int x, int y, const char* t
     }
     ptr++;
   }
-  
+
   // Draw remaining
   if (ptr > lineStart) {
     int len = ptr - lineStart;
@@ -1835,6 +1847,6 @@ int AWSCertQuizActivity::drawWrappedText(int fontId, int x, int y, const char* t
     }
     y += lineHeight;
   }
-  
+
   return y - startY;
 }

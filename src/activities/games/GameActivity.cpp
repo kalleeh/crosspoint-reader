@@ -1,11 +1,11 @@
-#include "../../DebugConfig.h"
 #include "GameActivity.h"
 
+#include <ForkI18n.h>
 #include <GfxRenderer.h>
 #include <I18n.h>
-#include <ForkI18n.h>
 #include <SDCardManager.h>
 
+#include "../../DebugConfig.h"
 #include "../../fontIds.h"
 
 std::string GameActivity::getGameDataDir() const { return gameDataPath; }

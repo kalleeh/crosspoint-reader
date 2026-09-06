@@ -1,19 +1,21 @@
-#include "components/UITheme.h"
-#include "../../DebugConfig.h"
 #include "WikipediaRandomActivity.h"
-#include <WiFi.h>
-#include <HTTPClient.h>
+
 #include <ArduinoJson.h>
-#include <HalDisplay.h>
-#include <GfxRenderer.h>
-#include <HalStorage.h>
-#include <JpegToBmpConverter.h>
 #include <Bitmap.h>
+#include <ForkI18n.h>
+#include <GfxRenderer.h>
+#include <HTTPClient.h>
+#include <HalDisplay.h>
+#include <HalStorage.h>
+#include <I18n.h>
+#include <JpegToBmpConverter.h>
+#include <WiFi.h>
+
+#include "../../DebugConfig.h"
 #include "../../MappedInputManager.h"
 #include "../../fontIds.h"
 #include "OnlineContentFetcher.h"
-#include <I18n.h>
-#include <ForkI18n.h>
+#include "components/UITheme.h"
 
 void WikipediaRandomActivity::onEnter() {
   DEBUG_PRINTF("[%lu] [WIKI] Activity entered\n", millis());
@@ -236,7 +238,9 @@ bool WikipediaRandomActivity::downloadAndCacheImage(WikiArticle& article) {
   Storage.remove(tempPath.c_str());
   if (!success) Storage.remove(candidatePath.c_str());
 
-  if (success) { article.cachedImagePath = candidatePath; }
+  if (success) {
+    article.cachedImagePath = candidatePath;
+  }
   return success;
 }
 
@@ -268,10 +272,9 @@ bool WikipediaRandomActivity::downloadNextVisibleImage() {
       // Skip articles not yet rendered (startY/endY still at default 0)
       if (article.endY == 0) continue;
       // Only download if near the visible area
-      if (article.startY < scrollOffset + renderer.getScreenHeight() + 400 &&
-          article.endY > scrollOffset - 400) {
+      if (article.startY < scrollOffset + renderer.getScreenHeight() + 400 && article.endY > scrollOffset - 400) {
         if (downloadAndCacheImage(article)) {
-          return true;   // success — caller should re-render
+          return true;  // success — caller should re-render
         } else {
           article.imageDownloadFailed = true;
           return false;  // failure marked — caller should not re-render
@@ -382,10 +385,14 @@ void WikipediaRandomActivity::render() {
         if (breakPos == 0) {
           // Advance past the complete UTF-8 codepoint to avoid splitting multi-byte sequences
           uint8_t firstByte = (uint8_t)remaining[0];
-          if      (firstByte < 0x80) breakPos = 1;  // ASCII
-          else if (firstByte < 0xE0) breakPos = 2;  // 2-byte lead (0xC0–0xDF)
-          else if (firstByte < 0xF0) breakPos = 3;  // 3-byte lead (0xE0–0xEF)
-          else                        breakPos = 4;  // 4-byte lead (0xF0–0xF7)
+          if (firstByte < 0x80)
+            breakPos = 1;  // ASCII
+          else if (firstByte < 0xE0)
+            breakPos = 2;  // 2-byte lead (0xC0–0xDF)
+          else if (firstByte < 0xF0)
+            breakPos = 3;  // 3-byte lead (0xE0–0xEF)
+          else
+            breakPos = 4;  // 4-byte lead (0xF0–0xF7)
           if (breakPos > (int)remaining.length()) breakPos = remaining.length();
         }
 
@@ -449,10 +456,14 @@ void WikipediaRandomActivity::render() {
         if (breakPos == 0) {
           // Advance past the complete UTF-8 codepoint to avoid splitting multi-byte sequences
           uint8_t firstByte = (uint8_t)remaining[0];
-          if      (firstByte < 0x80) breakPos = 1;  // ASCII
-          else if (firstByte < 0xE0) breakPos = 2;  // 2-byte lead (0xC0–0xDF)
-          else if (firstByte < 0xF0) breakPos = 3;  // 3-byte lead (0xE0–0xEF)
-          else                        breakPos = 4;  // 4-byte lead (0xF0–0xF7)
+          if (firstByte < 0x80)
+            breakPos = 1;  // ASCII
+          else if (firstByte < 0xE0)
+            breakPos = 2;  // 2-byte lead (0xC0–0xDF)
+          else if (firstByte < 0xF0)
+            breakPos = 3;  // 3-byte lead (0xE0–0xEF)
+          else
+            breakPos = 4;  // 4-byte lead (0xF0–0xF7)
           if (breakPos > (int)remaining.length()) breakPos = remaining.length();
         }
 
@@ -488,8 +499,7 @@ void WikipediaRandomActivity::render() {
 
   // Button hints stay visible in every state (including ERROR) so Back is
   // always labeled, not just once the feed has loaded.
-  const char* btn2 =
-      (state == ERROR || isFetching || pendingFetches > 0) ? "" : fork_tr(STR_ONLINE_LOAD_MORE);
+  const char* btn2 = (state == ERROR || isFetching || pendingFetches > 0) ? "" : fork_tr(STR_ONLINE_LOAD_MORE);
   GUI.drawButtonHints(renderer, tr(STR_BACK), btn2, "", "");
 
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
@@ -527,12 +537,9 @@ void WikipediaRandomActivity::loop() {
 
     // Load more if viewing one of the last 2 articles AND we have WiFi
     unsigned long now = millis();
-    if (currentArticleIndex >= (int)feed.size() - 2 &&
-        !isFetching &&
-        WiFi.status() == WL_CONNECTED &&
+    if (currentArticleIndex >= (int)feed.size() - 2 && !isFetching && WiFi.status() == WL_CONNECTED &&
         (now - lastFetchTime) > 5000) {
-      DEBUG_PRINTF("[WIKI] Auto-load: viewing article %d/%d\n",
-                    currentArticleIndex + 1, feed.size());
+      DEBUG_PRINTF("[WIKI] Auto-load: viewing article %d/%d\n", currentArticleIndex + 1, feed.size());
       fetchNextArticles();
     }
   } else if (mappedInput.wasPressed(MappedInputManager::Button::Confirm)) {

@@ -1,7 +1,5 @@
 #include "ReaderActivity.h"
 
-#include "ReadingStatsManager.h"  // FORK: reading stats
-
 #include <FsHelpers.h>
 #include <HalStorage.h>
 #include <Memory.h>
@@ -12,6 +10,7 @@
 #include "CrossPointState.h"
 #include "EpubReaderActivity.h"
 #include "ReaderUtils.h"
+#include "ReadingStatsManager.h"  // FORK: reading stats
 #include "RecentBooksStore.h"
 #include "SdCardFontSystem.h"
 #include "TxtReaderActivity.h"

@@ -1,13 +1,15 @@
-#include "../../DebugConfig.h"
 #include "AWSCertMenuActivity.h"
-#include "../../fontIds.h"
-#include "components/UITheme.h"
-#include "../../QuizStatsManager.h"
+
+#include <ForkI18n.h>
 #include <HalDisplay.h>
 #include <HalStorage.h>
 #include <I18n.h>
-#include <ForkI18n.h>
 #include <time.h>
+
+#include "../../DebugConfig.h"
+#include "../../QuizStatsManager.h"
+#include "../../fontIds.h"
+#include "components/UITheme.h"
 
 void AWSCertMenuActivity::onEnter() {
   // Check once which cert JSON files are present on the SD card
@@ -25,12 +27,12 @@ void AWSCertMenuActivity::render() {
     renderInfo();
     return;
   }
-  
+
   renderer.clearScreen();
-  
+
   const int margin = 20;
   const int width = renderer.getScreenWidth();
-  
+
   // Title
   int y = margin;
   renderer.drawText(UI_12_FONT_ID, margin, y, fork_tr(STR_AWS_MENU_TITLE), true);
@@ -42,7 +44,7 @@ void AWSCertMenuActivity::render() {
   const auto& metrics = UITheme::getInstance().getMetrics();
   drawTabBand(y, metrics.tabBarHeight, tabLabels, 2, currentTab == Tab::Certifications ? 0 : 1);
   y += metrics.tabBarHeight;
-  
+
   // Render current tab content
   if (currentTab == Tab::Certifications) {
     renderCertificationsTab();
@@ -77,9 +79,9 @@ void AWSCertMenuActivity::renderCertificationsTab() {
   const int width = renderer.getScreenWidth();
   const int height = renderer.getScreenHeight();
   const int startY = 100;  // After title + tabs
-  
+
   int y = startY;
-  
+
   // Ensure selected item is visible
   const int visibleItems = (height - y - 60) / lineHeight;
   if (selectedIndex < scrollOffset) {
@@ -87,15 +89,15 @@ void AWSCertMenuActivity::renderCertificationsTab() {
   } else if (selectedIndex >= scrollOffset + visibleItems) {
     scrollOffset = selectedIndex - visibleItems + 1;
   }
-  
+
   // Draw cert options
   for (int i = scrollOffset; i < certs.size() && y < height - 60; i++) {
     bool isSelected = (i == selectedIndex);
-    
+
     if (isSelected) {
       renderer.fillRect(margin, y, width - 2 * margin, lineHeight);
     }
-    
+
     // Center text vertically in the box
     int textY = y + (lineHeight - renderer.getLineHeight(UI_10_FONT_ID)) / 2;
     if (i < (int)certFileAvailable.size() && !certFileAvailable[i]) {
@@ -107,10 +109,10 @@ void AWSCertMenuActivity::renderCertificationsTab() {
     }
     y += lineHeight;
   }
-  
+
   // Button hints
   GUI.drawButtonHints(renderer, tr(STR_BACK), fork_tr(STR_BTN_START), fork_tr(STR_BTN_INFO), fork_tr(STR_BTN_STATS));
-  
+
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
 
@@ -185,16 +187,16 @@ void AWSCertMenuActivity::renderStatsTab() {
   const int startY = 100;  // After title + tabs
 
   auto& stats = QuizStatsManager::getInstance();
-  
+
   int y = startY;
-  
+
   // Streak
   int streak = stats.getStreak(certs[selectedIndex].id);
   char streakText[32];
   snprintf(streakText, sizeof(streakText), "Streak: %d days", streak);
   renderer.drawText(UI_12_FONT_ID, margin, y, streakText, true);
   y += 40;
-  
+
   // Overall Progress
   renderer.drawText(UI_10_FONT_ID, margin, y, fork_tr(STR_AWS_OVERALL_PROGRESS), true);
   y += 25;
@@ -227,7 +229,7 @@ void AWSCertMenuActivity::renderStatsTab() {
     for (const auto& result : history) {
       char historyText[128];
       int percentage = (result.score * 100) / result.total;
-      
+
       // Format date (copy to a time_t: the field is a packed uint32_t, and
       // time_t is 64-bit — casting the pointer would read past the field
       // and do an unaligned load)
@@ -239,15 +241,14 @@ void AWSCertMenuActivity::renderStatsTab() {
       } else {
         strncpy(dateStr, "Unknown", sizeof(dateStr));
       }
-      
-      snprintf(historyText, sizeof(historyText), "• %s: %s (%d%%)", 
-               dateStr, result.mode, percentage);
+
+      snprintf(historyText, sizeof(historyText), "• %s: %s (%d%%)", dateStr, result.mode, percentage);
       renderer.drawText(UI_10_FONT_ID, margin + 10, y, historyText, true);
       y += 20;
     }
   }
   y += 10;
-  
+
   // Weak Areas
   renderer.drawText(UI_10_FONT_ID, margin, y, fork_tr(STR_AWS_WEAK_AREAS), true);
   y += 25;
@@ -259,16 +260,15 @@ void AWSCertMenuActivity::renderStatsTab() {
     int count = 0;
     for (const auto& pair : weakDomains) {
       if (count >= 3) break;  // Show top 3
-      
+
       char weakText[128];
-      snprintf(weakText, sizeof(weakText), "• %s: %d%%", 
-               pair.first.c_str(), pair.second);
+      snprintf(weakText, sizeof(weakText), "• %s: %d%%", pair.first.c_str(), pair.second);
       renderer.drawText(UI_10_FONT_ID, margin + 10, y, weakText, true);
       y += 20;
       count++;
     }
   }
-  
+
   // Clear stats option (if there's data for this cert)
   if (stats.getTotalQuestionsAnswered(certs[selectedIndex].id) > 0) {
     y += 20;
@@ -283,44 +283,45 @@ void AWSCertMenuActivity::renderStatsTab() {
   }
 
   // Button hints
-  const char* clearHint = stats.getTotalQuestionsAnswered(certs[selectedIndex].id) > 0 ? fork_tr(STR_BTN_CLEAR_ALL) : "";
+  const char* clearHint =
+      stats.getTotalQuestionsAnswered(certs[selectedIndex].id) > 0 ? fork_tr(STR_BTN_CLEAR_ALL) : "";
   GUI.drawButtonHints(renderer, tr(STR_BACK), clearHint, "", "");
-  
+
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
 
 void AWSCertMenuActivity::renderInfo() {
   renderer.clearScreen();
-  
+
   const int margin = 20;
   const int width = renderer.getScreenWidth();
 
   auto& cert = certs[selectedIndex];
-  
+
   // Title
   int y = margin;
   renderer.drawText(UI_12_FONT_ID, margin, y, cert.name, true);
   y += renderer.getLineHeight(UI_12_FONT_ID) + 10;  // Space below title
-  
+
   renderer.drawLine(margin, y, width - margin, y);
   y += 20;  // Space below divider
-  
+
   // Level badge
   renderer.drawRect(margin, y, 120, 25);
   renderer.drawText(UI_10_FONT_ID, margin + 10, y + 5, cert.level, true);
   y += 35;
-  
+
   // Exam code
   char line[128];
   snprintf(line, sizeof(line), "Exam: %s", cert.examCode);
   renderer.drawText(UI_10_FONT_ID, margin, y, line, true);
   y += 25;
-  
+
   // Questions & passing
   snprintf(line, sizeof(line), "Questions: %d | Pass: %d%%", cert.questionCount, cert.passingScore);
   renderer.drawText(UI_10_FONT_ID, margin, y, line, true);
   y += 25;
-  
+
   // Duration
   renderer.drawText(UI_10_FONT_ID, margin, y, fork_tr(STR_AWS_EXAM_DURATION), true);
   y += 30;
@@ -334,7 +335,7 @@ void AWSCertMenuActivity::renderInfo() {
   // Domain breakdown
   renderer.drawText(UI_10_FONT_ID, margin, y, fork_tr(STR_AWS_EXAM_DOMAINS), true);
   y += 20;
-  
+
   // Parse and display domains (split by |)
   String domains = String(cert.domains);
   int start = 0;
@@ -352,10 +353,10 @@ void AWSCertMenuActivity::renderInfo() {
   lastDomain.trim();
   renderer.drawText(UI_10_FONT_ID, margin + 10, y, lastDomain.c_str(), true);
   y += 30;
-  
+
   // Practice info
   renderer.drawText(UI_10_FONT_ID, margin, y, fork_tr(STR_AWS_PRACTICE_INFO), true);
-  
+
   GUI.drawButtonHints(renderer, tr(STR_BACK), fork_tr(STR_BTN_PRACTICE), "", "");
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }

@@ -1,15 +1,15 @@
-#include "../../DebugConfig.h"
 #include "ChessActivity.h"
 
+#include <ForkI18n.h>
 #include <GfxRenderer.h>
 #include <HalDisplay.h>
-
-#include "../../MappedInputManager.h"
-#include "components/UITheme.h"
-#include "../../fontIds.h"
-#include "../../GameConstants.h"
 #include <I18n.h>
-#include <ForkI18n.h>
+
+#include "../../DebugConfig.h"
+#include "../../GameConstants.h"
+#include "../../MappedInputManager.h"
+#include "../../fontIds.h"
+#include "components/UITheme.h"
 
 using namespace GameConstants;
 
@@ -188,8 +188,7 @@ bool ChessActivity::isValidMove(int fromX, int fromY, int toX, int toY, bool che
   }
 
   Piece piece = board[fromX][fromY];
-  if (piece == EMPTY)
-    return false;
+  if (piece == EMPTY) return false;
 
   Piece target = board[toX][toY];
   bool isWhite = (piece > 0);
@@ -225,8 +224,7 @@ bool ChessActivity::isValidMove(int fromX, int fromY, int toX, int toY, bool che
         validMove = true;
       }
       // En passant capture
-      else if (absDx == 1 && dy == direction && target == EMPTY &&
-               toX == enPassantX && toY == enPassantY) {
+      else if (absDx == 1 && dy == direction && target == EMPTY && toX == enPassantX && toY == enPassantY) {
         validMove = true;
       }
       break;
@@ -332,8 +330,7 @@ bool ChessActivity::isValidMove(int fromX, int fromY, int toX, int toY, bool che
       break;
   }
 
-  if (!validMove)
-    return false;
+  if (!validMove) return false;
 
   // Check if move leaves king in check
   if (checkKingSafety) {
@@ -377,8 +374,7 @@ bool ChessActivity::isValidMove(int fromX, int fromY, int toX, int toY, bool che
     }
     if (isEP) board[toX][fromY] = epCaptured;
 
-    if (kingInCheck)
-      return false;
+    if (kingInCheck) return false;
   }
 
   return true;
@@ -404,15 +400,11 @@ void ChessActivity::makeMove(int fromX, int fromY, int toX, int toY) {
   }
   if (abs(piece) == W_ROOK) {
     if (piece > 0) {
-      if (fromX == 0)
-        whiteRookLeftMoved = true;
-      if (fromX == 7)
-        whiteRookRightMoved = true;
+      if (fromX == 0) whiteRookLeftMoved = true;
+      if (fromX == 7) whiteRookRightMoved = true;
     } else {
-      if (fromX == 0)
-        blackRookLeftMoved = true;
-      if (fromX == 7)
-        blackRookRightMoved = true;
+      if (fromX == 0) blackRookLeftMoved = true;
+      if (fromX == 7) blackRookRightMoved = true;
     }
   }
 
@@ -461,8 +453,7 @@ void ChessActivity::makeMove(int fromX, int fromY, int toX, int toY) {
 }
 
 void ChessActivity::undoMove() {
-  if (moveHistory.empty())
-    return;
+  if (moveHistory.empty()) return;
 
   Move move = moveHistory.back();
   moveHistory.pop_back();
@@ -493,19 +484,16 @@ bool ChessActivity::isInCheck(bool white) {
         break;
       }
     }
-    if (kingX != -1)
-      break;
+    if (kingX != -1) break;
   }
 
-  if (kingX == -1)
-    return false;
+  if (kingX == -1) return false;
 
   // Check if any opponent piece can attack the king
   for (int y = 0; y < 8; y++) {
     for (int x = 0; x < 8; x++) {
       Piece piece = board[x][y];
-      if (piece == EMPTY)
-        continue;
+      if (piece == EMPTY) continue;
       bool isOpponent = white ? (piece < 0) : (piece > 0);
       if (isOpponent) {
         if (isValidMove(x, y, kingX, kingY, false)) {
@@ -522,11 +510,9 @@ bool ChessActivity::hasLegalMoves(bool white) {
   for (int fromY = 0; fromY < 8; fromY++) {
     for (int fromX = 0; fromX < 8; fromX++) {
       Piece piece = board[fromX][fromY];
-      if (piece == EMPTY)
-        continue;
+      if (piece == EMPTY) continue;
       bool isPieceWhite = (piece > 0);
-      if (isPieceWhite != white)
-        continue;
+      if (isPieceWhite != white) continue;
 
       for (int toY = 0; toY < 8; toY++) {
         for (int toX = 0; toX < 8; toX++) {
@@ -540,20 +526,16 @@ bool ChessActivity::hasLegalMoves(bool white) {
   return false;
 }
 
-bool ChessActivity::isCheckmate(bool white) {
-  return isInCheck(white) && !hasLegalMoves(white);
-}
+bool ChessActivity::isCheckmate(bool white) { return isInCheck(white) && !hasLegalMoves(white); }
 
 std::vector<ChessActivity::Move> ChessActivity::getLegalMoves(bool white) {
   std::vector<Move> moves;
   for (int fromY = 0; fromY < 8; fromY++) {
     for (int fromX = 0; fromX < 8; fromX++) {
       Piece piece = board[fromX][fromY];
-      if (piece == EMPTY)
-        continue;
+      if (piece == EMPTY) continue;
       bool isPieceWhite = (piece > 0);
-      if (isPieceWhite != white)
-        continue;
+      if (isPieceWhite != white) continue;
 
       getPieceMoves(fromX, fromY, moves);
     }
@@ -580,13 +562,13 @@ void ChessActivity::getPieceMoves(int x, int y, std::vector<Move>& moves) {
 
 int ChessActivity::evaluateBoard() {
   const int pieceValues[7] = {
-    0,            // empty
-    PAWN_VALUE,   // pawn
-    KNIGHT_VALUE, // knight
-    BISHOP_VALUE, // bishop
-    ROOK_VALUE,   // rook
-    QUEEN_VALUE,  // queen
-    KING_VALUE    // king
+      0,             // empty
+      PAWN_VALUE,    // pawn
+      KNIGHT_VALUE,  // knight
+      BISHOP_VALUE,  // bishop
+      ROOK_VALUE,    // rook
+      QUEEN_VALUE,   // queen
+      KING_VALUE     // king
   };
   int score = 0;
 
@@ -642,9 +624,9 @@ int ChessActivity::minimax(int depth, int alpha, int beta, bool maximizing) {
       Piece castleRook = EMPTY;
       if (abs(piece) == W_KING && abs(move.toX - move.fromX) == 2) {
         castleRookFrom = (move.toX > move.fromX) ? 7 : 0;
-        castleRookTo   = (move.toX > move.fromX) ? 5 : 3;
+        castleRookTo = (move.toX > move.fromX) ? 5 : 3;
         castleRook = board[castleRookFrom][move.fromY];
-        board[castleRookTo][move.fromY]   = castleRook;
+        board[castleRookTo][move.fromY] = castleRook;
         board[castleRookFrom][move.fromY] = EMPTY;
       }
 
@@ -653,7 +635,7 @@ int ChessActivity::minimax(int depth, int alpha, int beta, bool maximizing) {
       // Restore in reverse order
       if (castleRookFrom != -1) {
         board[castleRookFrom][move.fromY] = castleRook;
-        board[castleRookTo][move.fromY]   = EMPTY;
+        board[castleRookTo][move.fromY] = EMPTY;
       }
       if (move.isEnPassant) {
         board[move.toX][move.fromY] = epPawn;
@@ -663,8 +645,7 @@ int ChessActivity::minimax(int depth, int alpha, int beta, bool maximizing) {
 
       maxEval = max(maxEval, eval);
       alpha = max(alpha, eval);
-      if (beta <= alpha)
-        break;
+      if (beta <= alpha) break;
     }
     return maxEval;
   } else {
@@ -692,9 +673,9 @@ int ChessActivity::minimax(int depth, int alpha, int beta, bool maximizing) {
       Piece castleRook = EMPTY;
       if (abs(piece) == W_KING && abs(move.toX - move.fromX) == 2) {
         castleRookFrom = (move.toX > move.fromX) ? 7 : 0;
-        castleRookTo   = (move.toX > move.fromX) ? 5 : 3;
+        castleRookTo = (move.toX > move.fromX) ? 5 : 3;
         castleRook = board[castleRookFrom][move.fromY];
-        board[castleRookTo][move.fromY]   = castleRook;
+        board[castleRookTo][move.fromY] = castleRook;
         board[castleRookFrom][move.fromY] = EMPTY;
       }
 
@@ -703,7 +684,7 @@ int ChessActivity::minimax(int depth, int alpha, int beta, bool maximizing) {
       // Restore in reverse order
       if (castleRookFrom != -1) {
         board[castleRookFrom][move.fromY] = castleRook;
-        board[castleRookTo][move.fromY]   = EMPTY;
+        board[castleRookTo][move.fromY] = EMPTY;
       }
       if (move.isEnPassant) {
         board[move.toX][move.fromY] = epPawn;
@@ -713,8 +694,7 @@ int ChessActivity::minimax(int depth, int alpha, int beta, bool maximizing) {
 
       minEval = min(minEval, eval);
       beta = min(beta, eval);
-      if (beta <= alpha)
-        break;
+      if (beta <= alpha) break;
     }
     return minEval;
   }
@@ -815,7 +795,7 @@ void ChessActivity::drawPiece(int x, int y, Piece piece, int cellSize, int board
   const int screenY = boardStartY + y * cellSize;
   const bool isWhite = (piece > 0);
   const int pieceType = abs(piece);
-  
+
   // Use 70% of cell for piece
   const int pieceSize = (cellSize * 7) / 10;
   const int offset = (cellSize - pieceSize) / 2;
@@ -823,11 +803,11 @@ void ChessActivity::drawPiece(int x, int y, Piece piece, int cellSize, int board
   const int py = screenY + offset;
   const int w = pieceSize;
   const int h = pieceSize;
-  
+
   // Helper to draw circle (approximation)
   auto drawCircle = [&](int cx, int cy, int r, bool filled, bool white) {
     for (int dy = -r; dy <= r; dy++) {
-      int dx = (int)sqrt(r*r - dy*dy);
+      int dx = (int)sqrt(r * r - dy * dy);
       if (filled) {
         renderer.drawLine(cx - dx, cy + dy, cx + dx, cy + dy, white);
       } else {
@@ -836,147 +816,147 @@ void ChessActivity::drawPiece(int x, int y, Piece piece, int cellSize, int board
       }
     }
   };
-  
+
   switch (pieceType) {
     case W_KING: {
       // Base
-      renderer.fillRect(px + w/4, py + h*4/5, w/2, h/6, !isWhite);
-      if (isWhite) renderer.drawRect(px + w/4, py + h*4/5, w/2, h/6);
+      renderer.fillRect(px + w / 4, py + h * 4 / 5, w / 2, h / 6, !isWhite);
+      if (isWhite) renderer.drawRect(px + w / 4, py + h * 4 / 5, w / 2, h / 6);
       // Body
-      renderer.fillRect(px + w/3, py + h/2, w/3, h/3, !isWhite);
-      if (isWhite) renderer.drawRect(px + w/3, py + h/2, w/3, h/3);
+      renderer.fillRect(px + w / 3, py + h / 2, w / 3, h / 3, !isWhite);
+      if (isWhite) renderer.drawRect(px + w / 3, py + h / 2, w / 3, h / 3);
       // Crown points
       for (int i = 0; i < 5; i++) {
-        int cpx = px + w/4 + i*w/6;
-        renderer.fillRect(cpx, py + h/3, w/12, h/6, !isWhite);
+        int cpx = px + w / 4 + i * w / 6;
+        renderer.fillRect(cpx, py + h / 3, w / 12, h / 6, !isWhite);
       }
       // Cross
-      renderer.fillRect(px + w/2 - 1, py + h/10, 2, h/5, !isWhite);
-      renderer.fillRect(px + w/2 - w/12, py + h/6, w/6, 2, !isWhite);
+      renderer.fillRect(px + w / 2 - 1, py + h / 10, 2, h / 5, !isWhite);
+      renderer.fillRect(px + w / 2 - w / 12, py + h / 6, w / 6, 2, !isWhite);
       if (!isWhite) {
-        renderer.drawRect(px + w/3, py + h/2, w/3, h/3, false);
-        renderer.drawRect(px + w/4, py + h*4/5, w/2, h/6, false);
+        renderer.drawRect(px + w / 3, py + h / 2, w / 3, h / 3, false);
+        renderer.drawRect(px + w / 4, py + h * 4 / 5, w / 2, h / 6, false);
       }
       break;
     }
-    
+
     case W_QUEEN: {
       // Base
-      renderer.fillRect(px + w/4, py + h*4/5, w/2, h/6, !isWhite);
-      if (isWhite) renderer.drawRect(px + w/4, py + h*4/5, w/2, h/6);
+      renderer.fillRect(px + w / 4, py + h * 4 / 5, w / 2, h / 6, !isWhite);
+      if (isWhite) renderer.drawRect(px + w / 4, py + h * 4 / 5, w / 2, h / 6);
       // Body
-      renderer.fillRect(px + w/3, py + h/2, w/3, h/3, !isWhite);
-      if (isWhite) renderer.drawRect(px + w/3, py + h/2, w/3, h/3);
+      renderer.fillRect(px + w / 3, py + h / 2, w / 3, h / 3, !isWhite);
+      if (isWhite) renderer.drawRect(px + w / 3, py + h / 2, w / 3, h / 3);
       // Crown with 5 spheres
       for (int i = 0; i < 5; i++) {
-        int cpx = px + w/5 + i*w/6;
-        drawCircle(cpx, py + h/4, w/12, true, !isWhite);
-        if (isWhite) drawCircle(cpx, py + h/4, w/12, false, true);
+        int cpx = px + w / 5 + i * w / 6;
+        drawCircle(cpx, py + h / 4, w / 12, true, !isWhite);
+        if (isWhite) drawCircle(cpx, py + h / 4, w / 12, false, true);
       }
       if (!isWhite) {
-        renderer.drawRect(px + w/3, py + h/2, w/3, h/3, false);
-        renderer.drawRect(px + w/4, py + h*4/5, w/2, h/6, false);
+        renderer.drawRect(px + w / 3, py + h / 2, w / 3, h / 3, false);
+        renderer.drawRect(px + w / 4, py + h * 4 / 5, w / 2, h / 6, false);
       }
       break;
     }
-    
+
     case W_BISHOP: {
       // Base
-      renderer.fillRect(px + w/4, py + h*4/5, w/2, h/6, !isWhite);
-      if (isWhite) renderer.drawRect(px + w/4, py + h*4/5, w/2, h/6);
+      renderer.fillRect(px + w / 4, py + h * 4 / 5, w / 2, h / 6, !isWhite);
+      if (isWhite) renderer.drawRect(px + w / 4, py + h * 4 / 5, w / 2, h / 6);
       // Body (trapezoid)
-      for (int i = 0; i < h/3; i++) {
-        int lw = w/3 - (i * w/12) / (h/3);
-        renderer.drawLine(px + w/2 - lw/2, py + h/2 + i, px + w/2 + lw/2, py + h/2 + i, !isWhite);
+      for (int i = 0; i < h / 3; i++) {
+        int lw = w / 3 - (i * w / 12) / (h / 3);
+        renderer.drawLine(px + w / 2 - lw / 2, py + h / 2 + i, px + w / 2 + lw / 2, py + h / 2 + i, !isWhite);
       }
       // Point (triangle)
-      for (int i = 0; i < h/4; i++) {
-        renderer.drawLine(px + w/2 - i/2, py + h/4 + i, px + w/2 + i/2, py + h/4 + i, !isWhite);
+      for (int i = 0; i < h / 4; i++) {
+        renderer.drawLine(px + w / 2 - i / 2, py + h / 4 + i, px + w / 2 + i / 2, py + h / 4 + i, !isWhite);
       }
       // Slot
-      renderer.fillRect(px + w/2 - 1, py + h/6, 2, h/8, isWhite);
+      renderer.fillRect(px + w / 2 - 1, py + h / 6, 2, h / 8, isWhite);
       // Circle on top
-      drawCircle(px + w/2, py + h/8, w/12, true, !isWhite);
-      if (isWhite) drawCircle(px + w/2, py + h/8, w/12, false, true);
+      drawCircle(px + w / 2, py + h / 8, w / 12, true, !isWhite);
+      if (isWhite) drawCircle(px + w / 2, py + h / 8, w / 12, false, true);
       if (!isWhite) {
-        renderer.drawRect(px + w/4, py + h*4/5, w/2, h/6, false);
+        renderer.drawRect(px + w / 4, py + h * 4 / 5, w / 2, h / 6, false);
         // Outline
-        for (int i = 0; i < h/3; i++) {
-          int lw = w/3 - (i * w/12) / (h/3);
-          renderer.drawPixel(px + w/2 - lw/2, py + h/2 + i, false);
-          renderer.drawPixel(px + w/2 + lw/2, py + h/2 + i, false);
+        for (int i = 0; i < h / 3; i++) {
+          int lw = w / 3 - (i * w / 12) / (h / 3);
+          renderer.drawPixel(px + w / 2 - lw / 2, py + h / 2 + i, false);
+          renderer.drawPixel(px + w / 2 + lw / 2, py + h / 2 + i, false);
         }
       }
       break;
     }
-    
+
     case W_KNIGHT: {
       // Base
-      renderer.fillRect(px + w/4, py + h*4/5, w/2, h/6, !isWhite);
-      if (isWhite) renderer.drawRect(px + w/4, py + h*4/5, w/2, h/6);
+      renderer.fillRect(px + w / 4, py + h * 4 / 5, w / 2, h / 6, !isWhite);
+      if (isWhite) renderer.drawRect(px + w / 4, py + h * 4 / 5, w / 2, h / 6);
       // Neck
-      renderer.fillRect(px + w/3, py + h/2, w/5, h/3, !isWhite);
+      renderer.fillRect(px + w / 3, py + h / 2, w / 5, h / 3, !isWhite);
       // Head (curved)
-      for (int i = 0; i < h/4; i++) {
-        int hw = w/4 + (i * w/8) / (h/4);
-        renderer.drawLine(px + w/2 - hw/2, py + h/4 + i, px + w/2 + hw/2, py + h/4 + i, !isWhite);
+      for (int i = 0; i < h / 4; i++) {
+        int hw = w / 4 + (i * w / 8) / (h / 4);
+        renderer.drawLine(px + w / 2 - hw / 2, py + h / 4 + i, px + w / 2 + hw / 2, py + h / 4 + i, !isWhite);
       }
       // Snout
-      renderer.fillRect(px + w/2, py + h/3, w/5, h/8, !isWhite);
+      renderer.fillRect(px + w / 2, py + h / 3, w / 5, h / 8, !isWhite);
       // Ear
-      renderer.fillRect(px + w/2 - w/10, py + h/6, w/8, h/10, !isWhite);
+      renderer.fillRect(px + w / 2 - w / 10, py + h / 6, w / 8, h / 10, !isWhite);
       // Eye
-      renderer.fillRect(px + w/2 - w/16, py + h/3, 2, 2, isWhite);
+      renderer.fillRect(px + w / 2 - w / 16, py + h / 3, 2, 2, isWhite);
       if (!isWhite) {
-        renderer.drawRect(px + w/4, py + h*4/5, w/2, h/6, false);
+        renderer.drawRect(px + w / 4, py + h * 4 / 5, w / 2, h / 6, false);
         // Outline
-        renderer.drawRect(px + w/3, py + h/2, w/5, h/3, false);
-        renderer.drawRect(px + w/2, py + h/3, w/5, h/8, false);
+        renderer.drawRect(px + w / 3, py + h / 2, w / 5, h / 3, false);
+        renderer.drawRect(px + w / 2, py + h / 3, w / 5, h / 8, false);
       }
       break;
     }
-    
+
     case W_ROOK: {
       // Base
-      renderer.fillRect(px + w/4, py + h*4/5, w/2, h/6, !isWhite);
-      if (isWhite) renderer.drawRect(px + w/4, py + h*4/5, w/2, h/6);
+      renderer.fillRect(px + w / 4, py + h * 4 / 5, w / 2, h / 6, !isWhite);
+      if (isWhite) renderer.drawRect(px + w / 4, py + h * 4 / 5, w / 2, h / 6);
       // Tower body
-      renderer.fillRect(px + w/3, py + h/3, w/3, h/2, !isWhite);
-      if (isWhite) renderer.drawRect(px + w/3, py + h/3, w/3, h/2);
+      renderer.fillRect(px + w / 3, py + h / 3, w / 3, h / 2, !isWhite);
+      if (isWhite) renderer.drawRect(px + w / 3, py + h / 3, w / 3, h / 2);
       // Crenellations (3 notches)
-      const int crenW = w/10;
-      const int crenH = h/8;
-      renderer.fillRect(px + w/3, py + h/3, crenW, crenH, !isWhite);
-      renderer.fillRect(px + w/2 - crenW/2, py + h/3, crenW, crenH, !isWhite);
-      renderer.fillRect(px + w*2/3 - crenW, py + h/3, crenW, crenH, !isWhite);
+      const int crenW = w / 10;
+      const int crenH = h / 8;
+      renderer.fillRect(px + w / 3, py + h / 3, crenW, crenH, !isWhite);
+      renderer.fillRect(px + w / 2 - crenW / 2, py + h / 3, crenW, crenH, !isWhite);
+      renderer.fillRect(px + w * 2 / 3 - crenW, py + h / 3, crenW, crenH, !isWhite);
       if (!isWhite) {
-        renderer.drawRect(px + w/3, py + h/3, w/3, h/2, false);
-        renderer.drawRect(px + w/4, py + h*4/5, w/2, h/6, false);
+        renderer.drawRect(px + w / 3, py + h / 3, w / 3, h / 2, false);
+        renderer.drawRect(px + w / 4, py + h * 4 / 5, w / 2, h / 6, false);
       }
       break;
     }
-    
+
     case W_PAWN: {
       // Base
-      renderer.fillRect(px + w/4, py + h*4/5, w/2, h/6, !isWhite);
-      if (isWhite) renderer.drawRect(px + w/4, py + h*4/5, w/2, h/6);
+      renderer.fillRect(px + w / 4, py + h * 4 / 5, w / 2, h / 6, !isWhite);
+      if (isWhite) renderer.drawRect(px + w / 4, py + h * 4 / 5, w / 2, h / 6);
       // Body (smooth trapezoid)
-      for (int i = 0; i < h/2; i++) {
-        int bw = w/4 + (i * w/8) / (h/2);
-        renderer.drawLine(px + w/2 - bw/2, py + h/3 + i, px + w/2 + bw/2, py + h/3 + i, !isWhite);
+      for (int i = 0; i < h / 2; i++) {
+        int bw = w / 4 + (i * w / 8) / (h / 2);
+        renderer.drawLine(px + w / 2 - bw / 2, py + h / 3 + i, px + w / 2 + bw / 2, py + h / 3 + i, !isWhite);
       }
       // Head (circle)
-      drawCircle(px + w/2, py + h/4, w/6, true, !isWhite);
+      drawCircle(px + w / 2, py + h / 4, w / 6, true, !isWhite);
       if (isWhite) {
-        drawCircle(px + w/2, py + h/4, w/6, false, true);
-        renderer.drawRect(px + w/4, py + h*4/5, w/2, h/6);
+        drawCircle(px + w / 2, py + h / 4, w / 6, false, true);
+        renderer.drawRect(px + w / 4, py + h * 4 / 5, w / 2, h / 6);
       } else {
-        renderer.drawRect(px + w/4, py + h*4/5, w/2, h/6, false);
+        renderer.drawRect(px + w / 4, py + h * 4 / 5, w / 2, h / 6, false);
         // Outline for body
-        for (int i = 0; i < h/2; i++) {
-          int bw = w/4 + (i * w/8) / (h/2);
-          renderer.drawPixel(px + w/2 - bw/2, py + h/3 + i, false);
-          renderer.drawPixel(px + w/2 + bw/2, py + h/3 + i, false);
+        for (int i = 0; i < h / 2; i++) {
+          int bw = w / 4 + (i * w / 8) / (h / 2);
+          renderer.drawPixel(px + w / 2 - bw / 2, py + h / 3 + i, false);
+          renderer.drawPixel(px + w / 2 + bw / 2, py + h / 3 + i, false);
         }
       }
       break;
@@ -989,17 +969,17 @@ void ChessActivity::render() {
 
   const int screenWidth = renderer.getScreenWidth();
   const int screenHeight = renderer.getScreenHeight();
-  
+
   // Calculate optimal board size - use full width
   const int topMargin = 60;  // More space for title
   const int bottomMargin = 50;
   const int availableHeight = screenHeight - topMargin - bottomMargin;
   const int availableWidth = screenWidth - 40;
-  
+
   const int cellSizeByWidth = availableWidth / 8;
   const int cellSizeByHeight = availableHeight / 8;
   const int cellSize = (cellSizeByWidth < cellSizeByHeight) ? cellSizeByWidth : cellSizeByHeight;
-  
+
   const int boardSize = cellSize * 8;
   const int boardStartX = (screenWidth - boardSize) / 2;
   const int boardStartY = topMargin;
@@ -1054,9 +1034,9 @@ void ChessActivity::render() {
 
   // Button hints — show restart option when game is over
   const bool gameOver = (gameState == CHECKMATE || gameState == STALEMATE);
-  const auto labels = gameOver
-    ? mappedInput.mapLabels(tr(STR_BACK), fork_tr(STR_GAME_RESTART), "", "")
-    : mappedInput.mapLabels(tr(STR_BACK), tr(STR_SELECT), fork_tr(STR_BTN_MOVE), fork_tr(STR_BTN_MOVE));
+  const auto labels =
+      gameOver ? mappedInput.mapLabels(tr(STR_BACK), fork_tr(STR_GAME_RESTART), "", "")
+               : mappedInput.mapLabels(tr(STR_BACK), tr(STR_SELECT), fork_tr(STR_BTN_MOVE), fork_tr(STR_BTN_MOVE));
   GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 
   // Battery indicator at top right

@@ -27,7 +27,7 @@ class TicTacToeActivity final : public GameActivity {
 
  public:
   explicit TicTacToeActivity(GfxRenderer& renderer, MappedInputManager& mappedInput,
-                              const std::function<void()>& onBack)
+                             const std::function<void()>& onBack)
       : GameActivity("TicTacToe", renderer, mappedInput), cursorX(1), cursorY(1), onBack(onBack) {}
 
   void onEnter() override;

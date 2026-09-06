@@ -1,5 +1,6 @@
 #pragma once
 #include <functional>
+
 #include "../Activity.h"
 
 class XKCDViewerActivity final : public Activity {
@@ -26,7 +27,7 @@ class XKCDViewerActivity final : public Activity {
   explicit XKCDViewerActivity(GfxRenderer& renderer, MappedInputManager& mappedInput,
                               const std::function<void()>& onBack)
       : Activity("XKCD Comics", renderer, mappedInput), onBack(onBack) {}
-  
+
   void onEnter() override;
   void onExit() override;
   void loop() override;

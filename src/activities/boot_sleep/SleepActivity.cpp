@@ -579,7 +579,8 @@ void SleepActivity::renderInfoOverlay() const {
   char line[160];
   int len = 0;
   if (weather.valid) {
-    len += snprintf(line + len, sizeof(line) - len, "%d\xC2\xB0"
+    len += snprintf(line + len, sizeof(line) - len,
+                    "%d\xC2\xB0"
                     "C %s \xC2\xB7 %s",
                     weather.temperature, weather.location, weather.condition);
   }
@@ -587,8 +588,7 @@ void SleepActivity::renderInfoOverlay() const {
     len += snprintf(line + len, sizeof(line) - len, "%s%s", weather.valid ? "  |  " : "", word.word);
   }
   // Timestamp of the most recent fetch, when the wall clock was synced
-  const uint32_t newest =
-      weather.fetchedAtEpoch > word.fetchedAtEpoch ? weather.fetchedAtEpoch : word.fetchedAtEpoch;
+  const uint32_t newest = weather.fetchedAtEpoch > word.fetchedAtEpoch ? weather.fetchedAtEpoch : word.fetchedAtEpoch;
   if (newest > 0 && len < (int)sizeof(line) - 12) {
     time_t ts = newest;
     struct tm* timeinfo = localtime(&ts);

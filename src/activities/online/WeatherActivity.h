@@ -11,7 +11,7 @@ class WeatherActivity final : public Activity {
 
   State state;
   const std::function<void()> onBack;
-  
+
   // Weather data
   std::string location;
   int temperature;
@@ -19,7 +19,7 @@ class WeatherActivity final : public Activity {
   std::string condition;
   int humidity;
   int windSpeed;
-  
+
   unsigned long lastUpdate;
 
   void fetchWeather(bool allowCache = false);
@@ -28,11 +28,17 @@ class WeatherActivity final : public Activity {
   bool loadWeatherBackground(const char* condition);
 
  public:
-  explicit WeatherActivity(GfxRenderer& renderer, MappedInputManager& mappedInput,
-                           const std::function<void()>& onBack)
-      : Activity("Weather", renderer, mappedInput), onBack(onBack), state(LOADING),
-        location(), condition(),
-        temperature(0), feelsLike(0), humidity(0), windSpeed(0), lastUpdate(0) {}
+  explicit WeatherActivity(GfxRenderer& renderer, MappedInputManager& mappedInput, const std::function<void()>& onBack)
+      : Activity("Weather", renderer, mappedInput),
+        onBack(onBack),
+        state(LOADING),
+        location(),
+        condition(),
+        temperature(0),
+        feelsLike(0),
+        humidity(0),
+        windSpeed(0),
+        lastUpdate(0) {}
 
   void onEnter() override;
   void onExit() override;

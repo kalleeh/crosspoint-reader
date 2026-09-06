@@ -35,7 +35,7 @@ class MemoryMatchActivity final : public GameActivity {
 
  public:
   explicit MemoryMatchActivity(GfxRenderer& renderer, MappedInputManager& mappedInput,
-                                const std::function<void()>& onBack)
+                               const std::function<void()>& onBack)
       : GameActivity("MemoryMatch", renderer, mappedInput), onBack(onBack) {}
 
   void onEnter() override;

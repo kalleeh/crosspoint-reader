@@ -1,16 +1,16 @@
-#include "../../DebugConfig.h"
 #include "SnakeActivity.h"
 
 #include <Arduino.h>
+#include <ForkI18n.h>
 #include <GfxRenderer.h>
 #include <HalDisplay.h>
-
-#include "../../MappedInputManager.h"
-#include "components/UITheme.h"
-#include "../../fontIds.h"
-#include "../../GameConstants.h"
 #include <I18n.h>
-#include <ForkI18n.h>
+
+#include "../../DebugConfig.h"
+#include "../../GameConstants.h"
+#include "../../MappedInputManager.h"
+#include "../../fontIds.h"
+#include "components/UITheme.h"
 
 using namespace GameConstants;
 
@@ -59,13 +59,16 @@ void SnakeActivity::loop() {
   if (mappedInput.wasPressed(MappedInputManager::Button::Up) && direction != DOWN && lastInputDirection != UP) {
     pendingDirection = UP;
     lastInputDirection = UP;
-  } else if (mappedInput.wasPressed(MappedInputManager::Button::Down) && direction != UP && lastInputDirection != DOWN) {
+  } else if (mappedInput.wasPressed(MappedInputManager::Button::Down) && direction != UP &&
+             lastInputDirection != DOWN) {
     pendingDirection = DOWN;
     lastInputDirection = DOWN;
-  } else if (mappedInput.wasPressed(MappedInputManager::Button::Left) && direction != RIGHT && lastInputDirection != LEFT) {
+  } else if (mappedInput.wasPressed(MappedInputManager::Button::Left) && direction != RIGHT &&
+             lastInputDirection != LEFT) {
     pendingDirection = LEFT;
     lastInputDirection = LEFT;
-  } else if (mappedInput.wasPressed(MappedInputManager::Button::Right) && direction != LEFT && lastInputDirection != RIGHT) {
+  } else if (mappedInput.wasPressed(MappedInputManager::Button::Right) && direction != LEFT &&
+             lastInputDirection != RIGHT) {
     pendingDirection = RIGHT;
     lastInputDirection = RIGHT;
   }
@@ -79,8 +82,7 @@ void SnakeActivity::loop() {
 }
 
 void SnakeActivity::update() {
-  if (gameState != PLAYING)
-    return;
+  if (gameState != PLAYING) return;
 
   direction = pendingDirection;
   moveCount++;
@@ -172,12 +174,12 @@ void SnakeActivity::render() {
   const int bottomMargin = 50;  // Space for button hints
   const int availableHeight = screenHeight - topMargin - bottomMargin;
   const int availableWidth = screenWidth - 40;  // 20px margin each side
-  
+
   // Calculate cell size to fit screen
   const int cellSizeByWidth = availableWidth / GRID_SIZE;
   const int cellSizeByHeight = availableHeight / GRID_SIZE;
   const int cellSize = (cellSizeByWidth < cellSizeByHeight) ? cellSizeByWidth : cellSizeByHeight;
-  
+
   const int gridPixelSize = GRID_SIZE * cellSize;
   const int gridX = (screenWidth - gridPixelSize) / 2;
   const int gridY = topMargin;

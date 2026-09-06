@@ -1,13 +1,15 @@
-#include "../../DebugConfig.h"
 #include "WordOfTheDayActivity.h"
-#include <WiFi.h>
-#include <HalDisplay.h>
+
+#include <ForkI18n.h>
 #include <GfxRenderer.h>
+#include <HalDisplay.h>
+#include <I18n.h>
+#include <WiFi.h>
+
+#include "../../DebugConfig.h"
 #include "../../MappedInputManager.h"
 #include "../../fontIds.h"
 #include "OnlineContentFetcher.h"
-#include <I18n.h>
-#include <ForkI18n.h>
 #include "components/UITheme.h"
 
 void WordOfTheDayActivity::onEnter() {
@@ -20,27 +22,25 @@ void WordOfTheDayActivity::onEnter() {
   }
 }
 
-void WordOfTheDayActivity::onExit() {
-  WiFi.mode(WIFI_OFF);
-}
+void WordOfTheDayActivity::onExit() { WiFi.mode(WIFI_OFF); }
 
 void WordOfTheDayActivity::fetchWord() {
   state = LOADING;
   render();
-  
+
   if (WiFi.status() != WL_CONNECTED) {
     state = ERROR;
     render();
     return;
   }
-  
+
   auto data = OnlineContentFetcher::fetchWordOfDay(&mappedInput);
   if (data.cancelled) {
     // User pressed Back mid-fetch — leave the activity instead of rendering
     if (onBack) onBack();
     return;
   }
-  
+
   if (data.success) {
     word = data.word.c_str();
     definition = data.definition.c_str();
@@ -50,16 +50,16 @@ void WordOfTheDayActivity::fetchWord() {
   } else {
     state = ERROR;
   }
-  
+
   render();
 }
 
 void WordOfTheDayActivity::render() {
   renderer.clearScreen();
-  
+
   const int width = renderer.getScreenWidth();
   const int height = renderer.getScreenHeight();
-  
+
   if (state == LOADING) {
     const char* msg = fork_tr(STR_ONLINE_LOADING);
     int textWidth = renderer.getTextWidth(UI_10_FONT_ID, msg);
@@ -71,16 +71,16 @@ void WordOfTheDayActivity::render() {
   } else {
     // Zen centered layout
     const int contentWidth = width - 80;  // 40px margin on each side
-    int y = 100 - scrollOffset;  // Start lower for centered feel
-    
+    int y = 100 - scrollOffset;           // Start lower for centered feel
+
     // Word - centered and prominent
     int wordWidth = renderer.getTextWidth(UI_12_FONT_ID, word.c_str());
     renderer.drawText(UI_12_FONT_ID, (width - wordWidth) / 2, y, word.c_str(), true);
     y += renderer.getLineHeight(UI_12_FONT_ID) + 30;
-    
+
     // Definition - centered with wrapping
     String remaining = definition;
-    
+
     while (remaining.length() > 0 && y < height + scrollOffset) {
       int breakPos;
       if (renderer.getTextWidth(UI_10_FONT_ID, remaining.c_str()) <= contentWidth) {
@@ -106,28 +106,32 @@ void WordOfTheDayActivity::render() {
 
       if (breakPos == 0) {
         uint8_t firstByte = (uint8_t)remaining[0];
-        if      (firstByte < 0x80) breakPos = 1;
-        else if (firstByte < 0xE0) breakPos = 2;
-        else if (firstByte < 0xF0) breakPos = 3;
-        else                        breakPos = 4;
+        if (firstByte < 0x80)
+          breakPos = 1;
+        else if (firstByte < 0xE0)
+          breakPos = 2;
+        else if (firstByte < 0xF0)
+          breakPos = 3;
+        else
+          breakPos = 4;
         if (breakPos > (int)remaining.length()) breakPos = remaining.length();
       }
-      
+
       String line = remaining.substring(0, breakPos);
       if (y >= 0 && y < height) {
         int lineWidth = renderer.getTextWidth(UI_10_FONT_ID, line.c_str());
         renderer.drawText(UI_10_FONT_ID, (width - lineWidth) / 2, y, line.c_str(), true);
       }
-      
+
       y += renderer.getLineHeight(UI_10_FONT_ID) + 3;
       remaining = remaining.substring(breakPos);
       remaining.trim();
     }
-    
+
     // Example - centered, with spacing
     if (example.length() > 0) {
       y += 15;  // Extra spacing before example
-      
+
       remaining = example;
       while (remaining.length() > 0 && y < height + scrollOffset) {
         int breakPos;
@@ -154,28 +158,32 @@ void WordOfTheDayActivity::render() {
 
         if (breakPos == 0) {
           uint8_t firstByte = (uint8_t)remaining[0];
-          if      (firstByte < 0x80) breakPos = 1;
-          else if (firstByte < 0xE0) breakPos = 2;
-          else if (firstByte < 0xF0) breakPos = 3;
-          else                        breakPos = 4;
+          if (firstByte < 0x80)
+            breakPos = 1;
+          else if (firstByte < 0xE0)
+            breakPos = 2;
+          else if (firstByte < 0xF0)
+            breakPos = 3;
+          else
+            breakPos = 4;
           if (breakPos > (int)remaining.length()) breakPos = remaining.length();
         }
-        
+
         String line = remaining.substring(0, breakPos);
         if (y >= 0 && y < height) {
           int lineWidth = renderer.getTextWidth(UI_10_FONT_ID, line.c_str());
           renderer.drawText(UI_10_FONT_ID, (width - lineWidth) / 2, y, line.c_str(), true);
         }
-        
+
         y += renderer.getLineHeight(UI_10_FONT_ID) + 3;
         remaining = remaining.substring(breakPos);
         remaining.trim();
       }
     }
-    
+
     maxScroll = max(0, y - height + 40);
   }
-  
+
   GUI.drawButtonHints(renderer, tr(STR_BACK), state == LOADING ? "" : fork_tr(STR_ONLINE_REFRESH), "", "");
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }

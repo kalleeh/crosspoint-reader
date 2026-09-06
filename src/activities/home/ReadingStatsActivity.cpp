@@ -87,8 +87,7 @@ void ReadingStatsActivity::render() {
       const uint16_t todayDays = now > 1000000000L ? (uint16_t)(now / 86400) : 0;
       for (int i = 0; i < dayCount; i++) {
         const int agoDays = todayDays >= days[i].daysSinceEpoch ? todayDays - days[i].daysSinceEpoch : 0;
-        snprintf(buf, sizeof(buf), fork_tr(STR_RSTATS_DAY_ROW_FMT), agoDays, days[i].seconds / 60,
-                 days[i].pageTurns);
+        snprintf(buf, sizeof(buf), fork_tr(STR_RSTATS_DAY_ROW_FMT), agoDays, days[i].seconds / 60, days[i].pageTurns);
         renderer.drawText(UI_10_FONT_ID, margin + 10, y, buf, true);
         y += lineStep;
       }

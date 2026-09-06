@@ -1,17 +1,16 @@
-#include "../../DebugConfig.h"
 #include "TicTacToeActivity.h"
 
+#include <ForkI18n.h>
 #include <GfxRenderer.h>
 #include <HalDisplay.h>
-
-#include "../../MappedInputManager.h"
-#include "../../GameConstants.h"
+#include <I18n.h>
 
 #include <algorithm>
 
+#include "../../DebugConfig.h"
+#include "../../GameConstants.h"
+#include "../../MappedInputManager.h"
 #include "components/UITheme.h"
-#include <I18n.h>
-#include <ForkI18n.h>
 
 using namespace GameConstants;
 #include "../../fontIds.h"
@@ -145,12 +144,9 @@ TicTacToeActivity::GameState TicTacToeActivity::checkWinner() {
 
 int TicTacToeActivity::minimax(int depth, bool isMaximizing) {
   GameState state = checkWinner();
-  if (state == AI_WIN)
-    return CHECKMATE_SCORE - depth;
-  if (state == PLAYER_WIN)
-    return depth - CHECKMATE_SCORE;
-  if (state == DRAW)
-    return 0;
+  if (state == AI_WIN) return CHECKMATE_SCORE - depth;
+  if (state == PLAYER_WIN) return depth - CHECKMATE_SCORE;
+  if (state == DRAW) return 0;
 
   if (isMaximizing) {
     int bestScore = -1000;
@@ -273,7 +269,8 @@ void TicTacToeActivity::render() {
 
   // Button hints
   const char* confirmText = gameState == PLAYING ? fork_tr(STR_GAME_PLACE) : fork_tr(STR_GAME_RESTART);
-  const auto labels = mappedInput.mapLabels(tr(STR_BACK), confirmText, fork_tr(STR_TICTACTOE_MOVE), fork_tr(STR_TICTACTOE_MOVE));
+  const auto labels =
+      mappedInput.mapLabels(tr(STR_BACK), confirmText, fork_tr(STR_TICTACTOE_MOVE), fork_tr(STR_TICTACTOE_MOVE));
   GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 
   // Battery

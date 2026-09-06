@@ -1,6 +1,8 @@
 #include "QuizStatsManager.h"
+
 #include <HalStorage.h>
 #include <time.h>
+
 #include <algorithm>
 
 QuizStatsManager& QuizStatsManager::getInstance() {
@@ -8,33 +10,33 @@ QuizStatsManager& QuizStatsManager::getInstance() {
   return instance;
 }
 
-void QuizStatsManager::saveQuizResult(const char* certId, const char* mode, uint8_t score, 
-                                      uint8_t total, const std::vector<DomainScore>& domainScores) {
+void QuizStatsManager::saveQuizResult(const char* certId, const char* mode, uint8_t score, uint8_t total,
+                                      const std::vector<DomainScore>& domainScores) {
   // Input validation
   if (!certId || !mode || strlen(certId) == 0 || strlen(mode) == 0) {
     Serial.println("[QuizStats] Invalid parameters - certId or mode is null/empty");
     return;
   }
-  
+
   if (total == 0) {
     Serial.println("[QuizStats] Invalid parameters - total questions is 0");
     return;
   }
-  
+
   if (score > total) {
     Serial.printf("[QuizStats] Invalid parameters - score (%d) > total (%d)\n", score, total);
     return;
   }
-  
+
   if (!loaded) loadStats();
-  
+
   // Add new result
   QuizResult result;
   strncpy(result.certId, certId, sizeof(result.certId) - 1);
   result.certId[sizeof(result.certId) - 1] = '\0';  // Ensure null termination
   strncpy(result.mode, mode, sizeof(result.mode) - 1);
   result.mode[sizeof(result.mode) - 1] = '\0';  // Ensure null termination
-  
+
   time_t now = time(nullptr);
   if (now == (time_t)-1) {
     Serial.println("[QuizStats] Time error, using 0");
@@ -43,14 +45,14 @@ void QuizStatsManager::saveQuizResult(const char* certId, const char* mode, uint
   result.timestamp = now;
   result.score = score;
   result.total = total;
-  
+
   results.push_back(result);
-  
+
   // Keep only last 50 results
   while (results.size() > 50) {
     results.erase(results.begin());
   }
-  
+
   // Update domain stats (cap at 100 entries to bound memory usage)
   for (const auto& ds : domainScores) {
     String key = String(certId) + ":" + String(ds.domain);
@@ -165,44 +167,56 @@ void QuizStatsManager::loadStats() {
 
   // Read per-cert lastPracticeDate map
   int certDateCount;
-  if (file.read((uint8_t*)&certDateCount, sizeof(certDateCount)) != sizeof(certDateCount)
-      || certDateCount < 0 || certDateCount > 200) {
-    file.close(); loaded = true; return;
+  if (file.read((uint8_t*)&certDateCount, sizeof(certDateCount)) != sizeof(certDateCount) || certDateCount < 0 ||
+      certDateCount > 200) {
+    file.close();
+    loaded = true;
+    return;
   }
   for (int i = 0; i < certDateCount; i++) {
     char certKey[32] = {};
     uint32_t dateVal = 0;
     if (file.read((uint8_t*)certKey, sizeof(certKey)) != sizeof(certKey)) {
-      file.close(); loaded = true; return;
+      file.close();
+      loaded = true;
+      return;
     }
     certKey[31] = '\0';
     if (file.read((uint8_t*)&dateVal, sizeof(dateVal)) != sizeof(dateVal)) {
-      file.close(); loaded = true; return;
+      file.close();
+      loaded = true;
+      return;
     }
     lastPracticeDateByCert[String(certKey)] = dateVal;
   }
 
   // Read results count
   int resultCount;
-  if (file.read((uint8_t*)&resultCount, sizeof(resultCount)) != sizeof(resultCount)
-      || resultCount < 0 || resultCount > 50) {
-    file.close(); loaded = true; return;
+  if (file.read((uint8_t*)&resultCount, sizeof(resultCount)) != sizeof(resultCount) || resultCount < 0 ||
+      resultCount > 50) {
+    file.close();
+    loaded = true;
+    return;
   }
 
   // Read results
   for (int i = 0; i < resultCount; i++) {
     QuizResult result;
     if (file.read((uint8_t*)&result, sizeof(result)) != sizeof(result)) {
-      file.close(); loaded = true; return;
+      file.close();
+      loaded = true;
+      return;
     }
     results.push_back(result);
   }
 
   // Read domain stats count
   int domainCount;
-  if (file.read((uint8_t*)&domainCount, sizeof(domainCount)) != sizeof(domainCount)
-      || domainCount < 0 || domainCount > 100) {
-    file.close(); loaded = true; return;
+  if (file.read((uint8_t*)&domainCount, sizeof(domainCount)) != sizeof(domainCount) || domainCount < 0 ||
+      domainCount > 100) {
+    file.close();
+    loaded = true;
+    return;
   }
 
   // Read domain stats
@@ -210,11 +224,15 @@ void QuizStatsManager::loadStats() {
     char key[96];
     DomainScore ds;
     if (file.read((uint8_t*)key, sizeof(key)) != sizeof(key)) {
-      file.close(); loaded = true; return;
+      file.close();
+      loaded = true;
+      return;
     }
     key[95] = '\0';
     if (file.read((uint8_t*)&ds, sizeof(ds)) != sizeof(ds)) {
-      file.close(); loaded = true; return;
+      file.close();
+      loaded = true;
+      return;
     }
     domainStats[String(key)] = ds;
   }
@@ -313,9 +331,8 @@ int QuizStatsManager::calculateStreak(const char* certId) {
   if (filtered.empty()) return 0;
 
   // Sort oldest→newest so the streak walk is correct regardless of insertion order
-  std::sort(filtered.begin(), filtered.end(), [](const QuizResult* a, const QuizResult* b) {
-    return a->timestamp < b->timestamp;
-  });
+  std::sort(filtered.begin(), filtered.end(),
+            [](const QuizResult* a, const QuizResult* b) { return a->timestamp < b->timestamp; });
 
   time_t now = time(nullptr);
   if (now <= 0) return 0;  // clock not set — don't guess streak

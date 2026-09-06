@@ -1,16 +1,18 @@
-#include "../../DebugConfig.h"
 #include "HistoryTodayActivity.h"
-#include <HTTPClient.h>
-#include <WiFi.h>
+
 #include <ArduinoJson.h>
-#include <time.h>
-#include <HalDisplay.h>
+#include <ForkI18n.h>
 #include <GfxRenderer.h>
+#include <HTTPClient.h>
+#include <HalDisplay.h>
 #include <HalStorage.h>
+#include <I18n.h>
+#include <WiFi.h>
+#include <time.h>
+
+#include "../../DebugConfig.h"
 #include "../../MappedInputManager.h"
 #include "../../fontIds.h"
-#include <I18n.h>
-#include <ForkI18n.h>
 #include "OnlineContentFetcher.h"
 #include "components/UITheme.h"
 
@@ -41,14 +43,12 @@ void HistoryTodayActivity::onEnter() {
   }
 }
 
-void HistoryTodayActivity::onExit() {
-  WiFi.mode(WIFI_OFF);
-}
+void HistoryTodayActivity::onExit() { WiFi.mode(WIFI_OFF); }
 
 void HistoryTodayActivity::fetchEvents() {
   state = LOADING;
   render();
-  
+
   if (WiFi.status() != WL_CONNECTED) {
     state = ERROR;
     render();
@@ -76,11 +76,11 @@ void HistoryTodayActivity::fetchEvents() {
   struct tm* timeinfo = localtime(&now);
   int month = timeinfo->tm_mon + 1;
   int day = timeinfo->tm_mday;
-  
+
   char dateStr[32];
   snprintf(dateStr, sizeof(dateStr), "%d/%d", month, day);
   date = String(dateStr);
-  
+
   char url[128];
   snprintf(url, sizeof(url), "https://en.wikipedia.org/api/rest_v1/feed/onthisday/events/%d/%d", month, day);
 
@@ -125,8 +125,11 @@ void HistoryTodayActivity::fetchEvents() {
     unsigned long downloadStart = millis();
     unsigned long lastByteTime = millis();
     while (httpClient.connected() && (contentLength < 0 || downloaded < contentLength)) {
-      if (millis() - downloadStart > 20000) break;                     // 20-second wall-clock cap
-      if (millis() - lastByteTime > 4000) { stalled = true; break; }    // stream went quiet
+      if (millis() - downloadStart > 20000) break;  // 20-second wall-clock cap
+      if (millis() - lastByteTime > 4000) {
+        stalled = true;
+        break;
+      }  // stream went quiet
       int avail = stream->available();
       if (avail > 0) {
         if (avail > (int)sizeof(buffer)) avail = sizeof(buffer);
@@ -224,11 +227,11 @@ void HistoryTodayActivity::fetchEvents() {
 
 void HistoryTodayActivity::render() {
   renderer.clearScreen();
-  
+
   const int width = renderer.getScreenWidth();
   const int height = renderer.getScreenHeight();
   const int margin = 20;
-  
+
   if (state == LOADING) {
     const char* msg = fork_tr(STR_ONLINE_LOADING);
     int textWidth = renderer.getTextWidth(UI_10_FONT_ID, msg);
@@ -239,29 +242,29 @@ void HistoryTodayActivity::render() {
     renderer.drawText(UI_10_FONT_ID, (width - textWidth) / 2, height / 2, msg, true);
   } else {
     int y = margin - scrollOffset;
-    
+
     // Title with date - centered
     String title = String(fork_tr(STR_HISTORY_TITLE));
     int titleWidth = renderer.getTextWidth(UI_12_FONT_ID, title.c_str());
     renderer.drawText(UI_12_FONT_ID, (width - titleWidth) / 2, y, title.c_str(), true);
     y += renderer.getLineHeight(UI_12_FONT_ID) + 5;
-    
+
     // Date - centered
     int dateWidth = renderer.getTextWidth(UI_10_FONT_ID, date.c_str());
     renderer.drawText(UI_10_FONT_ID, (width - dateWidth) / 2, y, date.c_str(), true);
     y += renderer.getLineHeight(UI_10_FONT_ID) + 20;
-    
+
     // Events with bullet points
     const int maxWidth = width - 2 * margin - 15;  // Space for bullet
-    
+
     for (const String& event : events) {
       // Draw bullet
       if (y >= 0 && y < height) {
         renderer.drawText(UI_10_FONT_ID, margin, y, "•", true);
       }
-      
+
       String remaining = event;
-      
+
       while (remaining.length() > 0 && y < height + scrollOffset) {
         int breakPos;
         if (renderer.getTextWidth(UI_10_FONT_ID, remaining.c_str()) <= maxWidth) {
@@ -287,30 +290,34 @@ void HistoryTodayActivity::render() {
 
         if (breakPos == 0) {
           uint8_t firstByte = (uint8_t)remaining[0];
-          if      (firstByte < 0x80) breakPos = 1;
-          else if (firstByte < 0xE0) breakPos = 2;
-          else if (firstByte < 0xF0) breakPos = 3;
-          else                        breakPos = 4;
+          if (firstByte < 0x80)
+            breakPos = 1;
+          else if (firstByte < 0xE0)
+            breakPos = 2;
+          else if (firstByte < 0xF0)
+            breakPos = 3;
+          else
+            breakPos = 4;
           if (breakPos > (int)remaining.length()) breakPos = remaining.length();
         }
-        
+
         String line = remaining.substring(0, breakPos);
         if (y >= 0 && y < height) {
           int xPos = margin + 15;
           renderer.drawText(UI_10_FONT_ID, xPos, y, line.c_str(), true);
         }
-        
+
         y += renderer.getLineHeight(UI_10_FONT_ID) + 2;
         remaining = remaining.substring(breakPos);
         remaining.trim();
       }
-      
-      y += 12; // Space between events
+
+      y += 12;  // Space between events
     }
-    
+
     maxScroll = max(0, y - height + margin);
   }
-  
+
   GUI.drawButtonHints(renderer, tr(STR_BACK), state == LOADING ? "" : fork_tr(STR_ONLINE_REFRESH), "", "");
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }

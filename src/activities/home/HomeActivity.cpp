@@ -1,10 +1,8 @@
 #include "HomeActivity.h"
-#include <ForkI18n.h>  // FORK: Apps menu label
-
-#include "customNavigation.h"  // FORK: onGoToApps()
 
 #include <Bitmap.h>
 #include <Epub.h>
+#include <ForkI18n.h>  // FORK: Apps menu label
 #include <FsHelpers.h>
 #include <GfxRenderer.h>
 #include <HalDisplay.h>
@@ -23,6 +21,7 @@
 #include "OpdsServerStore.h"
 #include "RecentBooksStore.h"
 #include "components/UITheme.h"
+#include "customNavigation.h"  // FORK: onGoToApps()
 #include "fontIds.h"
 
 int HomeActivity::getMenuItemCount() const {

@@ -1,64 +1,65 @@
-#include "components/UITheme.h"
-#include "../../DebugConfig.h"
 #include "AWSPracticeModeActivity.h"
-#include "../../fontIds.h"
+
+#include <ArduinoJson.h>
+#include <ForkI18n.h>
 #include <HalDisplay.h>
 #include <HalStorage.h>
-#include <ArduinoJson.h>
 #include <I18n.h>
-#include <ForkI18n.h>
+
 #include <algorithm>
 
-void AWSPracticeModeActivity::onEnter() {
-  render();
-}
+#include "../../DebugConfig.h"
+#include "../../fontIds.h"
+#include "components/UITheme.h"
+
+void AWSPracticeModeActivity::onEnter() { render(); }
 
 void AWSPracticeModeActivity::render() {
   renderer.clearScreen();
-  
+
   const int margin = 20;
   const int width = renderer.getScreenWidth();
   const int height = renderer.getScreenHeight();
-  
+
   // Title
   int y = margin;
   renderer.drawText(UI_12_FONT_ID, margin, y, fork_tr(STR_AWS_SELECT_MODE), true);
   y += renderer.getLineHeight(UI_12_FONT_ID) + 10;
-  
+
   renderer.drawLine(margin, y, width - margin, y);
   y += 20;
-  
+
   // Calculate item heights dynamically
   std::vector<int> itemHeights;
   for (const auto& mode : modes) {
-    int itemHeight = 10;  // Top padding
+    int itemHeight = 10;                                  // Top padding
     itemHeight += renderer.getLineHeight(UI_10_FONT_ID);  // Name
-    itemHeight += 5;  // Spacing
+    itemHeight += 5;                                      // Spacing
     itemHeight += renderer.getLineHeight(UI_10_FONT_ID);  // Description
-    itemHeight += 10;  // Bottom padding
+    itemHeight += 10;                                     // Bottom padding
     itemHeights.push_back(itemHeight);
   }
-  
+
   // Draw mode options
   for (int i = 0; i < modes.size() && y < height - 60; i++) {
     bool isSelected = (i == selectedIndex);
     int itemHeight = itemHeights[i];
-    
+
     if (isSelected) {
       renderer.fillRect(margin, y, width - 2 * margin, itemHeight);
     }
-    
+
     // Mode name
     int textY = y + 10;
     renderer.drawText(UI_10_FONT_ID, margin + 10, textY, modes[i].name, !isSelected);
-    
+
     // Description
     textY += renderer.getLineHeight(UI_10_FONT_ID) + 5;
     renderer.drawText(UI_10_FONT_ID, margin + 10, textY, modes[i].description, !isSelected);
-    
+
     y += itemHeight;
   }
-  
+
   if (statusMessage.length() > 0) {
     renderer.drawText(UI_10_FONT_ID, margin, height - 60, statusMessage.c_str(), true);
   }
@@ -69,20 +70,20 @@ void AWSPracticeModeActivity::render() {
 
 void AWSPracticeModeActivity::renderDomainSelect() {
   renderer.clearScreen();
-  
+
   const int margin = 20;
   const int lineHeight = 35;
   const int width = renderer.getScreenWidth();
   const int height = renderer.getScreenHeight();
-  
+
   // Title
   int y = margin;
   renderer.drawText(UI_12_FONT_ID, margin, y, fork_tr(STR_AWS_SELECT_DOMAIN), true);
   y += renderer.getLineHeight(UI_12_FONT_ID) + 10;
-  
+
   renderer.drawLine(margin, y, width - margin, y);
   y += 20;
-  
+
   // Ensure selected item is visible
   const int visibleItems = (height - y - 60) / lineHeight;
   if (selectedIndex < scrollOffset) {
@@ -90,7 +91,7 @@ void AWSPracticeModeActivity::renderDomainSelect() {
   } else if (selectedIndex >= scrollOffset + visibleItems) {
     scrollOffset = selectedIndex - visibleItems + 1;
   }
-  
+
   if (domains.empty()) {
     renderer.drawText(UI_10_FONT_ID, margin + 10, y, fork_tr(STR_AWS_NO_DOMAINS), true);
   } else {
@@ -138,7 +139,10 @@ void AWSPracticeModeActivity::loadDomains() {
     if (strstr(searchBuf, "\"questions\"") != NULL) {
       while (file.available()) {
         c = file.read();
-        if (c == '[') { foundArray = true; break; }
+        if (c == '[') {
+          foundArray = true;
+          break;
+        }
         if (c == '{' || c == '}') break;
       }
     }
@@ -152,7 +156,10 @@ void AWSPracticeModeActivity::loadDomains() {
   // Stream-parse each question object with ArduinoJson to extract "domain" field
   static constexpr size_t DOMAIN_BUF_SIZE = 1536;
   char* buffer = (char*)malloc(DOMAIN_BUF_SIZE);
-  if (!buffer) { file.close(); return; }
+  if (!buffer) {
+    file.close();
+    return;
+  }
 
   int bufferPos = 0;
   int braceDepth = 0;
@@ -162,7 +169,10 @@ void AWSPracticeModeActivity::loadDomains() {
     char c = file.read();
 
     if (c == '{') {
-      if (braceDepth == 0) { bufferPos = 0; bufferTruncated = false; }
+      if (braceDepth == 0) {
+        bufferPos = 0;
+        bufferTruncated = false;
+      }
       braceDepth++;
     }
 
@@ -184,7 +194,10 @@ void AWSPracticeModeActivity::loadDomains() {
           // Case-insensitive dedup: keep first-seen casing, skip if same name in different case
           bool found = false;
           for (const auto& d : domains) {
-            if (strcasecmp(d.c_str(), domain) == 0) { found = true; break; }
+            if (strcasecmp(d.c_str(), domain) == 0) {
+              found = true;
+              break;
+            }
           }
           if (!found) domains.push_back(String(domain));
         }
@@ -218,7 +231,7 @@ void AWSPracticeModeActivity::loop() {
       }
     } else if (mappedInput.wasPressed(MappedInputManager::Button::Confirm)) {
       const char* modeId = modes[selectedIndex].id;
-      
+
       if (strcmp(modeId, "domain") == 0) {
         // Load domains and show domain selection
         loadDomains();

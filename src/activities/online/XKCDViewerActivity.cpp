@@ -1,28 +1,31 @@
-#include "components/UITheme.h"
-#include "../../DebugConfig.h"
 #include "XKCDViewerActivity.h"
-#include <HTTPClient.h>
-#include <WiFi.h>
+
 #include <ArduinoJson.h>
-#include <HalDisplay.h>
-#include <GfxRenderer.h>
-#include <HalStorage.h>
 #include <Bitmap.h>
-#include <PngToBmpConverter.h>
+#include <ForkI18n.h>
+#include <GfxRenderer.h>
+#include <HTTPClient.h>
+#include <HalDisplay.h>
+#include <HalStorage.h>
+#include <I18n.h>
 #include <Memory.h>
+#include <PngToBmpConverter.h>
+#include <WiFi.h>
+
 #include <algorithm>
 #include <cstring>
+
+#include "../../DebugConfig.h"
 #include "../../MappedInputManager.h"
 #include "../../fontIds.h"
-#include <I18n.h>
-#include <ForkI18n.h>
 #include "OnlineContentFetcher.h"
+#include "components/UITheme.h"
 
 void XKCDViewerActivity::onEnter() {
   Activity::onEnter();
   // Connect using CrossPoint's saved WiFi credentials
   if (OnlineContentFetcher::ensureWiFi(&mappedInput) && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
-    fetchComic(); // Fetch latest
+    fetchComic();  // Fetch latest
   } else {
     state = ERROR;
     render();
@@ -70,7 +73,7 @@ void XKCDViewerActivity::applyOrientationForImage(const char* pngPath) {
   // vertically), so only switch to landscape when it's a clear win.
   const int panelW = renderer.getScreenWidth();   // native portrait width
   const int panelH = renderer.getScreenHeight();  // native portrait height
-  constexpr int kChromeMargin = 100;  // approximate space used by title/hints in either orientation
+  constexpr int kChromeMargin = 100;              // approximate space used by title/hints in either orientation
 
   const float portraitScale =
       std::min(static_cast<float>(panelW - 40) / imgWidth, static_cast<float>(panelH - kChromeMargin) / imgHeight);
@@ -119,9 +122,7 @@ void XKCDViewerActivity::fetchComic(int num) {
     String payload = http.getString();
     JsonDocument doc;
 
-    if (deserializeJson(doc, payload) == DeserializationError::Ok &&
-        !doc["num"].isNull() &&
-        !doc["img"].isNull()) {
+    if (deserializeJson(doc, payload) == DeserializationError::Ok && !doc["num"].isNull() && !doc["img"].isNull()) {
       currentComic = doc["num"].as<int>();
       title = doc["title"].as<String>();
       alt = doc["alt"].as<String>();
@@ -194,9 +195,9 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
     http.end();
     renderer.drawCenteredText(UI_10_FONT_ID, height / 2, fork_tr(STR_ONLINE_FAILED_LOAD), true);
 
-    const auto labels = mappedInput.mapLabels(tr(STR_BACK), fork_tr(STR_BTN_RANDOM),
-                                              currentComic > 1 ? fork_tr(STR_BTN_PREV) : "",
-                                              currentComic < maxComic ? tr(STR_NEXT_FIELD) : "");
+    const auto labels =
+        mappedInput.mapLabels(tr(STR_BACK), fork_tr(STR_BTN_RANDOM), currentComic > 1 ? fork_tr(STR_BTN_PREV) : "",
+                              currentComic < maxComic ? tr(STR_NEXT_FIELD) : "");
     GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 
     renderer.displayBuffer(HalDisplay::FAST_REFRESH);
@@ -228,8 +229,11 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
     unsigned long downloadStart = millis();
     unsigned long lastByteTime = millis();
     while (httpClient.connected() && (contentLength < 0 || downloaded < contentLength)) {
-      if (millis() - downloadStart > 20000) break;       // 20-second wall-clock cap
-      if (millis() - lastByteTime > 4000) { stalled = true; break; }  // stream went quiet
+      if (millis() - downloadStart > 20000) break;  // 20-second wall-clock cap
+      if (millis() - lastByteTime > 4000) {
+        stalled = true;
+        break;
+      }  // stream went quiet
       int avail = stream->available();
       if (avail > 0) {
         if (avail > (int)sizeof(buffer)) avail = sizeof(buffer);
@@ -295,9 +299,9 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
   if (!ok) {
     Storage.remove("/.crosspoint/xkcd_temp.png");
     renderer.drawCenteredText(UI_10_FONT_ID, height / 2, fork_tr(STR_ONLINE_FAILED_LOAD), true);
-    const auto labels = mappedInput.mapLabels(tr(STR_BACK), fork_tr(STR_BTN_RANDOM),
-                                              currentComic > 1 ? fork_tr(STR_BTN_PREV) : "",
-                                              currentComic < maxComic ? tr(STR_NEXT_FIELD) : "");
+    const auto labels =
+        mappedInput.mapLabels(tr(STR_BACK), fork_tr(STR_BTN_RANDOM), currentComic > 1 ? fork_tr(STR_BTN_PREV) : "",
+                              currentComic < maxComic ? tr(STR_NEXT_FIELD) : "");
     GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
     renderer.displayBuffer(HalDisplay::FAST_REFRESH);
     return;
@@ -362,9 +366,9 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
     renderer.drawCenteredText(UI_10_FONT_ID, height / 2, fork_tr(STR_ONLINE_FAILED_LOAD), true);
   }
 
-  const auto labels = mappedInput.mapLabels(tr(STR_BACK), fork_tr(STR_BTN_RANDOM),
-                                            currentComic > 1 ? fork_tr(STR_BTN_PREV) : "",
-                                            currentComic < maxComic ? tr(STR_NEXT_FIELD) : "");
+  const auto labels =
+      mappedInput.mapLabels(tr(STR_BACK), fork_tr(STR_BTN_RANDOM), currentComic > 1 ? fork_tr(STR_BTN_PREV) : "",
+                            currentComic < maxComic ? tr(STR_NEXT_FIELD) : "");
   GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 
   // Display the complete buffer (title + image + menu)
@@ -418,7 +422,7 @@ void XKCDViewerActivity::render() {
     // above wipes any previously-drawn pixels.
     if (imageLoaded) {
       drawCachedComicImage();
-      y = height - 150; // Position alt text at bottom
+      y = height - 150;  // Position alt text at bottom
     } else {
       const char* note = fork_tr(STR_ONLINE_IMAGE_LOADING);
       renderer.drawText(UI_10_FONT_ID, margin, y, note, true);
@@ -457,10 +461,14 @@ void XKCDViewerActivity::render() {
       if (breakPos == 0) {
         // Advance past the complete UTF-8 codepoint to avoid splitting multi-byte sequences
         uint8_t firstByte = (uint8_t)remaining[0];
-        if      (firstByte < 0x80) breakPos = 1;  // ASCII
-        else if (firstByte < 0xE0) breakPos = 2;  // 2-byte lead
-        else if (firstByte < 0xF0) breakPos = 3;  // 3-byte lead
-        else                        breakPos = 4;  // 4-byte lead
+        if (firstByte < 0x80)
+          breakPos = 1;  // ASCII
+        else if (firstByte < 0xE0)
+          breakPos = 2;  // 2-byte lead
+        else if (firstByte < 0xF0)
+          breakPos = 3;  // 3-byte lead
+        else
+          breakPos = 4;  // 4-byte lead
         if (breakPos > (int)remaining.length()) breakPos = remaining.length();
       }
 
@@ -490,9 +498,9 @@ void XKCDViewerActivity::render() {
   // Back is always labeled, not just once content has loaded. Routed through
   // mapLabels() (not raw drawButtonHints slots) so labels track the user's
   // front-button remapping and orientation, matching the rest of the codebase.
-  const auto labels = mappedInput.mapLabels(tr(STR_BACK), fork_tr(STR_BTN_RANDOM),
-                                            currentComic > 1 ? fork_tr(STR_BTN_PREV) : "",
-                                            currentComic < maxComic ? tr(STR_NEXT_FIELD) : "");
+  const auto labels =
+      mappedInput.mapLabels(tr(STR_BACK), fork_tr(STR_BTN_RANDOM), currentComic > 1 ? fork_tr(STR_BTN_PREV) : "",
+                            currentComic < maxComic ? tr(STR_NEXT_FIELD) : "");
   GUI.drawButtonHints(renderer, labels.btn1, labels.btn2, labels.btn3, labels.btn4);
 
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);

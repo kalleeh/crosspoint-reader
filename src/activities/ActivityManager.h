@@ -17,7 +17,8 @@
 class Activity;    // forward declaration
 class RenderLock;  // forward declaration
 
-enum class HomeMenuItem { NONE, FILE_BROWSER, RECENTS, OPDS_BROWSER, FILE_TRANSFER, APPS, SETTINGS_MENU };  // FORK: APPS
+// FORK: APPS added (Apps hub: games / online / learning)
+enum class HomeMenuItem { NONE, FILE_BROWSER, RECENTS, OPDS_BROWSER, FILE_TRANSFER, APPS, SETTINGS_MENU };
 
 /**
  * ActivityManager

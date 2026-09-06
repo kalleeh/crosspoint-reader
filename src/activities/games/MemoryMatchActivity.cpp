@@ -1,16 +1,15 @@
-#include "../../DebugConfig.h"
 #include "MemoryMatchActivity.h"
 
 #include <Arduino.h>
+#include <ForkI18n.h>
 #include <GfxRenderer.h>
 #include <HalDisplay.h>
-
-#include "../../MappedInputManager.h"
-
-#include "components/UITheme.h"
-#include "../../fontIds.h"
 #include <I18n.h>
-#include <ForkI18n.h>
+
+#include "../../DebugConfig.h"
+#include "../../MappedInputManager.h"
+#include "../../fontIds.h"
+#include "components/UITheme.h"
 
 void MemoryMatchActivity::onEnter() {
   GameActivity::onEnter();
@@ -167,11 +166,11 @@ void MemoryMatchActivity::render() {
   const int availableHeight = screenHeight - topMargin - bottomMargin;
   const int availableWidth = screenWidth - 40;
   const int margin = 10;
-  
+
   const int cellSizeByWidth = (availableWidth - (GRID_COLS - 1) * margin) / GRID_COLS;
   const int cellSizeByHeight = (availableHeight - (GRID_ROWS - 1) * margin) / GRID_ROWS;
   const int cellSize = (cellSizeByWidth < cellSizeByHeight) ? cellSizeByWidth : cellSizeByHeight;
-  
+
   const int gridWidth = GRID_COLS * cellSize + (GRID_COLS - 1) * margin;
   const int gridHeight = GRID_ROWS * cellSize + (GRID_ROWS - 1) * margin;
   const int gridX = (screenWidth - gridWidth) / 2;
@@ -192,7 +191,7 @@ void MemoryMatchActivity::render() {
         // Matched - show as empty with light border
         renderer.drawRect(x, y, cellSize, cellSize);
         renderer.drawRect(x + 1, y + 1, cellSize - 2, cellSize - 2);
-        
+
         // Draw selection highlight on matched cards (inverted - black on white)
         if (selected) {
           renderer.fillRect(x + 3, y + 3, cellSize - 6, cellSize - 6);
@@ -209,29 +208,31 @@ void MemoryMatchActivity::render() {
         const int textX = x + (cellSize - textWidth) / 2;
         const int textY = y + (cellSize - renderer.getLineHeight(UI_12_FONT_ID)) / 2;
         renderer.drawText(UI_12_FONT_ID, textX, textY, symbol, false);
-        
+
         // Add decorative pattern based on value
         const int centerX = x + cellSize / 2;
         const int centerY = y + cellSize / 2 + 15;
         const int shapeSize = cellSize / 5;
-        
+
         switch (card.value % 4) {
-          case 0: // Small square
+          case 0:  // Small square
             renderer.fillRect(centerX - shapeSize, centerY - shapeSize, shapeSize * 2, shapeSize * 2, false);
             break;
-          case 1: // Horizontal lines
+          case 1:  // Horizontal lines
             renderer.drawLine(x + 10, centerY - 5, x + cellSize - 10, centerY - 5, false);
             renderer.drawLine(x + 10, centerY, x + cellSize - 10, centerY, false);
             renderer.drawLine(x + 10, centerY + 5, x + cellSize - 10, centerY + 5, false);
             break;
-          case 2: // Vertical lines
+          case 2:  // Vertical lines
             renderer.drawLine(centerX - 5, y + 10, centerX - 5, y + cellSize - 10, false);
             renderer.drawLine(centerX, y + 10, centerX, y + cellSize - 10, false);
             renderer.drawLine(centerX + 5, y + 10, centerX + 5, y + cellSize - 10, false);
             break;
-          case 3: // Cross
-            renderer.drawLine(centerX - shapeSize, centerY - shapeSize, centerX + shapeSize, centerY + shapeSize, false);
-            renderer.drawLine(centerX + shapeSize, centerY - shapeSize, centerX - shapeSize, centerY + shapeSize, false);
+          case 3:  // Cross
+            renderer.drawLine(centerX - shapeSize, centerY - shapeSize, centerX + shapeSize, centerY + shapeSize,
+                              false);
+            renderer.drawLine(centerX + shapeSize, centerY - shapeSize, centerX - shapeSize, centerY + shapeSize,
+                              false);
             break;
         }
       } else {

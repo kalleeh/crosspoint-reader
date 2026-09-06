@@ -7,14 +7,14 @@
 
 #include "MappedInputManager.h"
 #include "activities/ActivityManager.h"
-#include "activities/home/AppsMenuActivity.h"
-#include "activities/home/ReadingStatsActivity.h"
 #include "activities/games/ChessActivity.h"
 #include "activities/games/Game2048Activity.h"
 #include "activities/games/GamesMenuActivity.h"
 #include "activities/games/MemoryMatchActivity.h"
 #include "activities/games/SnakeActivity.h"
 #include "activities/games/TicTacToeActivity.h"
+#include "activities/home/AppsMenuActivity.h"
+#include "activities/home/ReadingStatsActivity.h"
 #include "activities/learning/AWSCertMenuActivity.h"
 #include "activities/learning/AWSCertQuizActivity.h"
 #include "activities/learning/AWSPracticeModeActivity.h"
@@ -98,7 +98,8 @@ void onGoToWeather() {
 }
 
 void onGoToWikipedia() {
-  activityManager.replaceActivity(std::make_unique<WikipediaRandomActivity>(renderer, mappedInputManager, onGoToOnline));
+  activityManager.replaceActivity(
+      std::make_unique<WikipediaRandomActivity>(renderer, mappedInputManager, onGoToOnline));
 }
 
 void onGoToWordOfDay() {
@@ -124,13 +125,14 @@ void onGoToAWSPracticeMode(const char* certId) {
 
   activityManager.replaceActivity(std::make_unique<AWSPracticeModeActivity>(
       renderer, mappedInputManager, onGoToAWSCert,
-      [](const char* mode, const char* domain) { onStartAWSQuiz(awsCertId.c_str(), mode, domain); }, awsCertId.c_str()));
+      [](const char* mode, const char* domain) { onStartAWSQuiz(awsCertId.c_str(), mode, domain); },
+      awsCertId.c_str()));
 }
 
 void onStartAWSQuiz(const char* certId, const char* mode, const char* domain) {
   // Copy all three strings before the owning activity is replaced/deleted
   if (certId) awsCertId = certId;
-  if (mode)   awsMode   = mode;
+  if (mode) awsMode = mode;
   if (domain) awsDomain = domain;
 
   activityManager.replaceActivity(std::make_unique<AWSCertQuizActivity>(

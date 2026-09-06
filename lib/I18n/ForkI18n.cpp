@@ -1,4 +1,5 @@
 #include "ForkI18n.h"
+
 #include "ForkI18nStrings.h"
 #include "I18n.h"
 
@@ -21,8 +22,7 @@ static const char* const* const FORK_LANG_ARRAYS[] = {
     FORK_STRINGS_BE,  // Language::BELARUSIAN
 };
 
-static constexpr int FORK_LANG_COUNT =
-    static_cast<int>(sizeof(FORK_LANG_ARRAYS) / sizeof(FORK_LANG_ARRAYS[0]));
+static constexpr int FORK_LANG_COUNT = static_cast<int>(sizeof(FORK_LANG_ARRAYS) / sizeof(FORK_LANG_ARRAYS[0]));
 
 ForkI18n& ForkI18n::getInstance() {
   static ForkI18n instance;
