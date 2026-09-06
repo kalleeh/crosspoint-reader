@@ -265,7 +265,11 @@ inline String stripWikitext(String text) {
     const String& name = parts[0];
     String repl;
     if (name == "m" || name == "l" || name == "mention" || name == "link" || name == "m+" || name == "ll") {
-      if (count >= 3) repl = parts[2];
+      if (count >= 3) {
+        repl = parts[2];
+        const int hash = repl.indexOf('#');  // term#Section anchors are not part of the word
+        if (hash >= 0) repl = repl.substring(0, hash);
+      }
     } else if (name == "lb" || name == "label" || name == "lbl") {
       for (int i = 2; i < count; i++) repl += (i > 2 ? ", " : "(") + parts[i];
       if (count > 2) repl += ")";
