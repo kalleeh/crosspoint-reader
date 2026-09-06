@@ -4,9 +4,9 @@
 #include <string>
 #include <vector>
 
-#include "../Activity.h"
+#include "../UiListActivity.h"
 
-class OnlineMenuActivity final : public Activity {
+class OnlineMenuActivity final : public UiListActivity {
  private:
   struct MenuItem {
     std::string name;
@@ -15,20 +15,24 @@ class OnlineMenuActivity final : public Activity {
   };
 
   std::vector<MenuItem> menuItems;
-  int selectedIndex;
+  // Row buffer aliasing menuItems[i].displayName; built once in onEnter (items
+  // are all registered before the activity is entered).
+  std::vector<freeink::ui::ListItem> rowItems;
   const std::function<void()> onBack;
 
-  void render();
+  int listCount() const override { return static_cast<int>(menuItems.size()); }
+  void buildScreen(UiScreen& screen) override;
+  void activateIndex(int index) override;
+  bool handleButtons() override;
+  const char* headerTitle() const override;
 
  public:
   explicit OnlineMenuActivity(GfxRenderer& renderer, MappedInputManager& mappedInput,
-                               const std::function<void()>& onBack)
-      : Activity("Online", renderer, mappedInput), onBack(onBack), selectedIndex(0) {}
+                              const std::function<void()>& onBack)
+      : UiListActivity("Online", renderer, mappedInput), onBack(onBack) {}
 
-  void registerItem(const std::string& name, const std::string& displayName,
-                    const std::function<void()>& onSelect);
+  void registerItem(const std::string& name, const std::string& displayName, const std::function<void()>& onSelect);
 
   void onEnter() override;
   void onExit() override;
-  void loop() override;
 };

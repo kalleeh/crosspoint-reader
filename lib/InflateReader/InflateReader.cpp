@@ -4,7 +4,7 @@
 #include <type_traits>
 
 namespace {
-constexpr size_t INFLATE_DICT_SIZE = 32768;
+constexpr size_t INFLATE_DICT_SIZE = InflateReader::RING_BYTES;
 }
 
 // Guarantee the cast pattern in the header comment is valid.
@@ -13,18 +13,13 @@ static_assert(std::is_standard_layout<InflateReader>::value,
 
 InflateReader::~InflateReader() { deinit(); }
 
-bool InflateReader::init(const bool streaming, uint8_t* externalRingBuffer) {
+bool InflateReader::init(const bool streaming) {
   deinit();  // free any previously allocated ring buffer and reset state
 
   if (streaming) {
-    if (externalRingBuffer) {
-      ringBuffer = externalRingBuffer;
-      ownsRingBuffer = false;
-    } else {
-      ringBuffer = static_cast<uint8_t*>(malloc(INFLATE_DICT_SIZE));
-      if (!ringBuffer) return false;
-      ownsRingBuffer = true;
-    }
+    ringBuffer = static_cast<uint8_t*>(malloc(INFLATE_DICT_SIZE));
+    if (!ringBuffer) return false;
+    ownsRing = true;
     memset(ringBuffer, 0, INFLATE_DICT_SIZE);
   }
 
@@ -32,12 +27,20 @@ bool InflateReader::init(const bool streaming, uint8_t* externalRingBuffer) {
   return true;
 }
 
+bool InflateReader::initWithRing(uint8_t* ring) {
+  deinit();  // free any owned ring buffer and reset state
+  if (!ring) return false;
+  ringBuffer = ring;
+  ownsRing = false;  // caller's buffer: never freed here
+  memset(ringBuffer, 0, INFLATE_DICT_SIZE);
+  uzlib_uncompress_init(&decomp, ringBuffer, INFLATE_DICT_SIZE);
+  return true;
+}
+
 void InflateReader::deinit() {
-  if (ringBuffer && ownsRingBuffer) {
-    free(ringBuffer);
-  }
+  if (ringBuffer && ownsRing) free(ringBuffer);
   ringBuffer = nullptr;
-  ownsRingBuffer = false;
+  ownsRing = false;
   memset(&decomp, 0, sizeof(decomp));
 }
 

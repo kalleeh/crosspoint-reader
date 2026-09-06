@@ -36,13 +36,11 @@ void AWSCertMenuActivity::render() {
   renderer.drawText(UI_12_FONT_ID, margin, y, fork_tr(STR_AWS_MENU_TITLE), true);
   y += renderer.getLineHeight(UI_12_FONT_ID) + 10;
 
-  // Tab bar
-  std::vector<TabInfo> tabs = {
-    {fork_tr(STR_AWS_TAB_CERTS), currentTab == Tab::Certifications},
-    {fork_tr(STR_AWS_TAB_STATS), currentTab == Tab::Stats}
-  };
+  // Tab bar (upstream removed the theme's drawTabBar when lists/tabs moved to
+  // FreeInkUI; this screen is a custom state machine, so draw the band here)
+  const char* tabLabels[] = {fork_tr(STR_AWS_TAB_CERTS), fork_tr(STR_AWS_TAB_STATS)};
   const auto& metrics = UITheme::getInstance().getMetrics();
-  GUI.drawTabBar(renderer, Rect{0, y, width, metrics.tabBarHeight}, tabs, false);
+  drawTabBand(y, metrics.tabBarHeight, tabLabels, 2, currentTab == Tab::Certifications ? 0 : 1);
   y += metrics.tabBarHeight;
   
   // Render current tab content
@@ -51,6 +49,26 @@ void AWSCertMenuActivity::render() {
   } else {
     renderStatsTab();
   }
+}
+
+// Equal-width tab slots: the active one is inverted, the rest sit on a divider.
+void AWSCertMenuActivity::drawTabBand(const int y, const int height, const char* const* labels, const int count,
+                                      const int selected) const {
+  const int width = renderer.getScreenWidth();
+  const int slotWidth = width / count;
+  const int textY = y + (height - renderer.getLineHeight(UI_10_FONT_ID)) / 2;
+  for (int i = 0; i < count; i++) {
+    const int x = i * slotWidth;
+    const int textWidth = renderer.getTextWidth(UI_10_FONT_ID, labels[i]);
+    const int textX = x + (slotWidth - textWidth) / 2;
+    if (i == selected) {
+      renderer.fillRect(x, y, slotWidth, height);
+      renderer.drawText(UI_10_FONT_ID, textX, textY, labels[i], false);
+    } else {
+      renderer.drawText(UI_10_FONT_ID, textX, textY, labels[i], true);
+    }
+  }
+  renderer.drawLine(0, y + height - 1, width - 1, y + height - 1);
 }
 
 void AWSCertMenuActivity::renderCertificationsTab() {

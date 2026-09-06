@@ -294,7 +294,7 @@ void Game2048Activity::render() {
 
   // Battery
   const auto& metrics = UITheme::getInstance().getMetrics();
-  GUI.drawBatteryRight(renderer, Rect{screenWidth - 25, 10, metrics.batteryWidth, metrics.batteryHeight}, false);
+  GUI.drawBatteryLeft(renderer, Rect{screenWidth - 25, 10, metrics.batteryWidth, metrics.batteryHeight}, false);
 
   renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }

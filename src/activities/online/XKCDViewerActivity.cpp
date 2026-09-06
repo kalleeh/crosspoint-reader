@@ -9,7 +9,6 @@
 #include <HalStorage.h>
 #include <Bitmap.h>
 #include <PngToBmpConverter.h>
-#include <InflateReader.h>
 #include <Memory.h>
 #include <algorithm>
 #include <cstring>
@@ -323,29 +322,25 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
   // PNGdec needs one ~58-59KB contiguous heap block to hold its whole-image
   // decode state, which this device's allocator can no longer provide after
   // a single HTTPS/TLS round trip has fragmented the free list. PngToBmpConverter
-  // needs far less: a 32KB DEFLATE ring buffer (fixed by the zlib/PNG spec)
-  // plus a few small row-sized buffers. Fetching the image over plain HTTP
-  // (see fetchComic() above) means this is still the ONLY TLS session opened
-  // this activity by the time we get here — the JSON fetch's session was
-  // already closed via http.end() — so a scoped allocation, freed right after
-  // conversion, has a real shot at finding a contiguous 32KB block instead of
-  // needing a permanent reservation.
+  // streams instead, but its InflateStream still wants ~11KB of tinfl state plus
+  // a 32KB DEFLATE window. Lend it the 48KB framebuffer for the duration of the
+  // conversion (GfxRenderer::FrameBufferLoan -> buildscratch::claim()) so the
+  // decode costs the fragmented heap nothing. The panel keeps showing the
+  // "Loading..." screen pushed above; the loan hands the buffer back white and
+  // we redraw the whole screen below anyway.
   const int topMargin = 60;
   const int bottomMargin = 40;
   const int availWidth = width - 40;
   const int availHeight = height - topMargin - bottomMargin;
 
   bool converted = false;
-  auto inflateRingBuffer = makeUniqueNoThrow<uint8_t[]>(InflateReader::kRingBufferSize);
-  if (!inflateRingBuffer) {
-    ERROR_PRINTF("[XKCD] OOM allocating %u-byte inflate ring buffer\n", (unsigned)InflateReader::kRingBufferSize);
-  } else {
+  {
+    GfxRenderer::FrameBufferLoan loan(renderer);
     HalFile pngFile;
     if (Storage.openFileForRead("XKCD", "/.crosspoint/xkcd_temp.png", pngFile)) {
       HalFile bmpFile;
       if (Storage.openFileForWrite("XKCD", "/.crosspoint/xkcd_temp.bmp", bmpFile)) {
-        converted = PngToBmpConverter::pngFileTo1BitBmpStreamWithSize(pngFile, bmpFile, availWidth, availHeight, false,
-                                                                      inflateRingBuffer.get());
+        converted = PngToBmpConverter::pngFileTo1BitBmpStreamWithSize(pngFile, bmpFile, availWidth, availHeight, false);
       }
     }
   }

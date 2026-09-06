@@ -38,6 +38,7 @@ class AWSCertMenuActivity final : public Activity {
   void renderCertificationsTab();
   void renderStatsTab();
   void renderInfo();
+  void drawTabBand(int y, int height, const char* const* labels, int count, int selected) const;
   
  public:
   explicit AWSCertMenuActivity(GfxRenderer& renderer, MappedInputManager& mappedInput,

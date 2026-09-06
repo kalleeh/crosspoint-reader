@@ -13,6 +13,11 @@ enum class InflateStatus {
 
 // Streaming deflate decompressor wrapping uzlib.
 //
+// NOTE: retained ONLY for FontDecompressor's tiny one-shot flash-resident group
+// decompressions, where uzlib's ~1KB state beats tinfl's ~11KB on the
+// OOM-sensitive render path. All throughput paths (zip entries, PNG IDAT) use
+// InflateStream (lib/miniz), which decodes several times faster.
+//
 // Two modes:
 //   init(false)  — one-shot: input is a contiguous buffer, call read() once.
 //   init(true)   — streaming: allocates a 32KB ring buffer for back-references
@@ -38,32 +43,35 @@ enum class InflateStatus {
 //
 class InflateReader {
  public:
-  // Size required by an externally-supplied ring buffer passed to init().
-  static constexpr size_t kRingBufferSize = 32768;
-
   InflateReader() = default;
   ~InflateReader();
 
   InflateReader(const InflateReader&) = delete;
   InflateReader& operator=(const InflateReader&) = delete;
 
-  // Initialise decompressor. streaming=true needs a 32KB ring buffer for
-  // back-references, used when read() or readAtMost() will be called
-  // multiple times.
-  //
-  // If externalRingBuffer is null, a buffer is malloc'd on demand and freed
-  // by deinit()/the destructor — the original behavior. Pass a caller-owned
-  // buffer of at least kRingBufferSize bytes to skip that allocation instead;
-  // ownership stays with the caller and deinit() will not free it. This
-  // matters on this device: once WiFi/TLS has touched the heap in a boot
-  // session, the allocator's free list is left fragmented such that a single
-  // contiguous 32KB block may no longer be available even though total free
-  // heap looks fine — callers that mix this decoder with networking should
-  // allocate the ring buffer once, before any networking, and reuse it.
-  // Returns false only in streaming mode if the ring buffer allocation fails.
-  bool init(bool streaming = false, uint8_t* externalRingBuffer = nullptr);
+  // Size of the streaming ring buffer, exposed so callers using initWithRing()
+  // can allocate it themselves.
+  static constexpr size_t RING_BYTES = 32768;
 
-  // Release the ring buffer (if owned) and reset internal state.
+  // Initialise decompressor. streaming=true allocates a 32KB ring buffer needed
+  // when read() or readAtMost() will be called multiple times.
+  // Returns false only in streaming mode if the ring buffer allocation fails.
+  bool init(bool streaming = false);
+
+  // Initialise streaming mode over a caller-owned ring buffer of RING_BYTES.
+  //
+  // Exists for allocation ordering. The ring is by far the largest block a
+  // streaming decode needs, and on a heap where every allocation is carved from
+  // one big free run, taking any smaller buffer first can leave the largest
+  // block just short of 32KB — measured on device at 32756 bytes against a
+  // 32768 requirement. A caller that allocates the ring FIRST, then its own
+  // state, never hits that. The buffer must outlive the reader; deinit() does
+  // not free it.
+  // Returns false if ring is null (e.g. a forwarded failed allocation), leaving
+  // the reader deinitialised.
+  bool initWithRing(uint8_t* ring);
+
+  // Release the ring buffer (only if this reader owns it) and reset state.
   void deinit();
 
   // Set the entire compressed input as a contiguous memory buffer.
@@ -96,5 +104,5 @@ class InflateReader {
  private:
   uzlib_uncomp decomp = {};
   uint8_t* ringBuffer = nullptr;
-  bool ownsRingBuffer = false;
+  bool ownsRing = false;
 };

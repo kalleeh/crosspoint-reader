@@ -2,7 +2,9 @@
 
 #include <Arduino.h>
 #include <ArduinoJson.h>
+#include <optional>
 #include <HTTPClient.h>
+#include <Logging.h>
 #include <WiFi.h>
 
 #include "../../MappedInputManager.h"
@@ -342,15 +344,17 @@ inline bool ensureWiFi(MappedInputManager* cancelInput = nullptr) {
   // disconnect(true, true) in WifiSelectionActivity), so an argless
   // WiFi.begin() has no stored network to join. Connect explicitly with the
   // credentials CrossPoint keeps in WIFI_STORE, preferring the last-used one.
-  if (WIFI_STORE.getCredentials().empty()) WIFI_STORE.loadFromFile();
+  if (WIFI_STORE.getCredentialCount() == 0) WIFI_STORE.loadFromFile();
 
-  const std::string& lastSsid = WIFI_STORE.getLastConnectedSsid();
-  const WifiCredential* cred = lastSsid.empty() ? nullptr : WIFI_STORE.findCredential(lastSsid);
-  if (!cred && !WIFI_STORE.getCredentials().empty()) {
-    cred = &WIFI_STORE.getCredentials().front();
+  // The store hands out copies (std::optional) rather than references now that
+  // it guards its strings with a mutex.
+  const std::string lastSsid = WIFI_STORE.getLastConnectedSsid();
+  std::optional<WifiCredential> cred = lastSsid.empty() ? std::nullopt : WIFI_STORE.findCredential(lastSsid);
+  if (!cred && WIFI_STORE.getCredentialCount() > 0) {
+    cred = WIFI_STORE.getCredentialAt(0);
   }
   if (!cred) {
-    Serial.println("[WiFi] No saved credentials — connect once via Settings > WiFi");
+    LOG_ERR("WiFi", "No saved credentials - connect once via Settings > WiFi");
     return false;
   }
 
@@ -367,8 +371,8 @@ inline bool ensureWiFi(MappedInputManager* cancelInput = nullptr) {
     if (pollCancel(cancelInput)) return false;
     delay(100);
   }
-  Serial.printf("[WiFi] ensureWiFi: %s (ssid: %s)\n",
-                WiFi.status() == WL_CONNECTED ? "connected" : "FAILED", cred->ssid.c_str());
+  LOG_INF("WiFi", "ensureWiFi: %s (ssid: %s)", WiFi.status() == WL_CONNECTED ? "connected" : "FAILED",
+          cred->ssid.c_str());
   return WiFi.status() == WL_CONNECTED;
 }
 
