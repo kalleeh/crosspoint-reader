@@ -6,8 +6,10 @@
 #include <Logging.h>
 #include <WiFi.h>
 
+#include <cctype>
 #include <optional>
 
+#include "../../ForkSettings.h"
 #include "../../MappedInputManager.h"
 #include "../../WifiCredentialStore.h"
 #include "OnlineCache.h"
@@ -97,8 +99,26 @@ inline WeatherData fetchWeather(bool allowCache = false, MappedInputManager* can
     return data;
   }
 
+  // Empty FORK_SETTINGS.weatherLocation -> bare URL, wttr.in geolocates the
+  // request by public IP (ISP-dependent, can land on a neighbouring district).
+  // Otherwise URL-encode the configured place name / "lat,lon" into the path.
+  char url[192];
+  int urlLen = snprintf(url, sizeof(url), "https://wttr.in/");
+  for (const char* c = FORK_SETTINGS.weatherLocation; *c && urlLen < (int)sizeof(url) - 16; c++) {
+    const unsigned char ch = static_cast<unsigned char>(*c);
+    if (isalnum(ch) || ch == '-' || ch == '_' || ch == '.' || ch == ',' || ch == '~') {
+      url[urlLen++] = *c;
+    } else if (ch == ' ') {
+      url[urlLen++] = '+';
+    } else {
+      urlLen += snprintf(url + urlLen, sizeof(url) - urlLen, "%%%02X", ch);
+    }
+  }
+  snprintf(url + urlLen, sizeof(url) - urlLen, "?format=j1");
+  LOG_INF("WTHR", "GET %s", url);
+
   HTTPClient http;
-  http.begin("https://wttr.in/?format=j1");
+  http.begin(url);
   // A fresh HTTPClient is created per fetch (not actually reused across
   // calls), so the default _reuse=true just leaks the socket whenever the
   // server sends Connection: keep-alive — ESP32-C3's small fixed lwIP socket

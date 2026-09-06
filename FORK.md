@@ -74,7 +74,8 @@ in dedicated directories and is conflict-free by construction:
 
 Fork settings live in `/.crosspoint/fork-settings.json` (no UI): `showHiddenFiles` (0/1),
 `sleepInfoOverlay` (0/1, default 1), `sleepWeatherRefresh` (0 off, 1 refresh weather + NTP only on
-idle-timeout sleeps — default, 2 every sleep). The refresh is skipped below 20% battery, below 90KB
+idle-timeout sleeps — default, 2 every sleep). `weatherLocation` (string, default empty = wttr.in
+geolocates by public IP; set a place name or "lat,lon" to pin it, e.g. "Norrmalm" or "59.34,18.06"). The refresh is skipped below 20% battery, below 90KB
 free heap, or with no saved WiFi. Rationale: the X4's deep sleep on battery is a hardware power-off
 (GPIO13 battery MOSFET, `HalPowerManager::startDeepSleep`), so a timer wake to refresh *during*
 sleep is impossible; sleep entry is the only refresh point.

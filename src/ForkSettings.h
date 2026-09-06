@@ -1,4 +1,5 @@
 #pragma once
+#include <cstddef>
 #include <cstdint>
 
 /**
@@ -21,6 +22,11 @@ class ForkSettings {
   // only moment the band can be updated; keep it rare to protect the battery.
   enum SLEEP_REFRESH : uint8_t { SLEEP_REFRESH_OFF = 0, SLEEP_REFRESH_TIMEOUT_ONLY = 1, SLEEP_REFRESH_EVERY = 2 };
   uint8_t sleepWeatherRefresh = SLEEP_REFRESH_TIMEOUT_ONLY;
+
+  // Weather location passed to wttr.in (place name or "lat,lon"). Empty =
+  // auto-detect from the connection's public IP (the default; ISP-dependent).
+  static constexpr size_t WEATHER_LOCATION_LEN = 64;
+  char weatherLocation[WEATHER_LOCATION_LEN] = "";
 
   bool loadFromFile();
   bool saveToFile() const;
