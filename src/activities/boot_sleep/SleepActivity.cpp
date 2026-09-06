@@ -3,6 +3,7 @@
 #include <Epub.h>
 #include <Epub/converters/PngToFramebufferConverter.h>
 #include <FontCacheManager.h>
+#include <ForkI18n.h>  // FORK: sleep band freshness strings
 #include <FsHelpers.h>
 #include <GfxRenderer.h>
 #include <HalDisplay.h>
@@ -18,10 +19,12 @@
 #include <cmath>
 #include <cstdint>
 #include <cstring>
+#include <ctime>
 #include <limits>
 #include <string>
 
-#include "../online/OnlineCache.h"  // FORK: cached sleep-screen content
+#include "../online/OnlineCache.h"       // FORK: cached sleep-screen content
+#include "../online/SleepInfoRefresh.h"  // FORK: refresh weather on the way into sleep
 #include "CrossPointSettings.h"
 #include "CrossPointState.h"
 #include "ForkSettings.h"  // FORK: sleep overlay setting
@@ -492,6 +495,10 @@ void releaseSdFontCachesForDecode(const GfxRenderer& renderer) {
 void SleepActivity::onEnter() {
   Activity::onEnter();
 
+  // FORK: one short WiFi session to refresh the cached weather + wall clock
+  // before the sleep screen renders (rate-limited; see SleepInfoRefresh).
+  SleepInfoRefresh::run(fromTimeout);
+
   const bool frameWasInverted = display.isInverted();
 
   // Sleep screens always use normal polarity. This activity draws directly
@@ -575,7 +582,7 @@ void SleepActivity::renderInfoOverlay() const {
   const int bandHeight = lineHeight + 12;
   const int bandY = pageHeight - bandHeight;
 
-  // One line: "18°C Norrmalm · Cloudy  |  petrichor  (14:32)"
+  // One line: "18°C Norrmalm · Cloudy  |  petrichor  (updated 14:32)"
   char line[160];
   int len = 0;
   if (weather.valid) {
@@ -587,14 +594,34 @@ void SleepActivity::renderInfoOverlay() const {
   if (word.valid && len < (int)sizeof(line) - 8) {
     len += snprintf(line + len, sizeof(line) - len, "%s%s", weather.valid ? "  |  " : "", word.word);
   }
-  // Timestamp of the most recent fetch, when the wall clock was synced
-  const uint32_t newest = weather.fetchedAtEpoch > word.fetchedAtEpoch ? weather.fetchedAtEpoch : word.fetchedAtEpoch;
-  if (newest > 0 && len < (int)sizeof(line) - 12) {
-    time_t ts = newest;
-    struct tm* timeinfo = localtime(&ts);
-    if (timeinfo) {
-      len += snprintf(line + len, sizeof(line) - len, "  (%02d:%02d)", timeinfo->tm_hour, timeinfo->tm_min);
+
+  // Freshness of the weather reading. The X4 is powered off while "asleep", so
+  // whatever is shown here is frozen until the next wake — say how old it is
+  // rather than letting a day-old reading pass for current. Times are shown in
+  // the upstream clock offset (Settings > Status bar > UTC offset).
+  if (weather.valid && len < (int)sizeof(line) - 40) {
+    const time_t now = time(nullptr);
+    const bool nowKnown = now > 1000000000L;
+    char stamp[8] = "";
+    if (weather.fetchedAtEpoch > 0) {
+      const long offsetSec = (static_cast<long>(SETTINGS.clockUtcOffsetQ) - 48) * 15 * 60;
+      const time_t fetchedLocal = static_cast<time_t>(weather.fetchedAtEpoch) + offsetSec;
+      struct tm tmLocal;
+      gmtime_r(&fetchedLocal, &tmLocal);
+      snprintf(stamp, sizeof(stamp), "%02d:%02d", tmLocal.tm_hour, tmLocal.tm_min);
     }
+    constexpr long STALE_AFTER_SEC = 6L * 3600;
+    char freshness[48];
+    if (weather.fetchedAtEpoch == 0) {
+      snprintf(freshness, sizeof(freshness), "%s", fork_tr(STR_SLEEP_AGE_UNKNOWN));
+    } else if (!nowKnown) {
+      snprintf(freshness, sizeof(freshness), fork_tr(STR_SLEEP_AS_OF_FMT), stamp);
+    } else if (now - static_cast<time_t>(weather.fetchedAtEpoch) > STALE_AFTER_SEC) {
+      snprintf(freshness, sizeof(freshness), fork_tr(STR_SLEEP_STALE_FMT), stamp);
+    } else {
+      snprintf(freshness, sizeof(freshness), fork_tr(STR_SLEEP_UPDATED_FMT), stamp);
+    }
+    len += snprintf(line + len, sizeof(line) - len, "  (%s)", freshness);
   }
 
   // Black band with white text reads correctly on dark and light screens alike

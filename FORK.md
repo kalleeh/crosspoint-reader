@@ -72,6 +72,13 @@ in dedicated directories and is conflict-free by construction:
 - `lib/I18n/ForkI18n*` — see 3.2
 - `weather-images/` — assets
 
+Fork settings live in `/.crosspoint/fork-settings.json` (no UI): `showHiddenFiles` (0/1),
+`sleepInfoOverlay` (0/1, default 1), `sleepWeatherRefresh` (0 off, 1 refresh weather + NTP only on
+idle-timeout sleeps — default, 2 every sleep). The refresh is skipped below 20% battery, below 90KB
+free heap, or with no saved WiFi. Rationale: the X4's deep sleep on battery is a hardware power-off
+(GPIO13 battery MOSFET, `HalPowerManager::startDeepSleep`), so a timer wake to refresh *during*
+sleep is impossible; sleep entry is the only refresh point.
+
 **When adding a feature: put it in a new file under one of these trees.** Touch shared files
 only for the minimal wiring needed to reach the new code.
 
@@ -152,7 +159,7 @@ Status reflects the merge to `upstream/master` @ `aa994cf7` (release 1.6.0, 278 
 | `src/main.cpp` | `#include "ForkSettings.h"`; `FORK_SETTINGS.loadFromFile()` after `SETTINGS.loadFromFile()` | hook (3.3) | **Re-applied.** Upstream moved the settings-load block; the `customNavigation.h` include was dropped (unused in main since the ActivityManager rewrite). |
 | `src/activities/ActivityManager.h` | `HomeMenuItem::APPS` | hook (3.3) | **Re-applied** (auto-merge took upstream's enum silently — lesson 4.1 #1). |
 | `src/activities/home/HomeActivity.{cpp,h}` | "Apps" hub menu entry | hook (3.3) | **Re-applied** on upstream's new `loop()` (`activateSelection` lambda + touch routing): count 4→5, `APPS` case, menu-item insert before Settings, `onAppsOpen()`. |
-| `src/activities/boot_sleep/SleepActivity.{cpp,h}` | cached weather/word band (`renderInfoOverlay`) | hook (3.3) | **Re-applied.** Include conflict only; `.h` had to be re-hooked after taking upstream's. |
+| `src/activities/boot_sleep/SleepActivity.{cpp,h}` | cached weather/word band (`renderInfoOverlay`) + `SleepInfoRefresh::run(fromTimeout)` at the top of `onEnter()` | hook (3.3) | **Re-applied 1.6.0; extended 2026-09-06.** Two includes + one call + the overlay function, all `// FORK:`. The band now prints freshness (`updated / stale / as of HH:MM`, `age unknown`) in the upstream `clockUtcOffsetQ` zone. Refresh logic lives in fork-owned `src/activities/online/SleepInfoRefresh.*`. |
 | `src/activities/reader/ReaderActivity.{cpp,h}` (was `EpubReaderActivity`) | reading-stats session clock + `recordSession` | hook (3.3) | **Moved.** Upstream extracted a `ReaderActivity` base (EPUB/TXT/XTC) owning `onEnter/onExit/render`; the stats hook now lives there. `statsSessionPageTurns++` stays in `EpubReaderActivity::pageTurn()`. |
 | `src/activities/reader/EpubReaderActivity.cpp` | null-epub error screen | dropped (upstreamed) | `ReaderActivity::onEnter()` now `finish()`es when `loadBook()` fails — no blank screen, hook redundant. `STR_EPUB_LOAD_ERROR` is now unused. |
 | `src/network/html/FilesPage.html` | multi-select delete; "Show hidden" toggle | upstreamed / dropped | **Took upstream.** Multi-select (`toggleSelectAll`, `.select-item`) is upstream now; hidden files are gated server-side by `SETTINGS.showHiddenFiles`. The fork's `renderFiles()` refactor was a forbidden restructure — dropped. |

@@ -30,6 +30,8 @@ bool ForkSettings::loadFromFile() {
 
   showHiddenFiles = doc["showHiddenFiles"] | (uint8_t)0;
   sleepInfoOverlay = doc["sleepInfoOverlay"] | (uint8_t)1;
+  sleepWeatherRefresh = doc["sleepWeatherRefresh"] | (uint8_t)SLEEP_REFRESH_TIMEOUT_ONLY;
+  if (sleepWeatherRefresh > SLEEP_REFRESH_EVERY) sleepWeatherRefresh = SLEEP_REFRESH_TIMEOUT_ONLY;
 
   LOG_DBG("FST", "Fork settings loaded from file");
   return true;
@@ -41,6 +43,7 @@ bool ForkSettings::saveToFile() const {
   JsonDocument doc;
   doc["showHiddenFiles"] = showHiddenFiles;
   doc["sleepInfoOverlay"] = sleepInfoOverlay;
+  doc["sleepWeatherRefresh"] = sleepWeatherRefresh;
 
   String json;
   serializeJson(doc, json);

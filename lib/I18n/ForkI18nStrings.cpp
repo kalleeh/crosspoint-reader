@@ -129,7 +129,11 @@ const char* const FORK_STRINGS_EN[] = {
   "Sessions: %u",
   "Avg: %d pages/hour",
   "No reading recorded yet",
-  "%dd ago: %dm, %d pages"
+  "%dd ago: %dm, %d pages",
+  "updated %s",
+  "stale, %s",
+  "as of %s",
+  "age unknown",
 };
 
 const char* const FORK_STRINGS_ES[] = {
@@ -257,7 +261,11 @@ const char* const FORK_STRINGS_ES[] = {
   "Sessions: %u",
   "Avg: %d pages/hour",
   "No reading recorded yet",
-  "%dd ago: %dm, %d pages"
+  "%dd ago: %dm, %d pages",
+  "actualizado %s",
+  "obsoleto, %s",
+  "a las %s",
+  "antigüedad desconocida",
 };
 
 const char* const FORK_STRINGS_FR[] = {
@@ -385,7 +393,11 @@ const char* const FORK_STRINGS_FR[] = {
   "Sessions: %u",
   "Avg: %d pages/hour",
   "No reading recorded yet",
-  "%dd ago: %dm, %d pages"
+  "%dd ago: %dm, %d pages",
+  "mis à jour %s",
+  "obsolète, %s",
+  "à %s",
+  "âge inconnu",
 };
 
 const char* const FORK_STRINGS_DE[] = {
@@ -513,7 +525,11 @@ const char* const FORK_STRINGS_DE[] = {
   "Sessions: %u",
   "Avg: %d pages/hour",
   "No reading recorded yet",
-  "%dd ago: %dm, %d pages"
+  "%dd ago: %dm, %d pages",
+  "aktualisiert %s",
+  "veraltet, %s",
+  "Stand %s",
+  "Alter unbekannt",
 };
 
 const char* const FORK_STRINGS_CZ[] = {
@@ -641,7 +657,11 @@ const char* const FORK_STRINGS_CZ[] = {
   "Sessions: %u",
   "Avg: %d pages/hour",
   "No reading recorded yet",
-  "%dd ago: %dm, %d pages"
+  "%dd ago: %dm, %d pages",
+  "aktualizováno %s",
+  "zastaralé, %s",
+  "k %s",
+  "stáří neznámé",
 };
 
 const char* const FORK_STRINGS_PO[] = {
@@ -769,7 +789,11 @@ const char* const FORK_STRINGS_PO[] = {
   "Sessions: %u",
   "Avg: %d pages/hour",
   "No reading recorded yet",
-  "%dd ago: %dm, %d pages"
+  "%dd ago: %dm, %d pages",
+  "aktualizacja %s",
+  "nieaktualne, %s",
+  "stan na %s",
+  "wiek nieznany",
 };
 
 const char* const FORK_STRINGS_RU[] = {
@@ -897,7 +921,11 @@ const char* const FORK_STRINGS_RU[] = {
   "Sessions: %u",
   "Avg: %d pages/hour",
   "No reading recorded yet",
-  "%dd ago: %dm, %d pages"
+  "%dd ago: %dm, %d pages",
+  "обновлено %s",
+  "устарело, %s",
+  "на %s",
+  "возраст неизвестен",
 };
 
 const char* const FORK_STRINGS_SV[] = {
@@ -1025,7 +1053,11 @@ const char* const FORK_STRINGS_SV[] = {
   "Sessions: %u",
   "Avg: %d pages/hour",
   "No reading recorded yet",
-  "%dd ago: %dm, %d pages"
+  "%dd ago: %dm, %d pages",
+  "uppdaterad %s",
+  "inaktuell, %s",
+  "per %s",
+  "ålder okänd",
 };
 
 const char* const FORK_STRINGS_RO[] = {
@@ -1153,7 +1185,11 @@ const char* const FORK_STRINGS_RO[] = {
   "Sessions: %u",
   "Avg: %d pages/hour",
   "No reading recorded yet",
-  "%dd ago: %dm, %d pages"
+  "%dd ago: %dm, %d pages",
+  "actualizat %s",
+  "învechit, %s",
+  "la %s",
+  "vechime necunoscută",
 };
 
 const char* const FORK_STRINGS_CA[] = {
@@ -1281,7 +1317,11 @@ const char* const FORK_STRINGS_CA[] = {
   "Sessions: %u",
   "Avg: %d pages/hour",
   "No reading recorded yet",
-  "%dd ago: %dm, %d pages"
+  "%dd ago: %dm, %d pages",
+  "actualitzat %s",
+  "obsolet, %s",
+  "a les %s",
+  "antiguitat desconeguda",
 };
 
 const char* const FORK_STRINGS_UK[] = {
@@ -1409,7 +1449,11 @@ const char* const FORK_STRINGS_UK[] = {
   "Sessions: %u",
   "Avg: %d pages/hour",
   "No reading recorded yet",
-  "%dd ago: %dm, %d pages"
+  "%dd ago: %dm, %d pages",
+  "оновлено %s",
+  "застаріло, %s",
+  "станом на %s",
+  "вік невідомий",
 };
 
 const char* const FORK_STRINGS_BE[] = {
@@ -1537,7 +1581,11 @@ const char* const FORK_STRINGS_BE[] = {
   "Sessions: %u",
   "Avg: %d pages/hour",
   "No reading recorded yet",
-  "%dd ago: %dm, %d pages"
+  "%dd ago: %dm, %d pages",
+  "абноўлена %s",
+  "састарэла, %s",
+  "на %s",
+  "узрост невядомы",
 };
 
 // Compile-time guard: every language array must have exactly one entry per

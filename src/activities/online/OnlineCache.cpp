@@ -40,8 +40,11 @@ void saveWeather(const char* location, const char* condition, int temperature) {
   JsonDocument doc;
   loadDoc(doc);  // keep the other section intact; empty doc if none
 
-  // Value-change guard: only rewrite when the content actually changed
-  if (doc["weather"]["location"] == location && doc["weather"]["condition"] == condition &&
+  // Value-change guard: skip the SD write when nothing changed — unless the
+  // clock is synced, in which case fetchedAt is the payload (the sleep band
+  // reports freshness from it) and must advance even for an identical reading.
+  const uint32_t now = nowEpoch();
+  if (now == 0 && doc["weather"]["location"] == location && doc["weather"]["condition"] == condition &&
       doc["weather"]["temp"] == temperature) {
     return;
   }
@@ -49,7 +52,7 @@ void saveWeather(const char* location, const char* condition, int temperature) {
   doc["weather"]["location"] = location;
   doc["weather"]["condition"] = condition;
   doc["weather"]["temp"] = temperature;
-  doc["weather"]["fetchedAt"] = nowEpoch();
+  doc["weather"]["fetchedAt"] = now;
   saveDoc(doc);
 }
 
