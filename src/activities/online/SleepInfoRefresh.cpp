@@ -9,6 +9,7 @@
 
 #include "../../ForkSettings.h"
 #include "../../WifiCredentialStore.h"
+#include "OnlineCache.h"
 #include "OnlineContentFetcher.h"
 
 namespace {
@@ -19,6 +20,8 @@ constexpr uint16_t MIN_BATTERY_PERCENT = 20;
 // reader can sit well below that, in which case just keep the cached value.
 constexpr uint32_t MIN_FREE_HEAP = 90000;
 constexpr unsigned long NTP_WAIT_MS = 4000;
+// Refresh the word at most once a day (20h so a slightly earlier bedtime still counts).
+constexpr uint32_t WORD_MAX_AGE_SEC = 20UL * 3600;
 
 bool wallClockKnown() { return time(nullptr) > 1000000000L; }
 
@@ -64,6 +67,18 @@ bool run(const bool fromTimeout) {
   if (OnlineContentFetcher::ensureWiFi()) {
     syncWallClock();
     fetched = OnlineContentFetcher::fetchWeather(false).success;  // persists to OnlineCache
+
+    // Word of the day: a random word + dictionary lookup (two more requests),
+    // so only once a day. Needs the clock to know the cached word's age.
+    if (wallClockKnown()) {
+      const auto word = OnlineCache::loadWord();
+      const uint32_t nowEpoch = static_cast<uint32_t>(time(nullptr));
+      const bool wordDue = !word.valid || word.fetchedAtEpoch == 0 || nowEpoch - word.fetchedAtEpoch > WORD_MAX_AGE_SEC;
+      if (wordDue) {
+        const bool wordOk = OnlineContentFetcher::fetchWordOfDay().success;  // persists to OnlineCache
+        LOG_INF("SLPR", "Word refresh %s", wordOk ? "ok" : "failed");
+      }
+    }
   }
   // Drop the radio right away rather than at the very end of enterDeepSleep().
   WiFi.disconnect(true);

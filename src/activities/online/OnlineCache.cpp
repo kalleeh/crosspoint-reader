@@ -60,10 +60,13 @@ void saveWord(const char* word) {
   JsonDocument doc;
   loadDoc(doc);
 
-  if (doc["word"]["word"] == word) return;
+  // Same rule as saveWeather: an identical word still advances fetchedAt when
+  // the clock is synced, so the daily refresh gate can see it was checked.
+  const uint32_t now = nowEpoch();
+  if (now == 0 && doc["word"]["word"] == word) return;
 
   doc["word"]["word"] = word;
-  doc["word"]["fetchedAt"] = nowEpoch();
+  doc["word"]["fetchedAt"] = now;
   saveDoc(doc);
 }
 
