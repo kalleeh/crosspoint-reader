@@ -3,7 +3,6 @@
 #include <HalPowerManager.h>
 #include <Logging.h>
 #include <WiFi.h>
-#include <esp_sntp.h>
 
 #include <ctime>
 
@@ -19,24 +18,9 @@ constexpr uint16_t MIN_BATTERY_PERCENT = 20;
 // wttr.in is HTTPS; a TLS handshake needs a contiguous ~40KB. Leaving the
 // reader can sit well below that, in which case just keep the cached value.
 constexpr uint32_t MIN_FREE_HEAP = 90000;
-constexpr unsigned long NTP_WAIT_MS = 4000;
 // Refresh the word at most once a day (20h so a slightly earlier bedtime still counts).
 constexpr uint32_t WORD_MAX_AGE_SEC = 20UL * 3600;
 
-bool wallClockKnown() { return time(nullptr) > 1000000000L; }
-
-// Set the system clock from NTP so the cached reading gets a real timestamp.
-// HalClock::syncFromNTP() is RTC-only (returns false on the X4), so poll SNTP here.
-void syncWallClock() {
-  if (wallClockKnown()) return;
-  configTzTime("UTC0", "pool.ntp.org", "time.nist.gov");
-  const unsigned long start = millis();
-  while (millis() - start < NTP_WAIT_MS) {
-    if (sntp_get_sync_status() == SNTP_SYNC_STATUS_COMPLETED || wallClockKnown()) break;
-    delay(100);
-  }
-  LOG_INF("SLPR", "NTP %s", wallClockKnown() ? "synced" : "not synced");
-}
 }  // namespace
 
 namespace SleepInfoRefresh {
@@ -65,12 +49,12 @@ bool run(const bool fromTimeout) {
   const unsigned long start = millis();
   bool fetched = false;
   if (OnlineContentFetcher::ensureWiFi()) {
-    syncWallClock();
+    OnlineContentFetcher::syncWallClock();
     fetched = OnlineContentFetcher::fetchWeather(false).success;  // persists to OnlineCache
 
     // Word of the day: a random word + dictionary lookup (two more requests),
     // so only once a day. Needs the clock to know the cached word's age.
-    if (wallClockKnown()) {
+    if (OnlineContentFetcher::wallClockKnown()) {
       const auto word = OnlineCache::loadWord();
       const uint32_t nowEpoch = static_cast<uint32_t>(time(nullptr));
       const bool wordDue = !word.valid || word.fetchedAtEpoch == 0 || nowEpoch - word.fetchedAtEpoch > WORD_MAX_AGE_SEC;

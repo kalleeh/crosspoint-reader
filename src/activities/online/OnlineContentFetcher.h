@@ -5,10 +5,14 @@
 #include <HTTPClient.h>
 #include <Logging.h>
 #include <WiFi.h>
+#include <esp_sntp.h>
 
 #include <cctype>
+#include <cstring>
+#include <ctime>
 #include <optional>
 
+#include "../../CrossPointSettings.h"
 #include "../../ForkSettings.h"
 #include "../../MappedInputManager.h"
 #include "../../WifiCredentialStore.h"
@@ -215,65 +219,288 @@ inline WeatherData fetchWeather(bool allowCache = false, MappedInputManager* can
   return data;
 }
 
-inline WordData fetchWordOfDay(MappedInputManager* cancelInput = nullptr) {
+// ---- wall clock -------------------------------------------------------------
+inline bool wallClockKnown() { return time(nullptr) > 1000000000L; }
+
+// Set the system clock from NTP (WiFi must be up). HalClock::syncFromNTP() is
+// RTC-only and returns false on the X4, so poll SNTP here. Bounded wait.
+inline void syncWallClock(unsigned long maxWaitMs = 4000) {
+  if (wallClockKnown()) return;
+  configTzTime("UTC0", "pool.ntp.org", "time.nist.gov");
+  const unsigned long start = millis();
+  while (millis() - start < maxWaitMs) {
+    if (sntp_get_sync_status() == SNTP_SYNC_STATUS_COMPLETED || wallClockKnown()) break;
+    delay(100);
+  }
+  LOG_INF("CLK", "NTP %s", wallClockKnown() ? "synced" : "not synced");
+}
+
+// ---- Wiktionary Word of the Day --------------------------------------------
+// Reduce wikitext markup to plain text. Handles the constructs the WOTD
+// template actually uses: {{m|en|term}}, {{l|en|term}}, {{w|Title|text}},
+// {{lb|en|label,...}} -> "(label, ...)", [[page#anchor|text]], ''italics''.
+// Anything else in {{ }} is dropped. Innermost-first so nesting works.
+inline String stripWikitext(String text) {
+  for (int guard = 0; guard < 64; guard++) {
+    const int open = text.lastIndexOf("{{");
+    if (open < 0) break;
+    const int close = text.indexOf("}}", open);
+    if (close < 0) {
+      text.remove(open);
+      break;
+    }
+    const String inner = text.substring(open + 2, close);
+    // Split on '|' and keep positional params only (named ones contain '=')
+    String parts[12];
+    int count = 0;
+    int from = 0;
+    while (count < 12) {
+      const int bar = inner.indexOf('|', from);
+      String piece = bar < 0 ? inner.substring(from) : inner.substring(from, bar);
+      piece.trim();
+      if (piece.indexOf('=') < 0 || count == 0) parts[count++] = piece;
+      if (bar < 0) break;
+      from = bar + 1;
+    }
+    const String& name = parts[0];
+    String repl;
+    if (name == "m" || name == "l" || name == "mention" || name == "link" || name == "m+" || name == "ll") {
+      if (count >= 3) repl = parts[2];
+    } else if (name == "lb" || name == "label" || name == "lbl") {
+      for (int i = 2; i < count; i++) repl += (i > 2 ? ", " : "(") + parts[i];
+      if (count > 2) repl += ")";
+    } else if (name == "q" || name == "qual" || name == "qualifier" || name == "gloss" || name == "gl") {
+      if (count >= 2) repl = "(" + parts[1] + ")";
+    } else if (name == "w" || name == "W") {
+      if (count >= 2) repl = parts[count - 1];
+    }
+    text = text.substring(0, open) + repl + text.substring(close + 2);
+  }
+  for (int guard = 0; guard < 64; guard++) {
+    const int open = text.indexOf("[[");
+    if (open < 0) break;
+    const int close = text.indexOf("]]", open);
+    if (close < 0) {
+      text.remove(open, 2);
+      continue;
+    }
+    String inner = text.substring(open + 2, close);
+    const int bar = inner.lastIndexOf('|');
+    if (bar >= 0) {
+      inner = inner.substring(bar + 1);
+    } else {
+      const int hash = inner.indexOf('#');
+      if (hash >= 0) inner = inner.substring(0, hash);
+    }
+    text = text.substring(0, open) + inner + text.substring(close + 2);
+  }
+  text.replace("'''", "");
+  text.replace("''", "");
+  text.replace("&nbsp;", " ");
+  while (text.indexOf("  ") >= 0) text.replace("  ", " ");
+  text.trim();
+  return text;
+}
+
+inline const char* expandPartOfSpeech(const String& pos) {
+  if (pos == "n") return "noun";
+  if (pos == "v") return "verb";
+  if (pos == "adj") return "adjective";
+  if (pos == "adv") return "adverb";
+  if (pos == "prep") return "preposition";
+  if (pos == "interj" || pos == "intj") return "interjection";
+  if (pos == "pron") return "pronoun";
+  if (pos == "conj") return "conjunction";
+  if (pos == "num") return "numeral";
+  return pos.c_str();
+}
+
+// Today's curated Wiktionary Word of the Day: ~1-2KB of JSON holding a
+// {{WOTD|word|pos|definition|...}} template. Needs the wall clock for the page
+// date (local date per the upstream clock-offset setting).
+inline WordData fetchWiktionaryWotd(MappedInputManager* cancelInput) {
   WordData data{};
+  syncWallClock();
+  if (!wallClockKnown()) {
+    LOG_ERR("WOTD", "No wall clock, cannot pick today's page");
+    return data;
+  }
+  static constexpr const char* MONTHS[] = {"January", "February", "March",     "April",   "May",      "June",
+                                           "July",    "August",   "September", "October", "November", "December"};
+  const long offsetSec = (static_cast<long>(SETTINGS.clockUtcOffsetQ) - 48) * 15 * 60;
+  const time_t localNow = time(nullptr) + offsetSec;
+  struct tm tmLocal;
+  gmtime_r(&localNow, &tmLocal);
+  char url[224];
+  snprintf(url, sizeof(url),
+           "https://en.wiktionary.org/w/api.php?action=parse&page=Wiktionary:Word_of_the_day/%d/%s_%d"
+           "&prop=wikitext&format=json&formatversion=2",
+           tmLocal.tm_year + 1900, MONTHS[tmLocal.tm_mon], tmLocal.tm_mday);
 
   HTTPClient http;
-  http.begin("https://random-word-api.herokuapp.com/word?number=1");
-  // See setReuse comment in fetchWeather() above.
+  http.begin(url);
   http.setReuse(false);
+  http.setUserAgent("CrossPointReader-fork/1.0 (e-reader; word of the day)");  // Wikimedia asks for a UA
   http.setConnectTimeout(HTTP_CONNECT_TIMEOUT_MS);
   http.setTimeout(HTTP_TIMEOUT_MS);
   http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
-
-  if (http.GET() == 200) {
-    String payload = http.getString();
-    JsonDocument doc;
-    if (deserializeJson(doc, payload) == DeserializationError::Ok && doc.size() > 0) {
-      data.word = doc[0].as<String>();
-    }
+  const int code = http.GET();
+  LOG_INF("WOTD", "Wiktionary GET -> %d", code);
+  if (code != 200) {
+    http.end();
+    return data;
   }
-  http.end();
-
-  if (data.word.length() == 0) return data;
   if (pollCancel(cancelInput)) {
+    http.end();
     data.cancelled = true;
     return data;
   }
-
-  String dictUrl = "https://api.dictionaryapi.dev/api/v2/entries/en/" + data.word;
-  http.begin(dictUrl);
-  http.setReuse(false);
-  http.setConnectTimeout(HTTP_CONNECT_TIMEOUT_MS);
-  http.setTimeout(HTTP_TIMEOUT_MS);
-  http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
-
-  if (http.GET() == 200) {
-    String payload = http.getString();
-    JsonDocument doc;
-    if (deserializeJson(doc, payload) == DeserializationError::Ok && doc.size() > 0 && doc[0]["meanings"].size() > 0 &&
-        doc[0]["meanings"][0]["definitions"].size() > 0) {
-      JsonObject meaning = doc[0]["meanings"][0];
-      data.definition = meaning["definitions"][0]["definition"].as<String>();
-
-      if (meaning["definitions"][0]["example"].is<const char*>()) {
-        data.example = meaning["definitions"][0]["example"].as<String>();
-      }
-
-      data.success = true;
-    }
-  } else {
-    // No definition found, just show the word
-    data.definition = "Definition not available";
-    data.success = true;
-  }
+  String payload = http.getString();
   http.end();
 
+  JsonDocument filter;
+  filter["parse"]["wikitext"] = true;
+  JsonDocument doc;
+  if (deserializeJson(doc, payload, DeserializationOption::Filter(filter)) != DeserializationError::Ok) {
+    LOG_ERR("WOTD", "JSON parse failed");
+    return data;
+  }
+  const char* wikitext = doc["parse"]["wikitext"] | "";
+  const char* tpl = strstr(wikitext, "{{WOTD|");
+  if (!tpl) {
+    LOG_ERR("WOTD", "No WOTD template on page");
+    return data;
+  }
+
+  // Top-level split of the template params: '|' counts only at nesting depth 1.
+  String params[4];
+  int count = 0;
+  int depth = 0;
+  String current;
+  for (const char* c = tpl; *c && count < 4; c++) {
+    if (c[0] == '{' && c[1] == '{') {
+      depth++;
+      if (depth > 1) current += "{{";
+      c++;
+      continue;
+    }
+    if (c[0] == '[' && c[1] == '[') {
+      depth++;
+      current += "[[";
+      c++;
+      continue;
+    }
+    if (c[0] == '}' && c[1] == '}') {
+      depth--;
+      if (depth == 0) {
+        params[count++] = current;
+        break;
+      }
+      current += "}}";
+      c++;
+      continue;
+    }
+    if (c[0] == ']' && c[1] == ']') {
+      depth--;
+      current += "]]";
+      c++;
+      continue;
+    }
+    if (*c == '|' && depth == 1) {
+      params[count++] = current;
+      current = "";
+      continue;
+    }
+    current += *c;
+  }
+  // params[0] = "WOTD", [1] = word, [2] = pos, [3] = definition (first sense line)
+  if (count < 4 || params[1].isEmpty()) {
+    LOG_ERR("WOTD", "Unexpected WOTD template shape (%d params)", count);
+    return data;
+  }
+  String definition = params[3];
+  const int nl = definition.indexOf('\n');
+  if (nl >= 0) definition = definition.substring(0, nl);
+  definition = stripWikitext(definition);
+  if (definition.isEmpty()) return data;
+
+  data.word = stripWikitext(params[1]);
+  params[2].trim();
+  data.definition = String("(") + expandPartOfSpeech(params[2]) + ") " + definition;
+  data.success = true;
+  return data;
+}
+
+// Fallback: a random dictionary-list word looked up on dictionaryapi.dev. The
+// list is full of inflected/obscure forms the dictionary lacks, so try a few
+// and only report success with a real definition (never cache a bare word).
+inline WordData fetchRandomWordWithDefinition(MappedInputManager* cancelInput) {
+  WordData data{};
+  constexpr int MAX_ATTEMPTS = 3;
+  for (int attempt = 0; attempt < MAX_ATTEMPTS; attempt++) {
+    data = WordData{};
+    HTTPClient http;
+    http.begin("https://random-word-api.herokuapp.com/word?number=1");
+    http.setReuse(false);  // see setReuse comment in fetchWeather()
+    http.setConnectTimeout(HTTP_CONNECT_TIMEOUT_MS);
+    http.setTimeout(HTTP_TIMEOUT_MS);
+    http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
+    if (http.GET() == 200) {
+      String payload = http.getString();
+      JsonDocument doc;
+      if (deserializeJson(doc, payload) == DeserializationError::Ok && doc.size() > 0) {
+        data.word = doc[0].as<String>();
+      }
+    }
+    http.end();
+    if (data.word.isEmpty()) return data;
+    if (pollCancel(cancelInput)) {
+      data.cancelled = true;
+      return data;
+    }
+
+    String dictUrl = "https://api.dictionaryapi.dev/api/v2/entries/en/" + data.word;
+    http.begin(dictUrl);
+    http.setReuse(false);
+    http.setConnectTimeout(HTTP_CONNECT_TIMEOUT_MS);
+    http.setTimeout(HTTP_TIMEOUT_MS);
+    http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
+    const int code = http.GET();
+    if (code == 200) {
+      String payload = http.getString();
+      JsonDocument doc;
+      if (deserializeJson(doc, payload) == DeserializationError::Ok && doc.size() > 0 &&
+          doc[0]["meanings"].size() > 0 && doc[0]["meanings"][0]["definitions"].size() > 0) {
+        JsonObject meaning = doc[0]["meanings"][0];
+        data.definition = meaning["definitions"][0]["definition"].as<String>();
+        if (meaning["definitions"][0]["example"].is<const char*>()) {
+          data.example = meaning["definitions"][0]["example"].as<String>();
+        }
+        data.success = !data.definition.isEmpty();
+      }
+    }
+    http.end();
+    LOG_INF("WOTD", "random '%s' -> dict %d%s", data.word.c_str(), code, data.success ? " ok" : "");
+    if (data.success) return data;
+    if (pollCancel(cancelInput)) {
+      data.cancelled = true;
+      return data;
+    }
+  }
+  return WordData{};
+}
+
+inline WordData fetchWordOfDay(MappedInputManager* cancelInput = nullptr) {
+  WordData data = fetchWiktionaryWotd(cancelInput);
+  if (data.cancelled) return data;
+  if (!data.success) {
+    LOG_INF("WOTD", "Wiktionary WOTD unavailable, falling back to random word");
+    data = fetchRandomWordWithDefinition(cancelInput);
+  }
   if (data.success) {
     // Persist for the sleep-screen overlay (survives deep sleep)
     OnlineCache::saveWord(data.word.c_str());
   }
-
   return data;
 }
 
