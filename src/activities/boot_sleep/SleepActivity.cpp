@@ -582,7 +582,9 @@ void SleepActivity::renderInfoOverlay() const {
   const int bandHeight = lineHeight + 12;
   const int bandY = pageHeight - bandHeight;
 
-  // One line: "18°C Norrmalm · Cloudy  |  petrichor  (updated 14:32)"
+  // One line: "18°C Norrmalm · Cloudy (upd. 14:32)  |  petrichor". The
+  // freshness stamp sits right after the weather it describes; the word is
+  // appended only if the whole line still fits the panel width.
   char line[160];
   int len = 0;
   if (weather.valid) {
@@ -590,16 +592,11 @@ void SleepActivity::renderInfoOverlay() const {
                     "%d\xC2\xB0"
                     "C %s \xC2\xB7 %s",
                     weather.temperature, weather.location, weather.condition);
-  }
-  if (word.valid && len < (int)sizeof(line) - 8) {
-    len += snprintf(line + len, sizeof(line) - len, "%s%s", weather.valid ? "  |  " : "", word.word);
-  }
 
-  // Freshness of the weather reading. The X4 is powered off while "asleep", so
-  // whatever is shown here is frozen until the next wake — say how old it is
-  // rather than letting a day-old reading pass for current. Times are shown in
-  // the upstream clock offset (Settings > Status bar > UTC offset).
-  if (weather.valid && len < (int)sizeof(line) - 40) {
+    // The X4 is powered off while "asleep", so whatever is shown here is frozen
+    // until the next wake — say how old it is rather than letting a day-old
+    // reading pass for current. Times use the upstream clock offset setting
+    // (Settings > Status bar > UTC offset).
     const time_t now = time(nullptr);
     const bool nowKnown = now > 1000000000L;
     char stamp[8] = "";
@@ -611,7 +608,7 @@ void SleepActivity::renderInfoOverlay() const {
       snprintf(stamp, sizeof(stamp), "%02d:%02d", tmLocal.tm_hour, tmLocal.tm_min);
     }
     constexpr long STALE_AFTER_SEC = 6L * 3600;
-    char freshness[48];
+    char freshness[32];
     if (weather.fetchedAtEpoch == 0) {
       snprintf(freshness, sizeof(freshness), "%s", fork_tr(STR_SLEEP_AGE_UNKNOWN));
     } else if (!nowKnown) {
@@ -621,7 +618,16 @@ void SleepActivity::renderInfoOverlay() const {
     } else {
       snprintf(freshness, sizeof(freshness), fork_tr(STR_SLEEP_UPDATED_FMT), stamp);
     }
-    len += snprintf(line + len, sizeof(line) - len, "  (%s)", freshness);
+    len += snprintf(line + len, sizeof(line) - len, " (%s)", freshness);
+  }
+  if (word.valid && len < (int)sizeof(line) - 8) {
+    const int weatherLen = len;
+    len += snprintf(line + len, sizeof(line) - len, "%s%s", weather.valid ? "  |  " : "", word.word);
+    // Drop the word again if the combined line would run off the panel.
+    if (weather.valid && renderer.getTextWidth(SMALL_FONT_ID, line) > pageWidth - 8) {
+      line[weatherLen] = '\0';
+      len = weatherLen;
+    }
   }
 
   // Black band with white text reads correctly on dark and light screens alike
