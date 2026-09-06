@@ -5,7 +5,6 @@
 #include <I18n.h>
 #include <SDCardManager.h>
 
-#include "../../DebugConfig.h"
 #include "../../fontIds.h"
 
 std::string GameActivity::getGameDataDir() const { return gameDataPath; }

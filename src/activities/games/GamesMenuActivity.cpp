@@ -4,15 +4,13 @@
 #include <GfxRenderer.h>
 #include <I18n.h>
 
-#include "../../DebugConfig.h"
 #include "../../MappedInputManager.h"
 #include "components/UITheme.h"
 
 namespace fui = freeink::ui;
 
-void GamesMenuActivity::registerGame(const std::string& name, const std::string& displayName,
-                                     const std::function<void()>& onSelect) {
-  games.push_back({name, displayName, onSelect});
+void GamesMenuActivity::registerGame(const std::string& displayName, void (*onSelect)()) {
+  games.push_back({displayName, onSelect});
 }
 
 void GamesMenuActivity::onEnter() {

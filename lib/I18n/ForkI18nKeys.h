@@ -122,8 +122,6 @@ enum class ForkStrId : uint16_t {
   STR_AWS_AND_N_MORE,
   STR_AWS_ANSWER_FMT,
   STR_AWS_SCORE_SKIPPED_FMT,
-  // Reader
-  STR_EPUB_LOAD_ERROR,
   // Reading stats
   STR_RSTATS_TITLE,
   STR_RSTATS_TODAY,

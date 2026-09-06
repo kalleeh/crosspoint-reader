@@ -8,6 +8,7 @@
 #include <HalDisplay.h>
 #include <HalStorage.h>
 #include <I18n.h>
+#include <Logging.h>
 #include <Memory.h>
 #include <PngToBmpConverter.h>
 #include <WiFi.h>
@@ -15,7 +16,6 @@
 #include <algorithm>
 #include <cstring>
 
-#include "../../DebugConfig.h"
 #include "../../MappedInputManager.h"
 #include "../../fontIds.h"
 #include "OnlineContentFetcher.h"
@@ -190,7 +190,7 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
   http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
 
   int httpCode = http.GET();
-  ERROR_PRINTF("[XKCD] image GET %s -> %d (RSSI=%d)\n", imageUrl.c_str(), httpCode, WiFi.RSSI());
+  LOG_INF("XKCD", "image GET %s -> %d (RSSI=%d)", imageUrl.c_str(), httpCode, WiFi.RSSI());
   if (httpCode != 200) {
     http.end();
     renderer.drawCenteredText(UI_10_FONT_ID, height / 2, fork_tr(STR_ONLINE_FAILED_LOAD), true);
@@ -250,8 +250,8 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
         delay(1);
       }
     }
-    ERROR_PRINTF("[XKCD] downloaded %d of %d bytes, writeFailed=%d stalled=%d\n", downloaded, contentLength,
-                 writeFailed, stalled);
+    LOG_INF("XKCD", "downloaded %d of %d bytes, writeFailed=%d stalled=%d", downloaded, contentLength, writeFailed,
+            stalled);
     return !writeFailed && (contentLength < 0 || downloaded >= contentLength);
   };
 
@@ -270,10 +270,10 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
     // cleanly instead of risking a crash.
     constexpr size_t kMinHeapForRetry = 60000;
     if (ESP.getFreeHeap() < kMinHeapForRetry) {
-      ERROR_PRINTF("[XKCD] skipping retry, only %u bytes free (need ~%u)\n", (unsigned)ESP.getFreeHeap(),
-                   (unsigned)kMinHeapForRetry);
+      LOG_ERR("XKCD", "skipping retry, only %u bytes free (need ~%u)", (unsigned)ESP.getFreeHeap(),
+              (unsigned)kMinHeapForRetry);
     } else {
-      ERROR_PRINTLN("[XKCD] retrying image download with a fresh connection");
+      LOG_INF("XKCD", "retrying image download with a fresh connection");
       Storage.remove("/.crosspoint/xkcd_temp.png");
       if (!Storage.openFileForWrite("XKCD", "/.crosspoint/xkcd_temp.png", file)) {
         renderer.drawCenteredText(UI_10_FONT_ID, height / 2, fork_tr(STR_ONLINE_FAILED_LOAD), true);
@@ -287,7 +287,7 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
       retryHttp.setTimeout(8000);
       retryHttp.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
       int retryCode = retryHttp.GET();
-      ERROR_PRINTF("[XKCD] retry GET -> %d\n", retryCode);
+      LOG_INF("XKCD", "retry GET -> %d", retryCode);
       if (retryCode == 200) {
         ok = attemptDownload(retryHttp);
       }
@@ -351,7 +351,7 @@ void XKCDViewerActivity::downloadAndDisplayImage() {
   Storage.remove("/.crosspoint/xkcd_temp.png");
   if (!converted) {
     Storage.remove("/.crosspoint/xkcd_temp.bmp");
-    ERROR_PRINTLN("[XKCD] PNG to BMP conversion failed");
+    LOG_ERR("XKCD", "PNG to BMP conversion failed");
   }
 
   // Redraw cleanly: erase the "Loading..." status line before adding the

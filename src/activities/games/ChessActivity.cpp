@@ -5,7 +5,6 @@
 #include <HalDisplay.h>
 #include <I18n.h>
 
-#include "../../DebugConfig.h"
 #include "../../GameConstants.h"
 #include "../../MappedInputManager.h"
 #include "../../fontIds.h"

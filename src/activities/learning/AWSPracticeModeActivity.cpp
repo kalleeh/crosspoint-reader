@@ -8,7 +8,6 @@
 
 #include <algorithm>
 
-#include "../../DebugConfig.h"
 #include "../../fontIds.h"
 #include "components/UITheme.h"
 

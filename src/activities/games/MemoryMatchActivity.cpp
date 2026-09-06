@@ -6,7 +6,6 @@
 #include <HalDisplay.h>
 #include <I18n.h>
 
-#include "../../DebugConfig.h"
 #include "../../MappedInputManager.h"
 #include "../../fontIds.h"
 #include "components/UITheme.h"

@@ -1,5 +1,4 @@
 #pragma once
-#include <functional>
 #include <vector>
 
 #include "../Activity.h"
@@ -7,7 +6,7 @@
 class HistoryTodayActivity final : public Activity {
   enum State { LOADING, LOADED, ERROR };
 
-  const std::function<void()> onBack;
+  void (*const onBack)();
   State state = LOADING;
   String date;
   std::vector<String> events;
@@ -18,8 +17,7 @@ class HistoryTodayActivity final : public Activity {
   void render();
 
  public:
-  explicit HistoryTodayActivity(GfxRenderer& renderer, MappedInputManager& mappedInput,
-                                const std::function<void()>& onBack)
+  explicit HistoryTodayActivity(GfxRenderer& renderer, MappedInputManager& mappedInput, void (*onBack)())
       : Activity("This Day in History", renderer, mappedInput), onBack(onBack) {}
 
   void onEnter() override;

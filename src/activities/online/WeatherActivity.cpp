@@ -7,11 +7,11 @@
 #include <HalDisplay.h>
 #include <HalStorage.h>
 #include <I18n.h>
+#include <Logging.h>
 #include <WiFi.h>
 
 #include <algorithm>
 
-#include "../../DebugConfig.h"
 #include "../../MappedInputManager.h"
 #include "../../fontIds.h"
 #include "OnlineContentFetcher.h"
@@ -282,35 +282,35 @@ bool WeatherActivity::loadWeatherBackground(const char* cond) {
   }
 
   if (!filename) {
-    DEBUG_PRINTLN("[Weather] No filename matched for condition");
+    LOG_DBG("WTHR", "No filename matched for condition");
     return false;
   }
 
-  DEBUG_PRINTF("[Weather] Trying to load: %s\n", filename);
+  LOG_DBG("WTHR", "Trying to load: %s", filename);
 
   // Try to open and draw the BMP
   HalFile bmpFile;
   if (!Storage.openFileForRead("WEATHER", filename, bmpFile)) {
-    DEBUG_PRINTF("[Weather] Failed to open file: %s\n", filename);
+    LOG_DBG("WTHR", "Failed to open file: %s", filename);
     return false;
   }
 
-  DEBUG_PRINTLN("[Weather] File opened, parsing headers");
+  LOG_DBG("WTHR", "File opened, parsing headers");
 
   Bitmap bitmap(bmpFile, true);  // Enable dithering for grayscale
   BmpReaderError parseResult = bitmap.parseHeaders();
   if (parseResult != BmpReaderError::Ok) {
-    DEBUG_PRINTF("[Weather] Failed to parse BMP headers: %s\n", Bitmap::errorToString(parseResult));
+    LOG_DBG("WTHR", "Failed to parse BMP headers: %s", Bitmap::errorToString(parseResult));
     bmpFile.close();
     return false;
   }
 
-  DEBUG_PRINTF("[Weather] Drawing bitmap: %dx%d\n", bitmap.getWidth(), bitmap.getHeight());
+  LOG_DBG("WTHR", "Drawing bitmap: %dx%d", bitmap.getWidth(), bitmap.getHeight());
 
   // Draw the bitmap (full screen 480x800)
   renderer.drawBitmap(bitmap, 0, 0, renderer.getScreenWidth(), renderer.getScreenHeight());
   bmpFile.close();
 
-  DEBUG_PRINTLN("[Weather] Background loaded successfully");
+  LOG_DBG("WTHR", "Background loaded successfully");
   return true;
 }

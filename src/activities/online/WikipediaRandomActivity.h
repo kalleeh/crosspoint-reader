@@ -1,5 +1,4 @@
 #pragma once
-#include <functional>
 #include <map>
 #include <vector>
 
@@ -24,7 +23,7 @@ class WikipediaRandomActivity final : public Activity {
   // Old articles are evicted from the front as new ones are appended.
   static constexpr int MAX_FEED_SIZE = 20;
 
-  const std::function<void()> onBack;
+  void (*const onBack)();
   State state = LOADED;          // Start in LOADED state
   bool isFetching = false;       // Loading indicator
   bool cancelRequested = false;  // Back pressed during a blocking download
@@ -46,8 +45,7 @@ class WikipediaRandomActivity final : public Activity {
   void render();
 
  public:
-  explicit WikipediaRandomActivity(GfxRenderer& renderer, MappedInputManager& mappedInput,
-                                   const std::function<void()>& onBack)
+  explicit WikipediaRandomActivity(GfxRenderer& renderer, MappedInputManager& mappedInput, void (*onBack)())
       : Activity("Wikipedia Feed", renderer, mappedInput), onBack(onBack) {}
 
   void onEnter() override;

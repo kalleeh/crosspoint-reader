@@ -1,6 +1,5 @@
 #pragma once
 
-#include <functional>
 #include <vector>
 
 #include "GameActivity.h"
@@ -46,7 +45,7 @@ class ChessActivity final : public GameActivity {
   bool blackRookLeftMoved, blackRookRightMoved;
   int enPassantX = -1;  // file of en passant target square (-1 = none)
   int enPassantY = -1;  // rank of en passant target square
-  const std::function<void()> onBack;
+  void (*const onBack)();
 
   // AI variables
   bool aiThinking;
@@ -70,7 +69,7 @@ class ChessActivity final : public GameActivity {
   void drawPiece(int x, int y, Piece piece, int cellSize, int boardStartX, int boardStartY);
 
  public:
-  explicit ChessActivity(GfxRenderer& renderer, MappedInputManager& mappedInput, const std::function<void()>& onBack)
+  explicit ChessActivity(GfxRenderer& renderer, MappedInputManager& mappedInput, void (*onBack)())
       : GameActivity("Chess", renderer, mappedInput), onBack(onBack) {}
 
   void onEnter() override;

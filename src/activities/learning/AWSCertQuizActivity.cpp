@@ -5,6 +5,7 @@
 #include <HalDisplay.h>
 #include <HalStorage.h>
 #include <I18n.h>
+#include <Logging.h>
 #include <esp_random.h>
 
 #include <algorithm>
@@ -13,7 +14,6 @@
 #include <random>
 #include <vector>
 
-#include "../../DebugConfig.h"
 #include "../../QuizStatsManager.h"
 #include "../../fontIds.h"
 #include "components/UITheme.h"
@@ -179,7 +179,7 @@ void AWSCertQuizActivity::onEnter() {
         }
       }
     }
-    DEBUG_PRINTLN("[AWS] Resumed previous session");
+    LOG_DBG("QUIZ", "Resumed previous session");
     state = QUESTION;
     renderQuestion();
     return;
@@ -222,7 +222,7 @@ void AWSCertQuizActivity::loadQuestions() {
     // Update questionOrder to only include filtered indices
     questionOrder = filteredIndices;
     questionCount = filteredIndices.size();
-    DEBUG_PRINTF("[AWS] Filtered to %d questions for domain: %s\n", questionCount, practiceDomain.c_str());
+    LOG_DBG("QUIZ", "Filtered to %d questions for domain: %s", questionCount, practiceDomain.c_str());
     if (filteredIndices.empty()) {
       // Caller (onEnter) will detect questionCount == 0 and show an error
       return;
@@ -304,7 +304,7 @@ void AWSCertQuizActivity::saveSession() {
   // Remove corrupted file on partial write
   if (!ok) {
     Storage.remove(path);
-    DEBUG_PRINTLN("[AWS] saveSession: partial write, removed corrupted file");
+    LOG_DBG("QUIZ", "saveSession: partial write, removed corrupted file");
   }
 }
 
@@ -412,13 +412,13 @@ bool AWSCertQuizActivity::loadHistoryRecords(std::vector<HistoryRecord>& outReco
   snprintf(path, sizeof(path), "/.crosspoint/aws-quiz-history-%s.dat", certId.c_str());
   HalFile file;
   if (!Storage.openFileForRead("AWS", path, file)) {
-    DEBUG_PRINTLN("[AWS] No incorrect question history found");
+    LOG_DBG("QUIZ", "No incorrect question history found");
     return false;
   }
 
   uint8_t magic[2];
   if (file.read(magic, 2) != 2 || magic[0] != 0xAB || (magic[1] != 0x02 && magic[1] != 0x03)) {
-    DEBUG_PRINTLN("[AWS] History file is old format — discarding");
+    LOG_DBG("QUIZ", "History file is old format — discarding");
     file.close();
     return false;
   }
@@ -450,7 +450,7 @@ bool AWSCertQuizActivity::loadHistoryRecords(std::vector<HistoryRecord>& outReco
   }
 
   file.close();
-  DEBUG_PRINTF("[AWS] Loaded %d history records (%s)\n", count, v3 ? "v3" : "v2-migrated");
+  LOG_DBG("QUIZ", "Loaded %d history records (%s)", count, v3 ? "v3" : "v2-migrated");
   return true;
 }
 
@@ -507,7 +507,7 @@ void AWSCertQuizActivity::saveIncorrectHistory() {
   if (records.empty()) {
     // Everything graduated — remove the file rather than writing an empty one
     Storage.remove(path);
-    DEBUG_PRINTLN("[AWS] History empty after merge, removed file");
+    LOG_DBG("QUIZ", "History empty after merge, removed file");
     return;
   }
 
@@ -524,7 +524,7 @@ void AWSCertQuizActivity::saveIncorrectHistory() {
     file.write(&rec.correctStreak, 1);
   }
   file.close();
-  DEBUG_PRINTF("[AWS] Saved %d history records (v3)\n", count);
+  LOG_DBG("QUIZ", "Saved %d history records (v3)", count);
 }
 
 bool AWSCertQuizActivity::loadIncorrectHistory(std::vector<uint16_t>& outFileIndices) {
@@ -539,7 +539,7 @@ bool AWSCertQuizActivity::loadIncorrectHistory(std::vector<uint16_t>& outFileInd
 
 bool AWSCertQuizActivity::openFileOrShowError(const char* path, HalFile& file, const char* errorTitle) {
   if (!Storage.openFileForRead("AWS", path, file)) {
-    DEBUG_PRINTF("[AWS] Failed to open: %s\n", path);
+    LOG_DBG("QUIZ", "Failed to open: %s", path);
     showError(errorTitle, fork_tr(STR_AWS_ERR_FILE_BODY));
     return false;
   }
@@ -597,8 +597,8 @@ void AWSCertQuizActivity::saveQuizStats() {
   QuizStatsManager::getInstance().saveQuizResult(certId.c_str(), practiceMode.c_str(), totalCorrect, totalAnswered,
                                                  domainVec);
 
-  DEBUG_PRINTF("[AWS] Saved quiz stats: %d/%d correct (%d unanswered)\n", totalCorrect, totalAnswered,
-               questionCount - totalAnswered);
+  LOG_DBG("QUIZ", "Saved quiz stats: %d/%d correct (%d unanswered)", totalCorrect, totalAnswered,
+          questionCount - totalAnswered);
 }
 
 void AWSCertQuizActivity::showError(const char* title, const char* message) {
@@ -760,8 +760,8 @@ void AWSCertQuizActivity::weightedSelectIndices(int total, int needed, std::vect
   }
   std::sort(outIndices.begin(), outIndices.end());  // sorted for sequential file access
 
-  DEBUG_PRINTF("[AWS] Weighted selection: %d of %d (history records: %d)\n", (int)outIndices.size(), total,
-               (int)records.size());
+  LOG_DBG("QUIZ", "Weighted selection: %d of %d (history records: %d)", (int)outIndices.size(), total,
+          (int)records.size());
 }
 
 // ---------------------------------------------------------------------------
@@ -904,23 +904,23 @@ bool AWSCertQuizActivity::peekSessionFileIndices(std::vector<uint16_t>& outIndic
 bool AWSCertQuizActivity::loadCustomQuestions(const std::vector<uint16_t>* onlyFileIndices) {
   char path[PATH_BUF_SIZE];
   snprintf(path, sizeof(path), "/aws-quiz/%s.json", certId.c_str());
-  DEBUG_PRINTF("[AWS] Trying to load: %s\n", path);
+  LOG_DBG("QUIZ", "Trying to load: %s", path);
 
   HalFile file;
   if (!Storage.openFileForRead("AWS", path, file)) {
-    DEBUG_PRINTF("[AWS] Failed to open file: %s\n", path);
+    LOG_DBG("QUIZ", "Failed to open file: %s", path);
     return false;
   }
 
-  DEBUG_PRINTF("[AWS] File opened, size: %d bytes\n", file.size());
+  LOG_DBG("QUIZ", "File opened, size: %u bytes", (unsigned)file.size());
   customQuestions.clear();
 
   if (!seekToQuestionsArray(file)) {
-    DEBUG_PRINTLN("[AWS] Could not find questions array");
+    LOG_DBG("QUIZ", "Could not find questions array");
     file.close();
     return false;
   }
-  DEBUG_PRINTLN("[AWS] Found questions array");
+  LOG_DBG("QUIZ", "Found questions array");
 
   // Pre-size the vector if we know exactly how many questions we'll load
   if (onlyFileIndices && !onlyFileIndices->empty()) {
@@ -937,20 +937,20 @@ bool AWSCertQuizActivity::loadCustomQuestions(const std::vector<uint16_t>* onlyF
 
   char* buffer = (char*)malloc(JSON_PARSE_BUF_SIZE);
   if (!buffer) {
-    DEBUG_PRINTLN("[AWS] Failed to allocate parse buffer");
+    LOG_DBG("QUIZ", "Failed to allocate parse buffer");
     file.close();
     return false;
   }
   int bufferPos = 0;
 
-  DEBUG_PRINTF("[AWS] Free memory before parsing: %d bytes\n", ESP.getFreeHeap());
+  LOG_DBG("QUIZ", "Free memory before parsing: %d bytes", ESP.getFreeHeap());
 
   while (file.available() && targetCursor < targetCount) {
     // Heap guard on BOTH paths: a 75-question exam of long questions can
     // need >100KB of string heap, and std::string growth aborts on OOM
     // under -fno-exceptions. Stop loading and run with what we have.
     if (parsedCount > 0 && parsedCount % 10 == 0 && ESP.getFreeHeap() < 60000) {
-      DEBUG_PRINTF("[AWS] Heap guard triggered after %d questions (%d bytes free)\n", parsedCount, ESP.getFreeHeap());
+      LOG_DBG("QUIZ", "Heap guard triggered after %d questions (%d bytes free)", parsedCount, ESP.getFreeHeap());
       break;
     }
     // Question-count cap for the unfiltered fallback path
@@ -1042,11 +1042,11 @@ bool AWSCertQuizActivity::loadCustomQuestions(const std::vector<uint16_t>* onlyF
                 customQuestions.push_back(std::move(question));
                 parsedCount++;
               } else {
-                DEBUG_PRINTF("[AWS] Skipped invalid question at seq %d\n", seqIndex);
+                LOG_DBG("QUIZ", "Skipped invalid question at seq %d", seqIndex);
               }
             }
           } else {
-            DEBUG_PRINTF("[AWS] JSON parse error at seq %d: %s\n", seqIndex, error.c_str());
+            LOG_DBG("QUIZ", "JSON parse error at seq %d: %s", seqIndex, error.c_str());
           }
           targetCursor++;  // Advance whether parse succeeded or not
         }
@@ -1055,7 +1055,7 @@ bool AWSCertQuizActivity::loadCustomQuestions(const std::vector<uint16_t>* onlyF
         bufferPos = 0;  // Reset for next question
 
         if (parsedCount % 10 == 0) {
-          DEBUG_PRINTF("[AWS] Free memory after %d questions: %d bytes\n", parsedCount, ESP.getFreeHeap());
+          LOG_DBG("QUIZ", "Free memory after %d questions: %d bytes", parsedCount, ESP.getFreeHeap());
         }
       } else if (braceDepth == 0) {
         // Question block completed without buffer content (was skipped) — advance seqIndex
@@ -1070,7 +1070,8 @@ bool AWSCertQuizActivity::loadCustomQuestions(const std::vector<uint16_t>* onlyF
   free(buffer);
   file.close();
 
-  DEBUG_PRINTF("[AWS] Loaded %d questions, free memory: %d bytes\n", customQuestions.size(), ESP.getFreeHeap());
+  LOG_DBG("QUIZ", "Loaded %d questions, free memory: %u bytes", (int)customQuestions.size(),
+          (unsigned)ESP.getFreeHeap());
   return customQuestions.size() > 0;
 }
 

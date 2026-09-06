@@ -80,7 +80,7 @@ inline WeatherData fetchWeather(bool allowCache = false, MappedInputManager* can
     unsigned long cacheAge = now - s_weatherCache.cacheTime;
 
     if (cacheAge < WEATHER_CACHE_DURATION_SEC && s_weatherCache.location[0] != '\0') {
-      Serial.printf("[Weather] Using cached data (age: %lu sec)\n", cacheAge);
+      LOG_INF("WTHR", "Using cached data (age: %lu sec)", cacheAge);
       data.success = true;
       data.location = String(s_weatherCache.location);
       data.temperature = s_weatherCache.temp;
@@ -114,7 +114,7 @@ inline WeatherData fetchWeather(bool allowCache = false, MappedInputManager* can
   // polling — a retry here used to double that block, which is what made
   // Back feel unresponsive. One GET, cancel-checked immediately after.
   int httpCode = http.GET();
-  Serial.printf("[Weather] HTTP Code: %d\n", httpCode);
+  LOG_INF("WTHR", "HTTP Code: %d", httpCode);
   if (pollCancel(cancelInput)) {
     http.end();
     data.cancelled = true;
@@ -127,7 +127,7 @@ inline WeatherData fetchWeather(bool allowCache = false, MappedInputManager* can
     // reader hits IncompleteInput on this server). The filter below keeps
     // the parse tree tiny, which was the real memory spike.
     String payload = http.getString();
-    Serial.printf("[Weather] Payload length: %d\n", payload.length());
+    LOG_INF("WTHR", "Payload length: %d", payload.length());
 
     JsonDocument filter;
     filter["current_condition"][0]["temp_C"] = true;
@@ -139,7 +139,7 @@ inline WeatherData fetchWeather(bool allowCache = false, MappedInputManager* can
 
     JsonDocument doc;
     DeserializationError error = deserializeJson(doc, payload, DeserializationOption::Filter(filter));
-    Serial.printf("[Weather] JSON parse: %s\n", error.c_str());
+    LOG_INF("WTHR", "JSON parse: %s", error.c_str());
 
     // wttr.in often truncates the tail of the payload (the multi-day forecast
     // array, which we don't read). The fields we need are at the start, so
@@ -149,7 +149,7 @@ inline WeatherData fetchWeather(bool allowCache = false, MappedInputManager* can
         !doc["current_condition"][0]["FeelsLikeC"].isNull() && !doc["current_condition"][0]["humidity"].isNull() &&
         !doc["current_condition"][0]["windspeedKmph"].isNull() && doc["nearest_area"].size() > 0 &&
         doc["nearest_area"][0]["areaName"].size() > 0) {
-      Serial.println("[Weather] All checks passed, extracting data");
+      LOG_INF("WTHR", "All checks passed, extracting data");
 
       JsonObject current = doc["current_condition"][0];
       data.temperature = current["temp_C"].as<int>();
@@ -168,7 +168,7 @@ inline WeatherData fetchWeather(bool allowCache = false, MappedInputManager* can
       }
       if (data.location.length() == 0) data.location = "Unknown";
 
-      Serial.printf("[Weather] Temp: %d, Location: %s\n", data.temperature, data.location.c_str());
+      LOG_INF("WTHR", "Temp: %d, Location: %s", data.temperature, data.location.c_str());
       data.success = true;
 
       // Save to cache
@@ -181,14 +181,14 @@ inline WeatherData fetchWeather(bool allowCache = false, MappedInputManager* can
       s_weatherCache.condition[sizeof(s_weatherCache.condition) - 1] = '\0';
       s_weatherCache.humidity = data.humidity;
       s_weatherCache.windSpeed = data.windSpeed;
-      Serial.println("[Weather] Cached for 30 minutes");
+      LOG_INF("WTHR", "Cached for 30 minutes");
       // Persist for the sleep-screen overlay (survives deep sleep)
       OnlineCache::saveWeather(data.location.c_str(), data.condition.c_str(), data.temperature);
     } else {
-      Serial.println("[Weather] Validation failed");
+      LOG_ERR("WTHR", "Validation failed");
     }
   } else {
-    Serial.printf("[Weather] HTTP failed: %d\n", httpCode);
+    LOG_ERR("WTHR", "HTTP failed: %d", httpCode);
   }
 
   http.end();
@@ -270,7 +270,7 @@ inline WikipediaData fetchWikipediaRandom(MappedInputManager* cancelInput = null
   http.setUserAgent("CrossPointReader/1.0 (https://github.com/daveallie/crosspoint-reader)");
 
   int httpCode = http.GET();
-  Serial.printf("[WIKI API] HTTP code: %d\n", httpCode);
+  LOG_INF("WIKI", "HTTP code: %d", httpCode);
   if (pollCancel(cancelInput)) {
     http.end();
     data.cancelled = true;
@@ -280,17 +280,17 @@ inline WikipediaData fetchWikipediaRandom(MappedInputManager* cancelInput = null
   // Accept 200 (success) or 303 (redirect that wasn't followed)
   if (httpCode == 200 || httpCode == 303) {
     String payload = http.getString();
-    Serial.printf("[WIKI API] Payload length: %d\n", payload.length());
+    LOG_INF("WIKI", "Payload length: %d", payload.length());
 
     JsonDocument doc;
     DeserializationError err = deserializeJson(doc, payload);
-    Serial.printf("[WIKI API] JSON parse: %s\n", err.c_str());
+    LOG_INF("WIKI", "JSON parse: %s", err.c_str());
 
     if (err == DeserializationError::Ok) {
       data.title = doc["title"].as<String>();
       data.extract = doc["extract"].as<String>();
 
-      Serial.printf("[WIKI API] Title: %s\n", data.title.c_str());
+      LOG_INF("WIKI", "Title: %s", data.title.c_str());
 
       // Get thumbnail image if available
       if (doc["thumbnail"].is<JsonObject>()) {

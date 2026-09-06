@@ -1,7 +1,5 @@
 #pragma once
 
-#include <functional>
-
 #include "GameActivity.h"
 
 class MemoryMatchActivity final : public GameActivity {
@@ -25,7 +23,7 @@ class MemoryMatchActivity final : public GameActivity {
   GameState gameState;
   int moves;
   unsigned long revealStartTime;
-  const std::function<void()> onBack;
+  void (*const onBack)();
 
   void resetGame();
   void render();
@@ -34,8 +32,7 @@ class MemoryMatchActivity final : public GameActivity {
   void shuffleBoard();
 
  public:
-  explicit MemoryMatchActivity(GfxRenderer& renderer, MappedInputManager& mappedInput,
-                               const std::function<void()>& onBack)
+  explicit MemoryMatchActivity(GfxRenderer& renderer, MappedInputManager& mappedInput, void (*onBack)())
       : GameActivity("MemoryMatch", renderer, mappedInput), onBack(onBack) {}
 
   void onEnter() override;

@@ -4,15 +4,13 @@
 #include <GfxRenderer.h>
 #include <I18n.h>
 
-#include "../../DebugConfig.h"
 #include "../../MappedInputManager.h"
 #include "components/UITheme.h"
 
 namespace fui = freeink::ui;
 
-void OnlineMenuActivity::registerItem(const std::string& name, const std::string& displayName,
-                                      const std::function<void()>& onSelect) {
-  menuItems.push_back({name, displayName, onSelect});
+void OnlineMenuActivity::registerItem(const std::string& displayName, void (*onSelect)()) {
+  menuItems.push_back({displayName, onSelect});
 }
 
 void OnlineMenuActivity::onEnter() {

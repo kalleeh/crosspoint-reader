@@ -1,12 +1,11 @@
 #pragma once
-#include <functional>
 
 #include "../Activity.h"
 
 class XKCDViewerActivity final : public Activity {
   enum State { LOADING, LOADED, ERROR };
 
-  const std::function<void()> onBack;
+  void (*const onBack)();
   State state = LOADING;
   int currentComic = 0;
   int maxComic = 0;
@@ -24,8 +23,7 @@ class XKCDViewerActivity final : public Activity {
   void render();
 
  public:
-  explicit XKCDViewerActivity(GfxRenderer& renderer, MappedInputManager& mappedInput,
-                              const std::function<void()>& onBack)
+  explicit XKCDViewerActivity(GfxRenderer& renderer, MappedInputManager& mappedInput, void (*onBack)())
       : Activity("XKCD Comics", renderer, mappedInput), onBack(onBack) {}
 
   void onEnter() override;

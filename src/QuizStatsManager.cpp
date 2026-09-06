@@ -1,6 +1,7 @@
 #include "QuizStatsManager.h"
 
 #include <HalStorage.h>
+#include <Logging.h>
 #include <time.h>
 
 #include <algorithm>
@@ -14,17 +15,17 @@ void QuizStatsManager::saveQuizResult(const char* certId, const char* mode, uint
                                       const std::vector<DomainScore>& domainScores) {
   // Input validation
   if (!certId || !mode || strlen(certId) == 0 || strlen(mode) == 0) {
-    Serial.println("[QuizStats] Invalid parameters - certId or mode is null/empty");
+    LOG_ERR("STATS", "Invalid parameters - certId or mode is null/empty");
     return;
   }
 
   if (total == 0) {
-    Serial.println("[QuizStats] Invalid parameters - total questions is 0");
+    LOG_ERR("STATS", "Invalid parameters - total questions is 0");
     return;
   }
 
   if (score > total) {
-    Serial.printf("[QuizStats] Invalid parameters - score (%d) > total (%d)\n", score, total);
+    LOG_ERR("STATS", "Invalid parameters - score (%d) > total (%d)", score, total);
     return;
   }
 
@@ -39,7 +40,7 @@ void QuizStatsManager::saveQuizResult(const char* certId, const char* mode, uint
 
   time_t now = time(nullptr);
   if (now == (time_t)-1) {
-    Serial.println("[QuizStats] Time error, using 0");
+    LOG_ERR("STATS", "Time error, using 0");
     now = 0;
   }
   result.timestamp = now;
@@ -248,7 +249,7 @@ void QuizStatsManager::saveStats() {
   // Write to temp file first — avoids corrupting the real file on power loss
   HalFile file = Storage.open(tmpPath, O_WRONLY | O_CREAT | O_TRUNC);
   if (!file) {
-    Serial.println("[QuizStats] Failed to open tmp file for save");
+    LOG_ERR("STATS", "Failed to open tmp file for save");
     return;
   }
 
@@ -282,7 +283,7 @@ void QuizStatsManager::saveStats() {
   }
 
   if (!writeOk) {
-    Serial.println("[QuizStats] Write failed, aborting save");
+    LOG_ERR("STATS", "Write failed, aborting save");
     file.close();
     Storage.remove(tmpPath);
     return;
@@ -297,7 +298,7 @@ void QuizStatsManager::saveStats() {
   if (!Storage.rename(tmpPath, realPath)) {
     Storage.remove(realPath);
     if (!Storage.rename(tmpPath, realPath)) {
-      Serial.println("[QuizStats] rename failed, removing tmp");
+      LOG_ERR("STATS", "rename failed, removing tmp");
       Storage.remove(tmpPath);
     }
   }

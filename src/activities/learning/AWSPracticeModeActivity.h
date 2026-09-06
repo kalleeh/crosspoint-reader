@@ -2,15 +2,14 @@
 
 #include <GfxRenderer.h>
 
-#include <functional>
 #include <vector>
 
 #include "../../MappedInputManager.h"
 #include "../Activity.h"
 
 class AWSPracticeModeActivity final : public Activity {
-  const std::function<void()> onBack;
-  const std::function<void(const char*, const char*)> onSelectMode;  // mode, domain
+  void (*const onBack)();
+  void (*const onSelectMode)(const char*, const char*);  // mode, domain
   String certId;
 
   enum MenuState { MODE_SELECT, DOMAIN_SELECT };
@@ -34,10 +33,8 @@ class AWSPracticeModeActivity final : public Activity {
   void loadDomains();
 
  public:
-  explicit AWSPracticeModeActivity(GfxRenderer& renderer, MappedInputManager& mappedInput,
-                                   const std::function<void()>& onBack,
-                                   const std::function<void(const char*, const char*)>& onSelectMode,
-                                   const char* certId)
+  explicit AWSPracticeModeActivity(GfxRenderer& renderer, MappedInputManager& mappedInput, void (*onBack)(),
+                                   void (*onSelectMode)(const char*, const char*), const char* certId)
       : Activity("Practice Mode", renderer, mappedInput), onBack(onBack), onSelectMode(onSelectMode), certId(certId) {
     modes.push_back({"full", "Full Exam", "Complete practice exam (65-75 questions)"});
     modes.push_back({"quick", "Quick Practice", "15 random questions"});

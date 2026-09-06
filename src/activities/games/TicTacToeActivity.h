@@ -1,7 +1,5 @@
 #pragma once
 
-#include <functional>
-
 #include "GameActivity.h"
 
 class TicTacToeActivity final : public GameActivity {
@@ -15,7 +13,7 @@ class TicTacToeActivity final : public GameActivity {
   bool playerTurn;
   bool aiWaiting = false;
   unsigned long aiThinkStart = 0;
-  const std::function<void()> onBack;
+  void (*const onBack)();
 
   void resetGame();
   void render();
@@ -26,8 +24,7 @@ class TicTacToeActivity final : public GameActivity {
   void drawCell(int x, int y, Cell cell, bool highlighted);
 
  public:
-  explicit TicTacToeActivity(GfxRenderer& renderer, MappedInputManager& mappedInput,
-                             const std::function<void()>& onBack)
+  explicit TicTacToeActivity(GfxRenderer& renderer, MappedInputManager& mappedInput, void (*onBack)())
       : GameActivity("TicTacToe", renderer, mappedInput), cursorX(1), cursorY(1), onBack(onBack) {}
 
   void onEnter() override;

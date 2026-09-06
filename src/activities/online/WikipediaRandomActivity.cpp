@@ -9,16 +9,16 @@
 #include <HalStorage.h>
 #include <I18n.h>
 #include <JpegToBmpConverter.h>
+#include <Logging.h>
 #include <WiFi.h>
 
-#include "../../DebugConfig.h"
 #include "../../MappedInputManager.h"
 #include "../../fontIds.h"
 #include "OnlineContentFetcher.h"
 #include "components/UITheme.h"
 
 void WikipediaRandomActivity::onEnter() {
-  DEBUG_PRINTF("[%lu] [WIKI] Activity entered\n", millis());
+  LOG_DBG("WIKI", "Activity entered");
 
   pendingFetches = 0;
   isFetching = false;
@@ -27,9 +27,9 @@ void WikipediaRandomActivity::onEnter() {
   render();
 
   // Connect using CrossPoint's saved WiFi credentials
-  DEBUG_PRINTF("[%lu] [WIKI] Waiting for WiFi...\n", millis());
+  LOG_DBG("WIKI", "Waiting for WiFi...");
   if (OnlineContentFetcher::ensureWiFi(&mappedInput) && WiFi.localIP() != IPAddress(0, 0, 0, 0)) {
-    DEBUG_PRINTF("[%lu] [WIKI] WiFi connected\n", millis());
+    LOG_DBG("WIKI", "WiFi connected");
     loadInterests();
     lastFetchTime = millis();  // Initialize to prevent immediate reload
 
@@ -68,7 +68,7 @@ void WikipediaRandomActivity::onEnter() {
     pendingFetches = 4;
     render();
   } else {
-    DEBUG_PRINTF("[%lu] [WIKI] WiFi failed\n", millis());
+    LOG_DBG("WIKI", "WiFi failed");
     state = ERROR;
     render();
   }
@@ -539,7 +539,7 @@ void WikipediaRandomActivity::loop() {
     unsigned long now = millis();
     if (currentArticleIndex >= (int)feed.size() - 2 && !isFetching && WiFi.status() == WL_CONNECTED &&
         (now - lastFetchTime) > 5000) {
-      DEBUG_PRINTF("[WIKI] Auto-load: viewing article %d/%d\n", currentArticleIndex + 1, feed.size());
+      LOG_DBG("WIKI", "Auto-load: viewing article %d/%d", currentArticleIndex + 1, (int)feed.size());
       fetchNextArticles();
     }
   } else if (mappedInput.wasPressed(MappedInputManager::Button::Confirm)) {

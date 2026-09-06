@@ -51,11 +51,11 @@ void onGoToGames() {
   auto gamesMenu = std::make_unique<GamesMenuActivity>(renderer, mappedInputManager, onGoToApps);
 
   // Register all games
-  gamesMenu->registerGame("tictactoe", "Tic Tac Toe", onGoToTicTacToe);
-  gamesMenu->registerGame("snake", "Snake", onGoToSnake);
-  gamesMenu->registerGame("2048", "2048", onGoTo2048);
-  gamesMenu->registerGame("memory", "Memory Match", onGoToMemoryMatch);
-  gamesMenu->registerGame("chess", "Chess", onGoToChess);
+  gamesMenu->registerGame("Tic Tac Toe", onGoToTicTacToe);
+  gamesMenu->registerGame("Snake", onGoToSnake);
+  gamesMenu->registerGame("2048", onGoTo2048);
+  gamesMenu->registerGame("Memory Match", onGoToMemoryMatch);
+  gamesMenu->registerGame("Chess", onGoToChess);
 
   activityManager.replaceActivity(std::move(gamesMenu));
 }
@@ -84,11 +84,11 @@ void onGoToOnline() {
   auto onlineMenu = std::make_unique<OnlineMenuActivity>(renderer, mappedInputManager, onGoToApps);
 
   // Register online features
-  onlineMenu->registerItem("weather", "Weather", onGoToWeather);
-  onlineMenu->registerItem("wikipedia", "Wikipedia Feed", onGoToWikipedia);
-  onlineMenu->registerItem("word", "Word of the Day", onGoToWordOfDay);
-  onlineMenu->registerItem("history", "This Day in History", onGoToHistory);
-  onlineMenu->registerItem("xkcd", "XKCD Comics", onGoToXKCD);
+  onlineMenu->registerItem("Weather", onGoToWeather);
+  onlineMenu->registerItem("Wikipedia Feed", onGoToWikipedia);
+  onlineMenu->registerItem("Word of the Day", onGoToWordOfDay);
+  onlineMenu->registerItem("This Day in History", onGoToHistory);
+  onlineMenu->registerItem("XKCD Comics", onGoToXKCD);
 
   activityManager.replaceActivity(std::move(onlineMenu));
 }

@@ -2,7 +2,6 @@
 
 #include <GfxRenderer.h>
 
-#include <functional>
 #include <map>
 #include <string>
 #include <vector>
@@ -26,7 +25,7 @@ struct Question {
 class AWSCertQuizActivity final : public Activity {
   enum State { LOADING, QUESTION, ANSWER, SUMMARY, REVIEW, DOMAIN_STATS };
 
-  const std::function<void()> onBack;
+  void (*const onBack)();
   String certId;
   String practiceMode;    // "full", "quick", "study", "domain", "review"
   String practiceDomain;  // Domain filter for domain mode
@@ -117,9 +116,8 @@ class AWSCertQuizActivity final : public Activity {
   int drawWrappedText(int fontId, int x, int y, const char* text, int maxWidth, bool black = true) const;
 
  public:
-  explicit AWSCertQuizActivity(GfxRenderer& renderer, MappedInputManager& mappedInput,
-                               const std::function<void()>& onBack, const char* certId, const char* mode = "full",
-                               const char* domain = "all")
+  explicit AWSCertQuizActivity(GfxRenderer& renderer, MappedInputManager& mappedInput, void (*onBack)(),
+                               const char* certId, const char* mode = "full", const char* domain = "all")
       : Activity("AWS Quiz", renderer, mappedInput),
         onBack(onBack),
         certId(certId),

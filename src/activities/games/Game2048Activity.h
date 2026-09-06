@@ -1,7 +1,5 @@
 #pragma once
 
-#include <functional>
-
 #include "GameActivity.h"
 
 class Game2048Activity final : public GameActivity {
@@ -13,7 +11,7 @@ class Game2048Activity final : public GameActivity {
   GameState gameState;
   int score;
   bool hasWon;
-  const std::function<void()> onBack;
+  void (*const onBack)();
 
   void resetGame();
   void render();
@@ -23,7 +21,7 @@ class Game2048Activity final : public GameActivity {
   void drawTile(int x, int y, int value);
 
  public:
-  explicit Game2048Activity(GfxRenderer& renderer, MappedInputManager& mappedInput, const std::function<void()>& onBack)
+  explicit Game2048Activity(GfxRenderer& renderer, MappedInputManager& mappedInput, void (*onBack)())
       : GameActivity("2048", renderer, mappedInput), onBack(onBack) {}
 
   void onEnter() override;

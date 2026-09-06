@@ -1,6 +1,5 @@
 #pragma once
 
-#include <functional>
 #include <string>
 
 #include "../Activity.h"
@@ -10,7 +9,7 @@ class WeatherActivity final : public Activity {
   enum State { LOADING, LOADED, ERROR };
 
   State state;
-  const std::function<void()> onBack;
+  void (*const onBack)();
 
   // Weather data
   std::string location;
@@ -28,7 +27,7 @@ class WeatherActivity final : public Activity {
   bool loadWeatherBackground(const char* condition);
 
  public:
-  explicit WeatherActivity(GfxRenderer& renderer, MappedInputManager& mappedInput, const std::function<void()>& onBack)
+  explicit WeatherActivity(GfxRenderer& renderer, MappedInputManager& mappedInput, void (*onBack)())
       : Activity("Weather", renderer, mappedInput),
         onBack(onBack),
         state(LOADING),

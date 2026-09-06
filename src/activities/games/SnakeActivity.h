@@ -1,6 +1,5 @@
 #pragma once
 
-#include <functional>
 #include <vector>
 
 #include "GameActivity.h"
@@ -26,7 +25,7 @@ class SnakeActivity final : public GameActivity {
   unsigned long lastMoveTime;
   int moveDelay;
   int moveCount;  // Track moves for periodic full refresh
-  const std::function<void()> onBack;
+  void (*const onBack)();
 
   void resetGame();
   void render();
@@ -36,7 +35,7 @@ class SnakeActivity final : public GameActivity {
   void gameOver();
 
  public:
-  explicit SnakeActivity(GfxRenderer& renderer, MappedInputManager& mappedInput, const std::function<void()>& onBack)
+  explicit SnakeActivity(GfxRenderer& renderer, MappedInputManager& mappedInput, void (*onBack)())
       : GameActivity("Snake", renderer, mappedInput), onBack(onBack) {}
 
   void onEnter() override;

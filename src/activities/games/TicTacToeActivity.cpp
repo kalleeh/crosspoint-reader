@@ -7,7 +7,6 @@
 
 #include <algorithm>
 
-#include "../../DebugConfig.h"
 #include "../../GameConstants.h"
 #include "../../MappedInputManager.h"
 #include "components/UITheme.h"

@@ -7,10 +7,10 @@
 #include <HalDisplay.h>
 #include <HalStorage.h>
 #include <I18n.h>
+#include <Logging.h>
 #include <WiFi.h>
 #include <time.h>
 
-#include "../../DebugConfig.h"
 #include "../../MappedInputManager.h"
 #include "../../fontIds.h"
 #include "OnlineContentFetcher.h"
@@ -65,7 +65,7 @@ void HistoryTodayActivity::fetchEvents() {
 
   if (time(nullptr) < 1000000000L) {
     // NTP sync failed — cannot determine today's date
-    ERROR_PRINTF("[History] NTP sync failed, time()=%ld\n", (long)time(nullptr));
+    LOG_ERR("HIST", "NTP sync failed, time()=%ld", (long)time(nullptr));
     state = ERROR;
     render();
     return;
@@ -104,7 +104,7 @@ void HistoryTodayActivity::fetchEvents() {
     httpClient.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
 
     int httpCode = httpClient.GET();
-    ERROR_PRINTF("[History] GET -> %d\n", httpCode);
+    LOG_INF("HIST", "GET -> %d", httpCode);
     if (httpCode != 200) {
       httpClient.end();
       return false;
@@ -148,15 +148,15 @@ void HistoryTodayActivity::fetchEvents() {
     }
     file.close();
     httpClient.end();
-    ERROR_PRINTF("[History] downloaded %d of %d bytes, writeFailed=%d stalled=%d\n", downloaded, contentLength,
-                 writeFailed, stalled);
+    LOG_INF("HIST", "downloaded %d of %d bytes, writeFailed=%d stalled=%d", downloaded, contentLength, writeFailed,
+            stalled);
     return !writeFailed && (contentLength < 0 || downloaded >= contentLength);
   };
 
   HTTPClient http;
   bool ok = attemptDownload(http);
   if (!ok) {
-    ERROR_PRINTLN("[History] retrying download with a fresh connection");
+    LOG_INF("HIST", "retrying download with a fresh connection");
     Storage.remove(tempPath);
     HTTPClient retryHttp;
     ok = attemptDownload(retryHttp);
@@ -191,7 +191,7 @@ void HistoryTodayActivity::fetchEvents() {
   jsonFile.close();
   Storage.remove(tempPath);
 
-  ERROR_PRINTF("[History] JSON parse: %s\n", error.c_str());
+  LOG_INF("HIST", "JSON parse: %s", error.c_str());
 
   if (error == DeserializationError::Ok) {
     JsonArray eventsArray = doc["events"];
@@ -214,11 +214,11 @@ void HistoryTodayActivity::fetchEvents() {
       state = LOADED;
       scrollOffset = 0;
     } else {
-      ERROR_PRINTLN("[History] Events array is empty");
+      LOG_ERR("HIST", "Events array is empty");
       state = ERROR;
     }
   } else {
-    ERROR_PRINTLN("[History] JSON parse failed");
+    LOG_ERR("HIST", "JSON parse failed");
     state = ERROR;
   }
 

@@ -6,7 +6,6 @@
 #include <I18n.h>
 #include <WiFi.h>
 
-#include "../../DebugConfig.h"
 #include "../../MappedInputManager.h"
 #include "../../fontIds.h"
 #include "OnlineContentFetcher.h"

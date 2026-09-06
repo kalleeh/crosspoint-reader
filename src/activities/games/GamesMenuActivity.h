@@ -1,6 +1,5 @@
 #pragma once
 
-#include <functional>
 #include <string>
 #include <vector>
 
@@ -9,16 +8,15 @@
 class GamesMenuActivity final : public UiListActivity {
  private:
   struct GameEntry {
-    std::string name;
     std::string displayName;
-    std::function<void()> onSelect;
+    void (*onSelect)();
   };
 
   std::vector<GameEntry> games;
   // Row buffer aliasing games[i].displayName; built once in onEnter (games are
   // all registered before the activity is entered).
   std::vector<freeink::ui::ListItem> rowItems;
-  const std::function<void()> onBack;
+  void (*const onBack)();
 
   int listCount() const override { return static_cast<int>(games.size()); }
   void buildScreen(UiScreen& screen) override;
@@ -27,13 +25,12 @@ class GamesMenuActivity final : public UiListActivity {
   const char* headerTitle() const override;
 
  public:
-  explicit GamesMenuActivity(GfxRenderer& renderer, MappedInputManager& mappedInput,
-                             const std::function<void()>& onBack)
+  explicit GamesMenuActivity(GfxRenderer& renderer, MappedInputManager& mappedInput, void (*onBack)())
       : UiListActivity("Games", renderer, mappedInput), onBack(onBack) {}
 
   void onEnter() override;
   void onExit() override;
 
   // Register a game in the menu
-  void registerGame(const std::string& name, const std::string& displayName, const std::function<void()>& onSelect);
+  void registerGame(const std::string& displayName, void (*onSelect)());
 };
