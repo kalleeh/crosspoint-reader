@@ -67,7 +67,7 @@ in dedicated directories and is conflict-free by construction:
 - `src/activities/online/` — online content activities
 - `src/activities/home/AppsMenuActivity.*` — the fork's "Apps" hub
 - `src/ForkSettings.*`, `src/customNavigation.*`, `src/QuizStatsManager.*`, `src/ReadingStatsManager.*`,
-  `src/ForkLogging.cpp`, `src/DebugConfig.h`, `src/GameConstants.h`, `src/UIConstants.h` — fork infrastructure
+  `src/GameConstants.h`, `src/UIConstants.h` — fork infrastructure
 - `src/activities/home/ReadingStatsActivity.*` — reading-stats screen
 - `lib/I18n/ForkI18n*` — see 3.2
 - `weather-images/` — assets
@@ -105,6 +105,14 @@ Acceptable hook patterns (these are why the core files merge cleanly today):
 The `// FORK:` marker is also your conflict-resolution cheat sheet: during a merge, any line
 marked `// FORK:` is **ours — preserve it**; everything else, take upstream's side and
 re-apply the marked hooks on top.
+
+### 3.3b Fork code conventions (since 2026-09-06)
+
+- Logging: `LOG_ERR/LOG_INF/LOG_DBG("TAG", fmt, ...)` from `<Logging.h>` only. No `Serial.*`.
+- Navigation callbacks are plain function pointers (`void (*)()`, `void (*)(const char*)`), never
+  `std::function` (2–4 KB flash per signature + heap closure). Targets live in `customNavigation.cpp`.
+- List/tab screens derive from upstream `UiListActivity` / `UiTabListActivity`; keep Back on
+  `wasPressed` by overriding `handleButtons()`.
 
 ### 3.4 Forbidden in shared upstream files (these cause conflicts for zero payoff)
 
@@ -151,10 +159,10 @@ Status reflects the merge to `upstream/master` @ `aa994cf7` (release 1.6.0, 278 
 | `lib/InflateReader/InflateReader.{cpp,h}` | caller-owned ring buffer for `init()` | dropped (upstreamed) | Upstream added `initWithRing()`/`RING_BYTES`, then moved PNG/EPUB inflate to the miniz-based `lib/miniz/src/InflateStream`. **Took upstream.** |
 | `lib/PngToBmpConverter/PngToBmpConverter.{cpp,h}` | `pngFileTo1BitBmpStreamWithSize(..., bool crop = true)` | hook (3.3) | **Reduced** to the `crop` default param (XKCD needs fit-not-crop). The ring-buffer param is gone: XKCD now wraps the conversion in `GfxRenderer::FrameBufferLoan`, so `InflateStream` claims the 48KB framebuffer via `buildscratch::claim()` instead of the fragmented heap. |
 | `lib/Epub/Epub.cpp` | `readSize == 0` guard | dropped | Upstream now streams the nav doc via `readItemContentsToStream`; the loop we patched no longer exists. **Took upstream.** |
-| `lib/Logging/Logging.{cpp,h}` → `src/ForkLogging.cpp` | `MySerialImpl` definitions | hook, relocated | **Still load-bearing** (fork `DebugConfig.h` macros expand to `Serial.*`). Upstream marks `printf` deprecated; consider migrating fork logging to `LOG_*`. |
+| `lib/Logging/Logging.{cpp,h}` | (none) | **removed 2026-09-06** | Fork logging migrated to `LOG_ERR/LOG_INF/LOG_DBG`; `src/DebugConfig.h` and `src/ForkLogging.cpp` deleted. The fork no longer references `Serial` at all, so upstream's deprecation of `MySerialImpl::printf` is moot. |
 | `scripts/gen_i18n.py` | exclude `ForkStrId` keys | hook (3.3) | **Survived auto-merge** (`# FORK:` blocks at lines ~259 and ~896). |
 | `src/activities/home/AppsMenuActivity.*`, `games/GamesMenuActivity.*`, `online/OnlineMenuActivity.*` (fork-owned) | list screens | n/a (fork file) | **Ported** from `GUI.drawList()` (removed in #2957/#3227) to upstream's `UiListActivity` base (`buildScreen`/`activateIndex`/`handleButtons`). Back stays press-edge via `handleButtons()` override. |
-| `src/activities/learning/AWSCertMenuActivity.*` (fork-owned) | tab bar | n/a (fork file) | **Ported**: `GUI.drawTabBar`/`TabInfo` removed upstream; screen is a custom state machine so it draws its own 2-slot band (`drawTabBand`). |
+| `src/activities/learning/AWSCertMenuActivity.*` (fork-owned) | tab screen | n/a (fork file) | **Rebuilt** on upstream's `UiTabListActivity` (2026-09-06): cert list rows from a `constexpr CERTS[]` table, Stats tab with bottom-anchored Clear-All row, custom Info page. Constructor takes plain function pointers. |
 | Games + `WeatherActivity.cpp` (fork-owned) | header battery | n/a (fork file) | `GUI.drawBatteryRight()` removed; with `showPercentage=false` it was identical to `drawBatteryLeft()` — renamed. |
 | `src/activities/online/OnlineContentFetcher.h` (fork-owned) | `ensureWiFi()` | n/a (fork file) | **Ported**: `WifiCredentialStore` is now mutex-guarded and returns `std::optional` copies (`getCredentialCount/getCredentialAt/findCredential`). |
 | `freeink-sdk` (submodule, replaces `open-x4-sdk`) | gitlink | **CRITICAL** | Upstream migrated SDKs (#2449). Merge staged the new gitlink; had to `git submodule sync && git submodule update --init freeink-sdk`. |
